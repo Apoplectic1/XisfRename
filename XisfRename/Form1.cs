@@ -15,6 +15,13 @@ namespace XisfRename
         XisfFile mFile;
         private FolderBrowserDialog mFolderBrowserDialog1;
         private string mFolderPath = string.Empty;
+        int mDupIndex = 1;
+        private XDocument mXmlDoc;
+        bool mBChronological = false;
+        bool mBSfsWeight = true;
+        bool mKeepIndex = true;
+        bool mWeightFirst = true;
+        bool mIndexFirst = false;
 
         public Form1()
         {
@@ -23,8 +30,53 @@ namespace XisfRename
             mFolderBrowserDialog1 = new FolderBrowserDialog();
         }
 
+        private void Button_Browse_Click(object sender, EventArgs e)
+        {
+            ProgressBar_OverAll.Value = 0;
+
+            FindXisf();
+
+            Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+            //ProgressBar_OverAll.Value = 0;
+        }
+
+        private void Button_Rename_Click(object sender, EventArgs e)
+        {
+            RenameFiles();
+
+            Label_Task.Text = "Done.";
+            ProgressBar_OverAll.Value = 0;
+        }
+
+        private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
+        {
+            mBChronological = RadioButton_Chronological.Checked;
+        }
+
+        private void RadioButton_SFSWEIGHT_CheckedChanged(object sender, EventArgs e)
+        {
+            mBSfsWeight = RadioButton_SFSWEIGHT.Checked;
+        }
+
+        private void CheckBox_KeepIndex_CheckedChanged(object sender, EventArgs e)
+        {
+            mKeepIndex = CheckBox_KeepIndex.Checked;
+        }
+
+        private void RadioButton_WeightFirst_CheckedChanged(object sender, EventArgs e)
+        {
+            mWeightFirst = RadioButton_WeightFirst.Checked;
+        }
+
+        private void RadioButton_IndexFirst_CheckedChanged(object sender, EventArgs e)
+        {
+            mIndexFirst = RadioButton_WeightFirst.Checked;
+        }
+
         public bool FindXisf()
         {
+            bool bFound;
+
             if ((Settings.Default.PersistDirectory != null) && (Settings.Default.PersistDirectory != string.Empty))
             {
                 mFolderBrowserDialog1.SelectedPath = Settings.Default.PersistDirectory;
@@ -39,11 +91,20 @@ namespace XisfRename
                 return false;
             }
 
-            DirectoryInfo d = new DirectoryInfo(mFolderPath);
+            DirectoryInfo d;
+            d = new DirectoryInfo(mFolderPath);
+
+
             FileInfo[] Files = d.GetFiles("*.xisf");
 
             ProgressBar_OverAll.Maximum = Files.Count();
 
+            Label_Task.Text = "Reading Image File Data";
+
+            mFileList.Clear();
+
+            Settings.Default.PersistDirectory = mFolderPath;
+            Settings.Default.Save();
 
             foreach (FileInfo file in Files)
             {
@@ -56,6 +117,7 @@ namespace XisfRename
                     char[] buffer = new char[20000];
 
                     mFile.SourceFileName = file.FullName;
+                    mFile.SourceDirectoryInfo = new DirectoryInfo(mFile.SourceFileName);
 
                     using (StreamReader reader = new StreamReader(file.FullName))
                     {
@@ -67,13 +129,23 @@ namespace XisfRename
                     s = s.Substring(s.IndexOf("<?xml"));
                     s = s.Substring(0, s.LastIndexOf(@"</xisf>") + 7);
 
-                    XDocument doc = XDocument.Parse(s);
-                    XElement root = doc.Root;
+                    try
+                    {
+                        mXmlDoc = XDocument.Parse(s);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                   
+                    XElement root = mXmlDoc.Root;
                     XNamespace ns = root.GetDefaultNamespace();
-                    IEnumerable<XElement> elements = from c in doc.Descendants(ns + "FITSKeyword") select c;
+                    IEnumerable<XElement> elements = from c in mXmlDoc.Descendants(ns + "FITSKeyword") select c;
                     foreach (XElement element in elements)
                     {
-                        mFile.CaptureSoftware(element);
+                        bFound = mFile.CaptureSoftware(element);
+                        if (bFound)
+                            break;
                     }
 
                     foreach (XElement element in elements)
@@ -104,24 +176,22 @@ namespace XisfRename
                 }
 
                 mFileList.Add(mFile);
-
-                myList.Sort((x, y) => DateTime.Compare(x.Created, y.Created));
             }
+
+            // Sort Image File List by Capture Time
+            mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
 
             return true;
         }
 
-        private void Button_Browse_Click(object sender, EventArgs e)
-        {
-            ProgressBar_OverAll.Value = 0;
-            FindXisf();
-            ProgressBar_OverAll.Maximum = mFileList.Count();
-        }
-
         private void RenameFiles()
         {
+            Label_Task.Text = "Renaming Images";
             string newFileName;
             int index = 1;
+            mDupIndex = 1;
+
+            MarkDuplicates();
 
             string sourceFilePath;
 
@@ -129,68 +199,151 @@ namespace XisfRename
             {
                 sourceFilePath = Path.GetDirectoryName(file.SourceFileName);
 
-                if (file.SubFrameSelectorWeight() != string.Empty)
+                newFileName = BuildFileName(index, file);
+
+                newFileName += ".xisf";
+
+                // Actually rename the file
+                if (file.Unique == true)
                 {
-                    int weight = Convert.ToInt32(Convert.ToDouble(file.SubFrameSelectorWeight()) * 10);
-
-                    newFileName = weight.ToString("D3") + " " + file.TargetName() + " " + file.FrameType() + file.FilterName() + " " + file.ExposureSeconds() + "S-" + file.Binning() + "x" + file.Binning() + " G" +
-                        file.CameraGain() + "O" + file.CameraOffset() + "@" + file.SensorTemperature() + "C" + " F" + file.FocalPosition() + "@" + file.FocalTemperature() + "C R" + file.ImageAngle() +
-                        " (" + file.ImageDateTime() + " " + file.SgpProfile() + ")" + ".xisf";
-                }
-
-                else
-                {
-                    newFileName = index.ToString("D3") + " ";
-
-
-                    newFileName += file.TargetName() + " ";
-
-                    newFileName += file.FocalLength() + " ";
-
-                    newFileName += file.FrameType() + "-" + file.FilterName() + " ";
-
-                    newFileName += file.ExposureSeconds() + "Sx" + file.Binning() + " ";
-
-                    newFileName += file.CameraModel() + "G" + file.CameraGain() + "O" + file.CameraOffset();
-
-                    newFileName += "@" + file.SensorTemperature() + "C" + " F" + file.FocalPosition() + "@" + file.FocalTemperature() + "C";
-
-                    if (file.ImageAngle() != string.Empty)
+                    if (File.Exists(sourceFilePath + "\\" + newFileName))
                     {
-                        newFileName += " R" + file.ImageAngle();
+                        //File.Move(file.SourceFileName, sourceFilePath + "\\Renun " + newFileName);
                     }
                     else
                     {
-                        newFileName += " ";
+                        File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
                     }
-
-                    newFileName += " (" + file.ImageDateTime() + " ";// + " FL" + file.FocalLength();
-
-                    if (file.CaptureSoftware() == "SGP")
-                    {
-                        newFileName += "SGP";// + file.SgpProfile();
-                    }
-
-                    if (file.CaptureSoftware() == "TheSkyX")
-                    {
-                        newFileName += "TheSkyX";
-                    }
-
-                    newFileName += ")" + ".xisf";
-                }
-                
-                if (IsFileLocked(newFileName))
-                {
-                    File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName + "-Duplicate");
+                    index++;
                 }
                 else
                 {
-                    File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
+                    Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
+
+                    int lastParen = newFileName.LastIndexOf(')');
+                    newFileName = newFileName.Insert(lastParen + 1, "-" + mDupIndex.ToString());
+
+                    File.Move(file.SourceFileName, sourceFilePath + "\\Duplicates\\" + newFileName);
+                    mDupIndex++;
+                }
+            }
+
+            Label_Task.Text = "Done";
+        }
+
+        private void MarkDuplicates()
+        {
+ 
+            // Duplicates are files with identical image capture times
+ 
+            DateTime entryDateTime = DateTime.Now;
+
+            //var results = mFileList.GroupBy(x => x.CaptureDateTime).Select(g => g.First()).ToList();
+
+            foreach (var entry in mFileList)
+            {
+                // Only mark a DateTime once
+                if (entry.CaptureDateTime == entryDateTime)
+                {
+                    continue;
                 }
 
-                index++;
+                entry.Unique = true;
+                entryDateTime = entry.CaptureDateTime;
             }
         }
+
+        private string BuildFileName(int index, XisfFile imageFile)
+        {
+            string newName;
+
+            if ((imageFile.SubFrameSelectorWeight() == string.Empty) || (mBChronological == true))
+            {
+                newName = index.ToString("D3") + " ";
+            }
+            else
+            {
+                string fileName = Path.GetFileName(imageFile.SourceFileName);
+
+                bool hasIndex = fileName.Substring(0, 2).All(char.IsDigit);
+
+                if (mKeepIndex && hasIndex)
+                {
+                    if (mWeightFirst)
+                    {
+                        newName = imageFile.SubFrameSelectorWeight() + " " + fileName.Substring(0, 4); 
+                    }
+                    else
+                    {
+                        newName = fileName.Substring(0, 4) + imageFile.SubFrameSelectorWeight() + " ";
+                    }
+                }
+                
+                else
+                {
+                    newName = imageFile.SubFrameSelectorWeight() + " ";
+                }
+                
+            }
+
+            newName += imageFile.TargetName() + " ";
+
+            newName += imageFile.FocalLength() + " ";
+
+            newName += imageFile.FrameType() + "-" + imageFile.FilterName() + " ";
+
+            newName += imageFile.ExposureSeconds() + "Sx" + imageFile.Binning() + " ";
+
+            newName += imageFile.CameraModel() + "G" + imageFile.CameraGain() + "O" + imageFile.CameraOffset();
+
+            newName += "@" + imageFile.SensorTemperature() + "C" + " F" + imageFile.FocalPosition() + "@" + imageFile.FocalTemperature() + "C";
+
+            if (imageFile.ImageAngle() != string.Empty)
+            {
+                newName += " R" + imageFile.ImageAngle();
+            }
+            else
+            {
+                newName += " ";
+            }
+
+            newName += " (" + imageFile.ImageDateTime() + " ";
+
+            if (imageFile.CaptureSoftware() == "SGP")
+            {
+                newName += "SGP";// + file.SgpProfile();
+            }
+
+            if (imageFile.CaptureSoftware() == "TheSkyX")
+            {
+                newName += "TheSkyX";
+            }
+
+            newName += ")";
+
+            return newName;
+        }
+        private void MoveDuplicates(XisfFile currentFile, string sourceFilePath, string newFileName)
+        {
+            mDupIndex = 1;
+
+            foreach (var entry in mFileList)
+            {
+                mDupIndex++;
+
+                Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
+
+                int last = currentFile.SourceFileName.LastIndexOf(@"\");
+
+                // Remove the index or SFSWEIGHT from the file name (the first four characters) and postfix duplicate index
+                string duplicateFileName = newFileName.Remove(0, 4).Insert(0, mDupIndex.ToString("D3") + " ");
+
+                File.Move(entry.SourceFileName, sourceFilePath + "\\" + "Duplicates" + "\\" + duplicateFileName);
+                mFileList.Remove(entry);
+            }
+        }
+
+
 
         private void SavePersistedStates(object sender, FormClosingEventArgs e)
         {
@@ -226,9 +379,5 @@ namespace XisfRename
             return false;
         }
 
-        private void Button_Rename_Click(object sender, EventArgs e)
-        {
-            RenameFiles();
-        }
     }
 }

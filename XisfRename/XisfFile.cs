@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Xml.Linq;
 
 namespace XisfRename
@@ -24,11 +26,13 @@ namespace XisfRename
         private string SFSWEIGHT { get; set; } = string.Empty;
         private string Software { get; set; } = string.Empty;
         private string Camera { get; set; } = string.Empty;
-
+        public DirectoryInfo SourceDirectoryInfo;
         public string SourceFileName { get; set; }
+        public DateTime CaptureDateTime { get; set; }
+        public bool Unique { get; set; } = false;
 
         // *****************************************************************
-        public void CaptureSoftware(XElement element)
+        public bool CaptureSoftware(XElement element)
         {
             XAttribute attribute = element.Attribute("name");
 
@@ -41,11 +45,13 @@ namespace XisfRename
                 if (x.Contains("TheSkyX"))
                 {
                     Software = "TheSkyX";
+                    return true;
                 }
 
                 if (x.Contains("Sequence"))
                 {
                     Software = "SGP";
+                    return true;
                 }
             }
 
@@ -58,14 +64,43 @@ namespace XisfRename
                 if (x.Contains("TheSkyX"))
                 {
                     Software = "TheSkyX";
+                    return true;
                 }
 
                 if (x.Contains("Sequence"))
                 {
                     Software = "SGP";
+                    return true;
                 }
             }
 
+            if (attribute.ToString().Contains("PROGRAM"))
+            {
+                attribute = element.Attribute("value");
+
+                string x = attribute.ToString();
+
+                if (x.Contains("TheSkyX"))
+                {
+                    Software = "TheSkyX";
+                    return true;
+                }
+
+                if (x.Contains("Sequence"))
+                {
+                    Software = "SGP";
+                    return true;
+                }
+
+                if (x.Contains("PixInsight"))
+                {
+                    Software = "PI";
+                    //return true;
+                }
+            }
+
+            Software = "SGP";
+            return false;
         }
         public string CaptureSoftware()
         {
@@ -111,7 +146,9 @@ namespace XisfRename
             if (Angle == string.Empty)
                 return string.Empty;
 
-            return Convert.ToDouble(Angle).ToString("F1");
+            double tmps;
+            tmps = Convert.ToDouble(Angle);
+            return String.Format("{0:000.0}", tmps);
         }
 
         // *****************************************************************
@@ -137,30 +174,21 @@ namespace XisfRename
         public void ImageDateTime(XElement element)
         {
             XAttribute attribute = element.Attribute("name");
+            string x;
 
             if (Software == "SGP")
             {
                 if (attribute.ToString().Contains("DATE-LOC"))
                 {
                     attribute = element.Attribute("value");
-
-                    string x = attribute.ToString();
+                    x = attribute.ToString();
                     x = x.Replace("'", "");
                     x = x.Replace("\"", "");
                     x = x.Replace("T", " ");
                     x = x.Replace("value=", "");
+
                     DateLoc = x.Replace(":", "-");
-
-
-                    //DateTime date = DateTime.ParseExact(x, "yyyy-MM-dd h:mm:ss", null);
-
-                    //DateLoc = date.ToString("yyyy-MM-dd hh:mm tt");
-                    //DateLoc = x.Substring(x.IndexOf("'") + 1);
-                    //DateLoc = DateLoc.Substring(0, DateLoc.IndexOf("'"));
-                    //DateLoc = DateLoc.Replace(':', '-');
-
-                    //// Replace center "T" with a space
-                    //DateLoc = DateLoc.Replace('T', ' ');
+                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture);
                 }
             }
 
@@ -168,18 +196,16 @@ namespace XisfRename
             {
                 if (attribute.ToString().Contains("DATE-OBS"))
                 {
-
                     attribute = element.Attribute("value");
-                    DateTime date = Convert.ToDateTime(attribute.ToString());
+                    x = attribute.ToString();
+                    x = x.Replace("'", "");
+                    x = x.Replace("\"", "");
+                    x = x.Replace("T", " ");
+                    x = x.Replace("value=", "");
+                    x = x.Substring(0, x.IndexOf(".")); // TheSkyX inlcudes milliseconds
 
-                    DateLoc = date.ToString("yyyy-MM-dd h-mm-ss tt");
-                    //attribute = element.Attribute("value");
-
-                    //string x = attribute.ToString();
-                    //DateLoc = x.Substring(x.IndexOf("'") + 1);
-                    //DateLoc = DateLoc.Substring(0, DateLoc.IndexOf("'"));
-                    //DateLoc = DateLoc.Substring(0, DateLoc.IndexOf("."));
-                    //DateLoc = DateLoc.Replace(':', '-');
+                    DateLoc = x.Replace(":", "-");
+                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -240,6 +266,7 @@ namespace XisfRename
                 string x = attribute.ToString();
                 FocalLen = x.Substring(x.IndexOf("\"") + 1);
                 FocalLen = FocalLen.Substring(0, FocalLen.IndexOf("\""));
+                FocalLen = FocalLen.Replace(".", "");
             }
         }
         public string FocalLength()
@@ -295,17 +322,14 @@ namespace XisfRename
         }
         public string FocalTemperature()
         {
-            double temp;
-            temp = Convert.ToDouble(FocTemp);
+            double FocuserTemperature;
+            FocuserTemperature = Convert.ToDouble(FocTemp);
 
-            if (temp >= -0.1)
-            {
-                return "+" + temp.ToString("F1");
-            }
-            else
-            {
-                return temp.ToString("F1");
-            }
+            FocuserTemperature = (FocuserTemperature > -0.1 && (FocuserTemperature <= 0.0)) ? 0 : FocuserTemperature;
+            string fmt = "{0:+0.0;-0.0;+0.0}";
+            string value = string.Format(fmt, FocuserTemperature);
+
+            return value;
         }
         // *****************************************************************
         public void CameraModel(XElement element)
@@ -318,7 +342,7 @@ namespace XisfRename
                 {
                     attribute = element.Attribute("value");
 
-                    if (attribute.ToString().Contains("183"))
+                    if (attribute.ToString().Contains("183") || attribute.ToString().Contains("ASI"))
                     {
                         Camera = "Z183";
                     }
@@ -398,12 +422,12 @@ namespace XisfRename
                 string x = attribute.ToString();
                 Target = x.Substring(x.IndexOf("'") + 1);
                 Target = Target.Substring(0, Target.IndexOf("'"));
+                Target = Target.Replace('/', '-');
                 Target = Target.Trim();
             }
         }
         public string TargetName()
         {
-            Target = Target.Replace('/', '-');
             return Target;
         }
 
@@ -458,13 +482,15 @@ namespace XisfRename
                 string x = attribute.ToString();
                 SFSWEIGHT = x.Substring(x.IndexOf("\"") + 1);
                 SFSWEIGHT = SFSWEIGHT.Substring(0, SFSWEIGHT.IndexOf("\""));
+
+                double weight = Convert.ToDouble(SFSWEIGHT) * 10;
+                SFSWEIGHT = weight.ToString("F0");
             }
         }
         public string SubFrameSelectorWeight()
         {
             return SFSWEIGHT;
         }
-
 
 
         public void ImageLocation(XElement element)
