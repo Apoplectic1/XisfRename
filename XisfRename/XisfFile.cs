@@ -23,7 +23,7 @@ namespace XisfRename
         private string SiteName { get; set; } = string.Empty;
         private string Xbin { get; set; } = string.Empty;
         private string Type { get; set; } = string.Empty;
-        private string SFSWEIGHT { get; set; } = string.Empty;
+        private string SSWEIGHT { get; set; } = string.Empty;
         private string Software { get; set; } = string.Empty;
         private string Camera { get; set; } = string.Empty;
         public DirectoryInfo SourceDirectoryInfo;
@@ -475,21 +475,21 @@ namespace XisfRename
         {
             XAttribute attribute = element.Attribute("name");
 
-            if (attribute.ToString().Contains("SFSWEIGH"))
+            if (attribute.ToString().Contains("SSWEIGH"))
             {
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
-                SFSWEIGHT = x.Substring(x.IndexOf("\"") + 1);
-                SFSWEIGHT = SFSWEIGHT.Substring(0, SFSWEIGHT.IndexOf("\""));
+                SSWEIGHT = x.Substring(x.IndexOf("\"") + 1);
+                SSWEIGHT = SSWEIGHT.Substring(0, SSWEIGHT.IndexOf("\""));
 
-                double weight = Convert.ToDouble(SFSWEIGHT) * 10;
-                SFSWEIGHT = weight.ToString("F0");
+                double weight = Convert.ToDouble(SSWEIGHT) * 10;
+                SSWEIGHT = weight.ToString("F0");
             }
         }
         public string SubFrameSelectorWeight()
         {
-            return SFSWEIGHT;
+            return SSWEIGHT;
         }
 
 

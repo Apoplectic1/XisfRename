@@ -18,7 +18,7 @@ namespace XisfRename
         int mDupIndex = 1;
         private XDocument mXmlDoc;
         bool mBChronological = false;
-        bool mBSfsWeight = true;
+        bool mBSsWeight = true;
         bool mKeepIndex = true;
         bool mWeightFirst = true;
         bool mIndexFirst = false;
@@ -53,9 +53,9 @@ namespace XisfRename
             mBChronological = RadioButton_Chronological.Checked;
         }
 
-        private void RadioButton_SFSWEIGHT_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SSWEIGHT_CheckedChanged(object sender, EventArgs e)
         {
-            mBSfsWeight = RadioButton_SFSWEIGHT.Checked;
+            mBSsWeight = RadioButton_SSWEIGHT.Checked;
         }
 
         private void CheckBox_KeepIndex_CheckedChanged(object sender, EventArgs e)
@@ -335,7 +335,7 @@ namespace XisfRename
 
                 int last = currentFile.SourceFileName.LastIndexOf(@"\");
 
-                // Remove the index or SFSWEIGHT from the file name (the first four characters) and postfix duplicate index
+                // Remove the index or SSWEIGHT from the file name (the first four characters) and postfix duplicate index
                 string duplicateFileName = newFileName.Remove(0, 4).Insert(0, mDupIndex.ToString("D3") + " ");
 
                 File.Move(entry.SourceFileName, sourceFilePath + "\\" + "Duplicates" + "\\" + duplicateFileName);

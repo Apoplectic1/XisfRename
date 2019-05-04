@@ -32,15 +32,15 @@
             this.ProgressBar_OverAll = new System.Windows.Forms.ProgressBar();
             this.CheckBox_Recurse = new System.Windows.Forms.CheckBox();
             this.GroupBox_Numbering = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Lable_IndexOrder = new System.Windows.Forms.Label();
+            this.RadioButton_IndexFirst = new System.Windows.Forms.RadioButton();
             this.CheckBox_KeepIndex = new System.Windows.Forms.CheckBox();
-            this.RadioButton_SFSWEIGHT = new System.Windows.Forms.RadioButton();
+            this.RadioButton_WeightFirst = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SSWEIGHT = new System.Windows.Forms.RadioButton();
             this.RadioButton_Chronological = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
             this.Label_Task = new System.Windows.Forms.Label();
-            this.RadioButton_WeightFirst = new System.Windows.Forms.RadioButton();
-            this.RadioButton_IndexFirst = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.Lable_IndexOrder = new System.Windows.Forms.Label();
             this.GroupBox_Numbering.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -75,7 +75,7 @@
             // GroupBox_Numbering
             // 
             this.GroupBox_Numbering.Controls.Add(this.groupBox1);
-            this.GroupBox_Numbering.Controls.Add(this.RadioButton_SFSWEIGHT);
+            this.GroupBox_Numbering.Controls.Add(this.RadioButton_SSWEIGHT);
             this.GroupBox_Numbering.Controls.Add(this.RadioButton_Chronological);
             this.GroupBox_Numbering.Location = new System.Drawing.Point(130, 107);
             this.GroupBox_Numbering.Name = "GroupBox_Numbering";
@@ -83,6 +83,39 @@
             this.GroupBox_Numbering.TabIndex = 3;
             this.GroupBox_Numbering.TabStop = false;
             this.GroupBox_Numbering.Text = "Numbering";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.Lable_IndexOrder);
+            this.groupBox1.Controls.Add(this.RadioButton_IndexFirst);
+            this.groupBox1.Controls.Add(this.CheckBox_KeepIndex);
+            this.groupBox1.Controls.Add(this.RadioButton_WeightFirst);
+            this.groupBox1.Location = new System.Drawing.Point(121, 16);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(190, 77);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Index Order";
+            // 
+            // Lable_IndexOrder
+            // 
+            this.Lable_IndexOrder.AutoSize = true;
+            this.Lable_IndexOrder.Location = new System.Drawing.Point(75, 48);
+            this.Lable_IndexOrder.Name = "Lable_IndexOrder";
+            this.Lable_IndexOrder.Size = new System.Drawing.Size(28, 13);
+            this.Lable_IndexOrder.TabIndex = 5;
+            this.Lable_IndexOrder.Text = "then";
+            // 
+            // RadioButton_IndexFirst
+            // 
+            this.RadioButton_IndexFirst.AutoSize = true;
+            this.RadioButton_IndexFirst.Location = new System.Drawing.Point(104, 46);
+            this.RadioButton_IndexFirst.Name = "RadioButton_IndexFirst";
+            this.RadioButton_IndexFirst.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_IndexFirst.TabIndex = 4;
+            this.RadioButton_IndexFirst.Text = "Index";
+            this.RadioButton_IndexFirst.UseVisualStyleBackColor = true;
+            this.RadioButton_IndexFirst.CheckedChanged += new System.EventHandler(this.RadioButton_IndexFirst_CheckedChanged);
             // 
             // CheckBox_KeepIndex
             // 
@@ -97,18 +130,31 @@
             this.CheckBox_KeepIndex.UseVisualStyleBackColor = true;
             this.CheckBox_KeepIndex.CheckedChanged += new System.EventHandler(this.CheckBox_KeepIndex_CheckedChanged);
             // 
-            // RadioButton_SFSWEIGHT
+            // RadioButton_WeightFirst
             // 
-            this.RadioButton_SFSWEIGHT.AutoSize = true;
-            this.RadioButton_SFSWEIGHT.Checked = true;
-            this.RadioButton_SFSWEIGHT.Location = new System.Drawing.Point(7, 48);
-            this.RadioButton_SFSWEIGHT.Name = "RadioButton_SFSWEIGHT";
-            this.RadioButton_SFSWEIGHT.Size = new System.Drawing.Size(89, 17);
-            this.RadioButton_SFSWEIGHT.TabIndex = 1;
-            this.RadioButton_SFSWEIGHT.TabStop = true;
-            this.RadioButton_SFSWEIGHT.Text = "SFSWEIGHT";
-            this.RadioButton_SFSWEIGHT.UseVisualStyleBackColor = true;
-            this.RadioButton_SFSWEIGHT.CheckedChanged += new System.EventHandler(this.RadioButton_SFSWEIGHT_CheckedChanged);
+            this.RadioButton_WeightFirst.AutoSize = true;
+            this.RadioButton_WeightFirst.Checked = true;
+            this.RadioButton_WeightFirst.Location = new System.Drawing.Point(15, 46);
+            this.RadioButton_WeightFirst.Name = "RadioButton_WeightFirst";
+            this.RadioButton_WeightFirst.Size = new System.Drawing.Size(59, 17);
+            this.RadioButton_WeightFirst.TabIndex = 3;
+            this.RadioButton_WeightFirst.TabStop = true;
+            this.RadioButton_WeightFirst.Text = "Weight";
+            this.RadioButton_WeightFirst.UseVisualStyleBackColor = true;
+            this.RadioButton_WeightFirst.CheckedChanged += new System.EventHandler(this.RadioButton_WeightFirst_CheckedChanged);
+            // 
+            // RadioButton_SSWEIGHT
+            // 
+            this.RadioButton_SSWEIGHT.AutoSize = true;
+            this.RadioButton_SSWEIGHT.Checked = true;
+            this.RadioButton_SSWEIGHT.Location = new System.Drawing.Point(7, 48);
+            this.RadioButton_SSWEIGHT.Name = "RadioButton_SSWEIGHT";
+            this.RadioButton_SSWEIGHT.Size = new System.Drawing.Size(83, 17);
+            this.RadioButton_SSWEIGHT.TabIndex = 1;
+            this.RadioButton_SSWEIGHT.TabStop = true;
+            this.RadioButton_SSWEIGHT.Text = "SSWEIGHT";
+            this.RadioButton_SSWEIGHT.UseVisualStyleBackColor = true;
+            this.RadioButton_SSWEIGHT.CheckedChanged += new System.EventHandler(this.RadioButton_SSWEIGHT_CheckedChanged);
             // 
             // RadioButton_Chronological
             // 
@@ -140,52 +186,6 @@
             this.Label_Task.TabIndex = 5;
             this.Label_Task.Text = "Browse for Files";
             // 
-            // RadioButton_WeightFirst
-            // 
-            this.RadioButton_WeightFirst.AutoSize = true;
-            this.RadioButton_WeightFirst.Checked = true;
-            this.RadioButton_WeightFirst.Location = new System.Drawing.Point(15, 46);
-            this.RadioButton_WeightFirst.Name = "RadioButton_WeightFirst";
-            this.RadioButton_WeightFirst.Size = new System.Drawing.Size(59, 17);
-            this.RadioButton_WeightFirst.TabIndex = 3;
-            this.RadioButton_WeightFirst.TabStop = true;
-            this.RadioButton_WeightFirst.Text = "Weight";
-            this.RadioButton_WeightFirst.UseVisualStyleBackColor = true;
-            this.RadioButton_WeightFirst.CheckedChanged += new System.EventHandler(this.RadioButton_WeightFirst_CheckedChanged);
-            // 
-            // RadioButton_IndexFirst
-            // 
-            this.RadioButton_IndexFirst.AutoSize = true;
-            this.RadioButton_IndexFirst.Location = new System.Drawing.Point(104, 46);
-            this.RadioButton_IndexFirst.Name = "RadioButton_IndexFirst";
-            this.RadioButton_IndexFirst.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_IndexFirst.TabIndex = 4;
-            this.RadioButton_IndexFirst.Text = "Index";
-            this.RadioButton_IndexFirst.UseVisualStyleBackColor = true;
-            this.RadioButton_IndexFirst.CheckedChanged += new System.EventHandler(this.RadioButton_IndexFirst_CheckedChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.Lable_IndexOrder);
-            this.groupBox1.Controls.Add(this.RadioButton_IndexFirst);
-            this.groupBox1.Controls.Add(this.CheckBox_KeepIndex);
-            this.groupBox1.Controls.Add(this.RadioButton_WeightFirst);
-            this.groupBox1.Location = new System.Drawing.Point(121, 16);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(190, 77);
-            this.groupBox1.TabIndex = 6;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Index Order";
-            // 
-            // Lable_IndexOrder
-            // 
-            this.Lable_IndexOrder.AutoSize = true;
-            this.Lable_IndexOrder.Location = new System.Drawing.Point(75, 48);
-            this.Lable_IndexOrder.Name = "Lable_IndexOrder";
-            this.Lable_IndexOrder.Size = new System.Drawing.Size(28, 13);
-            this.Lable_IndexOrder.TabIndex = 5;
-            this.Lable_IndexOrder.Text = "then";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -215,7 +215,7 @@
         private System.Windows.Forms.ProgressBar ProgressBar_OverAll;
         private System.Windows.Forms.CheckBox CheckBox_Recurse;
         private System.Windows.Forms.GroupBox GroupBox_Numbering;
-        private System.Windows.Forms.RadioButton RadioButton_SFSWEIGHT;
+        private System.Windows.Forms.RadioButton RadioButton_SSWEIGHT;
         private System.Windows.Forms.RadioButton RadioButton_Chronological;
         private System.Windows.Forms.Button Button_Rename;
         private System.Windows.Forms.Label Label_Task;
