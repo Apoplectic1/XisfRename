@@ -244,6 +244,14 @@ namespace XisfRename
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
+
+                if (x.Contains("OIII")) x = x.Replace("OIII", "O3");
+                if (x.Contains("Oiii")) x = x.Replace("Oiii", "O3");
+                if (x.Contains("SII")) x = x.Replace("SII", "S2");
+                if (x.Contains("Sii")) x = x.Replace("Sii", "S2");
+                if (x.Contains("HA")) x = x.Replace("HA", "Ha");
+                if (x.Contains("Ha")) x = x.Replace("Ha", "Ha");
+                
                 Filter = x.Substring(x.IndexOf("'") + 1);
                 Filter = Filter.Substring(0, Filter.IndexOf("'"));
                 Filter = Filter.Trim();
@@ -317,6 +325,15 @@ namespace XisfRename
 
                 string x = attribute.ToString();
                 FocTemp= x.Substring(x.IndexOf("\"") + 1);
+                FocTemp = FocTemp.Substring(0, FocTemp.IndexOf("\""));
+            }
+
+            if (attribute.ToString().Contains("CCD-TEMP"))
+            {
+                attribute = element.Attribute("value");
+
+                string x = attribute.ToString();
+                FocTemp = x.Substring(x.IndexOf("\"") + 1);
                 FocTemp = FocTemp.Substring(0, FocTemp.IndexOf("\""));
             }
         }

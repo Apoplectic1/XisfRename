@@ -9,7 +9,7 @@ using XisfRename.Properties;
 
 namespace XisfRename
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
         List<XisfFile> mFileList = new List<XisfFile>();
         XisfFile mFile;
@@ -23,11 +23,12 @@ namespace XisfRename
         bool mWeightFirst = true;
         bool mIndexFirst = false;
 
-        public Form1()
+        public Main()
         {
             InitializeComponent();
 
             mFolderBrowserDialog1 = new FolderBrowserDialog();
+            mFolderBrowserDialog1.SelectedPath = "E:\\Photography\\Astro Photography\\Processing";
         }
 
         private void Button_Browse_Click(object sender, EventArgs e)
@@ -287,15 +288,10 @@ namespace XisfRename
             }
 
             newName += imageFile.TargetName() + " ";
-
             newName += imageFile.FocalLength() + " ";
-
             newName += imageFile.FrameType() + "-" + imageFile.FilterName() + " ";
-
             newName += imageFile.ExposureSeconds() + "Sx" + imageFile.Binning() + " ";
-
             newName += imageFile.CameraModel() + "G" + imageFile.CameraGain() + "O" + imageFile.CameraOffset();
-
             newName += "@" + imageFile.SensorTemperature() + "C" + " F" + imageFile.FocalPosition() + "@" + imageFile.FocalTemperature() + "C";
 
             if (imageFile.ImageAngle() != string.Empty)
