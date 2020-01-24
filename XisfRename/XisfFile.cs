@@ -9,27 +9,28 @@ namespace XisfRename
     {
         private string AmbTemp { get; set; } = string.Empty;
         private string Angle { get; set; } = string.Empty;
+        private string Camera { get; set; } = string.Empty;
         private string CcdTemp { get; set; } = string.Empty;
         private string DateLoc { get; set; } = string.Empty;
         private string Exposure { get; set; } = string.Empty;
         private string Filter { get; set; } = string.Empty;
-        private string FocalLen { get; set; } = string.Empty;
         private string FocPos { get; set; } = string.Empty;
         private string FocTemp { get; set; } = string.Empty;
+        private string FocalLen { get; set; } = string.Empty;
         private string Gain { get; set; } = string.Empty;
-        private string Target { get; set; } = string.Empty;
         private string OffSet { get; set; } = string.Empty;
         private string Profile { get; set; } = string.Empty;
-        private string SiteName { get; set; } = string.Empty;
-        private string Xbin { get; set; } = string.Empty;
-        private string Type { get; set; } = string.Empty;
         private string SSWEIGHT { get; set; } = string.Empty;
+        private string SiteName { get; set; } = string.Empty;
         private string Software { get; set; } = string.Empty;
-        private string Camera { get; set; } = string.Empty;
-        public DirectoryInfo SourceDirectoryInfo;
-        public string SourceFileName { get; set; }
+        private string Target { get; set; } = string.Empty;
+        private string Type { get; set; } = string.Empty;
+        private string Xbin { get; set; } = string.Empty;
         public DateTime CaptureDateTime { get; set; }
+        public DirectoryInfo SourceDirectoryInfo;
         public bool Unique { get; set; } = false;
+        public string SourceFileName { get; set; }
+
 
         // *****************************************************************
         public bool CaptureSoftware(XElement element)
@@ -440,6 +441,7 @@ namespace XisfRename
                 Target = x.Substring(x.IndexOf("'") + 1);
                 Target = Target.Substring(0, Target.IndexOf("'"));
                 Target = Target.Replace('/', '-');
+                Target = Target.Replace("flats", "Flat");
                 Target = Target.Trim();
             }
         }
@@ -579,7 +581,7 @@ namespace XisfRename
 
             if (Type.IndexOf("Dark", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return "D";
+                return "Dark";
             }
 
             if (Type.IndexOf("Bias", StringComparison.OrdinalIgnoreCase) >= 0)

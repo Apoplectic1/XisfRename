@@ -186,7 +186,7 @@
             this.Label_Task.TabIndex = 5;
             this.Label_Task.Text = "Browse for Files";
             // 
-            // Form1
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -197,8 +197,8 @@
             this.Controls.Add(this.CheckBox_Recurse);
             this.Controls.Add(this.ProgressBar_OverAll);
             this.Controls.Add(this.Button_Browse);
-            this.Name = "Form1";
-            this.Text = "Astro Image Renamer";
+            this.Name = "Main";
+            this.Text = "XSIF Image Renamer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SavePersistedStates);
             this.GroupBox_Numbering.ResumeLayout(false);
             this.GroupBox_Numbering.PerformLayout();
