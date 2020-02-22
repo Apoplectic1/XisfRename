@@ -17,7 +17,7 @@ namespace XisfRename
         private string mFolderPath = string.Empty;
         int mDupIndex = 1;
         private XDocument mXmlDoc;
-        bool mBChronological = false;
+        private bool mBChronological = false;
         bool mBSsWeight = true;
         bool mKeepIndex = true;
         bool mWeightFirst = true;
@@ -161,8 +161,8 @@ namespace XisfRename
                         mFile.ExposureSeconds(element);
                         mFile.FilterName(element);
                         mFile.FocalLength(element);
-                        mFile.FocalPosition(element);
-                        mFile.FocalTemperature(element);
+                        mFile.FocusPosition(element);
+                        mFile.FocusTemperature(element);
                         mFile.FrameType(element);
                         mFile.ImageAngle(element);
                         mFile.ImageDateTime(element);
@@ -307,7 +307,7 @@ namespace XisfRename
             }
             else
             {
-                newName += "@" + imageFile.SensorTemperature() + "C" + " F" + imageFile.FocalPosition() + "@" + imageFile.FocalTemperature() + "C";
+                newName += "@" + imageFile.SensorTemperature() + "C" + " F" + imageFile.FocusPosition() + "@" + imageFile.FocusTemperature()+ "C";
                 if (imageFile.ImageAngle() != string.Empty)
                 {
                     newName += " R" + imageFile.ImageAngle();

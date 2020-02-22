@@ -7,15 +7,15 @@ namespace XisfRename
 {
     class XisfFile
     {
-        private string AmbTemp { get; set; } = string.Empty;
+        private string AmbientTemp { get; set; } = string.Empty;
         private string Angle { get; set; } = string.Empty;
         private string Camera { get; set; } = string.Empty;
-        private string CcdTemp { get; set; } = string.Empty;
+        private string SensorTemp { get; set; } = string.Empty;
         private string DateLoc { get; set; } = string.Empty;
         private string Exposure { get; set; } = string.Empty;
         private string Filter { get; set; } = string.Empty;
-        private string FocPos { get; set; } = string.Empty;
-        private string FocTemp { get; set; } = string.Empty;
+        private string FocusPos { get; set; } = string.Empty;
+        private string FocusTemp { get; set; } = string.Empty;
         private string FocalLen { get; set; } = string.Empty;
         private string Gain { get; set; } = string.Empty;
         private string OffSet { get; set; } = string.Empty;
@@ -31,6 +31,19 @@ namespace XisfRename
         public bool Unique { get; set; } = false;
         public string SourceFileName { get; set; }
 
+        public string FormatTemperatureString(string temperatureString)
+        {
+            if (temperatureString == "") return "";
+
+            double temperature;
+            temperature = Convert.ToDouble(temperatureString);
+            temperature = (temperature > -0.1 && (temperature <= 0.0)) ? 0 : temperature;
+
+            string fmt = "{0:+0.0;-0.0;+0.0}";
+            string value = string.Format(fmt, temperature);
+
+            return value;
+        }
 
         // *****************************************************************
         public bool CaptureSoftware(XElement element)
@@ -118,13 +131,22 @@ namespace XisfRename
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
-                AmbTemp = x.Substring(x.IndexOf("\"") + 1);
-                AmbTemp = AmbTemp.Substring(0, AmbTemp.IndexOf("\""));
+                AmbientTemp = x.Substring(x.IndexOf("\"") + 1);
+                AmbientTemp = AmbientTemp.Substring(0, AmbientTemp.IndexOf("\""));
+            }
+
+            if (attribute.ToString().Contains("AOCAMBT"))
+            {
+                attribute = element.Attribute("value");
+
+                string x = attribute.ToString();
+                AmbientTemp = x.Substring(x.IndexOf("\"") + 1);
+                AmbientTemp = AmbientTemp.Substring(0, AmbientTemp.IndexOf("\""));
             }
         }
         public string AmbientTemperature()
         {
-            return AmbTemp;
+            return FormatTemperatureString(AmbientTemp);
         }
 
         // *****************************************************************
@@ -162,13 +184,13 @@ namespace XisfRename
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
-                CcdTemp = x.Substring(x.IndexOf("\"") + 1);
-                CcdTemp = CcdTemp.Substring(0, CcdTemp.IndexOf("\""));
+                SensorTemp = x.Substring(x.IndexOf("\"") + 1);
+                SensorTemp = SensorTemp.Substring(0, SensorTemp.IndexOf("\""));
             }
         }
         public string SensorTemperature()
         {
-            return Convert.ToDouble(CcdTemp).ToString("F1");
+            return FormatTemperatureString(SensorTemp);
         }
 
         // *****************************************************************
@@ -294,7 +316,7 @@ namespace XisfRename
         }
 
         // *****************************************************************
-        public void FocalPosition(XElement element)
+        public void FocusPosition(XElement element)
         {
             XAttribute attribute = element.Attribute("name");
 
@@ -303,20 +325,21 @@ namespace XisfRename
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
-                FocPos = x.Substring(x.IndexOf("\"") + 1);
-                FocPos = FocPos.Substring(0, FocPos.IndexOf("\""));
-                FocPos = FocPos.Replace(".", "");
-                FocPos = FocPos.Trim();
+                FocusPos = x.Substring(x.IndexOf("\"") + 1);
+                FocusPos = FocusPos.Substring(0, FocusPos.IndexOf("\""));
+                FocusPos = FocusPos.Replace(".", "");
+                FocusPos = FocusPos.Trim();
 
             }
         }
-        public string FocalPosition()
+        public string FocusPosition()
         {
-            return FocPos;
+            return FocusPos;
         }
 
+        
         // *****************************************************************
-        public void FocalTemperature(XElement element)
+        public void FocusTemperature(XElement element)
         {
             XAttribute attribute = element.Attribute("name");
 
@@ -325,30 +348,16 @@ namespace XisfRename
                 attribute = element.Attribute("value");
 
                 string x = attribute.ToString();
-                FocTemp= x.Substring(x.IndexOf("\"") + 1);
-                FocTemp = FocTemp.Substring(0, FocTemp.IndexOf("\""));
-            }
-
-            if (attribute.ToString().Contains("CCD-TEMP"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                FocTemp = x.Substring(x.IndexOf("\"") + 1);
-                FocTemp = FocTemp.Substring(0, FocTemp.IndexOf("\""));
+                FocusTemp = x.Substring(x.IndexOf("\"") + 1);
+                FocusTemp = FocusTemp.Substring(0, FocusTemp.IndexOf("\""));
             }
         }
-        public string FocalTemperature()
+        public string FocusTemperature()
         {
-            double FocuserTemperature;
-            FocuserTemperature = Convert.ToDouble(FocTemp);
-
-            FocuserTemperature = (FocuserTemperature > -0.1 && (FocuserTemperature <= 0.0)) ? 0 : FocuserTemperature;
-            string fmt = "{0:+0.0;-0.0;+0.0}";
-            string value = string.Format(fmt, FocuserTemperature);
-
-            return value;
+             return FormatTemperatureString(FocusTemp);
         }
+
+
         // *****************************************************************
         public void CameraModel(XElement element)
         {
