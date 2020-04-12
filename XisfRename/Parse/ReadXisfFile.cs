@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
@@ -30,6 +31,15 @@ namespace XisfRename
         public DirectoryInfo SourceDirectoryInfo;
         public bool Unique { get; set; } = false;
         public string SourceFileName { get; set; }
+        public string SITELAT { get; set; } = string.Empty;
+        public string SITELON { get; set; } = string.Empty;
+
+        public List<string> TargetNameList = new List<string>();
+
+        public XisfFile()
+        {
+            TargetNameList.Clear();
+        }
 
         public string FormatTemperatureString(string temperatureString)
         {
@@ -452,11 +462,14 @@ namespace XisfRename
                 Target = Target.Replace('/', '-');
                 Target = Target.Replace("flats", "Flat");
                 Target = Target.Trim();
+
+                TargetNameList.Add(Target);
             }
         }
-        public string TargetName()
+
+        public string TargetName() 
         {
-            return Target;
+            return Target; 
         }
 
         // *****************************************************************
@@ -601,5 +614,28 @@ namespace XisfRename
             return string.Empty;
         }
 
+        public void SiteLat(XElement element)
+        {
+            XAttribute attribute = element.Attribute("name");
+
+            if (attribute.ToString().Contains("SITELAT"))
+            {
+                attribute = element.Attribute("value");
+
+                SITELAT = attribute.ToString();
+            }
+        }
+
+        public void SiteLon(XElement element)
+        {
+            XAttribute attribute = element.Attribute("name");
+
+            if (attribute.ToString().Contains("SITELON"))
+            {
+                attribute = element.Attribute("value");
+
+                SITELON = attribute.ToString();
+            }
+        }
     }
 }

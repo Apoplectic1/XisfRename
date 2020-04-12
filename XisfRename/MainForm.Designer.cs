@@ -1,6 +1,6 @@
 ﻿namespace XisfRename
 {
-    partial class Main
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -40,14 +40,29 @@
             this.RadioButton_SSWEIGHT = new System.Windows.Forms.RadioButton();
             this.RadioButton_Chronological = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.GroupBox_DirectorySelection = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.CheckBox_FixSexigesimal = new System.Windows.Forms.CheckBox();
+            this.CheckBox_TargetName = new System.Windows.Forms.CheckBox();
+            this.Label_TagetName = new System.Windows.Forms.Label();
             this.Label_Task = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GroupBox_Numbering.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.GroupBox_DirectorySelection.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_Browse
             // 
-            this.Button_Browse.Location = new System.Drawing.Point(24, 12);
+            this.Button_Browse.Location = new System.Drawing.Point(26, 23);
             this.Button_Browse.Name = "Button_Browse";
             this.Button_Browse.Size = new System.Drawing.Size(75, 23);
             this.Button_Browse.TabIndex = 0;
@@ -57,15 +72,15 @@
             // 
             // ProgressBar_OverAll
             // 
-            this.ProgressBar_OverAll.Location = new System.Drawing.Point(18, 74);
+            this.ProgressBar_OverAll.Location = new System.Drawing.Point(24, 119);
             this.ProgressBar_OverAll.Name = "ProgressBar_OverAll";
-            this.ProgressBar_OverAll.Size = new System.Drawing.Size(449, 11);
+            this.ProgressBar_OverAll.Size = new System.Drawing.Size(463, 11);
             this.ProgressBar_OverAll.TabIndex = 1;
             // 
             // CheckBox_Recurse
             // 
             this.CheckBox_Recurse.AutoSize = true;
-            this.CheckBox_Recurse.Location = new System.Drawing.Point(106, 15);
+            this.CheckBox_Recurse.Location = new System.Drawing.Point(114, 27);
             this.CheckBox_Recurse.Name = "CheckBox_Recurse";
             this.CheckBox_Recurse.Size = new System.Drawing.Size(119, 17);
             this.CheckBox_Recurse.TabIndex = 2;
@@ -77,7 +92,7 @@
             this.GroupBox_Numbering.Controls.Add(this.groupBox1);
             this.GroupBox_Numbering.Controls.Add(this.RadioButton_SSWEIGHT);
             this.GroupBox_Numbering.Controls.Add(this.RadioButton_Chronological);
-            this.GroupBox_Numbering.Location = new System.Drawing.Point(130, 107);
+            this.GroupBox_Numbering.Location = new System.Drawing.Point(118, 19);
             this.GroupBox_Numbering.Name = "GroupBox_Numbering";
             this.GroupBox_Numbering.Size = new System.Drawing.Size(325, 101);
             this.GroupBox_Numbering.TabIndex = 3;
@@ -100,7 +115,7 @@
             // Lable_IndexOrder
             // 
             this.Lable_IndexOrder.AutoSize = true;
-            this.Lable_IndexOrder.Location = new System.Drawing.Point(75, 48);
+            this.Lable_IndexOrder.Location = new System.Drawing.Point(73, 48);
             this.Lable_IndexOrder.Name = "Lable_IndexOrder";
             this.Lable_IndexOrder.Size = new System.Drawing.Size(28, 13);
             this.Lable_IndexOrder.TabIndex = 5;
@@ -147,7 +162,7 @@
             // 
             this.RadioButton_SSWEIGHT.AutoSize = true;
             this.RadioButton_SSWEIGHT.Checked = true;
-            this.RadioButton_SSWEIGHT.Location = new System.Drawing.Point(7, 48);
+            this.RadioButton_SSWEIGHT.Location = new System.Drawing.Point(18, 62);
             this.RadioButton_SSWEIGHT.Name = "RadioButton_SSWEIGHT";
             this.RadioButton_SSWEIGHT.Size = new System.Drawing.Size(83, 17);
             this.RadioButton_SSWEIGHT.TabIndex = 1;
@@ -159,7 +174,7 @@
             // RadioButton_Chronological
             // 
             this.RadioButton_Chronological.AutoSize = true;
-            this.RadioButton_Chronological.Location = new System.Drawing.Point(7, 24);
+            this.RadioButton_Chronological.Location = new System.Drawing.Point(18, 37);
             this.RadioButton_Chronological.Name = "RadioButton_Chronological";
             this.RadioButton_Chronological.Size = new System.Drawing.Size(89, 17);
             this.RadioButton_Chronological.TabIndex = 0;
@@ -169,7 +184,7 @@
             // 
             // Button_Rename
             // 
-            this.Button_Rename.Location = new System.Drawing.Point(32, 146);
+            this.Button_Rename.Location = new System.Drawing.Point(23, 52);
             this.Button_Rename.Name = "Button_Rename";
             this.Button_Rename.Size = new System.Drawing.Size(75, 23);
             this.Button_Rename.TabIndex = 4;
@@ -177,33 +192,150 @@
             this.Button_Rename.UseVisualStyleBackColor = true;
             this.Button_Rename.Click += new System.EventHandler(this.Button_Rename_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.GroupBox_Numbering);
+            this.groupBox2.Controls.Add(this.Button_Rename);
+            this.groupBox2.Location = new System.Drawing.Point(24, 165);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(463, 130);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "File Rename";
+            // 
+            // GroupBox_DirectorySelection
+            // 
+            this.GroupBox_DirectorySelection.Controls.Add(this.Button_Browse);
+            this.GroupBox_DirectorySelection.Controls.Add(this.CheckBox_Recurse);
+            this.GroupBox_DirectorySelection.Location = new System.Drawing.Point(132, 41);
+            this.GroupBox_DirectorySelection.Name = "GroupBox_DirectorySelection";
+            this.GroupBox_DirectorySelection.Size = new System.Drawing.Size(234, 66);
+            this.GroupBox_DirectorySelection.TabIndex = 7;
+            this.GroupBox_DirectorySelection.TabStop = false;
+            this.GroupBox_DirectorySelection.Text = "Directory Selection";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.ComboBox_TargetName);
+            this.groupBox4.Controls.Add(this.button1);
+            this.groupBox4.Controls.Add(this.CheckBox_FixSexigesimal);
+            this.groupBox4.Controls.Add(this.CheckBox_TargetName);
+            this.groupBox4.Controls.Add(this.Label_TagetName);
+            this.groupBox4.Location = new System.Drawing.Point(24, 313);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(463, 133);
+            this.groupBox4.TabIndex = 8;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Update XSIF Fits Keywords";
+            // 
+            // ComboBox_TargetName
+            // 
+            this.ComboBox_TargetName.AllowDrop = true;
+            this.ComboBox_TargetName.FormattingEnabled = true;
+            this.ComboBox_TargetName.Location = new System.Drawing.Point(101, 25);
+            this.ComboBox_TargetName.Name = "ComboBox_TargetName";
+            this.ComboBox_TargetName.Size = new System.Drawing.Size(256, 21);
+            this.ComboBox_TargetName.Sorted = true;
+            this.ComboBox_TargetName.TabIndex = 5;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(165, 91);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(124, 23);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Re-Write XISF Files";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // CheckBox_FixSexigesimal
+            // 
+            this.CheckBox_FixSexigesimal.AutoSize = true;
+            this.CheckBox_FixSexigesimal.Location = new System.Drawing.Point(102, 52);
+            this.CheckBox_FixSexigesimal.Name = "CheckBox_FixSexigesimal";
+            this.CheckBox_FixSexigesimal.Size = new System.Drawing.Size(162, 17);
+            this.CheckBox_FixSexigesimal.TabIndex = 3;
+            this.CheckBox_FixSexigesimal.Text = "Fix Sexigesimal Format Errors";
+            this.CheckBox_FixSexigesimal.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_TargetName
+            // 
+            this.CheckBox_TargetName.AutoSize = true;
+            this.CheckBox_TargetName.Location = new System.Drawing.Point(363, 27);
+            this.CheckBox_TargetName.Name = "CheckBox_TargetName";
+            this.CheckBox_TargetName.Size = new System.Drawing.Size(61, 17);
+            this.CheckBox_TargetName.TabIndex = 2;
+            this.CheckBox_TargetName.Text = "Update";
+            this.CheckBox_TargetName.UseVisualStyleBackColor = true;
+            // 
+            // Label_TagetName
+            // 
+            this.Label_TagetName.AutoSize = true;
+            this.Label_TagetName.Location = new System.Drawing.Point(23, 29);
+            this.Label_TagetName.Name = "Label_TagetName";
+            this.Label_TagetName.Size = new System.Drawing.Size(72, 13);
+            this.Label_TagetName.TabIndex = 0;
+            this.Label_TagetName.Text = "Target Name:";
+            // 
             // Label_Task
             // 
             this.Label_Task.AutoSize = true;
-            this.Label_Task.Location = new System.Drawing.Point(18, 55);
+            this.Label_Task.Location = new System.Drawing.Point(126, 146);
             this.Label_Task.Name = "Label_Task";
-            this.Label_Task.Size = new System.Drawing.Size(81, 13);
-            this.Label_Task.TabIndex = 5;
-            this.Label_Task.Text = "Browse for Files";
+            this.Label_Task.Size = new System.Drawing.Size(63, 13);
+            this.Label_Task.TabIndex = 9;
+            this.Label_Task.Text = "Label_Task";
             // 
-            // Main
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(516, 24);
+            this.menuStrip1.TabIndex = 10;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectTemplateToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // selectTemplateToolStripMenuItem
+            // 
+            this.selectTemplateToolStripMenuItem.Name = "selectTemplateToolStripMenuItem";
+            this.selectTemplateToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.selectTemplateToolStripMenuItem.Text = "Select Template";
+            this.selectTemplateToolStripMenuItem.Click += new System.EventHandler(this.SelectTemplateToolStripMenuItem_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(479, 225);
+            this.ClientSize = new System.Drawing.Size(516, 458);
             this.Controls.Add(this.Label_Task);
-            this.Controls.Add(this.Button_Rename);
-            this.Controls.Add(this.GroupBox_Numbering);
-            this.Controls.Add(this.CheckBox_Recurse);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.ProgressBar_OverAll);
-            this.Controls.Add(this.Button_Browse);
-            this.Name = "Main";
-            this.Text = "XSIF Image Renamer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SavePersistedStates);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.GroupBox_DirectorySelection);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
+            this.Name = "MainForm";
+            this.Text = "XSIF File Rename";
             this.GroupBox_Numbering.ResumeLayout(false);
             this.GroupBox_Numbering.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.GroupBox_DirectorySelection.ResumeLayout(false);
+            this.GroupBox_DirectorySelection.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -218,12 +350,23 @@
         private System.Windows.Forms.RadioButton RadioButton_SSWEIGHT;
         private System.Windows.Forms.RadioButton RadioButton_Chronological;
         private System.Windows.Forms.Button Button_Rename;
-        private System.Windows.Forms.Label Label_Task;
         private System.Windows.Forms.CheckBox CheckBox_KeepIndex;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton RadioButton_IndexFirst;
         private System.Windows.Forms.RadioButton RadioButton_WeightFirst;
         private System.Windows.Forms.Label Lable_IndexOrder;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox GroupBox_DirectorySelection;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label Label_Task;
+        private System.Windows.Forms.CheckBox CheckBox_TargetName;
+        private System.Windows.Forms.Label Label_TagetName;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox CheckBox_FixSexigesimal;
+        private System.Windows.Forms.ComboBox ComboBox_TargetName;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectTemplateToolStripMenuItem;
     }
 }
 
