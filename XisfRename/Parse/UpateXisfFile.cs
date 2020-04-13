@@ -5,6 +5,7 @@ using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using LocalLib;
@@ -48,50 +49,24 @@ namespace XisfRename.Parse
                         bw.Close();
 
 
-                        string s = Encoding.UTF8.GetString(buffer, 0, 20000);
+                        string xmlString = Encoding.UTF8.GetString(buffer, 0, 20000);
 
-                        s = s.Substring(s.IndexOf("<?xml"));
-                        s = s.Substring(0, s.LastIndexOf(@"</xisf>") + 7);
+                        int length = xmlString.Length;
 
-                       
+                        xmlString = xmlString.Substring(xmlString.IndexOf("<?xml");
+                        xmlString = xmlString.Substring(0, xmlString.IndexOf(@"</xisf>") + 7);
+                        length = xmlString.Length;
 
-                        ReplaceObjectFITSKeyword(buffer, NewTarget, s.Length);
+                        string newTargetString = TargetName(xmlString);
 
-                        /*
-                        try
-                        {
-                            mXmlDoc = XDocument.Parse(s);
-                        }
-                        catch
-                        {
-                            continue;
-                        }
 
-                        XElement root = mXmlDoc.Root;
-                        XNamespace ns = root.GetDefaultNamespace();
-                        IEnumerable<XElement> elements = from c in mXmlDoc.Descendants(ns + "FITSKeyword") select c;
 
-                        // Advance through stream until we get to FITSKeyword elements
-                        foreach (XElement element in elements)
-                        {
-                            bFound = CaptureSoftware(element);
-                            if (bFound)
-                                break;
-                        }
 
-                        // Find each relevent keyword and add it to mFile
-                        foreach (XElement element in elements)
-                        {
-                            TargetName(element);
-                            SiteLat(element);
-                            SiteLon(element);
-                        }
 
-                        bytes = s.Length;
-                        */
+
                         WriteBinaryFile(file.FullName, buffer);
                     }
-                    catch
+                    catch(Exception e)
                     {
                         return false;
                     }
@@ -105,17 +80,28 @@ namespace XisfRename.Parse
         // ****************************************************************************************************
 
         // <FITSKeyword name="OBJECT" value="'NGC5457 '" comment="Object name"/>
-        public void TargetName(XElement element)
+        public string TargetName(string xmlString)
         {
-            if (NewTarget == string.Empty) return;
+            if (NewTarget == string.Empty) return xmlString;
 
-            XAttribute attribute = element.Attribute("name");
 
-            if (attribute.ToString().Contains("OBJECT"))
-            {
-                //element.Attribute("value").Remove();
-                element.Attribute("value").SetValue(NewTarget);
-            }
+            int objectIndex = xmlString.IndexOf("OBJECT");
+            var pattern = "'(.*)?'";
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+            string temp = xmlString.Substring(objectIndex + 8);
+            temp = temp.Substring(0, temp.IndexOf(" comment=\"Object "));
+            string replacement = regex.Replace(temp, "'" + NewTarget + " '");
+
+            string xmlHead = xmlString.Substring(0, objectIndex + 7) + " " + replacement + " comment=\"Object name\"/>";
+
+            string xmlTail = xmlString.Substring(objectIndex, xmlString.Length - objectIndex);
+
+            int nextElement = xmlTail.IndexOf(@"<");
+            
+            string xmlEnd = xmlString.Substring(objectIndex + nextElement, xmlString.IndexOf(@"</xisf>") + 7 - (objectIndex + nextElement));
+
+            return xmlHead + xmlEnd;
         }
 
         // ****************************************************************************************************
@@ -163,103 +149,8 @@ namespace XisfRename.Parse
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        // ****************************************************************************************************
-        // ****************************************************************************************************
-
-        public bool CaptureSoftware(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SWCREATE"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-
-                if (x.Contains("TheSkyX"))
-                {
-                    return true;
-                }
-
-                if (x.Contains("Sequence"))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // ****************************************************************************************************
-        // ****************************************************************************************************
-
-        private void ReplaceObjectFITSKeyword(byte[] buffer, string value, int length)
-        {
-            string keywordString = @"OBJECT"" value=""'";
-            byte[] keywordBytes = Encoding.UTF8.GetBytes(keywordString);
-            int bufferIndex;
-            int keywordIndex;
-            int startInsert;
-            int lastQuoteIndex = 0;
-
-            for (bufferIndex = 0; bufferIndex < length; bufferIndex++)
-            {
-                for (keywordIndex = 0; keywordIndex < Buffer.ByteLength(keywordBytes); keywordIndex++)
-                {
-                    if (keywordBytes[keywordIndex] != buffer[bufferIndex]) break;
-
-                    if (keywordIndex == keywordString.Length - 1)
-                    {
-                        // we get here only if we found the keywordString
-
-                        bufferIndex++;
-                        // now bufferIndex is pointing to the character AFTER the end of the keywordByte buffer
-
-                        // Now remove the old object name and replace it with the new one starting at the current bufferIndex value
-
-                        startInsert = bufferIndex;
-
-                        // First, find index of closing "'" in buffer. Our new name fits inside 's like: 'NGC754 ' - the space is PixInsight
-                        for (int index = bufferIndex; index < bufferIndex + 1000; index++)
-                        {
-                            if (buffer[index] == 0x27) // A single '
-                            {
-                                lastQuoteIndex = index;
-                                break;
-                            }
-                        }
-
-                        // How long is our new name?
-                        byte[] newName = Encoding.UTF8.GetBytes(NewTarget + " ");
-                        int newNameLength = Buffer.ByteLength(newName);
-
-                        // Will our new name fit?
-                        if ((lastQuoteIndex - startInsert) >= newNameLength)
-                        {
-                            // Yes it will
-                            for (int index = 0; index < (lastQuoteIndex - startInsert); index++)
-                            {
-                                if (index < newNameLength)
-                                {
-                                    // Replace the name
-                                    buffer[bufferIndex] = newName[index];
-                                }
-                                else
-                                {
-                                    // The new name was short; fill with spaces
-                                    buffer[bufferIndex] = 0x20;
-                                }
-                                bufferIndex++;
-                            }
-
-                            return;
-                        }
-                    }
-
-                    bufferIndex++;
-                }
-            }
-        }
-
+        
+       
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
