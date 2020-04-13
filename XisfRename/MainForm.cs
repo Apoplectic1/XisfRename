@@ -12,8 +12,9 @@ namespace XisfRename
 {
     public partial class MainForm : Form
     {
-        List<XisfFile> mFileList = new List<XisfFile>();
-        XisfFile mFile;
+        List<Parse.XisfFile> mFileList;
+        Parse.XisfFile mFile;
+        Parse.UpateXisfFile mUpdateFile;
         private OpenFolderDialog mFolder;
         int mDupIndex = 1;
         private XDocument mXmlDoc;
@@ -27,6 +28,8 @@ namespace XisfRename
         {
             InitializeComponent();
             Label_Task.Text = "";
+            mFileList = new List<Parse.XisfFile>();
+            mUpdateFile = new Parse.UpateXisfFile();
         }
 
         private void Button_Browse_Click(object sender, EventArgs e)
@@ -120,7 +123,7 @@ namespace XisfRename
                 {
                     ProgressBar_OverAll.Value += 1;
 
-                    mFile = new XisfFile();
+                    mFile = new Parse.XisfFile();
 
                     try
                     {
@@ -210,7 +213,7 @@ namespace XisfRename
 
             string sourceFilePath;
 
-            foreach (XisfFile file in mFileList)
+            foreach (Parse.XisfFile file in mFileList)
             {
                 sourceFilePath = Path.GetDirectoryName(file.SourceFileName);
 
@@ -268,7 +271,7 @@ namespace XisfRename
             }
         }
 
-        private string BuildFileName(int index, XisfFile imageFile)
+        private string BuildFileName(int index, Parse.XisfFile imageFile)
         {
             string newName;
 
@@ -347,7 +350,7 @@ namespace XisfRename
 
             return newName;
         }
-        private void MoveDuplicates(XisfFile currentFile, string sourceFilePath, string newFileName)
+        private void MoveDuplicates(Parse.XisfFile currentFile, string sourceFilePath, string newFileName)
         {
             mDupIndex = 1;
 
@@ -418,7 +421,8 @@ namespace XisfRename
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            mUpdateFile.NewTarget = ComboBox_TargetName.Text;
+            mUpdateFile.ReWriteXisf(mFolder);
         }
     }
 }

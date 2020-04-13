@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 
-namespace XisfRename
+namespace XisfRename.Parse
 {
     class XisfFile
     {
