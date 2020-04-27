@@ -44,9 +44,7 @@
             this.GroupBox_DirectorySelection = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.CheckBox_FixSexigesimal = new System.Windows.Forms.CheckBox();
-            this.CheckBox_TargetName = new System.Windows.Forms.CheckBox();
+            this.Button_UpdateXisfFiles = new System.Windows.Forms.Button();
             this.Label_TagetName = new System.Windows.Forms.Label();
             this.Label_Task = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -217,9 +215,7 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.ComboBox_TargetName);
-            this.groupBox4.Controls.Add(this.button1);
-            this.groupBox4.Controls.Add(this.CheckBox_FixSexigesimal);
-            this.groupBox4.Controls.Add(this.CheckBox_TargetName);
+            this.groupBox4.Controls.Add(this.Button_UpdateXisfFiles);
             this.groupBox4.Controls.Add(this.Label_TagetName);
             this.groupBox4.Location = new System.Drawing.Point(24, 313);
             this.groupBox4.Name = "groupBox4";
@@ -232,46 +228,26 @@
             // 
             this.ComboBox_TargetName.AllowDrop = true;
             this.ComboBox_TargetName.FormattingEnabled = true;
-            this.ComboBox_TargetName.Location = new System.Drawing.Point(101, 25);
+            this.ComboBox_TargetName.Location = new System.Drawing.Point(118, 30);
             this.ComboBox_TargetName.Name = "ComboBox_TargetName";
             this.ComboBox_TargetName.Size = new System.Drawing.Size(256, 21);
             this.ComboBox_TargetName.Sorted = true;
             this.ComboBox_TargetName.TabIndex = 5;
             // 
-            // button1
+            // Button_UpdateXisfFiles
             // 
-            this.button1.Location = new System.Drawing.Point(165, 91);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Re-Write XISF Files";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // CheckBox_FixSexigesimal
-            // 
-            this.CheckBox_FixSexigesimal.AutoSize = true;
-            this.CheckBox_FixSexigesimal.Location = new System.Drawing.Point(102, 52);
-            this.CheckBox_FixSexigesimal.Name = "CheckBox_FixSexigesimal";
-            this.CheckBox_FixSexigesimal.Size = new System.Drawing.Size(162, 17);
-            this.CheckBox_FixSexigesimal.TabIndex = 3;
-            this.CheckBox_FixSexigesimal.Text = "Fix Sexigesimal Format Errors";
-            this.CheckBox_FixSexigesimal.UseVisualStyleBackColor = true;
-            // 
-            // CheckBox_TargetName
-            // 
-            this.CheckBox_TargetName.AutoSize = true;
-            this.CheckBox_TargetName.Location = new System.Drawing.Point(363, 27);
-            this.CheckBox_TargetName.Name = "CheckBox_TargetName";
-            this.CheckBox_TargetName.Size = new System.Drawing.Size(61, 17);
-            this.CheckBox_TargetName.TabIndex = 2;
-            this.CheckBox_TargetName.Text = "Update";
-            this.CheckBox_TargetName.UseVisualStyleBackColor = true;
+            this.Button_UpdateXisfFiles.Location = new System.Drawing.Point(171, 69);
+            this.Button_UpdateXisfFiles.Name = "Button_UpdateXisfFiles";
+            this.Button_UpdateXisfFiles.Size = new System.Drawing.Size(124, 23);
+            this.Button_UpdateXisfFiles.TabIndex = 4;
+            this.Button_UpdateXisfFiles.Text = "Update XISF Files";
+            this.Button_UpdateXisfFiles.UseVisualStyleBackColor = true;
+            this.Button_UpdateXisfFiles.Click += new System.EventHandler(this.Button_Update_Click);
             // 
             // Label_TagetName
             // 
             this.Label_TagetName.AutoSize = true;
-            this.Label_TagetName.Location = new System.Drawing.Point(23, 29);
+            this.Label_TagetName.Location = new System.Drawing.Point(40, 34);
             this.Label_TagetName.Name = "Label_TagetName";
             this.Label_TagetName.Size = new System.Drawing.Size(72, 13);
             this.Label_TagetName.TabIndex = 0;
@@ -359,10 +335,8 @@
         private System.Windows.Forms.GroupBox GroupBox_DirectorySelection;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label Label_Task;
-        private System.Windows.Forms.CheckBox CheckBox_TargetName;
         private System.Windows.Forms.Label Label_TagetName;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.CheckBox CheckBox_FixSexigesimal;
+        private System.Windows.Forms.Button Button_UpdateXisfFiles;
         private System.Windows.Forms.ComboBox ComboBox_TargetName;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

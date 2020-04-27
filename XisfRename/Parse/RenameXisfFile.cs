@@ -1,641 +1,217 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Xml.Linq;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace XisfRename.Parse
 {
-    class XisfFile
+    public class RenameXisfFile
     {
-        private string AmbientTemp { get; set; } = string.Empty;
-        private string Angle { get; set; } = string.Empty;
-        private string Camera { get; set; } = string.Empty;
-        private string SensorTemp { get; set; } = string.Empty;
-        private string DateLoc { get; set; } = string.Empty;
-        private string Exposure { get; set; } = string.Empty;
-        private string Filter { get; set; } = string.Empty;
-        private string FocusPos { get; set; } = string.Empty;
-        private string FocusTemp { get; set; } = string.Empty;
-        private string FocalLen { get; set; } = string.Empty;
-        private string Gain { get; set; } = string.Empty;
-        private string OffSet { get; set; } = string.Empty;
-        private string Profile { get; set; } = string.Empty;
-        private string SSWEIGHT { get; set; } = string.Empty;
-        private string SiteName { get; set; } = string.Empty;
-        private string Software { get; set; } = string.Empty;
-        private string Target { get; set; } = string.Empty;
-        private string Type { get; set; } = string.Empty;
-        private string Xbin { get; set; } = string.Empty;
-        public DateTime CaptureDateTime { get; set; }
-        public DirectoryInfo SourceDirectoryInfo;
-        public bool Unique { get; set; } = false;
-        public string SourceFileName { get; set; }
-        public string SITELAT { get; set; } = string.Empty;
-        public string SITELON { get; set; } = string.Empty;
+        public bool mBChronological { get; set; } = false;
+        private int mDupIndex;
+        public bool mBSsWeight { get; set; } = true;
+        public bool mKeepIndex { get; set; } = true;
+        public bool mWeightFirst { get; set; } = true;
+        public bool mIndexFirst { get; set; } = false;
+        List<XisfFile> mFileList;
 
-        public List<string> TargetNameList = new List<string>();
-
-        public XisfFile()
+        public void RenameFiles(List<XisfFile> fileList)
         {
-            TargetNameList.Clear();
+            
+            string newFileName;
+            int index = 1;
+            int mDupIndex = 1;
+
+            mFileList = fileList;
+
+
+            MarkDuplicates();
+
+            string sourceFilePath;
+
+            foreach (Parse.XisfFile file in mFileList)
+            {
+                sourceFilePath = Path.GetDirectoryName(file.SourceFileName);
+
+                newFileName = BuildFileName(index, file);
+
+                newFileName += ".xisf";
+
+                // Actually rename the file
+                if (file.Unique == true)
+                {
+                    if (File.Exists(sourceFilePath + "\\" + newFileName))
+                    {
+                        //File.Move(file.SourceFileName, sourceFilePath + "\\Renun " + newFileName);
+                    }
+                    else
+                    {
+                        File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
+                    }
+                    index++;
+                }
+                else
+                {
+                    Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
+
+                    int lastParen = newFileName.LastIndexOf(')');
+                    newFileName = newFileName.Insert(lastParen + 1, "-" + mDupIndex.ToString());
+
+                    File.Move(file.SourceFileName, sourceFilePath + "\\Duplicates\\" + newFileName);
+                    mDupIndex++;
+                }
+            }
         }
 
-        public string FormatTemperatureString(string temperatureString)
+        private void MarkDuplicates()
         {
-            if (temperatureString == "") return "";
 
-            double temperature;
-            temperature = Convert.ToDouble(temperatureString);
-            temperature = (temperature > -0.1 && (temperature <= 0.0)) ? 0 : temperature;
+            // Duplicates are files with identical image capture times
 
-            string fmt = "{0:+0.0;-0.0;+0.0}";
-            string value = string.Format(fmt, temperature);
+            DateTime entryDateTime = DateTime.Now;
 
-            return value;
+            //var results = mFileList.GroupBy(x => x.CaptureDateTime).Select(g => g.First()).ToList();
+
+            foreach (var entry in mFileList)
+            {
+                // Only mark a DateTime once
+                if (entry.CaptureDateTime == entryDateTime)
+                {
+                    continue;
+                }
+
+                entry.Unique = true;
+                entryDateTime = entry.CaptureDateTime;
+            }
         }
 
-        // *****************************************************************
-        public bool CaptureSoftware(XElement element)
+        private string BuildFileName(int index, Parse.XisfFile imageFile)
         {
-            XAttribute attribute = element.Attribute("name");
+            string newName;
 
-            if (attribute.ToString().Contains("SWCREATE"))
+            if ((imageFile.SubFrameSelectorWeight() == string.Empty) || (mBChronological == true))
             {
-                attribute = element.Attribute("value");
+                newName = index.ToString("D3") + " ";
+            }
+            else
+            {
+                string fileName = Path.GetFileName(imageFile.SourceFileName);
 
-                string x = attribute.ToString();
+                bool hasIndex = fileName.Substring(0, 2).All(char.IsDigit);
 
-                if (x.Contains("TheSkyX"))
+                if (mKeepIndex && hasIndex)
                 {
-                    Software = "TheSkyX";
-                    return true;
+                    if (mWeightFirst)
+                    {
+                        newName = imageFile.SubFrameSelectorWeight() + " " + fileName.Substring(0, 4);
+                    }
+                    else
+                    {
+                        newName = fileName.Substring(0, 4) + imageFile.SubFrameSelectorWeight() + " ";
+                    }
                 }
 
-                if (x.Contains("Sequence"))
+                else
                 {
-                    Software = "SGP";
-                    return true;
+                    newName = imageFile.SubFrameSelectorWeight() + " ";
+                }
+
+            }
+
+            newName += imageFile.TargetName() + " ";
+            newName += imageFile.FocalLength() + " ";
+            if (imageFile.FrameType() == "Dark")
+            {
+                newName += imageFile.FrameType() + " ";
+            }
+            else
+            {
+                newName += imageFile.FrameType() + "-" + imageFile.FilterName() + " ";
+            }
+            newName += imageFile.ExposureSeconds() + "Sx" + imageFile.Binning() + " ";
+            newName += imageFile.CameraModel() + "G" + imageFile.CameraGain() + "O" + imageFile.CameraOffset();
+            if (imageFile.FrameType() == "Dark")
+            {
+                newName += "@" + imageFile.SensorTemperature() + "C ";
+            }
+            else
+            {
+                newName += "@" + imageFile.SensorTemperature() + "C" + " F" + imageFile.FocusPosition() + "@" + imageFile.FocusTemperature() + "C";
+                if (imageFile.ImageAngle() != string.Empty)
+                {
+                    newName += " R" + imageFile.ImageAngle();
+                }
+                else
+                {
+                    newName += " ";
                 }
             }
 
-            if (attribute.ToString().Contains("CREATOR"))
+
+            newName += " (" + imageFile.ImageDateTime() + " ";
+
+            if (imageFile.CaptureSoftware() == "SGP")
             {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-
-                if (x.Contains("TheSkyX"))
-                {
-                    Software = "TheSkyX";
-                    return true;
-                }
-
-                if (x.Contains("Sequence"))
-                {
-                    Software = "SGP";
-                    return true;
-                }
+                newName += "SGP";// + file.SgpProfile();
             }
 
-            if (attribute.ToString().Contains("PROGRAM"))
+            if (imageFile.CaptureSoftware() == "TheSkyX")
             {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-
-                if (x.Contains("TheSkyX"))
-                {
-                    Software = "TheSkyX";
-                    return true;
-                }
-
-                if (x.Contains("Sequence"))
-                {
-                    Software = "SGP";
-                    return true;
-                }
-
-                if (x.Contains("PixInsight"))
-                {
-                    Software = "PI";
-                    //return true;
-                }
+                newName += "TSX";
             }
 
-            Software = "SGP";
+            newName += ")";
+
+            return newName;
+        }
+        private void MoveDuplicates(Parse.XisfFile currentFile, string sourceFilePath, string newFileName)
+        {
+            mDupIndex = 1;
+
+            foreach (var entry in mFileList)
+            {
+                mDupIndex++;
+
+                Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
+
+                int last = currentFile.SourceFileName.LastIndexOf(@"\");
+
+                // Remove the index or SSWEIGHT from the file name (the first four characters) and postfix duplicate index
+                string duplicateFileName = newFileName.Remove(0, 4).Insert(0, mDupIndex.ToString("D3") + " ");
+
+                File.Move(entry.SourceFileName, sourceFilePath + "\\" + "Duplicates" + "\\" + duplicateFileName);
+                mFileList.Remove(entry);
+            }
+        }
+
+        private bool IsFileLocked(string path)
+        {
+            FileInfo file = new FileInfo(path);
+
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
             return false;
-        }
-        public string CaptureSoftware()
-        {
-            return Software;
-        }
-
-        // *****************************************************************
-        public void AmbientTemperature(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("AMB-TEMP"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                AmbientTemp = x.Substring(x.IndexOf("\"") + 1);
-                AmbientTemp = AmbientTemp.Substring(0, AmbientTemp.IndexOf("\""));
-            }
-
-            if (attribute.ToString().Contains("AOCAMBT"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                AmbientTemp = x.Substring(x.IndexOf("\"") + 1);
-                AmbientTemp = AmbientTemp.Substring(0, AmbientTemp.IndexOf("\""));
-            }
-        }
-        public string AmbientTemperature()
-        {
-            return FormatTemperatureString(AmbientTemp);
-        }
-
-        // *****************************************************************
-        public void ImageAngle(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("ANGLE") && !attribute.ToString().Contains("POSANGLE"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Angle = x.Substring(x.IndexOf("\"") + 1);
-                Angle = Angle.Substring(0, Angle.IndexOf("\""));
-                
-            }
-        }
-        public string ImageAngle()
-        {
-            if (Angle == string.Empty)
-                return string.Empty;
-
-            double tmps;
-            tmps = Convert.ToDouble(Angle);
-            return String.Format("{0:000.0}", tmps);
-        }
-
-        // *****************************************************************
-        public void SensorTemperature(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("CCD-TEMP"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                SensorTemp = x.Substring(x.IndexOf("\"") + 1);
-                SensorTemp = SensorTemp.Substring(0, SensorTemp.IndexOf("\""));
-            }
-        }
-        public string SensorTemperature()
-        {
-            return FormatTemperatureString(SensorTemp);
-        }
-
-        // *****************************************************************
-        public void ImageDateTime(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-            string x;
-
-            if (Software == "SGP")
-            {
-                if (attribute.ToString().Contains("DATE-LOC"))
-                {
-                    attribute = element.Attribute("value");
-                    x = attribute.ToString();
-                    x = x.Replace("'", "");
-                    x = x.Replace("\"", "");
-                    x = x.Replace("T", " ");
-                    x = x.Replace("value=", "");
-
-                    DateLoc = x.Replace(":", "-");
-                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture);
-                }
-            }
-
-            if (Software == "TheSkyX")
-            {
-                if (attribute.ToString().Contains("DATE-OBS"))
-                {
-                    attribute = element.Attribute("value");
-                    x = attribute.ToString();
-                    x = x.Replace("'", "");
-                    x = x.Replace("\"", "");
-                    x = x.Replace("T", " ");
-                    x = x.Replace("value=", "");
-                    x = x.Substring(0, x.IndexOf(".")); // TheSkyX inlcudes milliseconds
-
-                    DateLoc = x.Replace(":", "-");
-                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture);
-                }
-            }
-        }
-        public string ImageDateTime()
-        {
-            return DateLoc.Replace(':', '-');
-        }
-
-        // *****************************************************************
-        public void ExposureSeconds(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("EXPOSURE") || attribute.ToString().Contains("EXPTIME"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Exposure = x.Substring(x.IndexOf("\"") + 1);
-                Exposure = Exposure.Substring(0, Exposure.IndexOf("\""));
-                Exposure = Exposure.Replace(".", "");
-            }
-        }
-        public string ExposureSeconds()
-        {
-            return Convert.ToInt32(Exposure).ToString("D4");
-        }
-
-        // *****************************************************************
-        public void FilterName(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("FILTER"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-
-                if (x.Contains("OIII")) x = x.Replace("OIII", "O3");
-                if (x.Contains("Oiii")) x = x.Replace("Oiii", "O3");
-                if (x.Contains("SII")) x = x.Replace("SII", "S2");
-                if (x.Contains("Sii")) x = x.Replace("Sii", "S2");
-                if (x.Contains("HA")) x = x.Replace("HA", "Ha");
-                if (x.Contains("Ha")) x = x.Replace("Ha", "Ha");
-                
-                Filter = x.Substring(x.IndexOf("'") + 1);
-                Filter = Filter.Substring(0, Filter.IndexOf("'"));
-                Filter = Filter.Trim();
-            }
-        }
-        public string FilterName()
-        {
-            return Filter;
-        }
-
-        // *****************************************************************
-        public void FocalLength(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("FOCALLEN"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                FocalLen = x.Substring(x.IndexOf("\"") + 1);
-                FocalLen = FocalLen.Substring(0, FocalLen.IndexOf("\""));
-                FocalLen = FocalLen.Replace(".", "");
-            }
-        }
-        public string FocalLength()
-        {
-            if (FocalLen == "525")
-            {
-                return "A107R@525 ";
-            }
-
-            if (FocalLen == "700")
-            {
-                return "A107@700 ";
-            }
-
-            return string.Empty;
-        }
-
-        // *****************************************************************
-        public void FocusPosition(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("FOCPOS"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                FocusPos = x.Substring(x.IndexOf("\"") + 1);
-                FocusPos = FocusPos.Substring(0, FocusPos.IndexOf("\""));
-                FocusPos = FocusPos.Replace(".", "");
-                FocusPos = FocusPos.Trim();
-
-            }
-        }
-        public string FocusPosition()
-        {
-            return FocusPos;
-        }
-
-        
-        // *****************************************************************
-        public void FocusTemperature(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("FOCTEMP"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                FocusTemp = x.Substring(x.IndexOf("\"") + 1);
-                FocusTemp = FocusTemp.Substring(0, FocusTemp.IndexOf("\""));
-            }
-        }
-        public string FocusTemperature()
-        {
-             return FormatTemperatureString(FocusTemp);
-        }
-
-
-        // *****************************************************************
-        public void CameraModel(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (Software == "SGP")
-            {
-                if (attribute.ToString().Contains("INSTRU"))
-                {
-                    attribute = element.Attribute("value");
-
-                    if (attribute.ToString().Contains("183") || attribute.ToString().Contains("ASI"))
-                    {
-                        Camera = "Z183";
-                    }
-
-                    if (attribute.ToString().Contains("QHY"))
-                    {
-                        Camera = "Q178";
-                    }
-                }
-            }
-
-            if (Software == "TheSkyX")
-            {
-                if (attribute.ToString().Contains("ASI183"))
-                {
-                    Camera = "Z183";
-                }
-
-                if (attribute.ToString().Contains("QHY"))
-                {
-                    Camera = "Q178";
-                }
-            }
-        }
-        public string CameraModel()
-        {
-            return Camera;
-        }
-
-        // *****************************************************************
-        public void CameraGain(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (Software == "SGP")
-            {
-                if (attribute.ToString().Contains("GAIN") && !attribute.ToString().Contains("EGAIN"))
-                {
-                    attribute = element.Attribute("value");
-
-                    string x = attribute.ToString();
-                    Gain = x.Substring(x.IndexOf("\"") + 1);
-                    Gain = Gain.Substring(0, Gain.IndexOf("\""));
-                    Gain = Gain.Replace(".", "");
-                    Gain = Gain.Trim();
-                }
-            }
-
-            if (Software == "TheSkyX")
-            {
-                if (attribute.ToString().Contains("GAINRAW"))
-                {
-                    attribute = element.Attribute("value");
-
-                    string x = attribute.ToString();
-                    Gain = x.Substring(x.IndexOf("\"") + 1);
-                    Gain = Gain.Substring(0, Gain.IndexOf("\""));
-                    Gain = Gain.Replace(".", "");
-                    Gain = Gain.Trim();
-                }
-            }
-        }
-        public string CameraGain()
-        {
-            return Gain;
-        }
-
-        // *****************************************************************
-        public void TargetName(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("OBJECT"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Target = x.Substring(x.IndexOf("'") + 1);
-                Target = Target.Substring(0, Target.IndexOf("'"));
-                Target = Target.Replace('/', '-');
-                Target = Target.Replace("flats", "Flat");
-                Target = Target.Trim();
-
-                TargetNameList.Add(Target);
-            }
-        }
-
-        public string TargetName() 
-        {
-            return Target; 
-        }
-
-        // *****************************************************************
-        public void CameraOffset(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("OFFSET"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                OffSet = x.Substring(x.IndexOf("\"") + 1);
-                OffSet = OffSet.Substring(0, OffSet.IndexOf("\""));
-                OffSet = OffSet.Replace(".", "");
-                OffSet = OffSet.Trim();
-            }
-        }
-        public string CameraOffset()
-        {
-            return OffSet;
-        }
-
-        // *****************************************************************
-        public void SgpProfile(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("PROFILE"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Profile = x.Substring(x.IndexOf("'") + 1);
-                Profile = Profile.Substring(0, Profile.IndexOf("'"));
-            }
-        }
-        public string SgpProfile()
-        {
-            return Profile;
-        }
-
-        public void SubFrameSelectorWeight(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SSWEIGH"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                SSWEIGHT = x.Substring(x.IndexOf("\"") + 1);
-                SSWEIGHT = SSWEIGHT.Substring(0, SSWEIGHT.IndexOf("\""));
-
-                double weight = Convert.ToDouble(SSWEIGHT) * 10;
-                SSWEIGHT = weight.ToString("F0");
-            }
-        }
-        public string SubFrameSelectorWeight()
-        {
-            return SSWEIGHT;
-        }
-
-
-        public void ImageLocation(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SITENAME"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                SiteName = x.Substring(x.IndexOf("'") + 1);
-                SiteName = SiteName.Substring(0, SiteName.IndexOf("'"));
-            }
-        }
-        public string ImageLocation()
-        {
-            return SiteName;
-        }
-
-
-        public void Binning(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("XBINNING"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Xbin = x.Substring(x.IndexOf("\"") + 1);
-                Xbin = Xbin.Substring(0, Xbin.IndexOf("\""));
-                Xbin = Xbin.Replace(".", "");
-                Xbin = Xbin.Trim();
-            }
-        }
-        public string Binning()
-        {
-            return Xbin;
-        }
-
-
-
-        public void FrameType(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("IMAGETYP"))
-            {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Type = x.Substring(x.IndexOf("'") + 1);
-                Type = Type.Substring(0, Type.IndexOf("'"));
-                Type = Type.Trim();
-            }
-        }
-        public string FrameType()
-        {
-            if (Type.IndexOf("Light", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return "L";
-            }
-
-            if (Type.IndexOf("Flat", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return "F";
-            }
-
-            if (Type.IndexOf("Dark", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return "Dark";
-            }
-
-            if (Type.IndexOf("Bias", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return "B";
-            }
-
-            return string.Empty;
-        }
-
-        public void SiteLat(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SITELAT"))
-            {
-                attribute = element.Attribute("value");
-
-                SITELAT = attribute.ToString();
-            }
-        }
-
-        public void SiteLon(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SITELON"))
-            {
-                attribute = element.Attribute("value");
-
-                SITELON = attribute.ToString();
-            }
         }
     }
 }

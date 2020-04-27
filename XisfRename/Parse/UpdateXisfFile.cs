@@ -9,25 +9,21 @@ using LocalLib;
 
 namespace XisfRename.Parse
 {
-    public class UpateXisfFile
+    public class UpdateXisfFile
     {
-        public string NewTarget { get; set; } = string.Empty;
-        public string NewSITELAT { get; set; } = string.Empty;
-        public string NewSITELON { get; set; } = string.Empty;
-
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
 
-        private XDocument mlDocument;
+        public string NewTargetName { get; set; }
 
-        public UpateXisfFile()
+        public UpdateXisfFile()
         {
             mBufferList = new List<Buffer>();
         }
 
         // ****************************************************************************************************
         // ****************************************************************************************************
-        public bool ReWriteXisf(OpenFolderDialog mFolder)
+        public bool UpdateFiles(List<Parse.XisfFile> mFileList)
         {
             int xmlStart; 
             int xisfStart;
@@ -36,20 +32,13 @@ namespace XisfRename.Parse
 
             byte[] rawFileData = new byte[(int)1e9];
 
-            foreach (string folder in mFolder.SelectedPaths)
+            foreach (XisfFile mFile in mFileList)
             {
-                DirectoryInfo d;
-                d = new DirectoryInfo(folder);
-
-                FileInfo[] Files = d.GetFiles("*.xisf");
-
-                foreach (FileInfo file in Files)
+                try
                 {
-                    try
-                    {
                         mBufferList.Clear();
 
-                        Stream stream = new FileStream(file.FullName, FileMode.Open);
+                        Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
                         BinaryReader bw = new BinaryReader(stream);
                         rawFileData = bw.ReadBytes((int)1e9);
                         bw.Close();
@@ -71,9 +60,9 @@ namespace XisfRename.Parse
                         XmlDocument doc = new XmlDocument();
                         doc.LoadXml(xisfString);
 
-                        ReplaceObjectName(doc, NewTarget);
-                        ReplaceSiteLatitude(doc, NewSITELAT);
-                        ReplaceSiteLongitude(doc, NewSITELON);
+                        ReplaceObjectName(doc, NewTargetName);
+                        ReplaceSiteLatitude(doc, mFile.SITELAT);
+                        ReplaceSiteLongitude(doc, mFile.SITELON);
 
                         // Fixes for PixInsight Parser
                         string newXisfString = doc.OuterXml;
@@ -90,28 +79,26 @@ namespace XisfRename.Parse
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.ZEROS;
                         mBuffer.BinaryStart = 0;
-                        mBuffer.BinaryLength = 0x3000 - newXisfString.Length - xmlStart;
+                        mBuffer.BinaryLength = mFile.AttachmentStart - newXisfString.Length - xmlStart;
                         mBufferList.Add(mBuffer);
 
                         // Add the binary image data after rawFileData "</xisf>" - not the new one
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.BINARY;
-                        mBuffer.BinaryStart = 0x3000;
-                        mBuffer.BinaryLength = 80725248;
+                        mBuffer.BinaryStart = mFile.AttachmentStart;
+                        mBuffer.BinaryLength = mFile.AttachmentLength;
                         mBuffer.Binary = rawFileData;
                         mBufferList.Add(mBuffer);
 
 
-                        WriteBinaryFile(file.FullName);
+                        WriteBinaryFile(mFile.SourceFileName);
 
-                        //rawFileData = null;
+                        
                     }
                     catch(Exception e)
                     {
                         return false;
                     }
-
-                }
             }
             return true;
         }
