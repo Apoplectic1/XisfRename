@@ -2,44 +2,51 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace XisfRename.Parse
 {
     public class XisfFile
     {
-        public int AttachmentStart = 0;
-        public int AttachmentLength = 0;
         private string AmbientTemp { get; set; } = string.Empty;
         private string Angle { get; set; } = string.Empty;
         private string Camera { get; set; } = string.Empty;
-        private string SensorTemp { get; set; } = string.Empty;
         private string DateLoc { get; set; } = string.Empty;
         private string Exposure { get; set; } = string.Empty;
         private string Filter { get; set; } = string.Empty;
+        private string FocalLen { get; set; } = string.Empty;
         private string FocusPos { get; set; } = string.Empty;
         private string FocusTemp { get; set; } = string.Empty;
-        private string FocalLen { get; set; } = string.Empty;
         private string Gain { get; set; } = string.Empty;
         private string OffSet { get; set; } = string.Empty;
         private string Profile { get; set; } = string.Empty;
         private string SSWEIGHT { get; set; } = string.Empty;
+        private string SensorTemp { get; set; } = string.Empty;
         private string SiteName { get; set; } = string.Empty;
         private string Software { get; set; } = string.Empty;
         private string Target { get; set; } = string.Empty;
         private string Type { get; set; } = string.Empty;
         private string Xbin { get; set; } = string.Empty;
         public DateTime CaptureDateTime { get; set; }
+        public List<string> TargetNameList = new List<string>();
         public bool Unique { get; set; } = false;
-        public string SourceFileName { get; set; }
+        public bool ValidFile { get; set; } = false;
+        public int AttachmentLength = 0;
+        public int AttachmentStart = 0;
         public string SITELAT { get; set; } = string.Empty;
         public string SITELON { get; set; } = string.Empty;
+        public string SourceFileName { get; set; }
 
-        public List<string> TargetNameList = new List<string>();
+        private XDocument mXmlDoc;
+        private string mXmlString;
+        private char[] mBuffer;
 
         public XisfFile()
         {
             TargetNameList.Clear();
+            mBuffer = new char[30000];
         }
 
         public string FormatTemperatureString(string temperatureString)
@@ -172,7 +179,7 @@ namespace XisfRename.Parse
                 string x = attribute.ToString();
                 Angle = x.Substring(x.IndexOf("\"") + 1);
                 Angle = Angle.Substring(0, Angle.IndexOf("\""));
-                
+
             }
         }
         public string ImageAngle()
@@ -285,7 +292,7 @@ namespace XisfRename.Parse
                 if (x.Contains("Sii")) x = x.Replace("Sii", "S2");
                 if (x.Contains("HA")) x = x.Replace("HA", "Ha");
                 if (x.Contains("Ha")) x = x.Replace("Ha", "Ha");
-                
+
                 Filter = x.Substring(x.IndexOf("'") + 1);
                 Filter = Filter.Substring(0, Filter.IndexOf("'"));
                 Filter = Filter.Trim();
@@ -348,7 +355,7 @@ namespace XisfRename.Parse
             return FocusPos;
         }
 
-        
+
         // *****************************************************************
         public void FocusTemperature(XElement element)
         {
@@ -365,7 +372,7 @@ namespace XisfRename.Parse
         }
         public string FocusTemperature()
         {
-             return FormatTemperatureString(FocusTemp);
+            return FormatTemperatureString(FocusTemp);
         }
 
 
@@ -468,9 +475,9 @@ namespace XisfRename.Parse
             }
         }
 
-        public string TargetName() 
+        public string TargetName()
         {
-            return Target; 
+            return Target;
         }
 
         // *****************************************************************
@@ -653,5 +660,78 @@ namespace XisfRename.Parse
                 AttachmentLength = Convert.ToInt32(values[2]);
             }
         }
+
+        public bool Parse()
+        {
+            bool bFound;
+
+            using (StreamReader reader = new StreamReader(SourceFileName))
+            {
+                reader.Read(mBuffer, 0, mBuffer.Length);
+            }
+
+            mXmlString = new string(mBuffer);
+
+            mXmlString = mXmlString.Substring(mXmlString.IndexOf("<?xml"));
+            mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf(@"</xisf>") + 7);
+
+            try
+            {
+                mXmlDoc = XDocument.Parse(mXmlString);
+            }
+            catch
+            {
+                ValidFile = false;
+                return false;
+            }
+
+            XElement root = mXmlDoc.Root;
+            XNamespace ns = root.GetDefaultNamespace();
+
+            IEnumerable<XElement> image = from c in mXmlDoc.Descendants(ns + "Image") select c;
+            foreach (XElement element in image)
+            {
+                Attachment(element);
+            }
+
+            IEnumerable<XElement> elements = from c in mXmlDoc.Descendants(ns + "FITSKeyword") select c;
+
+            // Advance through stream until we get to FITSKeyword elements
+            foreach (XElement element in elements)
+            {
+                bFound = CaptureSoftware(element);
+                if (bFound)
+                    break;
+            }
+
+            // Find each relevent keyword and add it to mFile
+            foreach (XElement element in elements)
+            {
+                AmbientTemperature(element);
+                Binning(element);
+                CameraModel(element);
+                CameraGain(element);
+                CameraOffset(element);
+                ExposureSeconds(element);
+                FilterName(element);
+                FocalLength(element);
+                FocusPosition(element);
+                FocusTemperature(element);
+                FrameType(element);
+                ImageAngle(element);
+                ImageDateTime(element);
+                ImageLocation(element);
+                SensorTemperature(element);
+                SgpProfile(element);
+                SubFrameSelectorWeight(element);
+                TargetName(element);
+                SiteLat(element);
+                SiteLon(element);
+            }
+
+            ValidFile = true;
+            return true;
+        }
     }
 }
+

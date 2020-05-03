@@ -12,7 +12,7 @@ namespace XisfRename.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,13 +25,13 @@ namespace XisfRename.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PersistDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("@\"E:\\Photography\\Astro Photography\\Processing\"")]
+        public string Persist_FolderBrowseState {
             get {
-                return ((string)(this["PersistDirectory"]));
+                return ((string)(this["Persist_FolderBrowseState"]));
             }
             set {
-                this["PersistDirectory"] = value;
+                this["Persist_FolderBrowseState"] = value;
             }
         }
     }

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
+
 
 using LocalLib;
 
 namespace XisfRename
 {
+    // ##########################################################################################################################
+    // ##########################################################################################################################
     public partial class MainForm : Form
     {
         List<Parse.XisfFile> mFileList;
@@ -17,8 +20,8 @@ namespace XisfRename
         Parse.RenameXisfFile mRenameFile;
         Parse.UpdateXisfFile mUpdateFile;
         private OpenFolderDialog mFolder;
-        private XDocument mXmlDoc;
-       
+        private string mFolderBrowseState;
+        private DirectoryInfo d;
 
         public MainForm()
         {
@@ -30,41 +33,104 @@ namespace XisfRename
             mUpdateFile = new Parse.UpdateXisfFile();
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+
+            base.OnClosing(e);
+
+            Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
+
+            Properties.Settings.Default.Save();
+        }
+
+        // ##########################################################################################################################
+        // ##########################################################################################################################
+
         private void Button_Browse_Click(object sender, EventArgs e)
         {
-            ProgressBar_OverAll.Value = 0;
-
-            mFolder = new OpenFolderDialog()
+            try
             {
-                Title = "Select .xisf Folder",
-                AutoUpgradeEnabled = true,
-                CheckPathExists = false,
-                InitialDirectory = @"E:\Photography\Astro Photography\Processing",
-                Multiselect = true,
-                RestoreDirectory = true
-            };
+                ProgressBar_OverAll.Value = 0;
+
+                mFolder = new OpenFolderDialog()
+                {
+                    Title = "Select .xisf Folder",
+                    AutoUpgradeEnabled = true,
+                    CheckPathExists = false,
+                    InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
+                    Multiselect = true,
+                    RestoreDirectory = true
+                };
+
+                DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
+
+                if (result.Equals(DialogResult.OK) == false)
+                {
+                    return;
+                }
+
+                mFolderBrowseState = mFolder.SelectedPaths[0];
+
+                foreach (string folder in mFolder.SelectedPaths)
+                {
+                    bool bStatus;
+
+                    d = new DirectoryInfo(folder);
+
+                    FileInfo[] Files = d.GetFiles("*.xisf");
+
+                    ProgressBar_OverAll.Maximum = Files.Count();
+
+                    Label_Task.Text = "Reading Image File Data";
+
+                    mFileList.Clear();
+
+                    foreach (FileInfo file in Files)
+                    {
+                        bStatus = false;
+                        ProgressBar_OverAll.Value += 1;
+
+                   
+                        mFile = new Parse.XisfFile();
+                        mFile.SourceFileName = file.FullName;
+
+                        bStatus = mFile.Parse();
+
+                        if (bStatus)
+                            mFileList.Add(mFile);
+                    }
+                }
+
+                // Sort Image File List by Capture Time
+                mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
 
 
-            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
-
-            if (result.Equals(DialogResult.OK))
-            {
-                FindXisf();
 
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+
+
+                mFile.TargetNameList = mFile.TargetNameList.Distinct().ToList();
+
+                foreach (string targetName in mFile.TargetNameList)
+                {
+                    ComboBox_TargetName.Items.Add(mFile.TargetName());
+                }
+
+                ComboBox_TargetName.SelectedIndex = 0;
             }
-
-            mFile.TargetNameList = mFile.TargetNameList.Distinct().ToList();
-
-            foreach (string targetName in mFile.TargetNameList)
+            catch
             {
-                ComboBox_TargetName.Items.Add(mFile.TargetName());
+                return;
             }
-            ComboBox_TargetName.SelectedIndex = 0;
-            
-            
-            //ProgressBar_OverAll.Value = 0;
         }
+
 
         private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
         {
@@ -91,115 +157,9 @@ namespace XisfRename
             mRenameFile.mIndexFirst = RadioButton_WeightFirst.Checked;
         }
 
-        public bool FindXisf()
-        {
-            bool bFound;
-
-            foreach (string folder in mFolder.SelectedPaths)
-            {
-                DirectoryInfo d;
-                d = new DirectoryInfo(folder);
 
 
-                FileInfo[] Files = d.GetFiles("*.xisf");
 
-                ProgressBar_OverAll.Maximum = Files.Count();
-
-                Label_Task.Text = "Reading Image File Data";
-
-                mFileList.Clear();
-
-                foreach (FileInfo file in Files)
-                {
-                    ProgressBar_OverAll.Value += 1;
-
-                    mFile = new Parse.XisfFile();
-
-                    try
-                    {
-                        char[] buffer = new char[20000];
-
-                        mFile.SourceFileName = file.FullName;
-
-                        using (StreamReader reader = new StreamReader(file.FullName))
-                        {
-                            reader.Read(buffer, 0, buffer.Length);
-                        }
-
-                        string s = new string(buffer);
-
-                        s = s.Substring(s.IndexOf("<?xml"));
-                        s = s.Substring(0, s.LastIndexOf(@"</xisf>") + 7);
-
-                        try
-                        {
-                            mXmlDoc = XDocument.Parse(s);
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-
-                        XElement root = mXmlDoc.Root;
-                        XNamespace ns = root.GetDefaultNamespace();
-
-                        IEnumerable<XElement> image = from c in mXmlDoc.Descendants(ns + "Image") select c;
-                        foreach (XElement element in image)
-                        {
-                            mFile.Attachment(element);
-                        }
-
-
-                        IEnumerable<XElement> elements = from c in mXmlDoc.Descendants(ns + "FITSKeyword") select c;
-
-                        // Advance through stream until we get to FITSKeyword elements
-                        foreach (XElement element in elements)
-                        {
-                            bFound = mFile.CaptureSoftware(element);
-                            if (bFound)
-                                break;
-                        }
-
-                        // Find each relevent keyword and add it to mFile
-                        foreach (XElement element in elements)
-                        {
-                            mFile.AmbientTemperature(element);
-                            mFile.Binning(element);
-                            mFile.CameraModel(element);
-                            mFile.CameraGain(element);
-                            mFile.CameraOffset(element);
-                            mFile.ExposureSeconds(element);
-                            mFile.FilterName(element);
-                            mFile.FocalLength(element);
-                            mFile.FocusPosition(element);
-                            mFile.FocusTemperature(element);
-                            mFile.FrameType(element);
-                            mFile.ImageAngle(element);
-                            mFile.ImageDateTime(element);
-                            mFile.ImageLocation(element);
-                            mFile.SensorTemperature(element);
-                            mFile.SgpProfile(element);
-                            mFile.SubFrameSelectorWeight(element);
-                            mFile.TargetName(element);
-                            mFile.SiteLat(element);
-                            mFile.SiteLon(element);
-                        }
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-
-                    mFileList.Add(mFile);
-                }
-
-                // Sort Image File List by Capture Time
-                mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
-            }
-            return true;
-        }
-
-        
 
         private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -218,7 +178,7 @@ namespace XisfRename
 
             if (result.Equals(DialogResult.OK))
             {
-               
+
             }
         }
 

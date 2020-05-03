@@ -95,7 +95,7 @@ namespace XisfRename.Parse
 
                         
                     }
-                    catch(Exception e)
+                    catch
                     {
                         return false;
                     }
@@ -221,7 +221,7 @@ namespace XisfRename.Parse
 
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
