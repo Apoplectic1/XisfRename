@@ -65,7 +65,7 @@ namespace XisfRename
                     AutoUpgradeEnabled = true,
                     CheckPathExists = false,
                     InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
-                    Multiselect = true,
+                    Multiselect = false,
                     RestoreDirectory = true
                 };
 
@@ -97,7 +97,6 @@ namespace XisfRename
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
 
-                   
                         mFile = new Parse.XisfFile();
                         mFile.SourceFileName = file.FullName;
 
@@ -108,21 +107,18 @@ namespace XisfRename
                     }
                 }
 
-                // Sort Image File List by Capture Time
-                mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
+                    // Sort Image File List by Capture Time
+                    mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
 
+                    Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
+                    mFile.TargetNameList = mFile.TargetNameList.Distinct().ToList();
 
-                Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
-
-
-                mFile.TargetNameList = mFile.TargetNameList.Distinct().ToList();
-
-                foreach (string targetName in mFile.TargetNameList)
-                {
-                    ComboBox_TargetName.Items.Add(mFile.TargetName());
-                }
-
+                    foreach (string targetName in mFile.TargetNameList)
+                    {
+                        ComboBox_TargetName.Items.Add(mFile.TargetName());
+                    }
+                
                 ComboBox_TargetName.SelectedIndex = 0;
             }
             catch
