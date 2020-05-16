@@ -46,5 +46,245 @@ namespace XisfRename.Properties {
                 this["Persist_FolderCsvBrowseState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("75")]
+        public double Persist_FwhmPercentState {
+            get {
+                return ((double)(this["Persist_FwhmPercentState"]));
+            }
+            set {
+                this["Persist_FwhmPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_FwhmRangeHighState {
+            get {
+                return ((double)(this["Persist_FwhmRangeHighState"]));
+            }
+            set {
+                this["Persist_FwhmRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_FwhmRangeLowState {
+            get {
+                return ((double)(this["Persist_FwhmRangeLowState"]));
+            }
+            set {
+                this["Persist_FwhmRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public double Persist_EccentricityPercentState {
+            get {
+                return ((double)(this["Persist_EccentricityPercentState"]));
+            }
+            set {
+                this["Persist_EccentricityPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_EccentricityRangeHighState {
+            get {
+                return ((double)(this["Persist_EccentricityRangeHighState"]));
+            }
+            set {
+                this["Persist_EccentricityRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_EccentricityRangeLowState {
+            get {
+                return ((double)(this["Persist_EccentricityRangeLowState"]));
+            }
+            set {
+                this["Persist_EccentricityRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double Persist_SnrPercentState {
+            get {
+                return ((double)(this["Persist_SnrPercentState"]));
+            }
+            set {
+                this["Persist_SnrPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_SnrRangeHighState {
+            get {
+                return ((double)(this["Persist_SnrRangeHighState"]));
+            }
+            set {
+                this["Persist_SnrRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_SnrRangeLowState {
+            get {
+                return ((double)(this["Persist_SnrRangeLowState"]));
+            }
+            set {
+                this["Persist_SnrRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_MedianPercentState {
+            get {
+                return ((double)(this["Persist_MedianPercentState"]));
+            }
+            set {
+                this["Persist_MedianPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_MedianRangeHighState {
+            get {
+                return ((double)(this["Persist_MedianRangeHighState"]));
+            }
+            set {
+                this["Persist_MedianRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_MedianRangeLowState {
+            get {
+                return ((double)(this["Persist_MedianRangeLowState"]));
+            }
+            set {
+                this["Persist_MedianRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_MeanMedianDeviationPercentState {
+            get {
+                return ((double)(this["Persist_MeanMedianDeviationPercentState"]));
+            }
+            set {
+                this["Persist_MeanMedianDeviationPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_MeanMedianDeviationRangeHighState {
+            get {
+                return ((double)(this["Persist_MeanMedianDeviationRangeHighState"]));
+            }
+            set {
+                this["Persist_MeanMedianDeviationRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_MeanMedianDeviationRangeLowState {
+            get {
+                return ((double)(this["Persist_MeanMedianDeviationRangeLowState"]));
+            }
+            set {
+                this["Persist_MeanMedianDeviationRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_NoisePercentState {
+            get {
+                return ((double)(this["Persist_NoisePercentState"]));
+            }
+            set {
+                this["Persist_NoisePercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_NoiseRangeHighState {
+            get {
+                return ((double)(this["Persist_NoiseRangeHighState"]));
+            }
+            set {
+                this["Persist_NoiseRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_NoiseRangeLowState {
+            get {
+                return ((double)(this["Persist_NoiseRangeLowState"]));
+            }
+            set {
+                this["Persist_NoiseRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_UpdateStatisticsRangeHighState {
+            get {
+                return ((double)(this["Persist_UpdateStatisticsRangeHighState"]));
+            }
+            set {
+                this["Persist_UpdateStatisticsRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_UpdateStatisticsRangeLowState {
+            get {
+                return ((double)(this["Persist_UpdateStatisticsRangeLowState"]));
+            }
+            set {
+                this["Persist_UpdateStatisticsRangeLowState"] = value;
+            }
+        }
     }
 }
