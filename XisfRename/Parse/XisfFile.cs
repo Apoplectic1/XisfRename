@@ -228,8 +228,9 @@ namespace XisfRename.Parse
                     x = x.Replace("T", " ");
                     x = x.Replace("value=", "");
 
-                    DateLoc = x.Replace(":", "-");
-                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture);
+                    DateLoc = x.Remove(x.IndexOf('.'));
+
+                    CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 }
             }
 

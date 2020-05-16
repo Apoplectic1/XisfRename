@@ -50,12 +50,15 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GroupBox_SubFrameCSV = new System.Windows.Forms.GroupBox();
+            this.Button_ReadCSV = new System.Windows.Forms.Button();
             this.GroupBox_Numbering.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.GroupBox_DirectorySelection.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.GroupBox_SubFrameCSV.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_Browse
@@ -205,7 +208,7 @@
             // 
             this.GroupBox_DirectorySelection.Controls.Add(this.Button_Browse);
             this.GroupBox_DirectorySelection.Controls.Add(this.CheckBox_Recurse);
-            this.GroupBox_DirectorySelection.Location = new System.Drawing.Point(132, 41);
+            this.GroupBox_DirectorySelection.Location = new System.Drawing.Point(20, 36);
             this.GroupBox_DirectorySelection.Name = "GroupBox_DirectorySelection";
             this.GroupBox_DirectorySelection.Size = new System.Drawing.Size(234, 66);
             this.GroupBox_DirectorySelection.TabIndex = 7;
@@ -287,11 +290,32 @@
             this.selectTemplateToolStripMenuItem.Text = "Select Template";
             this.selectTemplateToolStripMenuItem.Click += new System.EventHandler(this.SelectTemplateToolStripMenuItem_Click);
             // 
+            // GroupBox_SubFrameCSV
+            // 
+            this.GroupBox_SubFrameCSV.Controls.Add(this.Button_ReadCSV);
+            this.GroupBox_SubFrameCSV.Location = new System.Drawing.Point(263, 36);
+            this.GroupBox_SubFrameCSV.Name = "GroupBox_SubFrameCSV";
+            this.GroupBox_SubFrameCSV.Size = new System.Drawing.Size(234, 66);
+            this.GroupBox_SubFrameCSV.TabIndex = 11;
+            this.GroupBox_SubFrameCSV.TabStop = false;
+            this.GroupBox_SubFrameCSV.Text = "SubFrame CSV";
+            // 
+            // Button_ReadCSV
+            // 
+            this.Button_ReadCSV.Location = new System.Drawing.Point(84, 23);
+            this.Button_ReadCSV.Name = "Button_ReadCSV";
+            this.Button_ReadCSV.Size = new System.Drawing.Size(75, 23);
+            this.Button_ReadCSV.TabIndex = 0;
+            this.Button_ReadCSV.Text = "Read CSV";
+            this.Button_ReadCSV.UseVisualStyleBackColor = true;
+            this.Button_ReadCSV.Click += new System.EventHandler(this.Button_ReadCSV_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(516, 458);
+            this.Controls.Add(this.GroupBox_SubFrameCSV);
             this.Controls.Add(this.Label_Task);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.ProgressBar_OverAll);
@@ -312,6 +336,7 @@
             this.groupBox4.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.GroupBox_SubFrameCSV.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,6 +366,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectTemplateToolStripMenuItem;
+        private System.Windows.Forms.GroupBox GroupBox_SubFrameCSV;
+        private System.Windows.Forms.Button Button_ReadCSV;
     }
 }
 

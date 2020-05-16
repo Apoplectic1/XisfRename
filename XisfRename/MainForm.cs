@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 
 using LocalLib;
+using XisfRename.Csv;
 
 namespace XisfRename
 {
@@ -20,7 +21,9 @@ namespace XisfRename
         Parse.RenameXisfFile mRenameFile;
         Parse.UpdateXisfFile mUpdateFile;
         private OpenFolderDialog mFolder;
+        private OpenFileDialog mFileCsv;
         private string mFolderBrowseState;
+        private string mFolderCsvBrowseState;
         private DirectoryInfo d;
 
         public MainForm()
@@ -38,6 +41,7 @@ namespace XisfRename
             base.OnLoad(e);
 
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
+            mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -46,6 +50,7 @@ namespace XisfRename
             base.OnClosing(e);
 
             Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
+            Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
 
             Properties.Settings.Default.Save();
         }
@@ -192,6 +197,30 @@ namespace XisfRename
         {
             mUpdateFile.NewTargetName = ComboBox_TargetName.Text;
             mUpdateFile.UpdateFiles(mFileList);
+        }
+
+        private void Button_ReadCSV_Click(object sender, EventArgs e)
+        {
+            mFileCsv = new OpenFileDialog()
+            {
+                Title = "Select Calibarated SubFrameSelected CSV File",
+                AutoUpgradeEnabled = true,
+                CheckPathExists = false,
+                Filter = "CSV Files (*.csv) | *.csv",
+                InitialDirectory = mFolderCsvBrowseState, // @"E:\Photography\Astro Photography\Processing",
+                Multiselect = false,
+                RestoreDirectory = true
+            };
+
+            DialogResult result = mFileCsv.ShowDialog();
+
+            if (result.Equals(DialogResult.OK) == false)
+            {
+                return;
+            }
+
+            ReadSubFrameCsv.ParseCsvFile(mFileCsv.FileName);
+
         }
     }
 }
