@@ -286,5 +286,221 @@ namespace XisfRename.Properties {
                 this["Persist_UpdateStatisticsRangeLowState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_EccentricityMeanDeviationPercentState {
+            get {
+                return ((double)(this["Persist_EccentricityMeanDeviationPercentState"]));
+            }
+            set {
+                this["Persist_EccentricityMeanDeviationPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_EccentricityMeanDeviationRangeLowState {
+            get {
+                return ((double)(this["Persist_EccentricityMeanDeviationRangeLowState"]));
+            }
+            set {
+                this["Persist_EccentricityMeanDeviationRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_EccentricityMeanDeviationRangeHighState {
+            get {
+                return ((double)(this["Persist_EccentricityMeanDeviationRangeHighState"]));
+            }
+            set {
+                this["Persist_EccentricityMeanDeviationRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_FwhmMeanDeviationPercentState {
+            get {
+                return ((double)(this["Persist_FwhmMeanDeviationPercentState"]));
+            }
+            set {
+                this["Persist_FwhmMeanDeviationPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_FwhmMeanDeviationRangeHighState {
+            get {
+                return ((double)(this["Persist_FwhmMeanDeviationRangeHighState"]));
+            }
+            set {
+                this["Persist_FwhmMeanDeviationRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_FwhmMeanDeviationRangeLowState {
+            get {
+                return ((double)(this["Persist_FwhmMeanDeviationRangeLowState"]));
+            }
+            set {
+                this["Persist_FwhmMeanDeviationRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_NoiseRatioPercentState {
+            get {
+                return ((double)(this["Persist_NoiseRatioPercentState"]));
+            }
+            set {
+                this["Persist_NoiseRatioPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_NoiseRatioRangeHighState {
+            get {
+                return ((double)(this["Persist_NoiseRatioRangeHighState"]));
+            }
+            set {
+                this["Persist_NoiseRatioRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_NoiseRatioRangeLowState {
+            get {
+                return ((double)(this["Persist_NoiseRatioRangeLowState"]));
+            }
+            set {
+                this["Persist_NoiseRatioRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarResidualMeanDevationPercentState {
+            get {
+                return ((double)(this["Persist_StarResidualMeanDevationPercentState"]));
+            }
+            set {
+                this["Persist_StarResidualMeanDevationPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_StarResidualMeanDevationRangeHighState {
+            get {
+                return ((double)(this["Persist_StarResidualMeanDevationRangeHighState"]));
+            }
+            set {
+                this["Persist_StarResidualMeanDevationRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarResidualMeanDevationRangeLowState {
+            get {
+                return ((double)(this["Persist_StarResidualMeanDevationRangeLowState"]));
+            }
+            set {
+                this["Persist_StarResidualMeanDevationRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarResidualPercentState {
+            get {
+                return ((double)(this["Persist_StarResidualPercentState"]));
+            }
+            set {
+                this["Persist_StarResidualPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_StarResidualRangeHighState {
+            get {
+                return ((double)(this["Persist_StarResidualRangeHighState"]));
+            }
+            set {
+                this["Persist_StarResidualRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarResidualRangeLowState {
+            get {
+                return ((double)(this["Persist_StarResidualRangeLowState"]));
+            }
+            set {
+                this["Persist_StarResidualRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarsPercentState {
+            get {
+                return ((double)(this["Persist_StarsPercentState"]));
+            }
+            set {
+                this["Persist_StarsPercentState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_StarsRangeHighState {
+            get {
+                return ((double)(this["Persist_StarsRangeHighState"]));
+            }
+            set {
+                this["Persist_StarsRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_StarsRangeLowState {
+            get {
+                return ((double)(this["Persist_StarsRangeLowState"]));
+            }
+            set {
+                this["Persist_StarsRangeLowState"] = value;
+            }
+        }
     }
 }

@@ -50,6 +50,15 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GroupBox_WeightsAndStatistics = new System.Windows.Forms.GroupBox();
+            this.GroupBox_StarResidual = new System.Windows.Forms.GroupBox();
+            this.Label_StarResidualRangeLow = new System.Windows.Forms.Label();
+            this.Label_StarResidualRangeHigh = new System.Windows.Forms.Label();
+            this.Label_StarResidualMean = new System.Windows.Forms.Label();
+            this.Label_StarResidualPercent = new System.Windows.Forms.Label();
+            this.Label_StarResidualStdDev = new System.Windows.Forms.Label();
+            this.TextBox_StarResidualPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_StarResidualRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_StarResidualRangeLow = new System.Windows.Forms.TextBox();
             this.GroupBox_UpdateStatistics = new System.Windows.Forms.GroupBox();
             this.Button_UpdateStatisticsFromCSV = new System.Windows.Forms.Button();
             this.Label_UpdateStatistics = new System.Windows.Forms.Label();
@@ -57,15 +66,42 @@
             this.Label_UpdateStatisticsRangeLow = new System.Windows.Forms.Label();
             this.TextBox_UpdateStatisticsRangeLow = new System.Windows.Forms.TextBox();
             this.Label_UpdateStatisticsRangeHigh = new System.Windows.Forms.Label();
-            this.GroupBox_MeanMedianDeviationWeight = new System.Windows.Forms.GroupBox();
-            this.Label_MeanMedianDeviationRangeLow = new System.Windows.Forms.Label();
-            this.Label_MeanMedianDeviationRangeHigh = new System.Windows.Forms.Label();
-            this.Label_MeanMedianDeviationMean = new System.Windows.Forms.Label();
-            this.Label_MeanMedianDeviationPercent = new System.Windows.Forms.Label();
-            this.Label_MeanMedianDeviationStdDev = new System.Windows.Forms.Label();
-            this.TextBox_MeanMedianDeviationPercent = new System.Windows.Forms.TextBox();
-            this.TextBox_MeanMedianDeviationRangeHigh = new System.Windows.Forms.TextBox();
-            this.TextBox_MeanMedianDeviationRangeLow = new System.Windows.Forms.TextBox();
+            this.GroupBox_StarResidualMeanDeviation = new System.Windows.Forms.GroupBox();
+            this.Label_StarResidualMeanDevationRangeLow = new System.Windows.Forms.Label();
+            this.Label_StarResidualMeanDevationMean = new System.Windows.Forms.Label();
+            this.Label_StarResidualMeanDevationRangeHigh = new System.Windows.Forms.Label();
+            this.Label_StarResidualMeanDevationPercent = new System.Windows.Forms.Label();
+            this.TextBox_StarResidualMeanDevationPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_StarResidualMeanDevationRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_StarResidualMeanDevationRangeLow = new System.Windows.Forms.TextBox();
+            this.Label_StarResidualMeanDevationStdDev = new System.Windows.Forms.Label();
+            this.GroupBox_MedianMeanDeviationWeight = new System.Windows.Forms.GroupBox();
+            this.Label_MedianMeanDeviationRangeLow = new System.Windows.Forms.Label();
+            this.Label_MedianMeanDeviationRangeHigh = new System.Windows.Forms.Label();
+            this.Label_MedianMeanDeviationMean = new System.Windows.Forms.Label();
+            this.Label_MedianMeanDeviationPercent = new System.Windows.Forms.Label();
+            this.Label_MedianMeanDeviationStdDev = new System.Windows.Forms.Label();
+            this.TextBox_MedianMeanDeviationPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_MedianMeanDeviationRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_MedianMeanDeviationRangeLow = new System.Windows.Forms.TextBox();
+            this.GroupBox_EccentricityMeanDeviationWeight = new System.Windows.Forms.GroupBox();
+            this.Label_EccentricityMeanDeviationRangeLow = new System.Windows.Forms.Label();
+            this.Label_EccentricityMeanDeviationRangeHigh = new System.Windows.Forms.Label();
+            this.Label_EccentricityMeanDeviationMean = new System.Windows.Forms.Label();
+            this.Label_EccentricityMeanDeviationPercent = new System.Windows.Forms.Label();
+            this.Label_EccentricityMeanDeviationStdDev = new System.Windows.Forms.Label();
+            this.TextBox_EccentricityMeanDeviationPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_EccentricityMeanDeviationRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_EccentricityMeanDeviationRangeLow = new System.Windows.Forms.TextBox();
+            this.GroupBox_StarsWeight = new System.Windows.Forms.GroupBox();
+            this.Label_StarRangeLow = new System.Windows.Forms.Label();
+            this.Label_StarMean = new System.Windows.Forms.Label();
+            this.Label_StarRangeHigh = new System.Windows.Forms.Label();
+            this.Label_StarPercent = new System.Windows.Forms.Label();
+            this.TextBox_StarPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_StarRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_StarRangeLow = new System.Windows.Forms.TextBox();
+            this.Label_StarStdDev = new System.Windows.Forms.Label();
             this.GroupBox_NoiseWeight = new System.Windows.Forms.GroupBox();
             this.Label_NoiseRangeLow = new System.Windows.Forms.Label();
             this.Label_NoiseMean = new System.Windows.Forms.Label();
@@ -75,6 +111,15 @@
             this.TextBox_NoiseRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_NoiseRangeLow = new System.Windows.Forms.TextBox();
             this.Label_NoiseStdDev = new System.Windows.Forms.Label();
+            this.GroupBox_FwhmMeanDeviationWeight = new System.Windows.Forms.GroupBox();
+            this.Label_FwhmMeanDeviationRangeLow = new System.Windows.Forms.Label();
+            this.Label_FwhmMeanDeviationMean = new System.Windows.Forms.Label();
+            this.Label_FwhmMeanDeviationRangeHigh = new System.Windows.Forms.Label();
+            this.Label_FwhmMeanDeviationPercent = new System.Windows.Forms.Label();
+            this.TextBox_FwhmMeanDeviationPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_FwhmMeanDeviationRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_FwhmMeanDeviationRangeLow = new System.Windows.Forms.TextBox();
+            this.Label_FwhmMeanDeviationStdDev = new System.Windows.Forms.Label();
             this.GroupBox_EccentricityWeight = new System.Windows.Forms.GroupBox();
             this.Label_EccentricityRangeLow = new System.Windows.Forms.Label();
             this.Label_EccentricityRangeHigh = new System.Windows.Forms.Label();
@@ -84,6 +129,15 @@
             this.TextBox_EccentricityPercent = new System.Windows.Forms.TextBox();
             this.TextBox_EccentricityRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_EccentricityRangeLow = new System.Windows.Forms.TextBox();
+            this.GroupBox_NoiseRatioWeight = new System.Windows.Forms.GroupBox();
+            this.Label_NoiseRatioRangeLow = new System.Windows.Forms.Label();
+            this.Label_NoiseRatioMean = new System.Windows.Forms.Label();
+            this.Label_NoiseRatioRangeHigh = new System.Windows.Forms.Label();
+            this.Label_NoiseRatioPercent = new System.Windows.Forms.Label();
+            this.TextBox_NoiseRatioPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_NoiseRatioRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_NoiseRatioRangeLow = new System.Windows.Forms.TextBox();
+            this.label_NoiseRatioStdDev = new System.Windows.Forms.Label();
             this.GroupBox_MedianWeight = new System.Windows.Forms.GroupBox();
             this.Label_MedianRangeLow = new System.Windows.Forms.Label();
             this.Label_MedianMean = new System.Windows.Forms.Label();
@@ -118,10 +172,16 @@
             this.GroupBox_DirectorySelection.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.GroupBox_WeightsAndStatistics.SuspendLayout();
+            this.GroupBox_StarResidual.SuspendLayout();
             this.GroupBox_UpdateStatistics.SuspendLayout();
-            this.GroupBox_MeanMedianDeviationWeight.SuspendLayout();
+            this.GroupBox_StarResidualMeanDeviation.SuspendLayout();
+            this.GroupBox_MedianMeanDeviationWeight.SuspendLayout();
+            this.GroupBox_EccentricityMeanDeviationWeight.SuspendLayout();
+            this.GroupBox_StarsWeight.SuspendLayout();
             this.GroupBox_NoiseWeight.SuspendLayout();
+            this.GroupBox_FwhmMeanDeviationWeight.SuspendLayout();
             this.GroupBox_EccentricityWeight.SuspendLayout();
+            this.GroupBox_NoiseRatioWeight.SuspendLayout();
             this.GroupBox_MedianWeight.SuspendLayout();
             this.GroupBox_SnrWeight.SuspendLayout();
             this.GroupBox_FwhmWeight.SuspendLayout();
@@ -352,20 +412,120 @@
             // 
             // GroupBox_WeightsAndStatistics
             // 
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidual);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MeanMedianDeviationWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_NoiseWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_EccentricityWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MedianWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidualMeanDeviation);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MedianMeanDeviationWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_EccentricityMeanDeviationWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarsWeight);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_SnrWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MedianWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_NoiseWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_FwhmMeanDeviationWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_EccentricityWeight);
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_NoiseRatioWeight);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_FwhmWeight);
             this.GroupBox_WeightsAndStatistics.Enabled = false;
             this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 249);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
-            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 299);
+            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 514);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
             this.GroupBox_WeightsAndStatistics.TabStop = false;
             this.GroupBox_WeightsAndStatistics.Text = "SubFrame Weights and Statistics";
+            // 
+            // GroupBox_StarResidual
+            // 
+            this.GroupBox_StarResidual.Controls.Add(this.Label_StarResidualRangeLow);
+            this.GroupBox_StarResidual.Controls.Add(this.Label_StarResidualRangeHigh);
+            this.GroupBox_StarResidual.Controls.Add(this.Label_StarResidualMean);
+            this.GroupBox_StarResidual.Controls.Add(this.Label_StarResidualPercent);
+            this.GroupBox_StarResidual.Controls.Add(this.Label_StarResidualStdDev);
+            this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualPercent);
+            this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeHigh);
+            this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeLow);
+            this.GroupBox_StarResidual.Location = new System.Drawing.Point(242, 399);
+            this.GroupBox_StarResidual.Name = "GroupBox_StarResidual";
+            this.GroupBox_StarResidual.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_StarResidual.TabIndex = 24;
+            this.GroupBox_StarResidual.TabStop = false;
+            this.GroupBox_StarResidual.Text = "Star Residual Weight";
+            // 
+            // Label_StarResidualRangeLow
+            // 
+            this.Label_StarResidualRangeLow.AutoSize = true;
+            this.Label_StarResidualRangeLow.Location = new System.Drawing.Point(112, 73);
+            this.Label_StarResidualRangeLow.Name = "Label_StarResidualRangeLow";
+            this.Label_StarResidualRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_StarResidualRangeLow.TabIndex = 13;
+            this.Label_StarResidualRangeLow.Text = "Low";
+            this.Label_StarResidualRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_StarResidualRangeHigh
+            // 
+            this.Label_StarResidualRangeHigh.AutoSize = true;
+            this.Label_StarResidualRangeHigh.Location = new System.Drawing.Point(110, 47);
+            this.Label_StarResidualRangeHigh.Name = "Label_StarResidualRangeHigh";
+            this.Label_StarResidualRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_StarResidualRangeHigh.TabIndex = 12;
+            this.Label_StarResidualRangeHigh.Text = "High";
+            this.Label_StarResidualRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_StarResidualMean
+            // 
+            this.Label_StarResidualMean.AutoSize = true;
+            this.Label_StarResidualMean.Location = new System.Drawing.Point(33, 25);
+            this.Label_StarResidualMean.Name = "Label_StarResidualMean";
+            this.Label_StarResidualMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_StarResidualMean.TabIndex = 10;
+            this.Label_StarResidualMean.Text = "Mean: ";
+            // 
+            // Label_StarResidualPercent
+            // 
+            this.Label_StarResidualPercent.AutoSize = true;
+            this.Label_StarResidualPercent.Location = new System.Drawing.Point(53, 59);
+            this.Label_StarResidualPercent.Name = "Label_StarResidualPercent";
+            this.Label_StarResidualPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_StarResidualPercent.TabIndex = 6;
+            this.Label_StarResidualPercent.Text = "Percent";
+            // 
+            // Label_StarResidualStdDev
+            // 
+            this.Label_StarResidualStdDev.AutoSize = true;
+            this.Label_StarResidualStdDev.Location = new System.Drawing.Point(106, 25);
+            this.Label_StarResidualStdDev.Name = "Label_StarResidualStdDev";
+            this.Label_StarResidualStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_StarResidualStdDev.TabIndex = 11;
+            this.Label_StarResidualStdDev.Text = "StdDev: ";
+            // 
+            // TextBox_StarResidualPercent
+            // 
+            this.TextBox_StarResidualPercent.Location = new System.Drawing.Point(18, 55);
+            this.TextBox_StarResidualPercent.Name = "TextBox_StarResidualPercent";
+            this.TextBox_StarResidualPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_StarResidualPercent.TabIndex = 7;
+            this.TextBox_StarResidualPercent.Text = "0";
+            this.TextBox_StarResidualPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualPercent.TextChanged += new System.EventHandler(this.TextBox_StarResidualPercent_TextChanged);
+            // 
+            // TextBox_StarResidualRangeHigh
+            // 
+            this.TextBox_StarResidualRangeHigh.Location = new System.Drawing.Point(141, 43);
+            this.TextBox_StarResidualRangeHigh.Name = "TextBox_StarResidualRangeHigh";
+            this.TextBox_StarResidualRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarResidualRangeHigh.TabIndex = 8;
+            this.TextBox_StarResidualRangeHigh.Text = "1.0";
+            this.TextBox_StarResidualRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualRangeHigh.TextChanged += new System.EventHandler(this.TextBox_StarResidualRangeHigh_TextChanged);
+            // 
+            // TextBox_StarResidualRangeLow
+            // 
+            this.TextBox_StarResidualRangeLow.Location = new System.Drawing.Point(141, 69);
+            this.TextBox_StarResidualRangeLow.Name = "TextBox_StarResidualRangeLow";
+            this.TextBox_StarResidualRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarResidualRangeLow.TabIndex = 9;
+            this.TextBox_StarResidualRangeLow.Text = "0.0";
+            this.TextBox_StarResidualRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualRangeLow.TextChanged += new System.EventHandler(this.TextBox_StarResidualRangeLow_TextChanged);
             // 
             // GroupBox_UpdateStatistics
             // 
@@ -441,99 +601,381 @@
             this.Label_UpdateStatisticsRangeHigh.Text = "High";
             this.Label_UpdateStatisticsRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // GroupBox_MeanMedianDeviationWeight
+            // GroupBox_StarResidualMeanDeviation
             // 
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.Label_MeanMedianDeviationRangeLow);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.Label_MeanMedianDeviationRangeHigh);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.Label_MeanMedianDeviationMean);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.Label_MeanMedianDeviationPercent);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.Label_MeanMedianDeviationStdDev);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.TextBox_MeanMedianDeviationPercent);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.TextBox_MeanMedianDeviationRangeHigh);
-            this.GroupBox_MeanMedianDeviationWeight.Controls.Add(this.TextBox_MeanMedianDeviationRangeLow);
-            this.GroupBox_MeanMedianDeviationWeight.Location = new System.Drawing.Point(242, 187);
-            this.GroupBox_MeanMedianDeviationWeight.Name = "GroupBox_MeanMedianDeviationWeight";
-            this.GroupBox_MeanMedianDeviationWeight.Size = new System.Drawing.Size(200, 100);
-            this.GroupBox_MeanMedianDeviationWeight.TabIndex = 18;
-            this.GroupBox_MeanMedianDeviationWeight.TabStop = false;
-            this.GroupBox_MeanMedianDeviationWeight.Text = "Mean Median Deviation Weight";
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationRangeLow);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationMean);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationRangeHigh);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationPercent);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationPercent);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeHigh);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeLow);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationStdDev);
+            this.GroupBox_StarResidualMeanDeviation.Location = new System.Drawing.Point(458, 399);
+            this.GroupBox_StarResidualMeanDeviation.Name = "GroupBox_StarResidualMeanDeviation";
+            this.GroupBox_StarResidualMeanDeviation.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_StarResidualMeanDeviation.TabIndex = 25;
+            this.GroupBox_StarResidualMeanDeviation.TabStop = false;
+            this.GroupBox_StarResidualMeanDeviation.Text = "Star Residual Mean Deviation Weight";
             // 
-            // Label_MeanMedianDeviationRangeLow
+            // Label_StarResidualMeanDevationRangeLow
             // 
-            this.Label_MeanMedianDeviationRangeLow.AutoSize = true;
-            this.Label_MeanMedianDeviationRangeLow.Location = new System.Drawing.Point(112, 73);
-            this.Label_MeanMedianDeviationRangeLow.Name = "Label_MeanMedianDeviationRangeLow";
-            this.Label_MeanMedianDeviationRangeLow.Size = new System.Drawing.Size(27, 13);
-            this.Label_MeanMedianDeviationRangeLow.TabIndex = 13;
-            this.Label_MeanMedianDeviationRangeLow.Text = "Low";
-            this.Label_MeanMedianDeviationRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_StarResidualMeanDevationRangeLow.AutoSize = true;
+            this.Label_StarResidualMeanDevationRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_StarResidualMeanDevationRangeLow.Name = "Label_StarResidualMeanDevationRangeLow";
+            this.Label_StarResidualMeanDevationRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_StarResidualMeanDevationRangeLow.TabIndex = 15;
+            this.Label_StarResidualMeanDevationRangeLow.Text = "Low";
+            this.Label_StarResidualMeanDevationRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Label_MeanMedianDeviationRangeHigh
+            // Label_StarResidualMeanDevationMean
             // 
-            this.Label_MeanMedianDeviationRangeHigh.AutoSize = true;
-            this.Label_MeanMedianDeviationRangeHigh.Location = new System.Drawing.Point(110, 47);
-            this.Label_MeanMedianDeviationRangeHigh.Name = "Label_MeanMedianDeviationRangeHigh";
-            this.Label_MeanMedianDeviationRangeHigh.Size = new System.Drawing.Size(29, 13);
-            this.Label_MeanMedianDeviationRangeHigh.TabIndex = 12;
-            this.Label_MeanMedianDeviationRangeHigh.Text = "High";
-            this.Label_MeanMedianDeviationRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_StarResidualMeanDevationMean.AutoSize = true;
+            this.Label_StarResidualMeanDevationMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_StarResidualMeanDevationMean.Name = "Label_StarResidualMeanDevationMean";
+            this.Label_StarResidualMeanDevationMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_StarResidualMeanDevationMean.TabIndex = 4;
+            this.Label_StarResidualMeanDevationMean.Text = "Mean: ";
             // 
-            // Label_MeanMedianDeviationMean
+            // Label_StarResidualMeanDevationRangeHigh
             // 
-            this.Label_MeanMedianDeviationMean.AutoSize = true;
-            this.Label_MeanMedianDeviationMean.Location = new System.Drawing.Point(33, 25);
-            this.Label_MeanMedianDeviationMean.Name = "Label_MeanMedianDeviationMean";
-            this.Label_MeanMedianDeviationMean.Size = new System.Drawing.Size(40, 13);
-            this.Label_MeanMedianDeviationMean.TabIndex = 10;
-            this.Label_MeanMedianDeviationMean.Text = "Mean: ";
+            this.Label_StarResidualMeanDevationRangeHigh.AutoSize = true;
+            this.Label_StarResidualMeanDevationRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_StarResidualMeanDevationRangeHigh.Name = "Label_StarResidualMeanDevationRangeHigh";
+            this.Label_StarResidualMeanDevationRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_StarResidualMeanDevationRangeHigh.TabIndex = 14;
+            this.Label_StarResidualMeanDevationRangeHigh.Text = "High";
+            this.Label_StarResidualMeanDevationRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Label_MeanMedianDeviationPercent
+            // Label_StarResidualMeanDevationPercent
             // 
-            this.Label_MeanMedianDeviationPercent.AutoSize = true;
-            this.Label_MeanMedianDeviationPercent.Location = new System.Drawing.Point(53, 59);
-            this.Label_MeanMedianDeviationPercent.Name = "Label_MeanMedianDeviationPercent";
-            this.Label_MeanMedianDeviationPercent.Size = new System.Drawing.Size(44, 13);
-            this.Label_MeanMedianDeviationPercent.TabIndex = 6;
-            this.Label_MeanMedianDeviationPercent.Text = "Percent";
+            this.Label_StarResidualMeanDevationPercent.AutoSize = true;
+            this.Label_StarResidualMeanDevationPercent.Location = new System.Drawing.Point(53, 60);
+            this.Label_StarResidualMeanDevationPercent.Name = "Label_StarResidualMeanDevationPercent";
+            this.Label_StarResidualMeanDevationPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_StarResidualMeanDevationPercent.TabIndex = 0;
+            this.Label_StarResidualMeanDevationPercent.Text = "Percent";
             // 
-            // Label_MeanMedianDeviationStdDev
+            // TextBox_StarResidualMeanDevationPercent
             // 
-            this.Label_MeanMedianDeviationStdDev.AutoSize = true;
-            this.Label_MeanMedianDeviationStdDev.Location = new System.Drawing.Point(106, 25);
-            this.Label_MeanMedianDeviationStdDev.Name = "Label_MeanMedianDeviationStdDev";
-            this.Label_MeanMedianDeviationStdDev.Size = new System.Drawing.Size(49, 13);
-            this.Label_MeanMedianDeviationStdDev.TabIndex = 11;
-            this.Label_MeanMedianDeviationStdDev.Text = "StdDev: ";
+            this.TextBox_StarResidualMeanDevationPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_StarResidualMeanDevationPercent.Name = "TextBox_StarResidualMeanDevationPercent";
+            this.TextBox_StarResidualMeanDevationPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_StarResidualMeanDevationPercent.TabIndex = 1;
+            this.TextBox_StarResidualMeanDevationPercent.Text = "0";
+            this.TextBox_StarResidualMeanDevationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualMeanDevationPercent.TextChanged += new System.EventHandler(this.TextBox_StarResidualMeanDevationPercent_TextChanged);
             // 
-            // TextBox_MeanMedianDeviationPercent
+            // TextBox_StarResidualMeanDevationRangeHigh
             // 
-            this.TextBox_MeanMedianDeviationPercent.Location = new System.Drawing.Point(18, 55);
-            this.TextBox_MeanMedianDeviationPercent.Name = "TextBox_MeanMedianDeviationPercent";
-            this.TextBox_MeanMedianDeviationPercent.Size = new System.Drawing.Size(33, 20);
-            this.TextBox_MeanMedianDeviationPercent.TabIndex = 7;
-            this.TextBox_MeanMedianDeviationPercent.Text = "0";
-            this.TextBox_MeanMedianDeviationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MeanMedianDeviationPercent.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationPercent_TextChanged);
+            this.TextBox_StarResidualMeanDevationRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_StarResidualMeanDevationRangeHigh.Name = "TextBox_StarResidualMeanDevationRangeHigh";
+            this.TextBox_StarResidualMeanDevationRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarResidualMeanDevationRangeHigh.TabIndex = 2;
+            this.TextBox_StarResidualMeanDevationRangeHigh.Text = "1.0";
+            this.TextBox_StarResidualMeanDevationRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualMeanDevationRangeHigh.TextChanged += new System.EventHandler(this.TextBox_StarResidualMeanDevationRangeHigh_TextChanged);
             // 
-            // TextBox_MeanMedianDeviationRangeHigh
+            // TextBox_StarResidualMeanDevationRangeLow
             // 
-            this.TextBox_MeanMedianDeviationRangeHigh.Location = new System.Drawing.Point(141, 43);
-            this.TextBox_MeanMedianDeviationRangeHigh.Name = "TextBox_MeanMedianDeviationRangeHigh";
-            this.TextBox_MeanMedianDeviationRangeHigh.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_MeanMedianDeviationRangeHigh.TabIndex = 8;
-            this.TextBox_MeanMedianDeviationRangeHigh.Text = "1.0";
-            this.TextBox_MeanMedianDeviationRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MeanMedianDeviationRangeHigh.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationRangeHigh_TextChanged);
+            this.TextBox_StarResidualMeanDevationRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_StarResidualMeanDevationRangeLow.Name = "TextBox_StarResidualMeanDevationRangeLow";
+            this.TextBox_StarResidualMeanDevationRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarResidualMeanDevationRangeLow.TabIndex = 3;
+            this.TextBox_StarResidualMeanDevationRangeLow.Text = "0.0";
+            this.TextBox_StarResidualMeanDevationRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualMeanDevationRangeLow.TextChanged += new System.EventHandler(this.TextBox_StarResidualMeanDevationRangeLow_TextChanged);
             // 
-            // TextBox_MeanMedianDeviationRangeLow
+            // Label_StarResidualMeanDevationStdDev
             // 
-            this.TextBox_MeanMedianDeviationRangeLow.Location = new System.Drawing.Point(141, 69);
-            this.TextBox_MeanMedianDeviationRangeLow.Name = "TextBox_MeanMedianDeviationRangeLow";
-            this.TextBox_MeanMedianDeviationRangeLow.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_MeanMedianDeviationRangeLow.TabIndex = 9;
-            this.TextBox_MeanMedianDeviationRangeLow.Text = "0.0";
-            this.TextBox_MeanMedianDeviationRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MeanMedianDeviationRangeLow.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationRangeLow_TextChanged);
+            this.Label_StarResidualMeanDevationStdDev.AutoSize = true;
+            this.Label_StarResidualMeanDevationStdDev.Location = new System.Drawing.Point(102, 26);
+            this.Label_StarResidualMeanDevationStdDev.Name = "Label_StarResidualMeanDevationStdDev";
+            this.Label_StarResidualMeanDevationStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_StarResidualMeanDevationStdDev.TabIndex = 5;
+            this.Label_StarResidualMeanDevationStdDev.Text = "StdDev: ";
+            // 
+            // GroupBox_MedianMeanDeviationWeight
+            // 
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.Label_MedianMeanDeviationRangeLow);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.Label_MedianMeanDeviationRangeHigh);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.Label_MedianMeanDeviationMean);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.Label_MedianMeanDeviationPercent);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.Label_MedianMeanDeviationStdDev);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationPercent);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeHigh);
+            this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeLow);
+            this.GroupBox_MedianMeanDeviationWeight.Location = new System.Drawing.Point(458, 187);
+            this.GroupBox_MedianMeanDeviationWeight.Name = "GroupBox_MedianMeanDeviationWeight";
+            this.GroupBox_MedianMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_MedianMeanDeviationWeight.TabIndex = 18;
+            this.GroupBox_MedianMeanDeviationWeight.TabStop = false;
+            this.GroupBox_MedianMeanDeviationWeight.Text = "Median Mean Deviation Weight";
+            // 
+            // Label_MedianMeanDeviationRangeLow
+            // 
+            this.Label_MedianMeanDeviationRangeLow.AutoSize = true;
+            this.Label_MedianMeanDeviationRangeLow.Location = new System.Drawing.Point(112, 73);
+            this.Label_MedianMeanDeviationRangeLow.Name = "Label_MedianMeanDeviationRangeLow";
+            this.Label_MedianMeanDeviationRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_MedianMeanDeviationRangeLow.TabIndex = 13;
+            this.Label_MedianMeanDeviationRangeLow.Text = "Low";
+            this.Label_MedianMeanDeviationRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_MedianMeanDeviationRangeHigh
+            // 
+            this.Label_MedianMeanDeviationRangeHigh.AutoSize = true;
+            this.Label_MedianMeanDeviationRangeHigh.Location = new System.Drawing.Point(110, 47);
+            this.Label_MedianMeanDeviationRangeHigh.Name = "Label_MedianMeanDeviationRangeHigh";
+            this.Label_MedianMeanDeviationRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_MedianMeanDeviationRangeHigh.TabIndex = 12;
+            this.Label_MedianMeanDeviationRangeHigh.Text = "High";
+            this.Label_MedianMeanDeviationRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_MedianMeanDeviationMean
+            // 
+            this.Label_MedianMeanDeviationMean.AutoSize = true;
+            this.Label_MedianMeanDeviationMean.Location = new System.Drawing.Point(33, 25);
+            this.Label_MedianMeanDeviationMean.Name = "Label_MedianMeanDeviationMean";
+            this.Label_MedianMeanDeviationMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_MedianMeanDeviationMean.TabIndex = 10;
+            this.Label_MedianMeanDeviationMean.Text = "Mean: ";
+            // 
+            // Label_MedianMeanDeviationPercent
+            // 
+            this.Label_MedianMeanDeviationPercent.AutoSize = true;
+            this.Label_MedianMeanDeviationPercent.Location = new System.Drawing.Point(53, 59);
+            this.Label_MedianMeanDeviationPercent.Name = "Label_MedianMeanDeviationPercent";
+            this.Label_MedianMeanDeviationPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_MedianMeanDeviationPercent.TabIndex = 6;
+            this.Label_MedianMeanDeviationPercent.Text = "Percent";
+            // 
+            // Label_MedianMeanDeviationStdDev
+            // 
+            this.Label_MedianMeanDeviationStdDev.AutoSize = true;
+            this.Label_MedianMeanDeviationStdDev.Location = new System.Drawing.Point(106, 25);
+            this.Label_MedianMeanDeviationStdDev.Name = "Label_MedianMeanDeviationStdDev";
+            this.Label_MedianMeanDeviationStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_MedianMeanDeviationStdDev.TabIndex = 11;
+            this.Label_MedianMeanDeviationStdDev.Text = "StdDev: ";
+            // 
+            // TextBox_MedianMeanDeviationPercent
+            // 
+            this.TextBox_MedianMeanDeviationPercent.Location = new System.Drawing.Point(18, 55);
+            this.TextBox_MedianMeanDeviationPercent.Name = "TextBox_MedianMeanDeviationPercent";
+            this.TextBox_MedianMeanDeviationPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_MedianMeanDeviationPercent.TabIndex = 7;
+            this.TextBox_MedianMeanDeviationPercent.Text = "0";
+            this.TextBox_MedianMeanDeviationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianMeanDeviationPercent.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationPercent_TextChanged);
+            // 
+            // TextBox_MedianMeanDeviationRangeHigh
+            // 
+            this.TextBox_MedianMeanDeviationRangeHigh.Location = new System.Drawing.Point(141, 43);
+            this.TextBox_MedianMeanDeviationRangeHigh.Name = "TextBox_MedianMeanDeviationRangeHigh";
+            this.TextBox_MedianMeanDeviationRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_MedianMeanDeviationRangeHigh.TabIndex = 8;
+            this.TextBox_MedianMeanDeviationRangeHigh.Text = "1.0";
+            this.TextBox_MedianMeanDeviationRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianMeanDeviationRangeHigh.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationRangeHigh_TextChanged);
+            // 
+            // TextBox_MedianMeanDeviationRangeLow
+            // 
+            this.TextBox_MedianMeanDeviationRangeLow.Location = new System.Drawing.Point(141, 69);
+            this.TextBox_MedianMeanDeviationRangeLow.Name = "TextBox_MedianMeanDeviationRangeLow";
+            this.TextBox_MedianMeanDeviationRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_MedianMeanDeviationRangeLow.TabIndex = 9;
+            this.TextBox_MedianMeanDeviationRangeLow.Text = "0.0";
+            this.TextBox_MedianMeanDeviationRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianMeanDeviationRangeLow.TextChanged += new System.EventHandler(this.TextBox_MeanMedianDeviationRangeLow_TextChanged);
+            // 
+            // GroupBox_EccentricityMeanDeviationWeight
+            // 
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.Label_EccentricityMeanDeviationRangeLow);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.Label_EccentricityMeanDeviationRangeHigh);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.Label_EccentricityMeanDeviationMean);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.Label_EccentricityMeanDeviationPercent);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.Label_EccentricityMeanDeviationStdDev);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationPercent);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeHigh);
+            this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeLow);
+            this.GroupBox_EccentricityMeanDeviationWeight.Location = new System.Drawing.Point(242, 187);
+            this.GroupBox_EccentricityMeanDeviationWeight.Name = "GroupBox_EccentricityMeanDeviationWeight";
+            this.GroupBox_EccentricityMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_EccentricityMeanDeviationWeight.TabIndex = 21;
+            this.GroupBox_EccentricityMeanDeviationWeight.TabStop = false;
+            this.GroupBox_EccentricityMeanDeviationWeight.Text = "Eccentricity Mean Deviation Weight";
+            // 
+            // Label_EccentricityMeanDeviationRangeLow
+            // 
+            this.Label_EccentricityMeanDeviationRangeLow.AutoSize = true;
+            this.Label_EccentricityMeanDeviationRangeLow.Location = new System.Drawing.Point(112, 73);
+            this.Label_EccentricityMeanDeviationRangeLow.Name = "Label_EccentricityMeanDeviationRangeLow";
+            this.Label_EccentricityMeanDeviationRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_EccentricityMeanDeviationRangeLow.TabIndex = 13;
+            this.Label_EccentricityMeanDeviationRangeLow.Text = "Low";
+            this.Label_EccentricityMeanDeviationRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_EccentricityMeanDeviationRangeHigh
+            // 
+            this.Label_EccentricityMeanDeviationRangeHigh.AutoSize = true;
+            this.Label_EccentricityMeanDeviationRangeHigh.Location = new System.Drawing.Point(110, 47);
+            this.Label_EccentricityMeanDeviationRangeHigh.Name = "Label_EccentricityMeanDeviationRangeHigh";
+            this.Label_EccentricityMeanDeviationRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_EccentricityMeanDeviationRangeHigh.TabIndex = 12;
+            this.Label_EccentricityMeanDeviationRangeHigh.Text = "High";
+            this.Label_EccentricityMeanDeviationRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_EccentricityMeanDeviationMean
+            // 
+            this.Label_EccentricityMeanDeviationMean.AutoSize = true;
+            this.Label_EccentricityMeanDeviationMean.Location = new System.Drawing.Point(33, 25);
+            this.Label_EccentricityMeanDeviationMean.Name = "Label_EccentricityMeanDeviationMean";
+            this.Label_EccentricityMeanDeviationMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_EccentricityMeanDeviationMean.TabIndex = 10;
+            this.Label_EccentricityMeanDeviationMean.Text = "Mean: ";
+            // 
+            // Label_EccentricityMeanDeviationPercent
+            // 
+            this.Label_EccentricityMeanDeviationPercent.AutoSize = true;
+            this.Label_EccentricityMeanDeviationPercent.Location = new System.Drawing.Point(53, 59);
+            this.Label_EccentricityMeanDeviationPercent.Name = "Label_EccentricityMeanDeviationPercent";
+            this.Label_EccentricityMeanDeviationPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_EccentricityMeanDeviationPercent.TabIndex = 6;
+            this.Label_EccentricityMeanDeviationPercent.Text = "Percent";
+            // 
+            // Label_EccentricityMeanDeviationStdDev
+            // 
+            this.Label_EccentricityMeanDeviationStdDev.AutoSize = true;
+            this.Label_EccentricityMeanDeviationStdDev.Location = new System.Drawing.Point(106, 25);
+            this.Label_EccentricityMeanDeviationStdDev.Name = "Label_EccentricityMeanDeviationStdDev";
+            this.Label_EccentricityMeanDeviationStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_EccentricityMeanDeviationStdDev.TabIndex = 11;
+            this.Label_EccentricityMeanDeviationStdDev.Text = "StdDev: ";
+            // 
+            // TextBox_EccentricityMeanDeviationPercent
+            // 
+            this.TextBox_EccentricityMeanDeviationPercent.Location = new System.Drawing.Point(18, 55);
+            this.TextBox_EccentricityMeanDeviationPercent.Name = "TextBox_EccentricityMeanDeviationPercent";
+            this.TextBox_EccentricityMeanDeviationPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_EccentricityMeanDeviationPercent.TabIndex = 7;
+            this.TextBox_EccentricityMeanDeviationPercent.Text = "15";
+            this.TextBox_EccentricityMeanDeviationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_EccentricityMeanDeviationPercent.TextChanged += new System.EventHandler(this.TextBox_EccentricityMeanDeviationPercent_TextChanged);
+            // 
+            // TextBox_EccentricityMeanDeviationRangeHigh
+            // 
+            this.TextBox_EccentricityMeanDeviationRangeHigh.Location = new System.Drawing.Point(141, 43);
+            this.TextBox_EccentricityMeanDeviationRangeHigh.Name = "TextBox_EccentricityMeanDeviationRangeHigh";
+            this.TextBox_EccentricityMeanDeviationRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_EccentricityMeanDeviationRangeHigh.TabIndex = 8;
+            this.TextBox_EccentricityMeanDeviationRangeHigh.Text = "1.0";
+            this.TextBox_EccentricityMeanDeviationRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_EccentricityMeanDeviationRangeHigh.TextChanged += new System.EventHandler(this.TextBox_EccentricityMeanDeviationRangeHigh_TextChanged);
+            // 
+            // TextBox_EccentricityMeanDeviationRangeLow
+            // 
+            this.TextBox_EccentricityMeanDeviationRangeLow.Location = new System.Drawing.Point(141, 69);
+            this.TextBox_EccentricityMeanDeviationRangeLow.Name = "TextBox_EccentricityMeanDeviationRangeLow";
+            this.TextBox_EccentricityMeanDeviationRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_EccentricityMeanDeviationRangeLow.TabIndex = 9;
+            this.TextBox_EccentricityMeanDeviationRangeLow.Text = "0.0";
+            this.TextBox_EccentricityMeanDeviationRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_EccentricityMeanDeviationRangeLow.TextChanged += new System.EventHandler(this.TextBox_EccentricityMeanDeviationRangeLow_TextChanged);
+            // 
+            // GroupBox_StarsWeight
+            // 
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarRangeLow);
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarMean);
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarRangeHigh);
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarPercent);
+            this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarPercent);
+            this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeHigh);
+            this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeLow);
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarStdDev);
+            this.GroupBox_StarsWeight.Location = new System.Drawing.Point(26, 399);
+            this.GroupBox_StarsWeight.Name = "GroupBox_StarsWeight";
+            this.GroupBox_StarsWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_StarsWeight.TabIndex = 23;
+            this.GroupBox_StarsWeight.TabStop = false;
+            this.GroupBox_StarsWeight.Text = "Star Weight";
+            // 
+            // Label_StarRangeLow
+            // 
+            this.Label_StarRangeLow.AutoSize = true;
+            this.Label_StarRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_StarRangeLow.Name = "Label_StarRangeLow";
+            this.Label_StarRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_StarRangeLow.TabIndex = 15;
+            this.Label_StarRangeLow.Text = "Low";
+            this.Label_StarRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_StarMean
+            // 
+            this.Label_StarMean.AutoSize = true;
+            this.Label_StarMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_StarMean.Name = "Label_StarMean";
+            this.Label_StarMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_StarMean.TabIndex = 4;
+            this.Label_StarMean.Text = "Mean: ";
+            // 
+            // Label_StarRangeHigh
+            // 
+            this.Label_StarRangeHigh.AutoSize = true;
+            this.Label_StarRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_StarRangeHigh.Name = "Label_StarRangeHigh";
+            this.Label_StarRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_StarRangeHigh.TabIndex = 14;
+            this.Label_StarRangeHigh.Text = "High";
+            this.Label_StarRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_StarPercent
+            // 
+            this.Label_StarPercent.AutoSize = true;
+            this.Label_StarPercent.Location = new System.Drawing.Point(53, 60);
+            this.Label_StarPercent.Name = "Label_StarPercent";
+            this.Label_StarPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_StarPercent.TabIndex = 0;
+            this.Label_StarPercent.Text = "Percent";
+            // 
+            // TextBox_StarPercent
+            // 
+            this.TextBox_StarPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_StarPercent.Name = "TextBox_StarPercent";
+            this.TextBox_StarPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_StarPercent.TabIndex = 1;
+            this.TextBox_StarPercent.Text = "0";
+            this.TextBox_StarPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarPercent.TextChanged += new System.EventHandler(this.TextBox_StarsPercent_TextChanged);
+            // 
+            // TextBox_StarRangeHigh
+            // 
+            this.TextBox_StarRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_StarRangeHigh.Name = "TextBox_StarRangeHigh";
+            this.TextBox_StarRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarRangeHigh.TabIndex = 2;
+            this.TextBox_StarRangeHigh.Text = "1.0";
+            this.TextBox_StarRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarRangeHigh.TextChanged += new System.EventHandler(this.TextBox_StarsRangeHigh_TextChanged);
+            // 
+            // TextBox_StarRangeLow
+            // 
+            this.TextBox_StarRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_StarRangeLow.Name = "TextBox_StarRangeLow";
+            this.TextBox_StarRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_StarRangeLow.TabIndex = 3;
+            this.TextBox_StarRangeLow.Text = "0.0";
+            this.TextBox_StarRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarRangeLow.TextChanged += new System.EventHandler(this.TextBox_StarsRangeLow_TextChanged);
+            // 
+            // Label_StarStdDev
+            // 
+            this.Label_StarStdDev.AutoSize = true;
+            this.Label_StarStdDev.Location = new System.Drawing.Point(102, 26);
+            this.Label_StarStdDev.Name = "Label_StarStdDev";
+            this.Label_StarStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_StarStdDev.TabIndex = 5;
+            this.Label_StarStdDev.Text = "StdDev: ";
             // 
             // GroupBox_NoiseWeight
             // 
@@ -545,7 +987,7 @@
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeHigh);
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeLow);
             this.GroupBox_NoiseWeight.Controls.Add(this.Label_NoiseStdDev);
-            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(458, 187);
+            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(26, 293);
             this.GroupBox_NoiseWeight.Name = "GroupBox_NoiseWeight";
             this.GroupBox_NoiseWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_NoiseWeight.TabIndex = 19;
@@ -628,6 +1070,100 @@
             this.Label_NoiseStdDev.Size = new System.Drawing.Size(49, 13);
             this.Label_NoiseStdDev.TabIndex = 5;
             this.Label_NoiseStdDev.Text = "StdDev: ";
+            // 
+            // GroupBox_FwhmMeanDeviationWeight
+            // 
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationRangeLow);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationMean);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationRangeHigh);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationPercent);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationPercent);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeHigh);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeLow);
+            this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationStdDev);
+            this.GroupBox_FwhmMeanDeviationWeight.Location = new System.Drawing.Point(26, 187);
+            this.GroupBox_FwhmMeanDeviationWeight.Name = "GroupBox_FwhmMeanDeviationWeight";
+            this.GroupBox_FwhmMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_FwhmMeanDeviationWeight.TabIndex = 22;
+            this.GroupBox_FwhmMeanDeviationWeight.TabStop = false;
+            this.GroupBox_FwhmMeanDeviationWeight.Text = "FWHM Mean Deviation Weight";
+            // 
+            // Label_FwhmMeanDeviationRangeLow
+            // 
+            this.Label_FwhmMeanDeviationRangeLow.AutoSize = true;
+            this.Label_FwhmMeanDeviationRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_FwhmMeanDeviationRangeLow.Name = "Label_FwhmMeanDeviationRangeLow";
+            this.Label_FwhmMeanDeviationRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_FwhmMeanDeviationRangeLow.TabIndex = 15;
+            this.Label_FwhmMeanDeviationRangeLow.Text = "Low";
+            this.Label_FwhmMeanDeviationRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_FwhmMeanDeviationMean
+            // 
+            this.Label_FwhmMeanDeviationMean.AutoSize = true;
+            this.Label_FwhmMeanDeviationMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_FwhmMeanDeviationMean.Name = "Label_FwhmMeanDeviationMean";
+            this.Label_FwhmMeanDeviationMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_FwhmMeanDeviationMean.TabIndex = 4;
+            this.Label_FwhmMeanDeviationMean.Text = "Mean: ";
+            // 
+            // Label_FwhmMeanDeviationRangeHigh
+            // 
+            this.Label_FwhmMeanDeviationRangeHigh.AutoSize = true;
+            this.Label_FwhmMeanDeviationRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_FwhmMeanDeviationRangeHigh.Name = "Label_FwhmMeanDeviationRangeHigh";
+            this.Label_FwhmMeanDeviationRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_FwhmMeanDeviationRangeHigh.TabIndex = 14;
+            this.Label_FwhmMeanDeviationRangeHigh.Text = "High";
+            this.Label_FwhmMeanDeviationRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_FwhmMeanDeviationPercent
+            // 
+            this.Label_FwhmMeanDeviationPercent.AutoSize = true;
+            this.Label_FwhmMeanDeviationPercent.Location = new System.Drawing.Point(53, 60);
+            this.Label_FwhmMeanDeviationPercent.Name = "Label_FwhmMeanDeviationPercent";
+            this.Label_FwhmMeanDeviationPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_FwhmMeanDeviationPercent.TabIndex = 0;
+            this.Label_FwhmMeanDeviationPercent.Text = "Percent";
+            // 
+            // TextBox_FwhmMeanDeviationPercent
+            // 
+            this.TextBox_FwhmMeanDeviationPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_FwhmMeanDeviationPercent.Name = "TextBox_FwhmMeanDeviationPercent";
+            this.TextBox_FwhmMeanDeviationPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_FwhmMeanDeviationPercent.TabIndex = 1;
+            this.TextBox_FwhmMeanDeviationPercent.Text = "10";
+            this.TextBox_FwhmMeanDeviationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_FwhmMeanDeviationPercent.TextChanged += new System.EventHandler(this.TextBox_FwhmMeanDeviationPercent_TextChanged);
+            // 
+            // TextBox_FwhmMeanDeviationRangeHigh
+            // 
+            this.TextBox_FwhmMeanDeviationRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_FwhmMeanDeviationRangeHigh.Name = "TextBox_FwhmMeanDeviationRangeHigh";
+            this.TextBox_FwhmMeanDeviationRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_FwhmMeanDeviationRangeHigh.TabIndex = 2;
+            this.TextBox_FwhmMeanDeviationRangeHigh.Text = "1.0";
+            this.TextBox_FwhmMeanDeviationRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_FwhmMeanDeviationRangeHigh.TextChanged += new System.EventHandler(this.TextBox_FwhmMeanDeviationRangeHigh_TextChanged);
+            // 
+            // TextBox_FwhmMeanDeviationRangeLow
+            // 
+            this.TextBox_FwhmMeanDeviationRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_FwhmMeanDeviationRangeLow.Name = "TextBox_FwhmMeanDeviationRangeLow";
+            this.TextBox_FwhmMeanDeviationRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_FwhmMeanDeviationRangeLow.TabIndex = 3;
+            this.TextBox_FwhmMeanDeviationRangeLow.Text = "0.0";
+            this.TextBox_FwhmMeanDeviationRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_FwhmMeanDeviationRangeLow.TextChanged += new System.EventHandler(this.TextBox_FwhmMeanDeviationRangeLow_TextChanged);
+            // 
+            // Label_FwhmMeanDeviationStdDev
+            // 
+            this.Label_FwhmMeanDeviationStdDev.AutoSize = true;
+            this.Label_FwhmMeanDeviationStdDev.Location = new System.Drawing.Point(102, 26);
+            this.Label_FwhmMeanDeviationStdDev.Name = "Label_FwhmMeanDeviationStdDev";
+            this.Label_FwhmMeanDeviationStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_FwhmMeanDeviationStdDev.TabIndex = 5;
+            this.Label_FwhmMeanDeviationStdDev.Text = "StdDev: ";
             // 
             // GroupBox_EccentricityWeight
             // 
@@ -723,6 +1259,100 @@
             this.TextBox_EccentricityRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.TextBox_EccentricityRangeLow.TextChanged += new System.EventHandler(this.TextBox_EccentricityRangeLow_TextChanged);
             // 
+            // GroupBox_NoiseRatioWeight
+            // 
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.Label_NoiseRatioRangeLow);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.Label_NoiseRatioMean);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.Label_NoiseRatioRangeHigh);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.Label_NoiseRatioPercent);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioPercent);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeHigh);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeLow);
+            this.GroupBox_NoiseRatioWeight.Controls.Add(this.label_NoiseRatioStdDev);
+            this.GroupBox_NoiseRatioWeight.Location = new System.Drawing.Point(242, 293);
+            this.GroupBox_NoiseRatioWeight.Name = "GroupBox_NoiseRatioWeight";
+            this.GroupBox_NoiseRatioWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_NoiseRatioWeight.TabIndex = 20;
+            this.GroupBox_NoiseRatioWeight.TabStop = false;
+            this.GroupBox_NoiseRatioWeight.Text = "Noise Ratio Weight";
+            // 
+            // Label_NoiseRatioRangeLow
+            // 
+            this.Label_NoiseRatioRangeLow.AutoSize = true;
+            this.Label_NoiseRatioRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_NoiseRatioRangeLow.Name = "Label_NoiseRatioRangeLow";
+            this.Label_NoiseRatioRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_NoiseRatioRangeLow.TabIndex = 15;
+            this.Label_NoiseRatioRangeLow.Text = "Low";
+            this.Label_NoiseRatioRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_NoiseRatioMean
+            // 
+            this.Label_NoiseRatioMean.AutoSize = true;
+            this.Label_NoiseRatioMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_NoiseRatioMean.Name = "Label_NoiseRatioMean";
+            this.Label_NoiseRatioMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_NoiseRatioMean.TabIndex = 4;
+            this.Label_NoiseRatioMean.Text = "Mean: ";
+            // 
+            // Label_NoiseRatioRangeHigh
+            // 
+            this.Label_NoiseRatioRangeHigh.AutoSize = true;
+            this.Label_NoiseRatioRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_NoiseRatioRangeHigh.Name = "Label_NoiseRatioRangeHigh";
+            this.Label_NoiseRatioRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_NoiseRatioRangeHigh.TabIndex = 14;
+            this.Label_NoiseRatioRangeHigh.Text = "High";
+            this.Label_NoiseRatioRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_NoiseRatioPercent
+            // 
+            this.Label_NoiseRatioPercent.AutoSize = true;
+            this.Label_NoiseRatioPercent.Location = new System.Drawing.Point(53, 60);
+            this.Label_NoiseRatioPercent.Name = "Label_NoiseRatioPercent";
+            this.Label_NoiseRatioPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_NoiseRatioPercent.TabIndex = 0;
+            this.Label_NoiseRatioPercent.Text = "Percent";
+            // 
+            // TextBox_NoiseRatioPercent
+            // 
+            this.TextBox_NoiseRatioPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_NoiseRatioPercent.Name = "TextBox_NoiseRatioPercent";
+            this.TextBox_NoiseRatioPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_NoiseRatioPercent.TabIndex = 1;
+            this.TextBox_NoiseRatioPercent.Text = "75";
+            this.TextBox_NoiseRatioPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_NoiseRatioPercent.TextChanged += new System.EventHandler(this.TextBox_NoiseRatioPercent_TextChanged);
+            // 
+            // TextBox_NoiseRatioRangeHigh
+            // 
+            this.TextBox_NoiseRatioRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_NoiseRatioRangeHigh.Name = "TextBox_NoiseRatioRangeHigh";
+            this.TextBox_NoiseRatioRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_NoiseRatioRangeHigh.TabIndex = 2;
+            this.TextBox_NoiseRatioRangeHigh.Text = "1.0";
+            this.TextBox_NoiseRatioRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_NoiseRatioRangeHigh.TextChanged += new System.EventHandler(this.TextBox_NoiseRatioRangeHigh_TextChanged);
+            // 
+            // TextBox_NoiseRatioRangeLow
+            // 
+            this.TextBox_NoiseRatioRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_NoiseRatioRangeLow.Name = "TextBox_NoiseRatioRangeLow";
+            this.TextBox_NoiseRatioRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_NoiseRatioRangeLow.TabIndex = 3;
+            this.TextBox_NoiseRatioRangeLow.Text = "0.0";
+            this.TextBox_NoiseRatioRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_NoiseRatioRangeLow.TextChanged += new System.EventHandler(this.TextBox_NoiseRationRangeLow_TextChanged);
+            // 
+            // label_NoiseRatioStdDev
+            // 
+            this.label_NoiseRatioStdDev.AutoSize = true;
+            this.label_NoiseRatioStdDev.Location = new System.Drawing.Point(102, 26);
+            this.label_NoiseRatioStdDev.Name = "label_NoiseRatioStdDev";
+            this.label_NoiseRatioStdDev.Size = new System.Drawing.Size(49, 13);
+            this.label_NoiseRatioStdDev.TabIndex = 5;
+            this.label_NoiseRatioStdDev.Text = "StdDev: ";
+            // 
             // GroupBox_MedianWeight
             // 
             this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianRangeLow);
@@ -733,7 +1363,7 @@
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeHigh);
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeLow);
             this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianStdDev);
-            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(26, 187);
+            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 81);
             this.GroupBox_MedianWeight.Name = "GroupBox_MedianWeight";
             this.GroupBox_MedianWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_MedianWeight.TabIndex = 17;
@@ -827,7 +1457,7 @@
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeHigh);
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeLow);
             this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrStdDev);
-            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 81);
+            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 293);
             this.GroupBox_SnrWeight.Name = "GroupBox_SnrWeight";
             this.GroupBox_SnrWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_SnrWeight.TabIndex = 16;
@@ -1018,7 +1648,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(709, 560);
+            this.ClientSize = new System.Drawing.Size(709, 779);
             this.Controls.Add(this.Label_Task);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
             this.Controls.Add(this.ProgressBar_OverAll);
@@ -1039,14 +1669,26 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.GroupBox_WeightsAndStatistics.ResumeLayout(false);
+            this.GroupBox_StarResidual.ResumeLayout(false);
+            this.GroupBox_StarResidual.PerformLayout();
             this.GroupBox_UpdateStatistics.ResumeLayout(false);
             this.GroupBox_UpdateStatistics.PerformLayout();
-            this.GroupBox_MeanMedianDeviationWeight.ResumeLayout(false);
-            this.GroupBox_MeanMedianDeviationWeight.PerformLayout();
+            this.GroupBox_StarResidualMeanDeviation.ResumeLayout(false);
+            this.GroupBox_StarResidualMeanDeviation.PerformLayout();
+            this.GroupBox_MedianMeanDeviationWeight.ResumeLayout(false);
+            this.GroupBox_MedianMeanDeviationWeight.PerformLayout();
+            this.GroupBox_EccentricityMeanDeviationWeight.ResumeLayout(false);
+            this.GroupBox_EccentricityMeanDeviationWeight.PerformLayout();
+            this.GroupBox_StarsWeight.ResumeLayout(false);
+            this.GroupBox_StarsWeight.PerformLayout();
             this.GroupBox_NoiseWeight.ResumeLayout(false);
             this.GroupBox_NoiseWeight.PerformLayout();
+            this.GroupBox_FwhmMeanDeviationWeight.ResumeLayout(false);
+            this.GroupBox_FwhmMeanDeviationWeight.PerformLayout();
             this.GroupBox_EccentricityWeight.ResumeLayout(false);
             this.GroupBox_EccentricityWeight.PerformLayout();
+            this.GroupBox_NoiseRatioWeight.ResumeLayout(false);
+            this.GroupBox_NoiseRatioWeight.PerformLayout();
             this.GroupBox_MedianWeight.ResumeLayout(false);
             this.GroupBox_MedianWeight.PerformLayout();
             this.GroupBox_SnrWeight.ResumeLayout(false);
@@ -1094,15 +1736,15 @@
         private System.Windows.Forms.Label Label_UpdateStatisticsRangeLow;
         private System.Windows.Forms.TextBox TextBox_UpdateStatisticsRangeLow;
         private System.Windows.Forms.Label Label_UpdateStatisticsRangeHigh;
-        private System.Windows.Forms.GroupBox GroupBox_MeanMedianDeviationWeight;
-        private System.Windows.Forms.Label Label_MeanMedianDeviationRangeLow;
-        private System.Windows.Forms.Label Label_MeanMedianDeviationRangeHigh;
-        private System.Windows.Forms.Label Label_MeanMedianDeviationMean;
-        private System.Windows.Forms.Label Label_MeanMedianDeviationPercent;
-        private System.Windows.Forms.Label Label_MeanMedianDeviationStdDev;
-        private System.Windows.Forms.TextBox TextBox_MeanMedianDeviationPercent;
-        private System.Windows.Forms.TextBox TextBox_MeanMedianDeviationRangeHigh;
-        private System.Windows.Forms.TextBox TextBox_MeanMedianDeviationRangeLow;
+        private System.Windows.Forms.GroupBox GroupBox_MedianMeanDeviationWeight;
+        private System.Windows.Forms.Label Label_MedianMeanDeviationRangeLow;
+        private System.Windows.Forms.Label Label_MedianMeanDeviationRangeHigh;
+        private System.Windows.Forms.Label Label_MedianMeanDeviationMean;
+        private System.Windows.Forms.Label Label_MedianMeanDeviationPercent;
+        private System.Windows.Forms.Label Label_MedianMeanDeviationStdDev;
+        private System.Windows.Forms.TextBox TextBox_MedianMeanDeviationPercent;
+        private System.Windows.Forms.TextBox TextBox_MedianMeanDeviationRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_MedianMeanDeviationRangeLow;
         private System.Windows.Forms.GroupBox GroupBox_NoiseWeight;
         private System.Windows.Forms.Label Label_NoiseRangeLow;
         private System.Windows.Forms.Label Label_NoiseMean;
@@ -1144,6 +1786,60 @@
         private System.Windows.Forms.Label Label_FwhmRangeHigh;
         private System.Windows.Forms.Label Label_Task;
         private System.Windows.Forms.CheckBox CheckBox_IncludeWeightsAndStatistics;
+        private System.Windows.Forms.GroupBox GroupBox_StarResidual;
+        private System.Windows.Forms.Label Label_StarResidualRangeLow;
+        private System.Windows.Forms.Label Label_StarResidualRangeHigh;
+        private System.Windows.Forms.Label Label_StarResidualMean;
+        private System.Windows.Forms.Label Label_StarResidualPercent;
+        private System.Windows.Forms.Label Label_StarResidualStdDev;
+        private System.Windows.Forms.TextBox TextBox_StarResidualPercent;
+        private System.Windows.Forms.TextBox TextBox_StarResidualRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_StarResidualRangeLow;
+        private System.Windows.Forms.GroupBox GroupBox_StarResidualMeanDeviation;
+        private System.Windows.Forms.Label Label_StarResidualMeanDevationRangeLow;
+        private System.Windows.Forms.Label Label_StarResidualMeanDevationMean;
+        private System.Windows.Forms.Label Label_StarResidualMeanDevationRangeHigh;
+        private System.Windows.Forms.Label Label_StarResidualMeanDevationPercent;
+        private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationPercent;
+        private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationRangeLow;
+        private System.Windows.Forms.Label Label_StarResidualMeanDevationStdDev;
+        private System.Windows.Forms.GroupBox GroupBox_EccentricityMeanDeviationWeight;
+        private System.Windows.Forms.Label Label_EccentricityMeanDeviationRangeLow;
+        private System.Windows.Forms.Label Label_EccentricityMeanDeviationRangeHigh;
+        private System.Windows.Forms.Label Label_EccentricityMeanDeviationMean;
+        private System.Windows.Forms.Label Label_EccentricityMeanDeviationPercent;
+        private System.Windows.Forms.Label Label_EccentricityMeanDeviationStdDev;
+        private System.Windows.Forms.TextBox TextBox_EccentricityMeanDeviationPercent;
+        private System.Windows.Forms.TextBox TextBox_EccentricityMeanDeviationRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_EccentricityMeanDeviationRangeLow;
+        private System.Windows.Forms.GroupBox GroupBox_StarsWeight;
+        private System.Windows.Forms.Label Label_StarRangeLow;
+        private System.Windows.Forms.Label Label_StarMean;
+        private System.Windows.Forms.Label Label_StarRangeHigh;
+        private System.Windows.Forms.Label Label_StarPercent;
+        private System.Windows.Forms.TextBox TextBox_StarPercent;
+        private System.Windows.Forms.TextBox TextBox_StarRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_StarRangeLow;
+        private System.Windows.Forms.Label Label_StarStdDev;
+        private System.Windows.Forms.GroupBox GroupBox_FwhmMeanDeviationWeight;
+        private System.Windows.Forms.Label Label_FwhmMeanDeviationRangeLow;
+        private System.Windows.Forms.Label Label_FwhmMeanDeviationMean;
+        private System.Windows.Forms.Label Label_FwhmMeanDeviationRangeHigh;
+        private System.Windows.Forms.Label Label_FwhmMeanDeviationPercent;
+        private System.Windows.Forms.TextBox TextBox_FwhmMeanDeviationPercent;
+        private System.Windows.Forms.TextBox TextBox_FwhmMeanDeviationRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_FwhmMeanDeviationRangeLow;
+        private System.Windows.Forms.Label Label_FwhmMeanDeviationStdDev;
+        private System.Windows.Forms.GroupBox GroupBox_NoiseRatioWeight;
+        private System.Windows.Forms.Label Label_NoiseRatioRangeLow;
+        private System.Windows.Forms.Label Label_NoiseRatioMean;
+        private System.Windows.Forms.Label Label_NoiseRatioRangeHigh;
+        private System.Windows.Forms.Label Label_NoiseRatioPercent;
+        private System.Windows.Forms.TextBox TextBox_NoiseRatioPercent;
+        private System.Windows.Forms.TextBox TextBox_NoiseRatioRangeHigh;
+        private System.Windows.Forms.TextBox TextBox_NoiseRatioRangeLow;
+        private System.Windows.Forms.Label label_NoiseRatioStdDev;
     }
 }
 

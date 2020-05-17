@@ -61,32 +61,47 @@ namespace XisfRename.Csv
                 {
                     foreach (string field in fields.Split(','))
                     {
-                        FindApprovedIndex(field, index);
-                        FindFileIndex(field, index);
-                        FindWeightIndex(field, index);
-                        FindFwhmIndex(field, index);
-                        FindEccentricityIndex(field, index);
-                        FindFSnrWeightIndex(field, index);
-                        FindMedianIndex(field, index);
-                        FindMedianMeanDeviationIndex(field, index);
-                        FindNoiseIndex(field, index);
+                        GetApprovedIndex(field, index);
+                        GetEccentricityIndex(field, index);
+                        GetEccentricityMeanDeviationIndex(field, index);
+                        GetFileIndex(field, index);
+                        GetFwhmIndex(field, index);
+                        GetFwhmMeanDeviationIndex(field, index);
+                        GetMedianIndex(field, index);
+                        GetMedianMeanDeviationIndex(field, index);
+                        GetNoiseIndex(field, index);
+                        GetNoiseRatioIndex(field, index);
+                        GetSnrWeightIndex(field, index);
+                        GetStarResidualIndex(field, index);
+                        GetStarResidualMeanDeviationIndex(field, index);
+                        GetStarsIndex(field, index);
+                        GetWeightIndex(field, index);
+
                         index++;
                     }
+
                     GetColumnIndexes = false;
                     continue;
                 }
 
                 foreach (string field in line.Split(','))
                 {
-                    FindApproved(field, index);
-                    FindFile(field, index);
-                    FindWeight(field, index);
-                    FindFwhm(field, index);
-                    FindEccentricity(field, index);
-                    FindFSnrWeight(field, index);
-                    FindMedian(field, index);
-                    FindMedianMeanDeviation(field, index);
-                    FindNoise(field, index);
+                    AddApproved(field, index);
+                    AddEccentricity(field, index);
+                    AddEccentricityMeanDeviation(field, index);
+                    AddFile(field, index);
+                    AddFwhm(field, index);
+                    AddFwhmMeanDeviation(field, index);
+                    AddMedian(field, index);
+                    AddMedianMeanDeviation(field, index);
+                    AddNoise(field, index);
+                    AddNoiseRatio(field, index);
+                    AddSnrWeight(field, index);
+                    AddStarResidual(field, index);
+                    AddStarResidualMeanDeviation(field, index);
+                    AddStars(field, index);
+                    AddWeight(field, index);
+
                     index++;
                 }
             }
@@ -94,15 +109,18 @@ namespace XisfRename.Csv
             return true;
         }
 
+        // **************************************************************************************************************
+        // **************************************************************************************************************
 
-        private static void FindApprovedIndex(string field, int index)
+        private static void GetApprovedIndex(string field, int index)
         {
             if (field.Equals("Approved"))
             {
                 mSubFrameData.ApprovedIndex = index;
             }
         }
-        private static void FindApproved(string field, int index)
+
+        private static void AddApproved(string field, int index)
         {
             if (index == mSubFrameData.ApprovedIndex)
             {
@@ -110,73 +128,18 @@ namespace XisfRename.Csv
             }
         }
 
+        // **************************************************************************************************************
+        // **************************************************************************************************************
 
-        private static void FindFileIndex(string field, int index)
-        {
-            if (field.Equals("File"))
-            {
-                mSubFrameData.FileIndex = index;
-            }
-        }
-        private static void FindFile(string field, int index)
-        {
-            if (index == mSubFrameData.FileIndex)
-            {
-                mSubFrameData.File.Add(field.Replace("\"", ""));
-            }
-        }
-
-
-        private static void FindWeightIndex(string field, int index)
-        {
-            if (field.Equals("Weight"))
-            {
-                mSubFrameData.WeightIndex = index;
-            }
-        }
-        private static void FindWeight(string field, int index)
-        {
-            bool status;
-            double value;
-
-            if (index == mSubFrameData.WeightIndex)
-            {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Weight.Add((status == true) ? value : -1);
-            }
-        }
-
-
-        private static void FindFwhmIndex(string field, int index)
-        {
-            if (field.Equals("FWHM"))
-            {
-                mSubFrameData.FwhmIndex = index;
-            }
-        }
-        private static void FindFwhm(string field, int index)
-        {
-            bool status;
-            double value;
-
-            if (index == mSubFrameData.FwhmIndex)
-            {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Fwhm.Add((status == true) ? value : -1);
-            }
-        }
-
-
-        private static void FindEccentricityIndex(string field, int index)
+        private static void GetEccentricityIndex(string field, int index)
         {
             if (field.Equals("Eccentricity"))
             {
                 mSubFrameData.EccentricityIndex = index;
             }
         }
-        private static void FindEccentricity(string field, int index)
+
+        private static void AddEccentricity(string field, int index)
         {
             bool status;
             double value;
@@ -189,34 +152,109 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void FindFSnrWeightIndex(string field, int index)
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetEccentricityMeanDeviationIndex(string field, int index)
         {
-            if (field.Equals("SNRWeight"))
+            if (field.Equals("EccentricityMeanDeviation"))
             {
-                mSubFrameData.SnrWeightIndex = index;
+                mSubFrameData.EccentricityMeanDeviationIndex = index;
             }
         }
-        private static void FindFSnrWeight(string field, int index)
+
+        private static void AddEccentricityMeanDeviation(string field, int index)
         {
             bool status;
             double value;
 
-            if (index == mSubFrameData.SnrWeightIndex)
+            if (index == mSubFrameData.EccentricityMeanDeviationIndex)
             {
                 status = double.TryParse(field, out value);
 
-                mSubFrameData.SnrWeight.Add((status == true) ? value : -1);
+                mSubFrameData.EccentricityMeanDeviation.Add((status == true) ? value : -1);
             }
         }
 
-        private static void FindMedianIndex(string field, int index)
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetFileIndex(string field, int index)
+        {
+            if (field.Equals("File"))
+            {
+                mSubFrameData.FileIndex = index;
+            }
+        }
+
+        private static void AddFile(string field, int index)
+        {
+            if (index == mSubFrameData.FileIndex)
+            {
+                mSubFrameData.File.Add(field.Replace("\"", ""));
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetFwhmIndex(string field, int index)
+        {
+            if (field.Equals("FWHM"))
+            {
+                mSubFrameData.FwhmIndex = index;
+            }
+        }
+
+        private static void AddFwhm(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.FwhmIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.Fwhm.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetFwhmMeanDeviationIndex(string field, int index)
+        {
+            if (field.Equals("FwhmMeanDeviation"))
+            {
+                mSubFrameData.FwhmMeanDeviationIndex = index;
+            }
+        }
+
+        private static void AddFwhmMeanDeviation(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.FwhmMeanDeviationIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.FwhmMeanDeviation.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetMedianIndex(string field, int index)
         {
             if (field.Equals("Median"))
             {
                 mSubFrameData.MedianIndex = index;
             }
         }
-        private static void FindMedian(string field, int index)
+
+        private static void AddMedian(string field, int index)
         {
             bool status;
             double value;
@@ -229,15 +267,18 @@ namespace XisfRename.Csv
             }
         }
 
+        // **************************************************************************************************************
+        // **************************************************************************************************************
 
-        private static void FindMedianMeanDeviationIndex(string field, int index)
+        private static void GetMedianMeanDeviationIndex(string field, int index)
         {
             if (field.Equals("MedianMeanDeviation"))
             {
                 mSubFrameData.MedianMeanDeviationIndex = index;
             }
         }
-        private static void FindMedianMeanDeviation(string field, int index)
+
+        private static void AddMedianMeanDeviation(string field, int index)
         {
             bool status;
             double value;
@@ -250,15 +291,17 @@ namespace XisfRename.Csv
             }
         }
 
+        // **************************************************************************************************************
+        // **************************************************************************************************************
 
-        private static void FindNoiseIndex(string field, int index)
+        private static void GetNoiseIndex(string field, int index)
         {
             if (field.Equals("Noise"))
             {
                 mSubFrameData.NoiseIndex = index;
             }
         }
-        private static void FindNoise(string field, int index)
+        private static void AddNoise(string field, int index)
         {
             bool status;
             double value;
@@ -270,5 +313,147 @@ namespace XisfRename.Csv
                 mSubFrameData.Noise.Add((status == true) ? value : -1);
             }
         }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetNoiseRatioIndex(string field, int index)
+        {
+            if (field.Equals("NoiseRatio"))
+            {
+                mSubFrameData.NoiseRatioIndex = index;
+            }
+        }
+        private static void AddNoiseRatio(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.NoiseRatioIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.NoiseRatio.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetSnrWeightIndex(string field, int index)
+        {
+            if (field.Equals("SNRWeight"))
+            {
+                mSubFrameData.SnrWeightIndex = index;
+            }
+        }
+        private static void AddSnrWeight(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.SnrWeightIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.SnrWeight.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetStarsIndex(string field, int index)
+        {
+            if (field.Equals("Stars"))
+            {
+                mSubFrameData.StarsIndex = index;
+            }
+        }
+        private static void AddStars(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.StarsIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.Stars.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetStarResidualIndex(string field, int index)
+        {
+            if (field.Equals("StarResidual"))
+            {
+                mSubFrameData.StarResidualIndex = index;
+            }
+        }
+        private static void AddStarResidual(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.StarResidualIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.StarResidual.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetStarResidualMeanDeviationIndex(string field, int index)
+        {
+            if (field.Equals("StarResidual"))
+            {
+                mSubFrameData.StarResidualIndex = index;
+            }
+        }
+        private static void AddStarResidualMeanDeviation(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.StarResidualMeanDeviationIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.StarResidualMeanDeviation.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
+        private static void GetWeightIndex(string field, int index)
+        {
+            if (field.Equals("Weight"))
+            {
+                mSubFrameData.WeightIndex = index;
+            }
+        }
+        private static void AddWeight(string field, int index)
+        {
+            bool status;
+            double value;
+
+            if (index == mSubFrameData.WeightIndex)
+            {
+                status = double.TryParse(field, out value);
+
+                mSubFrameData.Weight.Add((status == true) ? value : -1);
+            }
+        }
+
+        // **************************************************************************************************************
+        // **************************************************************************************************************
+
     }
 }

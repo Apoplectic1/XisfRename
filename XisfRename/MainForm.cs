@@ -18,41 +18,52 @@ namespace XisfRename
     public partial class MainForm : Form
     {
         List<Parse.XisfFile> mFileList;
-        Parse.XisfFile mFile;
         Parse.RenameXisfFile mRenameFile;
         Parse.UpdateXisfFile mUpdateFile;
-        private OpenFolderDialog mFolder;
-        private OpenFileDialog mFileCsv;
-        private string mFolderBrowseState;
-        private string mFolderCsvBrowseState;
+        Parse.XisfFile mFile;
         private DirectoryInfo d;
-
-        private double mFwhmPercent;
-        private double mFwhmRangeHigh;
-        private double mFwhmRangeLow;
-
+        private OpenFileDialog mFileCsv;
+        private OpenFolderDialog mFolder;
+        private double mEccentricityMeanDeviationPercent;
+        private double mEccentricityMeanDeviationRangeHigh;
+        private double mEccentricityMeanDeviationRangeLow;
         private double mEccentricityPercent;
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
-
-        private double mSnrPercent;
-        private double mSnrRangeHigh;
-        private double mSnrRangeLow;
-
-        private double mMedianPercent;
-        private double mMedianRangeHigh;
-        private double mMedianRangeLow;
-
+        private double mFwhmMeanDeviationPercent;
+        private double mFwhmMeanDeviationRangeHigh;
+        private double mFwhmMeanDeviationRangeLow;
+        private double mFwhmPercent;
+        private double mFwhmRangeHigh;
+        private double mFwhmRangeLow;
         private double mMeanMedianDeviationPercent;
         private double mMeanMedianDeviationRangeHigh;
         private double mMeanMedianDeviationRangeLow;
-
+        private double mMedianPercent;
+        private double mMedianRangeHigh;
+        private double mMedianRangeLow;
         private double mNoisePercent;
         private double mNoiseRangeHigh;
         private double mNoiseRangeLow;
-
+        private double mNoiseRatioPercent;
+        private double mNoiseRatioRangeHigh;
+        private double mNoiseRatioRangeLow;
+        private double mSnrPercent;
+        private double mSnrRangeHigh;
+        private double mSnrRangeLow;
+        private double mStarResidualMeanDevationPercent;
+        private double mStarResidualMeanDevationRangeHigh;
+        private double mStarResidualMeanDevationRangeLow;
+        private double mStarResidualPercent;
+        private double mStarResidualRangeHigh;
+        private double mStarResidualRangeLow;
+        private double mStarsPercent;
+        private double mStarsRangeHigh;
+        private double mStarsRangeLow;
         private double mUpdateStatisticsRangeHigh;
         private double mUpdateStatisticsRangeLow;
+        private string mFolderBrowseState;
+        private string mFolderCsvBrowseState;
 
         public MainForm()
         {
@@ -68,67 +79,84 @@ namespace XisfRename
         {
             base.OnLoad(e);
 
-            mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
-            mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
-
-
-            mFwhmPercent = Properties.Settings.Default.Persist_FwhmPercentState;
-            mFwhmRangeHigh = Properties.Settings.Default.Persist_FwhmRangeHighState;
-            mFwhmRangeLow = Properties.Settings.Default.Persist_FwhmRangeLowState;
-
-            TextBox_FwhmPercent.Text = mFwhmPercent.ToString("F0");
-            TextBox_FwhmRangeHigh.Text = mFwhmRangeHigh.ToString("F0");
-            TextBox_FwhmRangeLow.Text = mFwhmRangeLow.ToString("F0");
-
-
+            mEccentricityMeanDeviationPercent = Properties.Settings.Default.Persist_EccentricityMeanDeviationPercentState;
+            mEccentricityMeanDeviationRangeLow = Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeLowState;
+            mEccentricityMeanDeviationRangeHigh = Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeHighState;
             mEccentricityPercent = Properties.Settings.Default.Persist_EccentricityPercentState;
             mEccentricityRangeHigh = Properties.Settings.Default.Persist_EccentricityRangeHighState;
             mEccentricityRangeLow = Properties.Settings.Default.Persist_EccentricityRangeLowState;
-
-            TextBox_EccentricityPercent.Text = mEccentricityPercent.ToString("F0");
-            TextBox_EccentricityRangeHigh.Text = mEccentricityRangeHigh.ToString("F0");
-            TextBox_EccentricityRangeLow.Text = mEccentricityRangeLow.ToString("F0");
-
-
-            mSnrPercent = Properties.Settings.Default.Persist_SnrPercentState;
-            mSnrRangeHigh = Properties.Settings.Default.Persist_SnrRangeHighState;
-            mSnrRangeLow = Properties.Settings.Default.Persist_SnrRangeLowState;
-
-            TextBox_SnrPercent.Text = mSnrPercent.ToString("F0");
-            TextBox_SnrRangeHigh.Text = mSnrRangeHigh.ToString("F0");
-            TextBox_SnrRangeLow.Text = mSnrRangeLow.ToString("F0");
-
-
-            mMedianPercent = Properties.Settings.Default.Persist_MedianPercentState;
-            mMedianRangeHigh = Properties.Settings.Default.Persist_MedianRangeHighState;
-            mMedianRangeLow = Properties.Settings.Default.Persist_MedianRangeLowState;
-
-            TextBox_MedianPercent.Text = mMedianPercent.ToString("F0");
-            TextBox_MedianRangeHigh.Text = mMedianRangeHigh.ToString("F0");
-            TextBox_MedianRangeLow.Text = mMedianRangeLow.ToString("F0");
-
-
+            mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
+            mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
+            mFwhmMeanDeviationPercent = Properties.Settings.Default.Persist_FwhmMeanDeviationPercentState;
+            mFwhmMeanDeviationRangeHigh = Properties.Settings.Default.Persist_FwhmMeanDeviationRangeHighState;
+            mFwhmMeanDeviationRangeLow = Properties.Settings.Default.Persist_FwhmMeanDeviationRangeLowState;
+            mFwhmPercent = Properties.Settings.Default.Persist_FwhmPercentState;
+            mFwhmRangeHigh = Properties.Settings.Default.Persist_FwhmRangeHighState;
+            mFwhmRangeLow = Properties.Settings.Default.Persist_FwhmRangeLowState;
             mMeanMedianDeviationPercent = Properties.Settings.Default.Persist_MeanMedianDeviationPercentState;
             mMeanMedianDeviationRangeHigh = Properties.Settings.Default.Persist_MeanMedianDeviationRangeHighState;
             mMeanMedianDeviationRangeLow = Properties.Settings.Default.Persist_MeanMedianDeviationRangeLowState;
-
-            TextBox_MeanMedianDeviationPercent.Text = mMeanMedianDeviationPercent.ToString("F0");
-            TextBox_MeanMedianDeviationRangeHigh.Text = mMeanMedianDeviationRangeHigh.ToString("F0");
-            TextBox_MeanMedianDeviationRangeLow.Text = mMeanMedianDeviationRangeLow.ToString("F0");
-
-
+            mMedianPercent = Properties.Settings.Default.Persist_MedianPercentState;
+            mMedianRangeHigh = Properties.Settings.Default.Persist_MedianRangeHighState;
+            mMedianRangeLow = Properties.Settings.Default.Persist_MedianRangeLowState;
             mNoisePercent = Properties.Settings.Default.Persist_NoisePercentState;
             mNoiseRangeHigh = Properties.Settings.Default.Persist_NoiseRangeHighState;
             mNoiseRangeLow = Properties.Settings.Default.Persist_NoiseRangeLowState;
+            mNoiseRatioPercent = Properties.Settings.Default.Persist_NoiseRatioPercentState;
+            mNoiseRatioRangeHigh = Properties.Settings.Default.Persist_NoiseRatioRangeHighState;
+            mNoiseRatioRangeLow = Properties.Settings.Default.Persist_NoiseRatioRangeLowState;
+            mSnrPercent = Properties.Settings.Default.Persist_SnrPercentState;
+            mSnrRangeHigh = Properties.Settings.Default.Persist_SnrRangeHighState;
+            mSnrRangeLow = Properties.Settings.Default.Persist_SnrRangeLowState;
+            mStarResidualMeanDevationPercent = Properties.Settings.Default.Persist_StarResidualMeanDevationPercentState;
+            mStarResidualMeanDevationRangeHigh = Properties.Settings.Default.Persist_StarResidualMeanDevationRangeHighState;
+            mStarResidualMeanDevationRangeLow = Properties.Settings.Default.Persist_StarResidualMeanDevationRangeLowState;
+            mStarResidualPercent = Properties.Settings.Default.Persist_StarResidualPercentState;
+            mStarResidualRangeHigh = Properties.Settings.Default.Persist_StarResidualRangeHighState;
+            mStarResidualRangeLow = Properties.Settings.Default.Persist_StarResidualRangeLowState;
+            mStarsPercent = Properties.Settings.Default.Persist_StarsPercentState;
+            mStarsRangeHigh = Properties.Settings.Default.Persist_StarsRangeHighState;
+            mStarsRangeLow = Properties.Settings.Default.Persist_StarsRangeLowState;
+            mUpdateStatisticsRangeHigh = Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState;
+            mUpdateStatisticsRangeLow = Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState;
 
+            TextBox_EccentricityMeanDeviationPercent.Text = mEccentricityMeanDeviationPercent.ToString("F0");
+            TextBox_EccentricityMeanDeviationRangeHigh.Text = mEccentricityMeanDeviationRangeHigh.ToString("F0");
+            TextBox_EccentricityMeanDeviationRangeLow.Text = mEccentricityMeanDeviationRangeLow.ToString("F0");
+            TextBox_EccentricityPercent.Text = mEccentricityPercent.ToString("F0");
+            TextBox_EccentricityRangeHigh.Text = mEccentricityRangeHigh.ToString("F0");
+            TextBox_EccentricityRangeLow.Text = mEccentricityRangeLow.ToString("F0");
+            TextBox_FwhmMeanDeviationPercent.Text = mFwhmMeanDeviationPercent.ToString("F0");
+            TextBox_FwhmMeanDeviationRangeHigh.Text = mFwhmMeanDeviationRangeHigh.ToString("F0");
+            TextBox_FwhmMeanDeviationRangeLow.Text = mFwhmMeanDeviationRangeLow.ToString("F0");
+            TextBox_FwhmPercent.Text = mFwhmPercent.ToString("F0");
+            TextBox_FwhmRangeHigh.Text = mFwhmRangeHigh.ToString("F0");
+            TextBox_FwhmRangeLow.Text = mFwhmRangeLow.ToString("F0");
+            TextBox_MedianMeanDeviationPercent.Text = mMeanMedianDeviationPercent.ToString("F0");
+            TextBox_MedianMeanDeviationRangeHigh.Text = mMeanMedianDeviationRangeHigh.ToString("F0");
+            TextBox_MedianMeanDeviationRangeLow.Text = mMeanMedianDeviationRangeLow.ToString("F0");
+            TextBox_MedianPercent.Text = mMedianPercent.ToString("F0");
+            TextBox_MedianRangeHigh.Text = mMedianRangeHigh.ToString("F0");
+            TextBox_MedianRangeLow.Text = mMedianRangeLow.ToString("F0");
             TextBox_NoisePercent.Text = mNoisePercent.ToString("F0");
             TextBox_NoiseRangeHigh.Text = mNoiseRangeHigh.ToString("F0");
             TextBox_NoiseRangeLow.Text = mNoiseRangeLow.ToString("F0");
-
-            mUpdateStatisticsRangeHigh = Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState;
+            TextBox_NoiseRatioPercent.Text = mNoiseRatioPercent.ToString("F0");
+            TextBox_NoiseRatioRangeHigh.Text = mNoiseRatioRangeHigh.ToString("F0");
+            TextBox_NoiseRatioRangeLow.Text = mNoiseRatioRangeLow.ToString("F0");
+            TextBox_SnrPercent.Text = mSnrPercent.ToString("F0");
+            TextBox_SnrRangeHigh.Text = mSnrRangeHigh.ToString("F0");
+            TextBox_SnrRangeLow.Text = mSnrRangeLow.ToString("F0");
+            TextBox_StarResidualMeanDevationPercent.Text = mStarResidualMeanDevationPercent.ToString("F0");
+            TextBox_StarResidualMeanDevationRangeHigh.Text = mStarResidualMeanDevationRangeHigh.ToString("F0");
+            TextBox_StarResidualMeanDevationRangeLow.Text = mStarResidualMeanDevationRangeLow.ToString("F0");
+            TextBox_StarResidualPercent.Text = mStarResidualPercent.ToString("F0");
+            TextBox_StarResidualRangeHigh.Text = mStarResidualRangeHigh.ToString("F0");
+            TextBox_StarResidualRangeLow.Text = mStarResidualRangeLow.ToString("F0");
+            TextBox_StarPercent.Text = mStarsPercent.ToString("F0");
+            TextBox_StarRangeHigh.Text = mStarsRangeHigh.ToString("F0");
+            TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
-
-            mUpdateStatisticsRangeLow = Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState;
             TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
         }
 
@@ -137,33 +165,44 @@ namespace XisfRename
 
             base.OnClosing(e);
 
-            Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
-            Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
-
-            Properties.Settings.Default.Persist_FwhmPercentState = mFwhmPercent;
-            Properties.Settings.Default.Persist_FwhmRangeHighState = mFwhmRangeHigh;
-            Properties.Settings.Default.Persist_FwhmRangeLowState = mFwhmRangeLow;
-
+            Properties.Settings.Default.Persist_EccentricityMeanDeviationPercentState = mEccentricityMeanDeviationPercent;
+            Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeHighState = mEccentricityMeanDeviationRangeHigh;
+            Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeLowState = mEccentricityMeanDeviationRangeLow;
             Properties.Settings.Default.Persist_EccentricityPercentState = mEccentricityPercent;
             Properties.Settings.Default.Persist_EccentricityRangeHighState = mEccentricityRangeHigh;
             Properties.Settings.Default.Persist_EccentricityRangeLowState = mEccentricityRangeLow;
-
-            Properties.Settings.Default.Persist_SnrPercentState = mSnrPercent;
-            Properties.Settings.Default.Persist_SnrRangeHighState = mSnrRangeHigh;
-            Properties.Settings.Default.Persist_SnrRangeLowState = mSnrRangeLow;
-
-            Properties.Settings.Default.Persist_MedianPercentState = mMedianPercent;
-            Properties.Settings.Default.Persist_MedianRangeHighState = mMedianRangeHigh;
-            Properties.Settings.Default.Persist_MedianRangeLowState = mMedianRangeLow;
-
+            Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
+            Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
+            Properties.Settings.Default.Persist_FwhmMeanDeviationPercentState = mFwhmMeanDeviationPercent;
+            Properties.Settings.Default.Persist_FwhmMeanDeviationRangeHighState = mFwhmMeanDeviationRangeHigh;
+            Properties.Settings.Default.Persist_FwhmMeanDeviationRangeLowState = mFwhmMeanDeviationRangeLow;
+            Properties.Settings.Default.Persist_FwhmPercentState = mFwhmPercent;
+            Properties.Settings.Default.Persist_FwhmRangeHighState = mFwhmRangeHigh;
+            Properties.Settings.Default.Persist_FwhmRangeLowState = mFwhmRangeLow;
             Properties.Settings.Default.Persist_MeanMedianDeviationPercentState = mMeanMedianDeviationPercent;
             Properties.Settings.Default.Persist_MeanMedianDeviationRangeHighState = mMeanMedianDeviationRangeHigh;
             Properties.Settings.Default.Persist_MeanMedianDeviationRangeLowState = mMeanMedianDeviationRangeLow;
-
+            Properties.Settings.Default.Persist_MedianPercentState = mMedianPercent;
+            Properties.Settings.Default.Persist_MedianRangeHighState = mMedianRangeHigh;
+            Properties.Settings.Default.Persist_MedianRangeLowState = mMedianRangeLow;
             Properties.Settings.Default.Persist_NoisePercentState = mNoisePercent;
             Properties.Settings.Default.Persist_NoiseRangeHighState = mNoiseRangeHigh;
             Properties.Settings.Default.Persist_NoiseRangeLowState = mNoiseRangeLow;
-
+            Properties.Settings.Default.Persist_NoiseRatioPercentState = mNoiseRatioPercent;
+            Properties.Settings.Default.Persist_NoiseRatioRangeHighState = mNoiseRatioRangeHigh;
+            Properties.Settings.Default.Persist_NoiseRatioRangeLowState = mNoiseRatioRangeLow;
+            Properties.Settings.Default.Persist_SnrPercentState = mSnrPercent;
+            Properties.Settings.Default.Persist_SnrRangeHighState = mSnrRangeHigh;
+            Properties.Settings.Default.Persist_SnrRangeLowState = mSnrRangeLow;
+            Properties.Settings.Default.Persist_StarResidualMeanDevationPercentState = mStarResidualMeanDevationPercent;
+            Properties.Settings.Default.Persist_StarResidualMeanDevationRangeHighState = mStarResidualMeanDevationRangeHigh;
+            Properties.Settings.Default.Persist_StarResidualMeanDevationRangeLowState = mStarResidualMeanDevationRangeLow;
+            Properties.Settings.Default.Persist_StarResidualPercentState = mStarResidualPercent;
+            Properties.Settings.Default.Persist_StarResidualRangeHighState = mStarResidualRangeHigh;
+            Properties.Settings.Default.Persist_StarResidualRangeLowState = mStarResidualRangeLow;
+            Properties.Settings.Default.Persist_StarsPercentState = mStarsPercent;
+            Properties.Settings.Default.Persist_StarsRangeHighState = mStarsRangeHigh;
+            Properties.Settings.Default.Persist_StarsRangeLowState = mStarsRangeLow;
             Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState = mUpdateStatisticsRangeHigh;
             Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState = mUpdateStatisticsRangeLow;
 
@@ -405,17 +444,17 @@ namespace XisfRename
 
         private void TextBox_MeanMedianDeviationPercent_TextChanged(object sender, EventArgs e)
         {
-            mMeanMedianDeviationPercent = ValidateRangeValue(TextBox_MeanMedianDeviationPercent);
+            mMeanMedianDeviationPercent = ValidateRangeValue(TextBox_MedianMeanDeviationPercent);
         }
 
         private void TextBox_MeanMedianDeviationRangeHigh_TextChanged(object sender, EventArgs e)
         {
-            mMeanMedianDeviationRangeHigh = ValidateRangeValue(TextBox_MeanMedianDeviationRangeHigh);
+            mMeanMedianDeviationRangeHigh = ValidateRangeValue(TextBox_MedianMeanDeviationRangeHigh);
         }
 
         private void TextBox_MeanMedianDeviationRangeLow_TextChanged(object sender, EventArgs e)
         {
-            mMeanMedianDeviationRangeLow = ValidateRangeValue(TextBox_MeanMedianDeviationRangeLow);
+            mMeanMedianDeviationRangeLow = ValidateRangeValue(TextBox_MedianMeanDeviationRangeLow);
         }
 
         private void TextBox_NoisePercent_TextChanged(object sender, EventArgs e)
@@ -443,7 +482,97 @@ namespace XisfRename
             mUpdateStatisticsRangeLow = ValidateRangeValue(TextBox_UpdateStatisticsRangeLow);
         }
 
-        private double ValidateRangeValue (TextBox textBox)
+        private void TextBox_NoiseRatioPercent_TextChanged(object sender, EventArgs e)
+        {
+            mNoiseRatioPercent = ValidateRangeValue(TextBox_NoiseRatioPercent);
+        }
+
+        private void TextBox_NoiseRatioRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mNoiseRatioRangeHigh = ValidateRangeValue(TextBox_NoiseRatioRangeHigh);
+        }
+
+        private void TextBox_NoiseRationRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mNoiseRatioRangeLow = ValidateRangeValue(TextBox_NoiseRatioRangeLow);
+        }
+
+        private void TextBox_EccentricityMeanDeviationPercent_TextChanged(object sender, EventArgs e)
+        {
+            mEccentricityMeanDeviationPercent = ValidateRangeValue(TextBox_EccentricityMeanDeviationPercent);
+        }
+
+        private void TextBox_EccentricityMeanDeviationRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mEccentricityMeanDeviationRangeHigh = ValidateRangeValue(TextBox_EccentricityMeanDeviationRangeHigh);
+        }
+
+        private void TextBox_EccentricityMeanDeviationRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mEccentricityMeanDeviationRangeLow = ValidateRangeValue(TextBox_EccentricityMeanDeviationRangeLow);
+        }
+
+        private void TextBox_FwhmMeanDeviationPercent_TextChanged(object sender, EventArgs e)
+        {
+            mFwhmMeanDeviationPercent = ValidateRangeValue(TextBox_FwhmMeanDeviationPercent);
+        }
+
+        private void TextBox_FwhmMeanDeviationRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mFwhmMeanDeviationRangeHigh = ValidateRangeValue(TextBox_FwhmMeanDeviationRangeHigh);
+        }
+
+        private void TextBox_FwhmMeanDeviationRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mFwhmMeanDeviationRangeLow = ValidateRangeValue(TextBox_FwhmMeanDeviationRangeLow);
+        }
+
+        private void TextBox_StarsPercent_TextChanged(object sender, EventArgs e)
+        {
+            mStarsPercent = ValidateRangeValue(TextBox_StarPercent);
+        }
+
+        private void TextBox_StarsRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mStarsRangeHigh = ValidateRangeValue(TextBox_StarRangeHigh);
+        }
+
+        private void TextBox_StarsRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mStarsRangeLow = ValidateRangeValue(TextBox_StarRangeLow);
+        }
+
+        private void TextBox_StarResidualPercent_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualPercent = ValidateRangeValue(TextBox_StarResidualPercent);
+        }
+
+        private void TextBox_StarResidualRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualRangeHigh = ValidateRangeValue(TextBox_StarResidualRangeHigh);
+        }
+
+        private void TextBox_StarResidualRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
+        }
+
+        private void TextBox_StarResidualMeanDevationPercent_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualMeanDevationPercent = ValidateRangeValue(TextBox_StarResidualMeanDevationPercent);
+        }
+
+        private void TextBox_StarResidualMeanDevationRangeHigh_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualMeanDevationRangeHigh = ValidateRangeValue(TextBox_StarResidualMeanDevationRangeHigh);
+        }
+
+        private void TextBox_StarResidualMeanDevationRangeLow_TextChanged(object sender, EventArgs e)
+        {
+            mStarResidualMeanDevationRangeLow = ValidateRangeValue(TextBox_StarResidualMeanDevationRangeLow);
+        }
+
+        private double ValidateRangeValue(TextBox textBox)
         {
             bool status;
             double value;
