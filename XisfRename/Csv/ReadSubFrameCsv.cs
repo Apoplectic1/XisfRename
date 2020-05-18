@@ -23,7 +23,7 @@ namespace XisfRename.Csv
 
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }

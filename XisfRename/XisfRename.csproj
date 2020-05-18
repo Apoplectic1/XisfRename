@@ -130,6 +130,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Parse\Buffer.cs" />
+    <Compile Include="Parse\FitsKeyword.cs" />
     <Compile Include="Parse\RenameXisfFile.cs" />
     <Compile Include="Parse\UpdateXisfFile.cs" />
     <Compile Include="Program.cs" />

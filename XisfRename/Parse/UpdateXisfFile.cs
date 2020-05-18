@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using LocalLib;
@@ -25,10 +26,10 @@ namespace XisfRename.Parse
         // ****************************************************************************************************
         public bool UpdateFiles(List<Parse.XisfFile> mFileList)
         {
-            int xmlStart; 
+            int xmlStart;
             int xisfStart;
             int xisfEnd;
-           
+
 
             byte[] rawFileData = new byte[(int)1e9];
 
@@ -36,104 +37,111 @@ namespace XisfRename.Parse
             {
                 try
                 {
-                        mBufferList.Clear();
+                    mBufferList.Clear();
 
-                        Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
-                        BinaryReader bw = new BinaryReader(stream);
-                        rawFileData = bw.ReadBytes((int)1e9);
-                        bw.Close();
+                    Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
+                    BinaryReader bw = new BinaryReader(stream);
+                    rawFileData = bw.ReadBytes((int)1e9);
+                    bw.Close();
 
-                        xmlStart = BinaryFind(rawFileData, "<?xml version"); // returns the position of '<'
-                        xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
-                        xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
+                    xmlStart = BinaryFind(rawFileData, "<?xml version"); // returns the position of '<'
+                    xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
+                    xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
-                        // Add header (includes binary and string portions) up the start of "<xisf version"
-                        mBuffer = new Buffer();
-                        mBuffer.Type = Buffer.TypeEnum.BINARY;
-                        mBuffer.BinaryStart = 0;
-                        mBuffer.BinaryLength = xmlStart;
-                        mBuffer.Binary = rawFileData;
-                        mBufferList.Add(mBuffer);
+                    // Add header (includes binary and string portions) up the start of "<xisf version"
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.BINARY;
+                    mBuffer.BinaryStart = 0;
+                    mBuffer.BinaryLength = xmlStart;
+                    mBuffer.Binary = rawFileData;
+                    mBufferList.Add(mBuffer);
 
-                        // convert (including) from <xisf to </xisf> to string and then parse xml into a new doc
-                        string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(xisfString);
+                    // convert (including) from <xisf to </xisf> to string and then parse xml into a new doc
+                    string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
 
-                        ReplaceObjectName(doc, NewTargetName);
-                        ReplaceSiteLatitude(doc, mFile.SITELAT);
-                        ReplaceSiteLongitude(doc, mFile.SITELON);
+                    int position = xisfString.IndexOf(@"scaling factor""/>") + @"scaling factor""/>".Length;
+                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""3.1415"" comment=""##########""/>");
 
-                        // Fixes for PixInsight Parser
-                        string newXisfString = doc.OuterXml;
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(xisfString);
 
-                        newXisfString = newXisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
+                    //ReplaceFitsKeywordValue(doc, "FWHM", "3.1415926", true, "Test Add FWHM");
+                    //ReplaceSiteLatitude(doc, mFile.SITELAT);
+                    //ReplaceSiteLongitude(doc, mFile.SITELON);
 
-                        // Add the Complete XML ascii potortion to the buffer list - after OBJECT has been replaced in the returned ObjectName string
-                        mBuffer = new Buffer();
-                        mBuffer.Type = Buffer.TypeEnum.ASCII;
-                        mBuffer.ASCII = newXisfString;
-                        mBufferList.Add(mBuffer);
+                    // Fixes for PixInsight Parser
+                    string newXisfString = doc.OuterXml;
 
+                    newXisfString = newXisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
+
+                    // Add the Complete XML ascii potortion to the buffer list - after OBJECT has been replaced in the returned ObjectName string
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ASCII;
+                    mBuffer.ASCII = newXisfString;
+                    mBufferList.Add(mBuffer);
+
+                    // Pad zero's after </xisf> to start of image
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
+                    mBuffer.BinaryStart = 0;
+                    mBuffer.BinaryLength = mFile.ImageAttachmentStart - newXisfString.Length - xmlStart;
+                    mBufferList.Add(mBuffer);
+
+                    // Add the binary image data after rawFileData "</xisf>" - not the new one
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.BINARY;
+                    mBuffer.BinaryStart = mFile.ImageAttachmentStart;
+                    mBuffer.BinaryLength = mFile.ImageAttachmentLength;
+                    mBuffer.Binary = rawFileData;
+                    mBufferList.Add(mBuffer);
+
+                    if (mFile.ThumbnailAttachmentLength > 0)
+                    {
                         // Pad zero's after </xisf> to start of image
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.ZEROS;
                         mBuffer.BinaryStart = 0;
-                        mBuffer.BinaryLength = mFile.AttachmentStart - newXisfString.Length - xmlStart;
+                        mBuffer.BinaryLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
                         mBufferList.Add(mBuffer);
 
                         // Add the binary image data after rawFileData "</xisf>" - not the new one
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.BINARY;
-                        mBuffer.BinaryStart = mFile.AttachmentStart;
-                        mBuffer.BinaryLength = mFile.AttachmentLength;
+                        mBuffer.BinaryStart = mFile.ThumbnailAttachmentStart;
+                        mBuffer.BinaryLength = mFile.ThumbnailAttachmentLength;
                         mBuffer.Binary = rawFileData;
                         mBufferList.Add(mBuffer);
-
-
-                        WriteBinaryFile(mFile.SourceFileName);
-
-                        
                     }
-                    catch
-                    {
-                        return false;
-                    }
+
+                    WriteBinaryFile(mFile.SourceFileName);
+                }
+                catch
+                {
+                    return false;
+                }
             }
             return true;
         }
 
         // ****************************************************************************************************
         // ****************************************************************************************************
-        private void ReplaceObjectName(XmlDocument document, string newObjectName)
-        {
-            XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
-
-            foreach (XmlNode xItem in items)
-            {
-                if (xItem.OuterXml.Contains("OBJECT"))
-                {
-                    xItem.Attributes["value"].Value = "\'" + newObjectName + " \'";
-                    return;
-                }
-            }
-        }
 
         private void ReplaceSiteLatitude(XmlDocument document, string newSiteLatitude)
         {
+            // Fix old SGPro SITELAT format error - this method should not be needed in the future 
             XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
 
             foreach (XmlNode xItem in items)
             {
-                if (xItem.OuterXml.Contains("SITELAT"))
+                if (xItem.Attributes[0].Value.Equals("SITELAT"))
                 {
-                    string value = xItem.Attributes["value"].Value;
+                    string value = xItem.Attributes[1].Value;
 
                     if (value.Contains("N"))
                     {
                         string replaced = Regex.Replace(value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
 
-                        xItem.Attributes["value"].Value = replaced;
+                        xItem.Attributes[1].Value = replaced;
                     }
                 }
             }
@@ -141,13 +149,14 @@ namespace XisfRename.Parse
 
         private void ReplaceSiteLongitude(XmlDocument document, string newSiteLongitude)
         {
+            // Fix old SGPro SITELONG format error - this method should not be needed in the future 
             XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
 
             foreach (XmlNode xItem in items)
             {
-                if (xItem.OuterXml.Contains("SITELONG"))
+                if (xItem.Attributes[0].Value.Equals("SITELONG"))
                 {
-                    string value = xItem.Attributes["value"].Value;
+                    string value = xItem.Attributes[1].Value;
 
                     if (value.Contains("W"))
                     {
@@ -156,10 +165,47 @@ namespace XisfRename.Parse
                         Regex regReplace = new Regex("'");
                         replaced = regReplace.Replace(replaced, "'-", 1);
 
-                        xItem.Attributes["value"].Value = replaced;
+                        xItem.Attributes[1].Value = replaced;
                         return;
                     }
 
+                }
+            }
+        }
+
+        private void ReplaceFitsKeywordValue(XmlDocument document, string fitsKeyword, string newValue, bool addFitsKeyword = false, string comment = "")
+        {
+            XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
+
+            foreach (XmlNode xItem in items)
+            {
+                if (xItem.Attributes[0].Value.Equals(fitsKeyword))
+                {
+                    if (fitsKeyword.Equals("OBJECT")) // Object names appear to be limited to 9 characters
+                        newValue = (newValue.Length > 9) ? newValue.Substring(0, 9) : newValue;
+
+                    xItem.Attributes[1].Value = "\'" + newValue + " \'";
+                    return;
+                }
+            }
+
+            // Didn't find the FITSKeyword - Add it if addFitsKeyword is true
+            if (addFitsKeyword)
+            {
+                var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                newElement.SetAttribute("name", fitsKeyword);
+                newElement.SetAttribute("value", newValue);
+                newElement.SetAttribute("comment", "##################");
+
+
+
+                foreach (XmlNode xItem in items)
+                {
+                    if (xItem.Attributes[0].Value.Equals("BSCALE"))
+                    {
+                        xItem.AppendChild(newElement);
+                        return;
+                    }
                 }
             }
         }
@@ -185,7 +231,7 @@ namespace XisfRename.Parse
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-       
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 

@@ -10,6 +10,8 @@ namespace XisfRename.Parse
 {
     public class XisfFile
     {
+        private XDocument mXmlDoc;
+        private char[] mBuffer;
         private string AmbientTemp { get; set; } = string.Empty;
         private string Angle { get; set; } = string.Empty;
         private string Camera { get; set; } = string.Empty;
@@ -29,19 +31,19 @@ namespace XisfRename.Parse
         private string Target { get; set; } = string.Empty;
         private string Type { get; set; } = string.Empty;
         private string Xbin { get; set; } = string.Empty;
+        private string mXmlString;
         public DateTime CaptureDateTime { get; set; }
         public List<string> TargetNameList = new List<string>();
         public bool Unique { get; set; } = false;
         public bool ValidFile { get; set; } = false;
-        public int AttachmentLength = 0;
-        public int AttachmentStart = 0;
+        public int ImageAttachmentStart = 0;
+        public int ImageAttachmentLength = 0;
+        public int ThumbnailAttachmentStart = 0;
+        public int ThumbnailAttachmentLength = 0;
         public string SITELAT { get; set; } = string.Empty;
         public string SITELON { get; set; } = string.Empty;
         public string SourceFileName { get; set; }
 
-        private XDocument mXmlDoc;
-        private string mXmlString;
-        private char[] mBuffer;
 
         public XisfFile()
         {
@@ -228,7 +230,10 @@ namespace XisfRename.Parse
                     x = x.Replace("T", " ");
                     x = x.Replace("value=", "");
 
-                    DateLoc = x.Remove(x.IndexOf('.'));
+                    if (x.IndexOf('.') > 0)
+                        DateLoc = x.Remove(x.IndexOf('.'));
+                    else
+                        DateLoc = x;
 
                     CaptureDateTime = DateTime.ParseExact(DateLoc, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                 }
@@ -647,7 +652,9 @@ namespace XisfRename.Parse
             }
         }
 
-        public void Attachment(XElement element)
+       
+
+        public void ImageAttachment(XElement element)
         {
             XAttribute attribute = element.Attribute("location");
 
@@ -657,8 +664,23 @@ namespace XisfRename.Parse
 
                 string[] values = attachment.Split(':');
 
-                AttachmentStart = Convert.ToInt32(values[1]);
-                AttachmentLength = Convert.ToInt32(values[2]);
+                ImageAttachmentStart = Convert.ToInt32(values[1]);
+                ImageAttachmentLength = Convert.ToInt32(values[2]);
+            }
+        }
+
+        public void ThumbnailAttachment(XElement element)
+        {
+            XAttribute attribute = element.Attribute("location");
+
+            if (attribute != null)
+            {
+                string attachment = attribute.Value;
+
+                string[] values = attachment.Split(':');
+
+                ThumbnailAttachmentStart = Convert.ToInt32(values[1]);
+                ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
 
@@ -692,7 +714,14 @@ namespace XisfRename.Parse
             IEnumerable<XElement> image = from c in mXmlDoc.Descendants(ns + "Image") select c;
             foreach (XElement element in image)
             {
-                Attachment(element);
+                ImageAttachment(element);
+            }
+
+
+            IEnumerable<XElement> thumb = from c in mXmlDoc.Descendants(ns + "Thumbnail") select c;
+            foreach (XElement element in thumb)
+            {
+                ThumbnailAttachment(element);
             }
 
             IEnumerable<XElement> elements = from c in mXmlDoc.Descendants(ns + "FITSKeyword") select c;
