@@ -10,9 +10,9 @@ namespace XisfRename.Parse
     {
         public enum TypeEnum { ASCII, BINARY, ZEROS }
         public TypeEnum Type;
-        public string ASCII { get; set; }
-        public int BinaryStart;
-        public int BinaryLength;
-        public byte[] Binary { get; set; }
+        public string AsciiData { get; set; }
+        public int BinaryDataStart;
+        public int BinaryByteLength;
+        public byte[] BinaryData { get; set; }
     }
 }

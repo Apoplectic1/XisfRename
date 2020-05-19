@@ -48,19 +48,14 @@ namespace XisfRename.Parse
                     xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
                     xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
-                    // Add header (includes binary and string portions) up the start of "<xisf version"
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.BINARY;
-                    mBuffer.BinaryStart = 0;
-                    mBuffer.BinaryLength = xmlStart;
-                    mBuffer.Binary = rawFileData;
-                    mBufferList.Add(mBuffer);
-
                     // convert (including) from <xisf to </xisf> to string and then parse xml into a new doc
                     string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
 
                     int position = xisfString.IndexOf(@"scaling factor""/>") + @"scaling factor""/>".Length;
+                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""1.1415"" comment=""##########""/>");
+                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""2.1415"" comment=""##########""/>");
                     xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""3.1415"" comment=""##########""/>");
+                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""4.1415"" comment=""##########""/>");
 
                     XmlDocument doc = new XmlDocument();
                     doc.LoadXml(xisfString);
@@ -68,6 +63,26 @@ namespace XisfRename.Parse
                     //ReplaceFitsKeywordValue(doc, "FWHM", "3.1415926", true, "Test Add FWHM");
                     //ReplaceSiteLatitude(doc, mFile.SITELAT);
                     //ReplaceSiteLongitude(doc, mFile.SITELON);
+
+                    // *******************************************************************************************************************************
+
+                    // Add header (includes binary and string portions) up the start of "<xisf version"
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ASCII;
+                    mBuffer.AsciiData = "XISF0100";
+                    mBufferList.Add(mBuffer);
+
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.BINARY;
+                    byte[] headerLength = { Convert.ToByte((xisfString.Length >> 0) & 0xff), Convert.ToByte((xisfString.Length >> 8) & 0xff), Convert.ToByte((xisfString.Length >> 216) & 0xff), Convert.ToByte((xisfString.Length >> 24) & 0xff) };
+                    mBuffer.BinaryData = headerLength;
+                    mBuffer.BinaryByteLength = 4;
+                    mBufferList.Add(mBuffer);
+
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
+                    mBuffer.BinaryByteLength = 4;
+                    mBufferList.Add(mBuffer);
 
                     // Fixes for PixInsight Parser
                     string newXisfString = doc.OuterXml;
@@ -77,22 +92,22 @@ namespace XisfRename.Parse
                     // Add the Complete XML ascii potortion to the buffer list - after OBJECT has been replaced in the returned ObjectName string
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ASCII;
-                    mBuffer.ASCII = newXisfString;
+                    mBuffer.AsciiData = newXisfString;
                     mBufferList.Add(mBuffer);
 
                     // Pad zero's after </xisf> to start of image
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ZEROS;
-                    mBuffer.BinaryStart = 0;
-                    mBuffer.BinaryLength = mFile.ImageAttachmentStart - newXisfString.Length - xmlStart;
+                    mBuffer.BinaryDataStart = 0;
+                    mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - newXisfString.Length - xmlStart;
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data after rawFileData "</xisf>" - not the new one
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.BINARY;
-                    mBuffer.BinaryStart = mFile.ImageAttachmentStart;
-                    mBuffer.BinaryLength = mFile.ImageAttachmentLength;
-                    mBuffer.Binary = rawFileData;
+                    mBuffer.BinaryDataStart = mFile.ImageAttachmentStart;
+                    mBuffer.BinaryByteLength = mFile.ImageAttachmentLength;
+                    mBuffer.BinaryData = rawFileData;
                     mBufferList.Add(mBuffer);
 
                     if (mFile.ThumbnailAttachmentLength > 0)
@@ -100,16 +115,16 @@ namespace XisfRename.Parse
                         // Pad zero's after </xisf> to start of image
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.ZEROS;
-                        mBuffer.BinaryStart = 0;
-                        mBuffer.BinaryLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
+                        mBuffer.BinaryDataStart = 0;
+                        mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
                         mBufferList.Add(mBuffer);
 
                         // Add the binary image data after rawFileData "</xisf>" - not the new one
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.BINARY;
-                        mBuffer.BinaryStart = mFile.ThumbnailAttachmentStart;
-                        mBuffer.BinaryLength = mFile.ThumbnailAttachmentLength;
-                        mBuffer.Binary = rawFileData;
+                        mBuffer.BinaryDataStart = mFile.ThumbnailAttachmentStart;
+                        mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentLength;
+                        mBuffer.BinaryData = rawFileData;
                         mBufferList.Add(mBuffer);
                     }
 
@@ -247,15 +262,15 @@ namespace XisfRename.Parse
                     switch (buffer.Type)
                     {
                         case Buffer.TypeEnum.ASCII:
-                            bw.Write(Encoding.UTF8.GetBytes(buffer.ASCII));
+                            bw.Write(Encoding.UTF8.GetBytes(buffer.AsciiData));
                             break;
 
                         case Buffer.TypeEnum.BINARY:
-                            bw.Write(buffer.Binary, buffer.BinaryStart, buffer.BinaryLength);
+                            bw.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
                             break;
 
                         case Buffer.TypeEnum.ZEROS:
-                            for (int i = 0; i < buffer.BinaryLength; i++)
+                            for (int i = 0; i < buffer.BinaryByteLength; i++)
                             {
                                 bw.Write((byte)0x00);
                             }
