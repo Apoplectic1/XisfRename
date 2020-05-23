@@ -652,7 +652,29 @@ namespace XisfRename.Parse
             }
         }
 
-       
+        // ************************************************************************************************
+        // ************************************************************************************************
+        public void FWHM(XElement element)
+        {
+            XAttribute attribute = element.Attribute("name");
+
+            if (attribute.ToString().Contains("FMHM"))
+            {
+                attribute = element.Attribute("value");
+
+                string x = attribute.ToString();
+                Xbin = x.Substring(x.IndexOf("\"") + 1);
+                Xbin = Xbin.Substring(0, Xbin.IndexOf("\""));
+                Xbin = Xbin.Replace(".", "");
+                Xbin = Xbin.Trim();
+            }
+        }
+        public string FMHM()
+        {
+            return Xbin;
+        }
+        // ************************************************************************************************
+        // ************************************************************************************************
 
         public void ImageAttachment(XElement element)
         {

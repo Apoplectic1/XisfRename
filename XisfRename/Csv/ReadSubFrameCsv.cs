@@ -61,21 +61,21 @@ namespace XisfRename.Csv
                 {
                     foreach (string field in fields.Split(','))
                     {
-                        GetApprovedIndex(field, index);
-                        GetEccentricityIndex(field, index);
-                        GetEccentricityMeanDeviationIndex(field, index);
-                        GetFileIndex(field, index);
-                        GetFwhmIndex(field, index);
-                        GetFwhmMeanDeviationIndex(field, index);
-                        GetMedianIndex(field, index);
-                        GetMedianMeanDeviationIndex(field, index);
-                        GetNoiseIndex(field, index);
-                        GetNoiseRatioIndex(field, index);
-                        GetSnrWeightIndex(field, index);
-                        GetStarResidualIndex(field, index);
-                        GetStarResidualMeanDeviationIndex(field, index);
-                        GetStarsIndex(field, index);
-                        GetWeightIndex(field, index);
+                        GetCsvApprovedIndex(field, index);
+                        GetCsvEccentricityIndex(field, index);
+                        GetCsvEccentricityMeanDeviationIndex(field, index);
+                        GetCsvFileIndex(field, index);
+                        GetCsvFwhmIndex(field, index);
+                        GetCsvFwhmMeanDeviationIndex(field, index);
+                        GetCsvMedianIndex(field, index);
+                        GetCsvMedianMeanDeviationIndex(field, index);
+                        GetCsvNoiseIndex(field, index);
+                        GetCsvNoiseRatioIndex(field, index);
+                        GetCsvSnrWeightIndex(field, index);
+                        GetCsvStarResidualIndex(field, index);
+                        GetCsvStarResidualMeanDeviationIndex(field, index);
+                        GetCsvStarsIndex(field, index);
+                        GetCsvWeightIndex(field, index);
 
                         index++;
                     }
@@ -86,21 +86,21 @@ namespace XisfRename.Csv
 
                 foreach (string field in line.Split(','))
                 {
-                    AddApproved(field, index);
-                    AddEccentricity(field, index);
-                    AddEccentricityMeanDeviation(field, index);
-                    AddFile(field, index);
-                    AddFwhm(field, index);
-                    AddFwhmMeanDeviation(field, index);
-                    AddMedian(field, index);
-                    AddMedianMeanDeviation(field, index);
-                    AddNoise(field, index);
-                    AddNoiseRatio(field, index);
-                    AddSnrWeight(field, index);
-                    AddStarResidual(field, index);
-                    AddStarResidualMeanDeviation(field, index);
-                    AddStars(field, index);
-                    AddWeight(field, index);
+                    AddCsvApproved(field, index);
+                    AddCsvEccentricity(field, index);
+                    AddCsvEccentricityMeanDeviation(field, index);
+                    AddCsvFileName(field, index);
+                    AddCsvFwhm(field, index);
+                    AddCsvFwhmMeanDeviation(field, index);
+                    AddCsvMedian(field, index);
+                    AddCsvMedianMeanDeviation(field, index);
+                    AddCsvNoise(field, index);
+                    AddCsvNoiseRatio(field, index);
+                    AddCsvSnrWeight(field, index);
+                    AddCsvStarResidual(field, index);
+                    AddCsvStarResidualMeanDeviation(field, index);
+                    AddCsvStars(field, index);
+                    AddCsvWeight(field, index);
 
                     index++;
                 }
@@ -112,7 +112,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetApprovedIndex(string field, int index)
+        private static void GetCsvApprovedIndex(string field, int index)
         {
             if (field.Equals("Approved"))
             {
@@ -120,7 +120,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddApproved(string field, int index)
+        private static void AddCsvApproved(string field, int index)
         {
             if (index == mSubFrameData.ApprovedIndex)
             {
@@ -131,7 +131,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetEccentricityIndex(string field, int index)
+        private static void GetCsvEccentricityIndex(string field, int index)
         {
             if (field.Equals("Eccentricity"))
             {
@@ -139,7 +139,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddEccentricity(string field, int index)
+        private static void AddCsvEccentricity(string field, int index)
         {
             bool status;
             double value;
@@ -155,7 +155,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetEccentricityMeanDeviationIndex(string field, int index)
+        private static void GetCsvEccentricityMeanDeviationIndex(string field, int index)
         {
             if (field.Equals("EccentricityMeanDeviation"))
             {
@@ -163,7 +163,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddEccentricityMeanDeviation(string field, int index)
+        private static void AddCsvEccentricityMeanDeviation(string field, int index)
         {
             bool status;
             double value;
@@ -179,7 +179,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetFileIndex(string field, int index)
+        private static void GetCsvFileIndex(string field, int index)
         {
             if (field.Equals("File"))
             {
@@ -187,7 +187,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddFile(string field, int index)
+        private static void AddCsvFileName(string field, int index)
         {
             if (index == mSubFrameData.FileIndex)
             {
@@ -198,7 +198,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetFwhmIndex(string field, int index)
+        private static void GetCsvFwhmIndex(string field, int index)
         {
             if (field.Equals("FWHM"))
             {
@@ -206,7 +206,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddFwhm(string field, int index)
+        private static void AddCsvFwhm(string field, int index)
         {
             bool status;
             double value;
@@ -222,7 +222,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetFwhmMeanDeviationIndex(string field, int index)
+        private static void GetCsvFwhmMeanDeviationIndex(string field, int index)
         {
             if (field.Equals("FwhmMeanDeviation"))
             {
@@ -230,7 +230,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddFwhmMeanDeviation(string field, int index)
+        private static void AddCsvFwhmMeanDeviation(string field, int index)
         {
             bool status;
             double value;
@@ -246,7 +246,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetMedianIndex(string field, int index)
+        private static void GetCsvMedianIndex(string field, int index)
         {
             if (field.Equals("Median"))
             {
@@ -254,7 +254,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddMedian(string field, int index)
+        private static void AddCsvMedian(string field, int index)
         {
             bool status;
             double value;
@@ -270,7 +270,7 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetMedianMeanDeviationIndex(string field, int index)
+        private static void GetCsvMedianMeanDeviationIndex(string field, int index)
         {
             if (field.Equals("MedianMeanDeviation"))
             {
@@ -278,7 +278,7 @@ namespace XisfRename.Csv
             }
         }
 
-        private static void AddMedianMeanDeviation(string field, int index)
+        private static void AddCsvMedianMeanDeviation(string field, int index)
         {
             bool status;
             double value;
@@ -294,14 +294,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetNoiseIndex(string field, int index)
+        private static void GetCsvNoiseIndex(string field, int index)
         {
             if (field.Equals("Noise"))
             {
                 mSubFrameData.NoiseIndex = index;
             }
         }
-        private static void AddNoise(string field, int index)
+        private static void AddCsvNoise(string field, int index)
         {
             bool status;
             double value;
@@ -317,14 +317,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetNoiseRatioIndex(string field, int index)
+        private static void GetCsvNoiseRatioIndex(string field, int index)
         {
             if (field.Equals("NoiseRatio"))
             {
                 mSubFrameData.NoiseRatioIndex = index;
             }
         }
-        private static void AddNoiseRatio(string field, int index)
+        private static void AddCsvNoiseRatio(string field, int index)
         {
             bool status;
             double value;
@@ -340,14 +340,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetSnrWeightIndex(string field, int index)
+        private static void GetCsvSnrWeightIndex(string field, int index)
         {
             if (field.Equals("SNRWeight"))
             {
                 mSubFrameData.SnrWeightIndex = index;
             }
         }
-        private static void AddSnrWeight(string field, int index)
+        private static void AddCsvSnrWeight(string field, int index)
         {
             bool status;
             double value;
@@ -363,14 +363,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetStarsIndex(string field, int index)
+        private static void GetCsvStarsIndex(string field, int index)
         {
             if (field.Equals("Stars"))
             {
                 mSubFrameData.StarsIndex = index;
             }
         }
-        private static void AddStars(string field, int index)
+        private static void AddCsvStars(string field, int index)
         {
             bool status;
             double value;
@@ -386,14 +386,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetStarResidualIndex(string field, int index)
+        private static void GetCsvStarResidualIndex(string field, int index)
         {
             if (field.Equals("StarResidual"))
             {
                 mSubFrameData.StarResidualIndex = index;
             }
         }
-        private static void AddStarResidual(string field, int index)
+        private static void AddCsvStarResidual(string field, int index)
         {
             bool status;
             double value;
@@ -409,14 +409,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetStarResidualMeanDeviationIndex(string field, int index)
+        private static void GetCsvStarResidualMeanDeviationIndex(string field, int index)
         {
             if (field.Equals("StarResidual"))
             {
                 mSubFrameData.StarResidualIndex = index;
             }
         }
-        private static void AddStarResidualMeanDeviation(string field, int index)
+        private static void AddCsvStarResidualMeanDeviation(string field, int index)
         {
             bool status;
             double value;
@@ -432,14 +432,14 @@ namespace XisfRename.Csv
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetWeightIndex(string field, int index)
+        private static void GetCsvWeightIndex(string field, int index)
         {
             if (field.Equals("Weight"))
             {
                 mSubFrameData.WeightIndex = index;
             }
         }
-        private static void AddWeight(string field, int index)
+        private static void AddCsvWeight(string field, int index)
         {
             bool status;
             double value;

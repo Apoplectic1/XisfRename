@@ -15,6 +15,8 @@ namespace XisfRename.Parse
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
 
+        enum keywordType { TEXT, INT, FLOAT, BOOL }
+
         public string NewTargetName { get; set; }
 
         public UpdateXisfFile()
@@ -51,20 +53,24 @@ namespace XisfRename.Parse
                     // convert (including) from <xisf to </xisf> to string and then parse xml into a new doc
                     string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
 
-                    int position = xisfString.IndexOf(@"scaling factor""/>") + @"scaling factor""/>".Length;
-                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""1.1415"" comment=""##########""/>");
-                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""2.1415"" comment=""##########""/>");
-                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""3.1415"" comment=""##########""/>");
-                    xisfString = xisfString.Insert(position, @"<FITSKeyword name=""FWHM"" value=""4.1415"" comment=""##########""/>");
+                    int position = xisfString.IndexOf("<FITSKeyword");  // Find first FITSKeyword
+
 
                     XmlDocument doc = new XmlDocument();
                     doc.LoadXml(xisfString);
 
-                    //ReplaceFitsKeywordValue(doc, "FWHM", "3.1415926", true, "Test Add FWHM");
-                    //ReplaceSiteLatitude(doc, mFile.SITELAT);
-                    //ReplaceSiteLongitude(doc, mFile.SITELON);
+                    UpdateFitsKeyword(doc, keywordType.FLOAT, "FWHM", "2.1828", true, "#################################");
+                    UpdateFitsKeyword(doc, keywordType.TEXT, "OBJECT", NewTargetName, true);
+                    ReplaceSiteLatitude(doc, mFile.SITELAT);
+                    ReplaceSiteLongitude(doc, mFile.SITELON);
 
                     // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
+                    // Fixes for PixInsight Parser
+                    xisfString = doc.OuterXml.Replace(" /", "/");
+
+                    //xisfString = xisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
 
                     // Add header (includes binary and string portions) up the start of "<xisf version"
                     mBuffer = new Buffer();
@@ -84,22 +90,18 @@ namespace XisfRename.Parse
                     mBuffer.BinaryByteLength = 4;
                     mBufferList.Add(mBuffer);
 
-                    // Fixes for PixInsight Parser
-                    string newXisfString = doc.OuterXml;
-
-                    newXisfString = newXisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
 
                     // Add the Complete XML ascii potortion to the buffer list - after OBJECT has been replaced in the returned ObjectName string
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ASCII;
-                    mBuffer.AsciiData = newXisfString;
+                    mBuffer.AsciiData = xisfString;
                     mBufferList.Add(mBuffer);
 
                     // Pad zero's after </xisf> to start of image
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryDataStart = 0;
-                    mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - newXisfString.Length - xmlStart;
+                    mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - xisfString.Length - xmlStart;
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data after rawFileData "</xisf>" - not the new one
@@ -188,42 +190,68 @@ namespace XisfRename.Parse
             }
         }
 
-        private void ReplaceFitsKeywordValue(XmlDocument document, string fitsKeyword, string newValue, bool addFitsKeyword = false, string comment = "")
+        private void UpdateFitsKeyword(XmlDocument document, keywordType type, string fitsKeyword, string value, bool update = false, string comment = "")
         {
-            XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
-
-            foreach (XmlNode xItem in items)
+            if (update)
             {
-                if (xItem.Attributes[0].Value.Equals(fitsKeyword))
-                {
-                    if (fitsKeyword.Equals("OBJECT")) // Object names appear to be limited to 9 characters
-                        newValue = (newValue.Length > 9) ? newValue.Substring(0, 9) : newValue;
-
-                    xItem.Attributes[1].Value = "\'" + newValue + " \'";
-                    return;
-                }
-            }
-
-            // Didn't find the FITSKeyword - Add it if addFitsKeyword is true
-            if (addFitsKeyword)
-            {
-                var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
-                newElement.SetAttribute("name", fitsKeyword);
-                newElement.SetAttribute("value", newValue);
-                newElement.SetAttribute("comment", "##################");
-
-
+                XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
 
                 foreach (XmlNode xItem in items)
                 {
-                    if (xItem.Attributes[0].Value.Equals("BSCALE"))
+                    if (xItem.Attributes[0].Value.Equals(fitsKeyword))
                     {
-                        xItem.AppendChild(newElement);
+                        switch (type)
+                        {
+                            case keywordType.BOOL:
+                                xItem.Attributes[1].Value = value;
+                                break;
+                            case keywordType.FLOAT:
+                                xItem.Attributes[1].Value = value;
+                                break;
+                            case keywordType.INT:
+                                xItem.Attributes[1].Value = value;
+                                break;
+                            case keywordType.TEXT:
+                                xItem.Attributes[1].Value = "\'" + value + " \'";
+                                break;
+                        }
+                        xItem.Attributes[1].Value = "\'" + value + " \'";
+                        xItem.Attributes[2].Value = (comment == "") ? xItem.Attributes[2].Value : comment;
                         return;
                     }
                 }
+
+                items = document.GetElementsByTagName("Image");
+
+                // Didn't find the 'fitsSKeyword' - So create and add it at the beginning of FITSKeywords (as first child of Image)
+
+                var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                newElement.SetAttribute("name", fitsKeyword);
+                switch (type)
+                {
+                    case keywordType.BOOL:
+                        newElement.SetAttribute("value", value);
+                        break;
+                    case keywordType.FLOAT:
+                        newElement.SetAttribute("value", value);
+                        break;
+                    case keywordType.INT:
+                        newElement.SetAttribute("value", value);
+                        break;
+                    case keywordType.TEXT:
+                        newElement.SetAttribute("value", "\'" + value + " \'");
+                        break;
+                }
+                newElement.SetAttribute("comment", comment);
+
+                foreach (XmlNode xItem in items)
+                {
+                    xItem. PrependChild(newElement);
+                    return;
+                }
             }
         }
+
 
         public int BinaryFind(byte[] buffer, string findText)
         {
