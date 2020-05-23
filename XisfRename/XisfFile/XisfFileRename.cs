@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XisfRename.Parse
+namespace XisfRename.XisfFile
 {
-    public class RenameXisfFile
+    public class XisfFileRename
     {
         public bool mBChronological { get; set; } = false;
         private int mDupIndex;
@@ -15,9 +15,9 @@ namespace XisfRename.Parse
         public bool mKeepIndex { get; set; } = true;
         public bool mWeightFirst { get; set; } = true;
         public bool mIndexFirst { get; set; } = false;
-        List<XisfFile> mFileList;
+        List<XisfFileRead> mFileList;
 
-        public void RenameFiles(List<XisfFile> fileList)
+        public void RenameFiles(List<XisfFileRead> fileList)
         {
             
             string newFileName;
@@ -31,7 +31,7 @@ namespace XisfRename.Parse
 
             string sourceFilePath;
 
-            foreach (Parse.XisfFile file in mFileList)
+            foreach (XisfFile.XisfFileRead file in mFileList)
             {
                 sourceFilePath = Path.GetDirectoryName(file.SourceFileName);
 
@@ -87,7 +87,7 @@ namespace XisfRename.Parse
             }
         }
 
-        private string BuildFileName(int index, Parse.XisfFile imageFile)
+        private string BuildFileName(int index, XisfFile.XisfFileRead imageFile)
         {
             string newName;
 
@@ -166,7 +166,7 @@ namespace XisfRename.Parse
 
             return newName;
         }
-        private void MoveDuplicates(Parse.XisfFile currentFile, string sourceFilePath, string newFileName)
+        private void MoveDuplicates(XisfFile.XisfFileRead currentFile, string sourceFilePath, string newFileName)
         {
             mDupIndex = 1;
 

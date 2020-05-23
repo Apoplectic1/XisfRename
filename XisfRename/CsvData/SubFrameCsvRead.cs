@@ -1,4 +1,4 @@
-﻿namespace XisfRename.Csv
+﻿namespace XisfRename.CsvData
 {
     public static class ReadSubFrameCsv
     {

@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-namespace XisfRename.Parse
+namespace XisfRename.XisfFile
 {
-    public class XisfFile
+    public class XisfFileRead
     {
         private XDocument mXmlDoc;
         private char[] mBuffer;
@@ -50,7 +50,7 @@ namespace XisfRename.Parse
         public string SourceFileName { get; set; }
 
 
-        public XisfFile()
+        public XisfFileRead()
         {
             TargetNameList.Clear();
             mBuffer = new char[30000];

@@ -6,16 +6,16 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace XisfRename.Parse
+namespace XisfRename.XisfFile
 {
-    public class UpdateXisfFile
+    public class XisfFileWite
     {
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
 
         public string NewTargetName { get; set; }
 
-        public UpdateXisfFile()
+        public XisfFileWite()
         {
             mBufferList = new List<Buffer>();
         }
@@ -23,14 +23,14 @@ namespace XisfRename.Parse
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public bool UpdateFiles(List<Parse.XisfFile> mFileList)
+        public bool UpdateFiles(List<XisfFile.XisfFileRead> mFileList)
         {
             int xmlStart;
             int xisfStart;
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
 
-            foreach (XisfFile mFile in mFileList)
+            foreach (XisfFileRead mFile in mFileList)
             {
                 try
                 {
@@ -106,7 +106,7 @@ namespace XisfRename.Parse
                     mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - xisfString.Length - xmlStart;
                     mBufferList.Add(mBuffer);
 
-                    // Add the binary image data after rawFileData "</xisf>" - not the new one
+                    // Add the binary image data from rawFileData after padding
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.BINARY;
                     mBuffer.BinaryDataStart = mFile.ImageAttachmentStart;
@@ -116,14 +116,14 @@ namespace XisfRename.Parse
 
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
-                        // Pad zero's after </xisf> to start of thumbnail image
+                        // Pad zero's after image data to the start of the thumbnail image
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.ZEROS;
                         mBuffer.BinaryDataStart = 0;
                         mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
                         mBufferList.Add(mBuffer);
 
-                        // Add the binary image data after rawFileData "</xisf>" - not the new one
+                        // Add the binary thumbnail image data from rawFileData after image data and padding
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.BINARY;
                         mBuffer.BinaryDataStart = mFile.ThumbnailAttachmentStart;
@@ -152,7 +152,7 @@ namespace XisfRename.Parse
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void ReplaceFitsKeywords(XmlDocument document, XisfFile mFile)
+        private void ReplaceFitsKeywords(XmlDocument document, XisfFileRead mFile)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");

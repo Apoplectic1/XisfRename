@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XisfRename.Parse
+namespace XisfRename.XisfFile
 {
     public class FitsKeyword
     {

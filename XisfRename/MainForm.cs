@@ -9,8 +9,8 @@ using System.Windows.Forms;
 
 
 using LocalLib;
-using XisfRename.Csv;
-using XisfRename.Parse;
+using XisfRename.CsvData;
+using XisfRename.XisfFile;
 
 namespace XisfRename
 {
@@ -18,10 +18,10 @@ namespace XisfRename
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        List<Parse.XisfFile> mFileList;
-        Parse.RenameXisfFile mRenameFile;
-        Parse.UpdateXisfFile mUpdateFile;
-        Parse.XisfFile mFile;
+        List<XisfFile.XisfFileRead> mFileList;
+        XisfFile.XisfFileRename mRenameFile;
+        XisfFile.XisfFileWite mUpdateFile;
+        XisfFile.XisfFileRead mFile;
         private DirectoryInfo d;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
@@ -70,10 +70,10 @@ namespace XisfRename
         {
             InitializeComponent();
             Label_Task.Text = "";
-            mFile = new Parse.XisfFile();
-            mFileList = new List<Parse.XisfFile>();
-            mRenameFile = new Parse.RenameXisfFile();
-            mUpdateFile = new Parse.UpdateXisfFile();
+            mFile = new XisfFile.XisfFileRead();
+            mFileList = new List<XisfFile.XisfFileRead>();
+            mRenameFile = new XisfFile.XisfFileRename();
+            mUpdateFile = new XisfFile.XisfFileWite();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -257,7 +257,7 @@ namespace XisfRename
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
 
-                        mFile = new Parse.XisfFile();
+                        mFile = new XisfFile.XisfFileRead();
                         mFile.SourceFileName = file.FullName;
 
                         bStatus = mFile.Parse();
@@ -273,7 +273,7 @@ namespace XisfRename
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
                 List<FitsKeyword> TargetNameList = new List<FitsKeyword>();
-                foreach (Parse.XisfFile file in mFileList)
+                foreach (XisfFile.XisfFileRead file in mFileList)
                 {
                     TargetNameList.Add(file.KeywordList.Find(x => x.Name == "OBJECT"));
                 }
