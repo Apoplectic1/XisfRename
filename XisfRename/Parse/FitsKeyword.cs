@@ -1,57 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace XisfRename.Parse
 {
     public class FitsKeyword
     {
-        // #################################################################################################
-        // #################################################################################################
-        public string Fwhm(XElement element)
-        {
-            XAttribute attribute = element.Attribute("name");
+        public enum KeywordType {NULL, COPY, INTEGER, FLOAT, STRING, BOOL}
+        public KeywordType Type = KeywordType.NULL;
 
-            if (attribute.ToString().Equals("FWHM"))
+        public string Name { get; set; } = string.Empty;
+
+        private int iValue;
+        private string sValue;
+        private double dValue;
+
+        public string SetValue
+        {
+            set 
             {
-                attribute = element.Attribute("value");
+                sValue = value.Replace("'", "").Trim();
 
-                return attribute.ToString();
+                if (Type == KeywordType.INTEGER)
+                {
+                    iValue = Convert.ToInt32(sValue);
+                }
+
+                if (Type == KeywordType.FLOAT)
+                {
+                    dValue = Convert.ToDouble(sValue);
+                }
             }
-            return string.Empty;
         }
-        public XElement Fwhm(double value, string comment)
-        {
-            XElement FitsKeyword = new XElement("FITSKeyword",
-                new XElement("name", "FWHM"),
-                new XElement("value", value.ToString("F5")),
-                new XElement("comment", comment));
 
-            return FitsKeyword;
-        }
-        public XElement Fwhm(string value, string comment)
+        public dynamic GetValue<T>()
         {
-            XElement FitsKeyword = new XElement("FITSKeyword",
-                new XElement("name", "FWHM"),
-                new XElement("value", value),
-                new XElement("comment", comment));
+            if (typeof(T) == typeof(int))
+            {
+                return iValue;
+            }
+            else if (typeof(T) == typeof(string))
+            {
+                return sValue;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                return dValue;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-            return FitsKeyword;
-        }
-        /*public void ReplaceFwhm(string xmlString, string value, string comment)
-        {
-            XElement newFwhm = Fwhm(value, comment);
-            var xml = 
-            var existingFwhm = xmlString.Elements("Genre")
-                   .Where(e => e.Attribute("Name").Value == "Rock")
-                   .Elements("Artist")
-                   .Single(e => e.Attribute("Name").Value == "Pink Floyd");
-        }
-        */
-        // #################################################################################################
-        // #################################################################################################
+        public string Comment { get; set; } = string.Empty;
     }
 }

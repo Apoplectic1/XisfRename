@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using LocalLib;
 using XisfRename.Csv;
+using XisfRename.Parse;
 
 namespace XisfRename
 {
@@ -271,11 +272,30 @@ namespace XisfRename
 
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
-                mFile.TargetNameList = mFile.TargetNameList.Distinct().ToList();
-
-                foreach (string targetName in mFile.TargetNameList)
+                List<FitsKeyword> TargetNameList = new List<FitsKeyword>();
+                foreach (Parse.XisfFile file in mFileList)
                 {
-                    ComboBox_TargetName.Items.Add(mFile.TargetName());
+                    TargetNameList.Add(file.KeywordList.Find(x => x.Name == "OBJECT"));
+                }
+
+                List<string> TargetNames = new List<string>();
+                foreach(FitsKeyword targetName in TargetNameList)
+                {
+                    TargetNames.Add(targetName.GetValue<string>());
+                }
+
+                TargetNames = TargetNames.Distinct().ToList();
+
+                if (TargetNames.Count > 1)
+                {
+                    Label_TagetName.Text = "Multiple Target Names";
+                }
+                
+                TargetNames = TargetNames.OrderBy(q => q).ToList();
+
+                foreach (string item in TargetNames)
+                {
+                    ComboBox_TargetName.Items.Add(item);
                 }
 
                 ComboBox_TargetName.SelectedIndex = 0;
@@ -373,7 +393,7 @@ namespace XisfRename
                 return;
             }
 
-            ReadSubFrameCsv.ParseCsvFile(mFileCsv.FileName);
+            ReadSubFrameCsv.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
 
         }
 

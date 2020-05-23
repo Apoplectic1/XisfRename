@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace XisfRename.Csv
+﻿namespace XisfRename.Csv
 {
     public static class ReadSubFrameCsv
     {
         private static string mCsvFile;
         private static SubFrameData mSubFrameData;
 
-        public static bool ParseCsvFile(string path)
+        public static bool ParseSubFrameSelectorCsvFile(string path)
         {
             try
             {

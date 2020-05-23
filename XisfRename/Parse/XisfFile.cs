@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -12,26 +14,29 @@ namespace XisfRename.Parse
     {
         private XDocument mXmlDoc;
         private char[] mBuffer;
-        private string AmbientTemp { get; set; } = string.Empty;
-        private string Angle { get; set; } = string.Empty;
-        private string Camera { get; set; } = string.Empty;
-        private string DateLoc { get; set; } = string.Empty;
-        private string Exposure { get; set; } = string.Empty;
-        private string Filter { get; set; } = string.Empty;
-        private string FocalLen { get; set; } = string.Empty;
-        private string FocusPos { get; set; } = string.Empty;
-        private string FocusTemp { get; set; } = string.Empty;
-        private string Gain { get; set; } = string.Empty;
-        private string OffSet { get; set; } = string.Empty;
-        private string Profile { get; set; } = string.Empty;
-        private string SSWEIGHT { get; set; } = string.Empty;
-        private string SensorTemp { get; set; } = string.Empty;
-        private string SiteName { get; set; } = string.Empty;
-        private string Software { get; set; } = string.Empty;
-        private string Target { get; set; } = string.Empty;
-        private string Type { get; set; } = string.Empty;
-        private string Xbin { get; set; } = string.Empty;
-        private string mXmlString;
+
+        public List<FitsKeyword> KeywordList;
+
+        public string AmbientTemp { get; set; } = string.Empty;
+        public string Angle { get; set; } = string.Empty;
+        public string Camera { get; set; } = string.Empty;
+        public string DateLoc { get; set; } = string.Empty;
+        public string Exposure { get; set; } = string.Empty;
+        public string Filter { get; set; } = string.Empty;
+        public string FocalLen { get; set; } = string.Empty;
+        public string FocusPos { get; set; } = string.Empty;
+        public string FocusTemp { get; set; } = string.Empty;
+        public string Gain { get; set; } = string.Empty;
+        public string OffSet { get; set; } = string.Empty;
+        public string Profile { get; set; } = string.Empty;
+        public string SSWEIGHT { get; set; } = string.Empty;
+        public string SensorTemp { get; set; } = string.Empty;
+        public string SiteName { get; set; } = string.Empty;
+        public string Software { get; set; } = string.Empty;
+        public string Target { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string Xbin { get; set; } = string.Empty;
+        public string mXmlString;
         public DateTime CaptureDateTime { get; set; }
         public List<string> TargetNameList = new List<string>();
         public bool Unique { get; set; } = false;
@@ -41,7 +46,7 @@ namespace XisfRename.Parse
         public int ThumbnailAttachmentStart = 0;
         public int ThumbnailAttachmentLength = 0;
         public string SITELAT { get; set; } = string.Empty;
-        public string SITELON { get; set; } = string.Empty;
+        public string SITELONG { get; set; } = string.Empty;
         public string SourceFileName { get; set; }
 
 
@@ -49,6 +54,7 @@ namespace XisfRename.Parse
         {
             TargetNameList.Clear();
             mBuffer = new char[30000];
+            KeywordList = new List<FitsKeyword>();
         }
 
         public string FormatTemperatureString(string temperatureString)
@@ -628,51 +634,71 @@ namespace XisfRename.Parse
             return string.Empty;
         }
 
-        public void SiteLat(XElement element)
+        public void AddSiteLat(XElement element)
         {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SITELAT"))
+            if (element.Attribute("name").Value.Equals("SITELAT"))
             {
-                attribute = element.Attribute("value");
+                FitsKeyword keyword = new FitsKeyword();
+                keyword.Type = FitsKeyword.KeywordType.STRING;
+                keyword.Name = keyword.Name = element.Attribute("name").Value;
 
-                SITELAT = attribute.ToString();
+                string SITELAT = element.Attribute("value").Value;
+
+                if (SITELAT.Contains("N"))
+                {
+                    SITELAT = Regex.Replace(SITELAT, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+                }
+
+                keyword.SetValue = SITELAT;
+
+                keyword.Comment = element.Attribute("comment").Value;
+                KeywordList.Add(keyword);
             }
         }
 
-        public void SiteLon(XElement element)
+
+        public void AddSiteLong(XElement element)
         {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("SITELON"))
+            if (element.Attribute("name").Value.Equals("SITELONG"))
             {
-                attribute = element.Attribute("value");
+                FitsKeyword keyword = new FitsKeyword();
+                keyword.Type = FitsKeyword.KeywordType.STRING;
+                keyword.Name = keyword.Name = element.Attribute("name").Value;
 
-                SITELON = attribute.ToString();
+                string SITELONG = element.Attribute("value").Value;
+
+                if (SITELONG.Contains("W"))
+                {
+                    SITELONG = Regex.Replace(SITELONG, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+
+                    Regex regReplace = new Regex("'");
+
+                    SITELONG = regReplace.Replace(SITELONG, "'-", 1);
+                }
+
+                keyword.SetValue = SITELONG;
+
+                keyword.Comment = element.Attribute("comment").Value;
+                KeywordList.Add(keyword);
             }
         }
+
 
         // ************************************************************************************************
         // ************************************************************************************************
-        public void FWHM(XElement element)
+        public void AddFWHM(XElement element)
         {
-            XAttribute attribute = element.Attribute("name");
-
-            if (attribute.ToString().Contains("FMHM"))
+            if (element.Attribute("name").Value.Equals("FWHM"))
             {
-                attribute = element.Attribute("value");
-
-                string x = attribute.ToString();
-                Xbin = x.Substring(x.IndexOf("\"") + 1);
-                Xbin = Xbin.Substring(0, Xbin.IndexOf("\""));
-                Xbin = Xbin.Replace(".", "");
-                Xbin = Xbin.Trim();
+                FitsKeyword keyword = new FitsKeyword();
+                keyword.Type = FitsKeyword.KeywordType.FLOAT;
+                keyword.Name = element.Attribute("name").Value;
+                keyword.SetValue = element.Attribute("value").Value;
+                keyword.Comment = element.Attribute("comment").Value;
+                KeywordList.Add(keyword);
             }
         }
-        public string FMHM()
-        {
-            return Xbin;
-        }
+
         // ************************************************************************************************
         // ************************************************************************************************
 
@@ -740,8 +766,8 @@ namespace XisfRename.Parse
             }
 
 
-            IEnumerable<XElement> thumb = from c in mXmlDoc.Descendants(ns + "Thumbnail") select c;
-            foreach (XElement element in thumb)
+            IEnumerable<XElement> thumbnail = from c in mXmlDoc.Descendants(ns + "Thumbnail") select c;
+            foreach (XElement element in thumbnail)
             {
                 ThumbnailAttachment(element);
             }
@@ -759,30 +785,21 @@ namespace XisfRename.Parse
             // Find each relevent keyword and add it to mFile
             foreach (XElement element in elements)
             {
-                AmbientTemperature(element);
-                Binning(element);
-                CameraModel(element);
-                CameraGain(element);
-                CameraOffset(element);
-                ExposureSeconds(element);
-                FilterName(element);
-                FocalLength(element);
-                FocusPosition(element);
-                FocusTemperature(element);
-                FrameType(element);
-                ImageAngle(element);
-                ImageDateTime(element);
-                ImageLocation(element);
-                SensorTemperature(element);
-                SgpProfile(element);
-                SubFrameSelectorWeight(element);
-                TargetName(element);
-                SiteLat(element);
-                SiteLon(element);
+                AddFITSKeyword(element);
             }
 
             ValidFile = true;
             return true;
+        }
+
+        public void AddFITSKeyword(XElement element)
+        {
+            FitsKeyword keyword = new FitsKeyword();
+            keyword.Type = FitsKeyword.KeywordType.COPY;
+            keyword.Name = element.Attribute("name").Value;
+            keyword.SetValue = element.Attribute("value").Value;
+            keyword.Comment = element.Attribute("comment").Value;
+            KeywordList.Add(keyword);
         }
     }
 }

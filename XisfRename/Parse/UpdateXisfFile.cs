@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
-using LocalLib;
 
 namespace XisfRename.Parse
 {
@@ -15,8 +13,6 @@ namespace XisfRename.Parse
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
 
-        enum keywordType { TEXT, INT, FLOAT, BOOL }
-
         public string NewTargetName { get; set; }
 
         public UpdateXisfFile()
@@ -24,15 +20,14 @@ namespace XisfRename.Parse
             mBufferList = new List<Buffer>();
         }
 
-        // ****************************************************************************************************
-        // ****************************************************************************************************
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
+
         public bool UpdateFiles(List<Parse.XisfFile> mFileList)
         {
             int xmlStart;
             int xisfStart;
             int xisfEnd;
-
-
             byte[] rawFileData = new byte[(int)1e9];
 
             foreach (XisfFile mFile in mFileList)
@@ -41,31 +36,36 @@ namespace XisfRename.Parse
                 {
                     mBufferList.Clear();
 
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+                    // Read entire XISF file (up to 1 GB) into rawFileData and create an xml document
+                    
                     Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
                     BinaryReader bw = new BinaryReader(stream);
                     rawFileData = bw.ReadBytes((int)1e9);
                     bw.Close();
 
+                    // Set up some pointers to xml start and stop positions
                     xmlStart = BinaryFind(rawFileData, "<?xml version"); // returns the position of '<'
                     xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
                     xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
-                    // convert (including) from <xisf to </xisf> to string and then parse xml into a new doc
+                    // convert (including) from <xisf to </xisf> to a string and then parse string as xml into a new doc
                     string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
-
-                    int position = xisfString.IndexOf("<FITSKeyword");  // Find first FITSKeyword
-
-
                     XmlDocument doc = new XmlDocument();
                     doc.LoadXml(xisfString);
 
-                    UpdateFitsKeyword(doc, keywordType.FLOAT, "FWHM", "2.1828", true, "#################################");
-                    UpdateFitsKeyword(doc, keywordType.TEXT, "OBJECT", NewTargetName, true);
-                    ReplaceSiteLatitude(doc, mFile.SITELAT);
-                    ReplaceSiteLongitude(doc, mFile.SITELON);
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
+                    // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
+                    ReplaceFitsKeywords(doc, mFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
+                    // Begin setting up output XISF File
+                    // Create a mBuffer to hold our different data types (Binary, Text, Binary Zero's, etc.
+                    // Add each mBuffer to a List and when complete, sequentially write each List element over our XISF File
 
                     // Fixes for PixInsight Parser
                     xisfString = doc.OuterXml.Replace(" /", "/");
@@ -78,6 +78,7 @@ namespace XisfRename.Parse
                     mBuffer.AsciiData = "XISF0100";
                     mBufferList.Add(mBuffer);
 
+                    // Write xml portion length to XISF Header - See PixInsight XISF Developer info 
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.BINARY;
                     byte[] headerLength = { Convert.ToByte((xisfString.Length >> 0) & 0xff), Convert.ToByte((xisfString.Length >> 8) & 0xff), Convert.ToByte((xisfString.Length >> 216) & 0xff), Convert.ToByte((xisfString.Length >> 24) & 0xff) };
@@ -85,19 +86,20 @@ namespace XisfRename.Parse
                     mBuffer.BinaryByteLength = 4;
                     mBufferList.Add(mBuffer);
 
+                    // Write reserved bytes as 0's
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryByteLength = 4;
                     mBufferList.Add(mBuffer);
 
 
-                    // Add the Complete XML ascii potortion to the buffer list - after OBJECT has been replaced in the returned ObjectName string
+                    // Add the newly replaced XML ascii potortion to the buffer list 
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ASCII;
                     mBuffer.AsciiData = xisfString;
                     mBufferList.Add(mBuffer);
 
-                    // Pad zero's after </xisf> to start of image
+                    // Pad zero's after </xisf> to the start of binary image data
                     mBuffer = new Buffer();
                     mBuffer.Type = Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryDataStart = 0;
@@ -114,7 +116,7 @@ namespace XisfRename.Parse
 
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
-                        // Pad zero's after </xisf> to start of image
+                        // Pad zero's after </xisf> to start of thumbnail image
                         mBuffer = new Buffer();
                         mBuffer.Type = Buffer.TypeEnum.ZEROS;
                         mBuffer.BinaryDataStart = 0;
@@ -130,128 +132,79 @@ namespace XisfRename.Parse
                         mBufferList.Add(mBuffer);
                     }
 
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
+                    // Now that the mBuffer List is done, write the XISF File
                     WriteBinaryFile(mFile.SourceFileName);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    MessageBox.Show(ex.ToString());
                     return false;
                 }
             }
             return true;
         }
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
 
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void ReplaceSiteLatitude(XmlDocument document, string newSiteLatitude)
+        private void ReplaceFitsKeywords(XmlDocument document, XisfFile mFile)
         {
-            // Fix old SGPro SITELAT format error - this method should not be needed in the future 
-            XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
-
-            foreach (XmlNode xItem in items)
+            // First Clean Up by removing all FITSKeywords
+            XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
+            for (int i = nodeList.Count - 1; i >= 0; i--)
             {
-                if (xItem.Attributes[0].Value.Equals("SITELAT"))
-                {
-                    string value = xItem.Attributes[1].Value;
-
-                    if (value.Contains("N"))
-                    {
-                        string replaced = Regex.Replace(value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-
-                        xItem.Attributes[1].Value = replaced;
-                    }
-                }
+                nodeList[i].ParentNode.RemoveChild(nodeList[i]);
             }
-        }
 
-        private void ReplaceSiteLongitude(XmlDocument document, string newSiteLongitude)
-        {
-            // Fix old SGPro SITELONG format error - this method should not be needed in the future 
-            XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
 
-            foreach (XmlNode xItem in items)
+            // Find the <Image tag - We are going to add the updated FITSKeyword list under here
+            nodeList = document.GetElementsByTagName("Image");
+
+            foreach (XmlNode item in nodeList)
             {
-                if (xItem.Attributes[0].Value.Equals("SITELONG"))
+                // Add the FITSKeywords in alphabetical order - Not needed but WTF
+                List<FitsKeyword> keywords = mFile.KeywordList.OrderBy(p => p.Name).ToList();
+
+                foreach (FitsKeyword keyword in keywords)
                 {
-                    string value = xItem.Attributes[1].Value;
-
-                    if (value.Contains("W"))
+                    if (keyword.Type != FitsKeyword.KeywordType.NULL)
                     {
-                        string replaced = Regex.Replace(value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-
-                        Regex regReplace = new Regex("'");
-                        replaced = regReplace.Replace(replaced, "'-", 1);
-
-                        xItem.Attributes[1].Value = replaced;
-                        return;
-                    }
-
-                }
-            }
-        }
-
-        private void UpdateFitsKeyword(XmlDocument document, keywordType type, string fitsKeyword, string value, bool update = false, string comment = "")
-        {
-            if (update)
-            {
-                XmlNodeList items = document.GetElementsByTagName("FITSKeyword");
-
-                foreach (XmlNode xItem in items)
-                {
-                    if (xItem.Attributes[0].Value.Equals(fitsKeyword))
-                    {
-                        switch (type)
+                        // Create a FITSKeyword under <Image
+                        var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                        newElement.SetAttribute("name", keyword.Name);
+                        switch (keyword.Type)
                         {
-                            case keywordType.BOOL:
-                                xItem.Attributes[1].Value = value;
+                            case FitsKeyword.KeywordType.COPY:
+                                newElement.SetAttribute("value", keyword.GetValue<string>());
                                 break;
-                            case keywordType.FLOAT:
-                                xItem.Attributes[1].Value = value;
+                            case FitsKeyword.KeywordType.BOOL:
+                                newElement.SetAttribute("value", keyword.GetValue<string>());
                                 break;
-                            case keywordType.INT:
-                                xItem.Attributes[1].Value = value;
+                            case FitsKeyword.KeywordType.FLOAT:
+                                newElement.SetAttribute("value", keyword.GetValue<double>());
                                 break;
-                            case keywordType.TEXT:
-                                xItem.Attributes[1].Value = "\'" + value + " \'";
+                            case FitsKeyword.KeywordType.INTEGER:
+                                newElement.SetAttribute("value", keyword.GetValue<int>());
+                                break;
+                            case FitsKeyword.KeywordType.STRING:
+                                newElement.SetAttribute("value", "'" + keyword.GetValue<string>() + "'");
                                 break;
                         }
-                        xItem.Attributes[1].Value = "\'" + value + " \'";
-                        xItem.Attributes[2].Value = (comment == "") ? xItem.Attributes[2].Value : comment;
-                        return;
+                        newElement.SetAttribute("comment", keyword.Comment);
+
+                        item.AppendChild(newElement);
                     }
-                }
-
-                items = document.GetElementsByTagName("Image");
-
-                // Didn't find the 'fitsSKeyword' - So create and add it at the beginning of FITSKeywords (as first child of Image)
-
-                var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
-                newElement.SetAttribute("name", fitsKeyword);
-                switch (type)
-                {
-                    case keywordType.BOOL:
-                        newElement.SetAttribute("value", value);
-                        break;
-                    case keywordType.FLOAT:
-                        newElement.SetAttribute("value", value);
-                        break;
-                    case keywordType.INT:
-                        newElement.SetAttribute("value", value);
-                        break;
-                    case keywordType.TEXT:
-                        newElement.SetAttribute("value", "\'" + value + " \'");
-                        break;
-                }
-                newElement.SetAttribute("comment", comment);
-
-                foreach (XmlNode xItem in items)
-                {
-                    xItem. PrependChild(newElement);
-                    return;
                 }
             }
         }
 
+        // ****************************************************************************************************
+        // ****************************************************************************************************
 
         public int BinaryFind(byte[] buffer, string findText)
         {
@@ -316,5 +269,9 @@ namespace XisfRename.Parse
             }
 
         }
+
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
+
     }
 }
