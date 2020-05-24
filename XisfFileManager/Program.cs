@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace XisfRename
+namespace XisfFileManager
 {
     static class Program
     {
@@ -20,3 +20,4 @@ namespace XisfRename
         }
     }
 }
+ 

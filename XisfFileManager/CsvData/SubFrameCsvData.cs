@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace XisfRename.CsvData
+namespace XisfFileManager.CsvData
 {
     class SubFrameData
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XisfRename.XisfFile
+namespace XisfFileManager.XisfFile
 {
     public class Buffer
     {

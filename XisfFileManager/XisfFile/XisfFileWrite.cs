@@ -6,16 +6,16 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace XisfRename.XisfFile
+namespace XisfFileManager.XisfFile
 {
-    public class XisfFileWite
+    public class XisfFileWrite
     {
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
 
         public string NewTargetName { get; set; }
 
-        public XisfFileWite()
+        public XisfFileWrite()
         {
             mBufferList = new List<Buffer>();
         }
@@ -58,8 +58,10 @@ namespace XisfRename.XisfFile
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
+                    mFile.mKeywordData.RepairTargetName(mFile.mKeywordList, NewTargetName);
+
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceFitsKeywords(doc, mFile);
+                    ReplaceAllFitsKeywords(doc, mFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -152,7 +154,7 @@ namespace XisfRename.XisfFile
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void ReplaceFitsKeywords(XmlDocument document, XisfFileRead mFile)
+        private void ReplaceAllFitsKeywords(XmlDocument document, XisfFileRead mFile)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -168,30 +170,30 @@ namespace XisfRename.XisfFile
             foreach (XmlNode item in nodeList)
             {
                 // Add the FITSKeywords in alphabetical order - Not needed but WTF
-                List<FitsKeyword> keywords = mFile.KeywordList.OrderBy(p => p.Name).ToList();
+                List<Keyword> keywords = mFile.mKeywordList.OrderBy(p => p.Name).ToList();
 
-                foreach (FitsKeyword keyword in keywords)
+                foreach (Keyword keyword in keywords)
                 {
-                    if (keyword.Type != FitsKeyword.KeywordType.NULL)
+                    if (keyword.Type != Keyword.KeywordType.NULL)
                     {
                         // Create a FITSKeyword under <Image
                         var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                         newElement.SetAttribute("name", keyword.Name);
                         switch (keyword.Type)
                         {
-                            case FitsKeyword.KeywordType.COPY:
+                            case Keyword.KeywordType.COPY:
                                 newElement.SetAttribute("value", keyword.GetValue<string>());
                                 break;
-                            case FitsKeyword.KeywordType.BOOL:
+                            case Keyword.KeywordType.BOOL:
                                 newElement.SetAttribute("value", keyword.GetValue<string>());
                                 break;
-                            case FitsKeyword.KeywordType.FLOAT:
+                            case Keyword.KeywordType.FLOAT:
                                 newElement.SetAttribute("value", keyword.GetValue<double>());
                                 break;
-                            case FitsKeyword.KeywordType.INTEGER:
+                            case Keyword.KeywordType.INTEGER:
                                 newElement.SetAttribute("value", keyword.GetValue<int>());
                                 break;
-                            case FitsKeyword.KeywordType.STRING:
+                            case Keyword.KeywordType.STRING:
                                 newElement.SetAttribute("value", "'" + keyword.GetValue<string>() + "'");
                                 break;
                         }

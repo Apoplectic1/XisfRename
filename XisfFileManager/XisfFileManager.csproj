@@ -6,15 +6,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{932CF3F1-C121-4C72-AEB6-0704CAC33062}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>XisfRename</RootNamespace>
-    <AssemblyName>XisfRename</AssemblyName>
+    <RootNamespace>XisfFileManager</RootNamespace>
+    <AssemblyName>XisfFileManager</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>\\SKYHAWKSERVER\Qweb\SkyhawkConsulting\ProjectDeploy\XisfRename\</PublishUrl>
+    <PublishUrl>\\SKYHAWKSERVER\Qweb\SkyhawkConsulting\ProjectDeploy\XisfFileManager\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.skyhawkconsultinginc.com/ProjectDeploy/XisfRename/</InstallUrl>
+    <InstallUrl>https://www.skyhawkconsultinginc.com/ProjectDeploy/XisfFileManager/</InstallUrl>
     <TargetCulture>en-US</TargetCulture>
     <ProductName>XISF File Renamer</ProductName>
     <PublisherName>Skyhawk Consulting, Inc.</PublisherName>
@@ -86,7 +86,7 @@
     <ManifestCertificateThumbprint>C711F2CF481289CE5C6E545FE1005B7076EBD805</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>XisfRename_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>XisfFileManager_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -95,10 +95,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>XisfRename.Program</StartupObject>
+    <StartupObject>XisfFileManager.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>XisfRename.ico</ApplicationIcon>
+    <ApplicationIcon>XisfFileManager.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -134,10 +134,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="XisfFile\Buffer.cs" />
-    <Compile Include="KeywordData\Keyword.cs" />
-    <Compile Include="KeywordData\KeywordData.cs" />
+    <Compile Include="Keywords\Keyword.cs" />
+    <Compile Include="Keywords\KeywordData.cs" />
     <Compile Include="XisfFile\XisfFileRename.cs" />
-    <Compile Include="XisfFile\XisfFileWite.cs" />
+    <Compile Include="XisfFile\XisfFileWrite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XisfFile\XisfFileRead.cs" />
@@ -183,7 +183,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="XisfRename.ico" />
+    <Content Include="XisfFileManager.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

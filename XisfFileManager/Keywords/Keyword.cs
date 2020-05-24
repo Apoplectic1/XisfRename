@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace XisfRename.XisfFile
+namespace XisfFileManager.Keywords
 {
-    public class FitsKeyword
+    public class Keyword
     {
         public enum KeywordType {NULL, COPY, INTEGER, FLOAT, STRING, BOOL}
         public KeywordType Type = KeywordType.NULL;

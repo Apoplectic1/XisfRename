@@ -4,24 +4,23 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
 using LocalLib;
-using XisfRename.CsvData;
-using XisfRename.XisfFile;
+using XisfFileManager.CsvData;
+using XisfFileManager.XisfFile;
 
-namespace XisfRename
+namespace XisfFileManager
 {
     // ##########################################################################################################################
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        List<XisfFile.XisfFileRead> mFileList;
-        XisfFile.XisfFileRename mRenameFile;
-        XisfFile.XisfFileWite mUpdateFile;
-        XisfFile.XisfFileRead mFile;
+        List<XisfFileRead> mFileList;
+        XisfFileRename mRenameFile;
+        XisfFileWrite mUpdateFile;
+        XisfFileRead mFile;
         private DirectoryInfo d;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
@@ -70,10 +69,10 @@ namespace XisfRename
         {
             InitializeComponent();
             Label_Task.Text = "";
-            mFile = new XisfFile.XisfFileRead();
-            mFileList = new List<XisfFile.XisfFileRead>();
-            mRenameFile = new XisfFile.XisfFileRename();
-            mUpdateFile = new XisfFile.XisfFileWite();
+            mFile = new XisfFileRead();
+            mFileList = new List<XisfFileRead>();
+            mRenameFile = new XisfFileRename();
+            mUpdateFile = new XisfFileWrite();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -257,10 +256,10 @@ namespace XisfRename
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
 
-                        mFile = new XisfFile.XisfFileRead();
+                        mFile = new XisfFileRead();
                         mFile.SourceFileName = file.FullName;
 
-                        bStatus = mFile.Parse();
+                        bStatus = mFile.ParseXisfFile();
 
                         if (bStatus)
                             mFileList.Add(mFile);
@@ -272,14 +271,14 @@ namespace XisfRename
 
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
-                List<FitsKeyword> TargetNameList = new List<FitsKeyword>();
-                foreach (XisfFile.XisfFileRead file in mFileList)
+                List<Keyword> TargetNameList = new List<Keyword>();
+                foreach (XisfFileRead file in mFileList)
                 {
-                    TargetNameList.Add(file.KeywordList.Find(x => x.Name == "OBJECT"));
+                    TargetNameList.Add(file.mKeywordList.Find(x => x.Name == "OBJECT"));
                 }
 
                 List<string> TargetNames = new List<string>();
-                foreach(FitsKeyword targetName in TargetNameList)
+                foreach(Keyword targetName in TargetNameList)
                 {
                     TargetNames.Add(targetName.GetValue<string>());
                 }

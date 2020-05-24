@@ -1,4 +1,4 @@
-﻿namespace XisfRename
+﻿namespace XisfFileManager
 {
     partial class MainForm
     {
