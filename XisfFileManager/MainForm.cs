@@ -8,7 +8,9 @@ using System.Windows.Forms;
 
 
 using LocalLib;
-using XisfFileManager.CsvData;
+using XisfFileManager.SubFrameData;
+using XisfFileManager.XisfKeywords;
+using XisfFileManager.XisfFileOperations;
 using XisfFileManager.XisfFile;
 
 namespace XisfFileManager
@@ -17,10 +19,9 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        List<XisfFileRead> mFileList;
+        List<XisfFile.XisfFile> mFileList;
+        XisfFile.XisfFile mFile;
         XisfFileRename mRenameFile;
-        XisfFileWrite mUpdateFile;
-        XisfFileRead mFile;
         private DirectoryInfo d;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
@@ -69,10 +70,8 @@ namespace XisfFileManager
         {
             InitializeComponent();
             Label_Task.Text = "";
-            mFile = new XisfFileRead();
-            mFileList = new List<XisfFileRead>();
+            mFileList = new List<XisfFile.XisfFile>();
             mRenameFile = new XisfFileRename();
-            mUpdateFile = new XisfFileWrite();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -256,10 +255,10 @@ namespace XisfFileManager
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
 
-                        mFile = new XisfFileRead();
+                        mFile = new XisfFile.XisfFile();
                         mFile.SourceFileName = file.FullName;
 
-                        bStatus = mFile.ParseXisfFile();
+                        bStatus = XisfFileRead.ParseXisfFile(mFile);
 
                         if (bStatus)
                             mFileList.Add(mFile);
@@ -267,29 +266,28 @@ namespace XisfFileManager
                 }
 
                 // Sort Image File List by Capture Time
-                mFileList.Sort((x, y) => DateTime.Compare(x.CaptureDateTime, y.CaptureDateTime));
+                mFileList.Sort(XisfFile.XisfFile.CaptureTimeComparison);
+
 
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
-                List<Keyword> TargetNameList = new List<Keyword>();
-                foreach (XisfFileRead file in mFileList)
-                {
-                    TargetNameList.Add(file.mKeywordList.Find(x => x.Name == "OBJECT"));
-                }
-
                 List<string> TargetNames = new List<string>();
-                foreach(Keyword targetName in TargetNameList)
+                foreach (XisfFile.XisfFile file in mFileList)
                 {
-                    TargetNames.Add(targetName.GetValue<string>());
+                    TargetNames.Add(file.KeywordData.TargetName());
                 }
 
                 TargetNames = TargetNames.Distinct().ToList();
 
                 if (TargetNames.Count > 1)
                 {
-                    Label_TagetName.Text = "Multiple Target Names";
+                    Label_TagetName.ForeColor = System.Drawing.Color.Red;
                 }
-                
+                else
+                {
+                    Label_TagetName.ForeColor = System.Drawing.Color.Black;
+                }
+
                 TargetNames = TargetNames.OrderBy(q => q).ToList();
 
                 foreach (string item in TargetNames)
@@ -298,9 +296,12 @@ namespace XisfFileManager
                 }
 
                 ComboBox_TargetName.SelectedIndex = 0;
+
+
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString(), "Button_Browse_Click(object sender, EventArgs e)");
                 return;
             }
         }
@@ -331,10 +332,6 @@ namespace XisfFileManager
             mRenameFile.mIndexFirst = RadioButton_WeightFirst.Checked;
         }
 
-
-
-
-
         private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             mFolder = new OpenFolderDialog()
@@ -346,7 +343,6 @@ namespace XisfFileManager
                 Multiselect = true,
                 RestoreDirectory = true
             };
-
 
             DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
 
@@ -360,16 +356,41 @@ namespace XisfFileManager
         {
             Label_Task.Text = "Renaming Images";
 
-            mRenameFile.RenameFiles(mFileList);
+            ProgressBar_XisfFile.Maximum = mFileList.Count();
+            ProgressBar_XisfFile.Value = 0;
 
+            mRenameFile.MarkDuplicates(mFileList);
+
+            foreach (XisfFile.XisfFile file in mFileList)
+            {
+                ProgressBar_XisfFile.Value += 1;
+                mRenameFile.RenameFiles(file);
+            }
+
+            mFileList.Clear();
             Label_Task.Text = "Done.";
+            ProgressBar_XisfFile.Value = 0;
             ProgressBar_OverAll.Value = 0;
         }
 
         private void Button_Update_Click(object sender, EventArgs e)
         {
-            mUpdateFile.NewTargetName = ComboBox_TargetName.Text;
-            mUpdateFile.UpdateFiles(mFileList);
+            Label_Task.Text = "Updating Image Keywords";
+
+            ProgressBar_XisfFile.Maximum = mFileList.Count();
+            ProgressBar_XisfFile.Value = 0;
+
+
+            foreach (XisfFile.XisfFile file in mFileList)
+            {
+                ProgressBar_XisfFile.Value += 1;
+
+                XisfFileWrite.TargetName = ComboBox_TargetName.Text;
+                XisfFileWrite.UpdateFiles(file);
+            }
+
+            Label_Task.Text = "Done.";
+            ProgressBar_XisfFile.Value = 0;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -393,7 +414,6 @@ namespace XisfFileManager
             }
 
             ReadSubFrameCsv.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
-
         }
 
         private void CheckBox_IncludeWeightsAndStatistics_CheckedChanged(object sender, EventArgs e)

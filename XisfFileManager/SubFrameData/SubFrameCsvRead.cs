@@ -1,4 +1,4 @@
-﻿namespace XisfFileManager.CsvData
+﻿namespace XisfFileManager.SubFrameData
 {
     public static class ReadSubFrameCsv
     {

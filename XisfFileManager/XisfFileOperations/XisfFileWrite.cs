@@ -6,41 +6,37 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace XisfFileManager.XisfFile
+namespace XisfFileManager.XisfFileOperations
 {
-    public class XisfFileWrite
+    public static class XisfFileWrite
     {
-        private Buffer mBuffer;
-        private List<Buffer> mBufferList;
-
-        public string NewTargetName { get; set; }
-
-        public XisfFileWrite()
-        {
-            mBufferList = new List<Buffer>();
-        }
+        public static XisfFile.Buffer mBuffer;
+        public static List<XisfFile.Buffer> mBufferList;
+        public static string TargetName { get; set; }
+        
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public bool UpdateFiles(List<XisfFile.XisfFileRead> mFileList)
+        public static bool UpdateFiles(XisfFile.XisfFile mFile)
         {
             int xmlStart;
             int xisfStart;
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
+            mBufferList = new List<XisfFile.Buffer>();
 
-            foreach (XisfFileRead mFile in mFileList)
+            try
             {
-                try
+                using (Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open))
                 {
                     mBufferList.Clear();
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Read entire XISF file (up to 1 GB) into rawFileData and create an xml document
-                    
-                    Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
+
+                    //Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
                     BinaryReader bw = new BinaryReader(stream);
                     rawFileData = bw.ReadBytes((int)1e9);
                     bw.Close();
@@ -58,7 +54,10 @@ namespace XisfFileManager.XisfFile
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    mFile.mKeywordData.RepairTargetName(mFile.mKeywordList, NewTargetName);
+                    mFile.KeywordData.RepairTargetName(TargetName);
+                    mFile.KeywordData.RemoveKeyword("HISTORY");
+
+                    mFile.KeywordData.AddKeyword("FWHM", 3.1415926539);
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
                     ReplaceAllFitsKeywords(doc, mFile);
@@ -75,42 +74,42 @@ namespace XisfFileManager.XisfFile
                     //xisfString = xisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
 
                     // Add header (includes binary and string portions) up the start of "<xisf version"
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ASCII;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ASCII;
                     mBuffer.AsciiData = "XISF0100";
                     mBufferList.Add(mBuffer);
 
                     // Write xml portion length to XISF Header - See PixInsight XISF Developer info 
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.BINARY;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
                     byte[] headerLength = { Convert.ToByte((xisfString.Length >> 0) & 0xff), Convert.ToByte((xisfString.Length >> 8) & 0xff), Convert.ToByte((xisfString.Length >> 216) & 0xff), Convert.ToByte((xisfString.Length >> 24) & 0xff) };
                     mBuffer.BinaryData = headerLength;
                     mBuffer.BinaryByteLength = 4;
                     mBufferList.Add(mBuffer);
 
                     // Write reserved bytes as 0's
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryByteLength = 4;
                     mBufferList.Add(mBuffer);
 
 
                     // Add the newly replaced XML ascii potortion to the buffer list 
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ASCII;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ASCII;
                     mBuffer.AsciiData = xisfString;
                     mBufferList.Add(mBuffer);
 
                     // Pad zero's after </xisf> to the start of binary image data
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryDataStart = 0;
                     mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - xisfString.Length - xmlStart;
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data from rawFileData after padding
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.BINARY;
+                    mBuffer = new XisfFile.Buffer();
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
                     mBuffer.BinaryDataStart = mFile.ImageAttachmentStart;
                     mBuffer.BinaryByteLength = mFile.ImageAttachmentLength;
                     mBuffer.BinaryData = rawFileData;
@@ -119,15 +118,15 @@ namespace XisfFileManager.XisfFile
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
                         // Pad zero's after image data to the start of the thumbnail image
-                        mBuffer = new Buffer();
-                        mBuffer.Type = Buffer.TypeEnum.ZEROS;
+                        mBuffer = new XisfFile.Buffer();
+                        mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
                         mBuffer.BinaryDataStart = 0;
                         mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
                         mBufferList.Add(mBuffer);
 
                         // Add the binary thumbnail image data from rawFileData after image data and padding
-                        mBuffer = new Buffer();
-                        mBuffer.Type = Buffer.TypeEnum.BINARY;
+                        mBuffer = new XisfFile.Buffer();
+                        mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
                         mBuffer.BinaryDataStart = mFile.ThumbnailAttachmentStart;
                         mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentLength;
                         mBuffer.BinaryData = rawFileData;
@@ -140,12 +139,13 @@ namespace XisfFileManager.XisfFile
                     // Now that the mBuffer List is done, write the XISF File
                     WriteBinaryFile(mFile.SourceFileName);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                    return false;
-                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + mFile.SourceFileName + ")");
+                return false;
+            }
+
             return true;
         }
         // ##############################################################################################################################################
@@ -154,7 +154,7 @@ namespace XisfFileManager.XisfFile
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void ReplaceAllFitsKeywords(XmlDocument document, XisfFileRead mFile)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -170,31 +170,31 @@ namespace XisfFileManager.XisfFile
             foreach (XmlNode item in nodeList)
             {
                 // Add the FITSKeywords in alphabetical order - Not needed but WTF
-                List<Keyword> keywords = mFile.mKeywordList.OrderBy(p => p.Name).ToList();
+                List<XisfKeywords.Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
 
-                foreach (Keyword keyword in keywords)
+                foreach (XisfKeywords.Keyword keyword in keywords)
                 {
-                    if (keyword.Type != Keyword.KeywordType.NULL)
+                    if (keyword.Type != XisfKeywords.Keyword.EType.NULL)
                     {
                         // Create a FITSKeyword under <Image
                         var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                         newElement.SetAttribute("name", keyword.Name);
                         switch (keyword.Type)
                         {
-                            case Keyword.KeywordType.COPY:
-                                newElement.SetAttribute("value", keyword.GetValue<string>());
+                            case XisfKeywords.Keyword.EType.COPY:
+                                newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.KeywordType.BOOL:
-                                newElement.SetAttribute("value", keyword.GetValue<string>());
+                            case XisfKeywords.Keyword.EType.BOOL:
+                                newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.KeywordType.FLOAT:
-                                newElement.SetAttribute("value", keyword.GetValue<double>());
+                            case XisfKeywords.Keyword.EType.FLOAT:
+                                newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.KeywordType.INTEGER:
-                                newElement.SetAttribute("value", keyword.GetValue<int>());
+                            case XisfKeywords.Keyword.EType.INTEGER:
+                                newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.KeywordType.STRING:
-                                newElement.SetAttribute("value", "'" + keyword.GetValue<string>() + "'");
+                            case XisfKeywords.Keyword.EType.STRING:
+                                newElement.SetAttribute("value", "'" + keyword.Value.Replace("'", "") + "'");
                                 break;
                         }
                         newElement.SetAttribute("comment", keyword.Comment);
@@ -208,7 +208,7 @@ namespace XisfFileManager.XisfFile
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        public int BinaryFind(byte[] buffer, string findText)
+        private static int BinaryFind(byte[] buffer, string findText)
         {
             byte[] xisfFind = Encoding.UTF8.GetBytes(findText);
             int i;
@@ -233,26 +233,26 @@ namespace XisfFileManager.XisfFile
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        private bool WriteBinaryFile(string fileName)
+        private static bool WriteBinaryFile(string fileName)
         {
             try
             {
                 Stream stream = new FileStream(fileName, FileMode.Create);
                 BinaryWriter bw = new BinaryWriter(stream);
 
-                foreach (Buffer buffer in mBufferList)
+                foreach (XisfFile.Buffer buffer in mBufferList)
                 {
                     switch (buffer.Type)
                     {
-                        case Buffer.TypeEnum.ASCII:
+                        case XisfFile.Buffer.TypeEnum.ASCII:
                             bw.Write(Encoding.UTF8.GetBytes(buffer.AsciiData));
                             break;
 
-                        case Buffer.TypeEnum.BINARY:
+                        case XisfFile.Buffer.TypeEnum.BINARY:
                             bw.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
                             break;
 
-                        case Buffer.TypeEnum.ZEROS:
+                        case XisfFile.Buffer.TypeEnum.ZEROS:
                             for (int i = 0; i < buffer.BinaryByteLength; i++)
                             {
                                 bw.Write((byte)0x00);
@@ -260,16 +260,17 @@ namespace XisfFileManager.XisfFile
                             break;
                     }
                 }
+
                 bw.Flush();
                 bw.Close();
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString(), "WriteBinaryFile(" + fileName + ")");
                 return false;
             }
-
         }
 
         // ##############################################################################################################################################

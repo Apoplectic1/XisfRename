@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Button_Browse = new System.Windows.Forms.Button();
             this.ProgressBar_OverAll = new System.Windows.Forms.ProgressBar();
             this.CheckBox_Recurse = new System.Windows.Forms.CheckBox();
@@ -102,6 +103,24 @@
             this.TextBox_StarRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_StarRangeLow = new System.Windows.Forms.TextBox();
             this.Label_StarStdDev = new System.Windows.Forms.Label();
+            this.GroupBox_SnrWeight = new System.Windows.Forms.GroupBox();
+            this.Label_SnrRangeLow = new System.Windows.Forms.Label();
+            this.Label_SnrMean = new System.Windows.Forms.Label();
+            this.Label_SnrRangeHigh = new System.Windows.Forms.Label();
+            this.Label_SnrPersent = new System.Windows.Forms.Label();
+            this.TextBox_SnrPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_SnrRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_SnrRangeLow = new System.Windows.Forms.TextBox();
+            this.Label_SnrStdDev = new System.Windows.Forms.Label();
+            this.GroupBox_MedianWeight = new System.Windows.Forms.GroupBox();
+            this.Label_MedianRangeLow = new System.Windows.Forms.Label();
+            this.Label_MedianMean = new System.Windows.Forms.Label();
+            this.Label_MedianRangeHigh = new System.Windows.Forms.Label();
+            this.Label_MedianPercent = new System.Windows.Forms.Label();
+            this.TextBox_MedianPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_MedianRangeHigh = new System.Windows.Forms.TextBox();
+            this.TextBox_MedianRangeLow = new System.Windows.Forms.TextBox();
+            this.Label_MedianStdDev = new System.Windows.Forms.Label();
             this.GroupBox_NoiseWeight = new System.Windows.Forms.GroupBox();
             this.Label_NoiseRangeLow = new System.Windows.Forms.Label();
             this.Label_NoiseMean = new System.Windows.Forms.Label();
@@ -138,24 +157,6 @@
             this.TextBox_NoiseRatioRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_NoiseRatioRangeLow = new System.Windows.Forms.TextBox();
             this.label_NoiseRatioStdDev = new System.Windows.Forms.Label();
-            this.GroupBox_MedianWeight = new System.Windows.Forms.GroupBox();
-            this.Label_MedianRangeLow = new System.Windows.Forms.Label();
-            this.Label_MedianMean = new System.Windows.Forms.Label();
-            this.Label_MedianRangeHigh = new System.Windows.Forms.Label();
-            this.Label_MedianPercent = new System.Windows.Forms.Label();
-            this.TextBox_MedianPercent = new System.Windows.Forms.TextBox();
-            this.TextBox_MedianRangeHigh = new System.Windows.Forms.TextBox();
-            this.TextBox_MedianRangeLow = new System.Windows.Forms.TextBox();
-            this.Label_MedianStdDev = new System.Windows.Forms.Label();
-            this.GroupBox_SnrWeight = new System.Windows.Forms.GroupBox();
-            this.Label_SnrRangeLow = new System.Windows.Forms.Label();
-            this.Label_SnrMean = new System.Windows.Forms.Label();
-            this.Label_SnrRangeHigh = new System.Windows.Forms.Label();
-            this.Label_SnrPersent = new System.Windows.Forms.Label();
-            this.TextBox_SnrPercent = new System.Windows.Forms.TextBox();
-            this.TextBox_SnrRangeHigh = new System.Windows.Forms.TextBox();
-            this.TextBox_SnrRangeLow = new System.Windows.Forms.TextBox();
-            this.Label_SnrStdDev = new System.Windows.Forms.Label();
             this.GroupBox_FwhmWeight = new System.Windows.Forms.GroupBox();
             this.Label_FwhmRangeLow = new System.Windows.Forms.Label();
             this.Label_FwhmMean = new System.Windows.Forms.Label();
@@ -166,6 +167,7 @@
             this.TextBox_FwhmRangeLow = new System.Windows.Forms.TextBox();
             this.Label_FwhmStdDev = new System.Windows.Forms.Label();
             this.Label_Task = new System.Windows.Forms.Label();
+            this.ProgressBar_XisfFile = new System.Windows.Forms.ProgressBar();
             this.GroupBox_Numbering.SuspendLayout();
             this.GroupBox_IndexOrder.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
@@ -178,12 +180,12 @@
             this.GroupBox_MedianMeanDeviationWeight.SuspendLayout();
             this.GroupBox_EccentricityMeanDeviationWeight.SuspendLayout();
             this.GroupBox_StarsWeight.SuspendLayout();
+            this.GroupBox_SnrWeight.SuspendLayout();
+            this.GroupBox_MedianWeight.SuspendLayout();
             this.GroupBox_NoiseWeight.SuspendLayout();
             this.GroupBox_FwhmMeanDeviationWeight.SuspendLayout();
             this.GroupBox_EccentricityWeight.SuspendLayout();
             this.GroupBox_NoiseRatioWeight.SuspendLayout();
-            this.GroupBox_MedianWeight.SuspendLayout();
-            this.GroupBox_SnrWeight.SuspendLayout();
             this.GroupBox_FwhmWeight.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -202,6 +204,7 @@
             this.ProgressBar_OverAll.Location = new System.Drawing.Point(271, 80);
             this.ProgressBar_OverAll.Name = "ProgressBar_OverAll";
             this.ProgressBar_OverAll.Size = new System.Drawing.Size(420, 11);
+            this.ProgressBar_OverAll.Step = 1;
             this.ProgressBar_OverAll.TabIndex = 1;
             // 
             // CheckBox_Recurse
@@ -311,7 +314,7 @@
             // 
             // Button_Rename
             // 
-            this.Button_Rename.Location = new System.Drawing.Point(348, 42);
+            this.Button_Rename.Location = new System.Drawing.Point(348, 39);
             this.Button_Rename.Name = "Button_Rename";
             this.Button_Rename.Size = new System.Drawing.Size(124, 23);
             this.Button_Rename.TabIndex = 4;
@@ -321,6 +324,7 @@
             // 
             // GroupBox_XisfFileUpdate
             // 
+            this.GroupBox_XisfFileUpdate.Controls.Add(this.ProgressBar_XisfFile);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.CheckBox_IncludeWeightsAndStatistics);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.Label_TagetName);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.ComboBox_TargetName);
@@ -337,7 +341,7 @@
             // CheckBox_IncludeWeightsAndStatistics
             // 
             this.CheckBox_IncludeWeightsAndStatistics.AutoSize = true;
-            this.CheckBox_IncludeWeightsAndStatistics.Location = new System.Drawing.Point(478, 85);
+            this.CheckBox_IncludeWeightsAndStatistics.Location = new System.Drawing.Point(478, 82);
             this.CheckBox_IncludeWeightsAndStatistics.Name = "CheckBox_IncludeWeightsAndStatistics";
             this.CheckBox_IncludeWeightsAndStatistics.Size = new System.Drawing.Size(201, 17);
             this.CheckBox_IncludeWeightsAndStatistics.TabIndex = 6;
@@ -348,7 +352,7 @@
             // Label_TagetName
             // 
             this.Label_TagetName.AutoSize = true;
-            this.Label_TagetName.Location = new System.Drawing.Point(542, 21);
+            this.Label_TagetName.Location = new System.Drawing.Point(542, 18);
             this.Label_TagetName.Name = "Label_TagetName";
             this.Label_TagetName.Size = new System.Drawing.Size(72, 13);
             this.Label_TagetName.TabIndex = 0;
@@ -358,7 +362,7 @@
             // 
             this.ComboBox_TargetName.AllowDrop = true;
             this.ComboBox_TargetName.FormattingEnabled = true;
-            this.ComboBox_TargetName.Location = new System.Drawing.Point(486, 43);
+            this.ComboBox_TargetName.Location = new System.Drawing.Point(486, 40);
             this.ComboBox_TargetName.Name = "ComboBox_TargetName";
             this.ComboBox_TargetName.Size = new System.Drawing.Size(185, 21);
             this.ComboBox_TargetName.Sorted = true;
@@ -366,7 +370,7 @@
             // 
             // Button_UpdateXisfFiles
             // 
-            this.Button_UpdateXisfFiles.Location = new System.Drawing.Point(348, 81);
+            this.Button_UpdateXisfFiles.Location = new System.Drawing.Point(348, 78);
             this.Button_UpdateXisfFiles.Name = "Button_UpdateXisfFiles";
             this.Button_UpdateXisfFiles.Size = new System.Drawing.Size(124, 23);
             this.Button_UpdateXisfFiles.TabIndex = 4;
@@ -977,6 +981,194 @@
             this.Label_StarStdDev.TabIndex = 5;
             this.Label_StarStdDev.Text = "StdDev: ";
             // 
+            // GroupBox_SnrWeight
+            // 
+            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrRangeLow);
+            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrMean);
+            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrRangeHigh);
+            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrPersent);
+            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrPercent);
+            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeHigh);
+            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeLow);
+            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrStdDev);
+            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 293);
+            this.GroupBox_SnrWeight.Name = "GroupBox_SnrWeight";
+            this.GroupBox_SnrWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_SnrWeight.TabIndex = 16;
+            this.GroupBox_SnrWeight.TabStop = false;
+            this.GroupBox_SnrWeight.Text = "SNR Weight";
+            // 
+            // Label_SnrRangeLow
+            // 
+            this.Label_SnrRangeLow.AutoSize = true;
+            this.Label_SnrRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_SnrRangeLow.Name = "Label_SnrRangeLow";
+            this.Label_SnrRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_SnrRangeLow.TabIndex = 15;
+            this.Label_SnrRangeLow.Text = "Low";
+            this.Label_SnrRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_SnrMean
+            // 
+            this.Label_SnrMean.AutoSize = true;
+            this.Label_SnrMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_SnrMean.Name = "Label_SnrMean";
+            this.Label_SnrMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_SnrMean.TabIndex = 4;
+            this.Label_SnrMean.Text = "Mean: ";
+            // 
+            // Label_SnrRangeHigh
+            // 
+            this.Label_SnrRangeHigh.AutoSize = true;
+            this.Label_SnrRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_SnrRangeHigh.Name = "Label_SnrRangeHigh";
+            this.Label_SnrRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_SnrRangeHigh.TabIndex = 14;
+            this.Label_SnrRangeHigh.Text = "High";
+            this.Label_SnrRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_SnrPersent
+            // 
+            this.Label_SnrPersent.AutoSize = true;
+            this.Label_SnrPersent.Location = new System.Drawing.Point(53, 60);
+            this.Label_SnrPersent.Name = "Label_SnrPersent";
+            this.Label_SnrPersent.Size = new System.Drawing.Size(44, 13);
+            this.Label_SnrPersent.TabIndex = 0;
+            this.Label_SnrPersent.Text = "Percent";
+            // 
+            // TextBox_SnrPercent
+            // 
+            this.TextBox_SnrPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_SnrPercent.Name = "TextBox_SnrPercent";
+            this.TextBox_SnrPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_SnrPercent.TabIndex = 1;
+            this.TextBox_SnrPercent.Text = "10";
+            this.TextBox_SnrPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_SnrPercent.TextChanged += new System.EventHandler(this.TextBox_SnrPercent_TextChanged);
+            // 
+            // TextBox_SnrRangeHigh
+            // 
+            this.TextBox_SnrRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_SnrRangeHigh.Name = "TextBox_SnrRangeHigh";
+            this.TextBox_SnrRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_SnrRangeHigh.TabIndex = 2;
+            this.TextBox_SnrRangeHigh.Text = "1.0";
+            this.TextBox_SnrRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_SnrRangeHigh.TextChanged += new System.EventHandler(this.TextBox_SnrRangeHigh_TextChanged);
+            // 
+            // TextBox_SnrRangeLow
+            // 
+            this.TextBox_SnrRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_SnrRangeLow.Name = "TextBox_SnrRangeLow";
+            this.TextBox_SnrRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_SnrRangeLow.TabIndex = 3;
+            this.TextBox_SnrRangeLow.Text = "0.0";
+            this.TextBox_SnrRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_SnrRangeLow.TextChanged += new System.EventHandler(this.TextBox_SnrRangeLow_TextChanged);
+            // 
+            // Label_SnrStdDev
+            // 
+            this.Label_SnrStdDev.AutoSize = true;
+            this.Label_SnrStdDev.Location = new System.Drawing.Point(102, 26);
+            this.Label_SnrStdDev.Name = "Label_SnrStdDev";
+            this.Label_SnrStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_SnrStdDev.TabIndex = 5;
+            this.Label_SnrStdDev.Text = "StdDev: ";
+            // 
+            // GroupBox_MedianWeight
+            // 
+            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianRangeLow);
+            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianMean);
+            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianRangeHigh);
+            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianPercent);
+            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianPercent);
+            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeHigh);
+            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeLow);
+            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianStdDev);
+            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 81);
+            this.GroupBox_MedianWeight.Name = "GroupBox_MedianWeight";
+            this.GroupBox_MedianWeight.Size = new System.Drawing.Size(200, 100);
+            this.GroupBox_MedianWeight.TabIndex = 17;
+            this.GroupBox_MedianWeight.TabStop = false;
+            this.GroupBox_MedianWeight.Text = "Median Weight";
+            // 
+            // Label_MedianRangeLow
+            // 
+            this.Label_MedianRangeLow.AutoSize = true;
+            this.Label_MedianRangeLow.Location = new System.Drawing.Point(112, 74);
+            this.Label_MedianRangeLow.Name = "Label_MedianRangeLow";
+            this.Label_MedianRangeLow.Size = new System.Drawing.Size(27, 13);
+            this.Label_MedianRangeLow.TabIndex = 15;
+            this.Label_MedianRangeLow.Text = "Low";
+            this.Label_MedianRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_MedianMean
+            // 
+            this.Label_MedianMean.AutoSize = true;
+            this.Label_MedianMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_MedianMean.Name = "Label_MedianMean";
+            this.Label_MedianMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_MedianMean.TabIndex = 4;
+            this.Label_MedianMean.Text = "Mean: ";
+            // 
+            // Label_MedianRangeHigh
+            // 
+            this.Label_MedianRangeHigh.AutoSize = true;
+            this.Label_MedianRangeHigh.Location = new System.Drawing.Point(110, 48);
+            this.Label_MedianRangeHigh.Name = "Label_MedianRangeHigh";
+            this.Label_MedianRangeHigh.Size = new System.Drawing.Size(29, 13);
+            this.Label_MedianRangeHigh.TabIndex = 14;
+            this.Label_MedianRangeHigh.Text = "High";
+            this.Label_MedianRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // Label_MedianPercent
+            // 
+            this.Label_MedianPercent.AutoSize = true;
+            this.Label_MedianPercent.Location = new System.Drawing.Point(53, 60);
+            this.Label_MedianPercent.Name = "Label_MedianPercent";
+            this.Label_MedianPercent.Size = new System.Drawing.Size(44, 13);
+            this.Label_MedianPercent.TabIndex = 0;
+            this.Label_MedianPercent.Text = "Percent";
+            // 
+            // TextBox_MedianPercent
+            // 
+            this.TextBox_MedianPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_MedianPercent.Name = "TextBox_MedianPercent";
+            this.TextBox_MedianPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_MedianPercent.TabIndex = 1;
+            this.TextBox_MedianPercent.Text = "0";
+            this.TextBox_MedianPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianPercent.TextChanged += new System.EventHandler(this.TextBox_MedianPercent_TextChanged);
+            // 
+            // TextBox_MedianRangeHigh
+            // 
+            this.TextBox_MedianRangeHigh.Location = new System.Drawing.Point(141, 44);
+            this.TextBox_MedianRangeHigh.Name = "TextBox_MedianRangeHigh";
+            this.TextBox_MedianRangeHigh.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_MedianRangeHigh.TabIndex = 2;
+            this.TextBox_MedianRangeHigh.Text = "1.0";
+            this.TextBox_MedianRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianRangeHigh.TextChanged += new System.EventHandler(this.TextBox_MedianRangeHigh_TextChanged);
+            // 
+            // TextBox_MedianRangeLow
+            // 
+            this.TextBox_MedianRangeLow.Location = new System.Drawing.Point(141, 70);
+            this.TextBox_MedianRangeLow.Name = "TextBox_MedianRangeLow";
+            this.TextBox_MedianRangeLow.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_MedianRangeLow.TabIndex = 3;
+            this.TextBox_MedianRangeLow.Text = "0.0";
+            this.TextBox_MedianRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_MedianRangeLow.TextChanged += new System.EventHandler(this.TextBox_MedianRangeLow_TextChanged);
+            // 
+            // Label_MedianStdDev
+            // 
+            this.Label_MedianStdDev.AutoSize = true;
+            this.Label_MedianStdDev.Location = new System.Drawing.Point(102, 26);
+            this.Label_MedianStdDev.Name = "Label_MedianStdDev";
+            this.Label_MedianStdDev.Size = new System.Drawing.Size(49, 13);
+            this.Label_MedianStdDev.TabIndex = 5;
+            this.Label_MedianStdDev.Text = "StdDev: ";
+            // 
             // GroupBox_NoiseWeight
             // 
             this.GroupBox_NoiseWeight.Controls.Add(this.Label_NoiseRangeLow);
@@ -1353,194 +1545,6 @@
             this.label_NoiseRatioStdDev.TabIndex = 5;
             this.label_NoiseRatioStdDev.Text = "StdDev: ";
             // 
-            // GroupBox_MedianWeight
-            // 
-            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianRangeLow);
-            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianMean);
-            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianRangeHigh);
-            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianPercent);
-            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianPercent);
-            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeHigh);
-            this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeLow);
-            this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianStdDev);
-            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 81);
-            this.GroupBox_MedianWeight.Name = "GroupBox_MedianWeight";
-            this.GroupBox_MedianWeight.Size = new System.Drawing.Size(200, 100);
-            this.GroupBox_MedianWeight.TabIndex = 17;
-            this.GroupBox_MedianWeight.TabStop = false;
-            this.GroupBox_MedianWeight.Text = "Median Weight";
-            // 
-            // Label_MedianRangeLow
-            // 
-            this.Label_MedianRangeLow.AutoSize = true;
-            this.Label_MedianRangeLow.Location = new System.Drawing.Point(112, 74);
-            this.Label_MedianRangeLow.Name = "Label_MedianRangeLow";
-            this.Label_MedianRangeLow.Size = new System.Drawing.Size(27, 13);
-            this.Label_MedianRangeLow.TabIndex = 15;
-            this.Label_MedianRangeLow.Text = "Low";
-            this.Label_MedianRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_MedianMean
-            // 
-            this.Label_MedianMean.AutoSize = true;
-            this.Label_MedianMean.Location = new System.Drawing.Point(29, 26);
-            this.Label_MedianMean.Name = "Label_MedianMean";
-            this.Label_MedianMean.Size = new System.Drawing.Size(40, 13);
-            this.Label_MedianMean.TabIndex = 4;
-            this.Label_MedianMean.Text = "Mean: ";
-            // 
-            // Label_MedianRangeHigh
-            // 
-            this.Label_MedianRangeHigh.AutoSize = true;
-            this.Label_MedianRangeHigh.Location = new System.Drawing.Point(110, 48);
-            this.Label_MedianRangeHigh.Name = "Label_MedianRangeHigh";
-            this.Label_MedianRangeHigh.Size = new System.Drawing.Size(29, 13);
-            this.Label_MedianRangeHigh.TabIndex = 14;
-            this.Label_MedianRangeHigh.Text = "High";
-            this.Label_MedianRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_MedianPercent
-            // 
-            this.Label_MedianPercent.AutoSize = true;
-            this.Label_MedianPercent.Location = new System.Drawing.Point(53, 60);
-            this.Label_MedianPercent.Name = "Label_MedianPercent";
-            this.Label_MedianPercent.Size = new System.Drawing.Size(44, 13);
-            this.Label_MedianPercent.TabIndex = 0;
-            this.Label_MedianPercent.Text = "Percent";
-            // 
-            // TextBox_MedianPercent
-            // 
-            this.TextBox_MedianPercent.Location = new System.Drawing.Point(18, 56);
-            this.TextBox_MedianPercent.Name = "TextBox_MedianPercent";
-            this.TextBox_MedianPercent.Size = new System.Drawing.Size(33, 20);
-            this.TextBox_MedianPercent.TabIndex = 1;
-            this.TextBox_MedianPercent.Text = "0";
-            this.TextBox_MedianPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MedianPercent.TextChanged += new System.EventHandler(this.TextBox_MedianPercent_TextChanged);
-            // 
-            // TextBox_MedianRangeHigh
-            // 
-            this.TextBox_MedianRangeHigh.Location = new System.Drawing.Point(141, 44);
-            this.TextBox_MedianRangeHigh.Name = "TextBox_MedianRangeHigh";
-            this.TextBox_MedianRangeHigh.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_MedianRangeHigh.TabIndex = 2;
-            this.TextBox_MedianRangeHigh.Text = "1.0";
-            this.TextBox_MedianRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MedianRangeHigh.TextChanged += new System.EventHandler(this.TextBox_MedianRangeHigh_TextChanged);
-            // 
-            // TextBox_MedianRangeLow
-            // 
-            this.TextBox_MedianRangeLow.Location = new System.Drawing.Point(141, 70);
-            this.TextBox_MedianRangeLow.Name = "TextBox_MedianRangeLow";
-            this.TextBox_MedianRangeLow.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_MedianRangeLow.TabIndex = 3;
-            this.TextBox_MedianRangeLow.Text = "0.0";
-            this.TextBox_MedianRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_MedianRangeLow.TextChanged += new System.EventHandler(this.TextBox_MedianRangeLow_TextChanged);
-            // 
-            // Label_MedianStdDev
-            // 
-            this.Label_MedianStdDev.AutoSize = true;
-            this.Label_MedianStdDev.Location = new System.Drawing.Point(102, 26);
-            this.Label_MedianStdDev.Name = "Label_MedianStdDev";
-            this.Label_MedianStdDev.Size = new System.Drawing.Size(49, 13);
-            this.Label_MedianStdDev.TabIndex = 5;
-            this.Label_MedianStdDev.Text = "StdDev: ";
-            // 
-            // GroupBox_SnrWeight
-            // 
-            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrRangeLow);
-            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrMean);
-            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrRangeHigh);
-            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrPersent);
-            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrPercent);
-            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeHigh);
-            this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeLow);
-            this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrStdDev);
-            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 293);
-            this.GroupBox_SnrWeight.Name = "GroupBox_SnrWeight";
-            this.GroupBox_SnrWeight.Size = new System.Drawing.Size(200, 100);
-            this.GroupBox_SnrWeight.TabIndex = 16;
-            this.GroupBox_SnrWeight.TabStop = false;
-            this.GroupBox_SnrWeight.Text = "SNR Weight";
-            // 
-            // Label_SnrRangeLow
-            // 
-            this.Label_SnrRangeLow.AutoSize = true;
-            this.Label_SnrRangeLow.Location = new System.Drawing.Point(112, 74);
-            this.Label_SnrRangeLow.Name = "Label_SnrRangeLow";
-            this.Label_SnrRangeLow.Size = new System.Drawing.Size(27, 13);
-            this.Label_SnrRangeLow.TabIndex = 15;
-            this.Label_SnrRangeLow.Text = "Low";
-            this.Label_SnrRangeLow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_SnrMean
-            // 
-            this.Label_SnrMean.AutoSize = true;
-            this.Label_SnrMean.Location = new System.Drawing.Point(29, 26);
-            this.Label_SnrMean.Name = "Label_SnrMean";
-            this.Label_SnrMean.Size = new System.Drawing.Size(40, 13);
-            this.Label_SnrMean.TabIndex = 4;
-            this.Label_SnrMean.Text = "Mean: ";
-            // 
-            // Label_SnrRangeHigh
-            // 
-            this.Label_SnrRangeHigh.AutoSize = true;
-            this.Label_SnrRangeHigh.Location = new System.Drawing.Point(110, 48);
-            this.Label_SnrRangeHigh.Name = "Label_SnrRangeHigh";
-            this.Label_SnrRangeHigh.Size = new System.Drawing.Size(29, 13);
-            this.Label_SnrRangeHigh.TabIndex = 14;
-            this.Label_SnrRangeHigh.Text = "High";
-            this.Label_SnrRangeHigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // Label_SnrPersent
-            // 
-            this.Label_SnrPersent.AutoSize = true;
-            this.Label_SnrPersent.Location = new System.Drawing.Point(53, 60);
-            this.Label_SnrPersent.Name = "Label_SnrPersent";
-            this.Label_SnrPersent.Size = new System.Drawing.Size(44, 13);
-            this.Label_SnrPersent.TabIndex = 0;
-            this.Label_SnrPersent.Text = "Percent";
-            // 
-            // TextBox_SnrPercent
-            // 
-            this.TextBox_SnrPercent.Location = new System.Drawing.Point(18, 56);
-            this.TextBox_SnrPercent.Name = "TextBox_SnrPercent";
-            this.TextBox_SnrPercent.Size = new System.Drawing.Size(33, 20);
-            this.TextBox_SnrPercent.TabIndex = 1;
-            this.TextBox_SnrPercent.Text = "10";
-            this.TextBox_SnrPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_SnrPercent.TextChanged += new System.EventHandler(this.TextBox_SnrPercent_TextChanged);
-            // 
-            // TextBox_SnrRangeHigh
-            // 
-            this.TextBox_SnrRangeHigh.Location = new System.Drawing.Point(141, 44);
-            this.TextBox_SnrRangeHigh.Name = "TextBox_SnrRangeHigh";
-            this.TextBox_SnrRangeHigh.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_SnrRangeHigh.TabIndex = 2;
-            this.TextBox_SnrRangeHigh.Text = "1.0";
-            this.TextBox_SnrRangeHigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_SnrRangeHigh.TextChanged += new System.EventHandler(this.TextBox_SnrRangeHigh_TextChanged);
-            // 
-            // TextBox_SnrRangeLow
-            // 
-            this.TextBox_SnrRangeLow.Location = new System.Drawing.Point(141, 70);
-            this.TextBox_SnrRangeLow.Name = "TextBox_SnrRangeLow";
-            this.TextBox_SnrRangeLow.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_SnrRangeLow.TabIndex = 3;
-            this.TextBox_SnrRangeLow.Text = "0.0";
-            this.TextBox_SnrRangeLow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_SnrRangeLow.TextChanged += new System.EventHandler(this.TextBox_SnrRangeLow_TextChanged);
-            // 
-            // Label_SnrStdDev
-            // 
-            this.Label_SnrStdDev.AutoSize = true;
-            this.Label_SnrStdDev.Location = new System.Drawing.Point(102, 26);
-            this.Label_SnrStdDev.Name = "Label_SnrStdDev";
-            this.Label_SnrStdDev.Size = new System.Drawing.Size(49, 13);
-            this.Label_SnrStdDev.TabIndex = 5;
-            this.Label_SnrStdDev.Text = "StdDev: ";
-            // 
             // GroupBox_FwhmWeight
             // 
             this.GroupBox_FwhmWeight.Controls.Add(this.Label_FwhmRangeLow);
@@ -1644,6 +1648,14 @@
             this.Label_Task.TabIndex = 12;
             this.Label_Task.Text = "label1";
             // 
+            // ProgressBar_XisfFile
+            // 
+            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(347, 113);
+            this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
+            this.ProgressBar_XisfFile.Size = new System.Drawing.Size(324, 11);
+            this.ProgressBar_XisfFile.Step = 1;
+            this.ProgressBar_XisfFile.TabIndex = 13;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1655,6 +1667,7 @@
             this.Controls.Add(this.GroupBox_XisfFileUpdate);
             this.Controls.Add(this.GroupBox_DirectorySelection);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "XSIF File Manager";
@@ -1681,6 +1694,10 @@
             this.GroupBox_EccentricityMeanDeviationWeight.PerformLayout();
             this.GroupBox_StarsWeight.ResumeLayout(false);
             this.GroupBox_StarsWeight.PerformLayout();
+            this.GroupBox_SnrWeight.ResumeLayout(false);
+            this.GroupBox_SnrWeight.PerformLayout();
+            this.GroupBox_MedianWeight.ResumeLayout(false);
+            this.GroupBox_MedianWeight.PerformLayout();
             this.GroupBox_NoiseWeight.ResumeLayout(false);
             this.GroupBox_NoiseWeight.PerformLayout();
             this.GroupBox_FwhmMeanDeviationWeight.ResumeLayout(false);
@@ -1689,10 +1706,6 @@
             this.GroupBox_EccentricityWeight.PerformLayout();
             this.GroupBox_NoiseRatioWeight.ResumeLayout(false);
             this.GroupBox_NoiseRatioWeight.PerformLayout();
-            this.GroupBox_MedianWeight.ResumeLayout(false);
-            this.GroupBox_MedianWeight.PerformLayout();
-            this.GroupBox_SnrWeight.ResumeLayout(false);
-            this.GroupBox_SnrWeight.PerformLayout();
             this.GroupBox_FwhmWeight.ResumeLayout(false);
             this.GroupBox_FwhmWeight.PerformLayout();
             this.ResumeLayout(false);
@@ -1840,6 +1853,7 @@
         private System.Windows.Forms.TextBox TextBox_NoiseRatioRangeHigh;
         private System.Windows.Forms.TextBox TextBox_NoiseRatioRangeLow;
         private System.Windows.Forms.Label label_NoiseRatioStdDev;
+        private System.Windows.Forms.ProgressBar ProgressBar_XisfFile;
     }
 }
 
