@@ -1,9 +1,13 @@
-﻿namespace XisfFileManager.SubFrameData
+﻿using System;
+using System.Windows.Forms;
+using XisfFileManager.XisfKeywords;
+
+namespace XisfFileManager.SubFrameData
 {
     public static class ReadSubFrameCsv
     {
         private static string mCsvFile;
-        private static SubFrameData mSubFrameData;
+        public static SubFrameData SubFrameKeywordLists;
 
         public static bool ParseSubFrameSelectorCsvFile(string path)
         {
@@ -15,10 +19,30 @@
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString(), "ParseSubFrameSelectorCsvFile(" + path + "))");
                 return false;
             }
+        }
+
+        private static void ClearSubFrameLists()
+        {
+            SubFrameKeywordLists.Approved.Clear();
+            SubFrameKeywordLists.Eccentricity.Clear();
+            SubFrameKeywordLists.EccentricityMeanDeviation.Clear();
+            SubFrameKeywordLists.FileName.Clear();
+            SubFrameKeywordLists.Fwhm.Clear();
+            SubFrameKeywordLists.FwhmMeanDeviation.Clear();
+            SubFrameKeywordLists.Median.Clear();
+            SubFrameKeywordLists.MedianMeanDeviation.Clear();
+            SubFrameKeywordLists.Noise.Clear();
+            SubFrameKeywordLists.NoiseRatio.Clear();
+            SubFrameKeywordLists.SnrWeight.Clear();
+            SubFrameKeywordLists.StarResidual.Clear();
+            SubFrameKeywordLists.StarResidualMeanDeviation.Clear();
+            SubFrameKeywordLists.Stars.Clear();
+            SubFrameKeywordLists.SSWeight.Clear();
         }
 
         private static bool ParseFields()
@@ -38,12 +62,13 @@
             fields = mCsvFile.Substring(0, end);
             fields = fields.Replace(" ", "");
 
-            mSubFrameData = new SubFrameData();
-
+            SubFrameKeywordLists = new SubFrameData();
 
             lines = mCsvFile.Split('\n');
 
             GetColumnIndexes = true;
+
+            ClearSubFrameLists();
 
             foreach (string line in lines)
             {
@@ -67,7 +92,7 @@
                         GetCsvStarResidualIndex(field, index);
                         GetCsvStarResidualMeanDeviationIndex(field, index);
                         GetCsvStarsIndex(field, index);
-                        GetCsvWeightIndex(field, index);
+                        GetCsvSSWeightIndex(field, index);
 
                         index++;
                     }
@@ -92,7 +117,7 @@
                     AddCsvStarResidual(field, index);
                     AddCsvStarResidualMeanDeviation(field, index);
                     AddCsvStars(field, index);
-                    AddCsvWeight(field, index);
+                    AddCsvSSWeight(field, index);
 
                     index++;
                 }
@@ -101,6 +126,53 @@
             return true;
         }
 
+        // #########################################################################################################
+        // #########################################################################################################
+        public static Keyword BuildKeyword(string name, string value, string comment = "XISF File Manager - CSV")
+        {
+            Keyword keyword = new Keyword();
+            keyword.Name = name;
+            keyword.Value = value;
+            keyword.Comment = comment;
+            keyword.Type = Keyword.EType.STRING;
+            return keyword;
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public static Keyword BuildKeyword(string name, double value, string comment = "XISF File Manager - CSV")
+        {
+            Keyword keyword = new Keyword();
+            keyword.Name = name;
+            keyword.Value = value.ToString("F6");
+            keyword.Comment = comment;
+            keyword.Type = Keyword.EType.FLOAT;
+            return keyword;
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public static Keyword BuildKeyword(string name, int value, string comment = "XISF File Manager - CSV")
+        {
+            Keyword keyword = new Keyword();
+            keyword.Name = name;
+            keyword.Value = value.ToString();
+            keyword.Comment = comment;
+            keyword.Type = Keyword.EType.INTEGER;
+            return keyword;
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public static Keyword BuildKeyword(string name, bool value, string comment = "XISF File Manager - CSV")
+        {
+            Keyword keyword = new Keyword();
+            keyword.Name = name;
+            keyword.Value = value.ToString();
+            keyword.Comment = comment;
+            keyword.Type = Keyword.EType.BOOL;
+            return keyword;
+        }
         // **************************************************************************************************************
         // **************************************************************************************************************
 
@@ -108,15 +180,16 @@
         {
             if (field.Equals("Approved"))
             {
-                mSubFrameData.ApprovedIndex = index;
+                SubFrameKeywordLists.ApprovedIndex = index;
             }
         }
 
         private static void AddCsvApproved(string field, int index)
         {
-            if (index == mSubFrameData.ApprovedIndex)
+            if (index == SubFrameKeywordLists.ApprovedIndex)
             {
-                mSubFrameData.Approved.Add(field.ToUpper().Equals("TRUE") ? true : false);
+                bool value = (field.ToLower().Equals("true")) ? true : false;
+                SubFrameKeywordLists.Approved.Add(BuildKeyword("Approved", value));
             }
         }
 
@@ -127,20 +200,18 @@
         {
             if (field.Equals("Eccentricity"))
             {
-                mSubFrameData.EccentricityIndex = index;
+                SubFrameKeywordLists.EccentricityIndex = index;
             }
         }
 
         private static void AddCsvEccentricity(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.EccentricityIndex)
+            if (index == SubFrameKeywordLists.EccentricityIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Eccentricity.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.Eccentricity.Add(BuildKeyword("Eccentricity", value));
             }
         }
 
@@ -151,20 +222,18 @@
         {
             if (field.Equals("EccentricityMeanDeviation"))
             {
-                mSubFrameData.EccentricityMeanDeviationIndex = index;
+                SubFrameKeywordLists.EccentricityMeanDeviationIndex = index;
             }
         }
 
         private static void AddCsvEccentricityMeanDeviation(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.EccentricityMeanDeviationIndex)
+            if (index == SubFrameKeywordLists.EccentricityMeanDeviationIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.EccentricityMeanDeviation.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.EccentricityMeanDeviation.Add(BuildKeyword("EccentricityMeanDeviation", value));
             }
         }
 
@@ -175,15 +244,15 @@
         {
             if (field.Equals("File"))
             {
-                mSubFrameData.FileIndex = index;
+                SubFrameKeywordLists.FileNameIndex = index;
             }
         }
 
         private static void AddCsvFileName(string field, int index)
         {
-            if (index == mSubFrameData.FileIndex)
+            if (index == SubFrameKeywordLists.FileNameIndex)
             {
-                mSubFrameData.File.Add(field.Replace("\"", ""));
+                SubFrameKeywordLists.FileName.Add(BuildKeyword("FileName", field));
             }
         }
 
@@ -194,20 +263,18 @@
         {
             if (field.Equals("FWHM"))
             {
-                mSubFrameData.FwhmIndex = index;
+                SubFrameKeywordLists.FwhmIndex = index;
             }
         }
 
         private static void AddCsvFwhm(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.FwhmIndex)
+            if (index == SubFrameKeywordLists.FwhmIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Fwhm.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.Fwhm.Add(BuildKeyword("Fwhm", value));
             }
         }
 
@@ -216,22 +283,20 @@
 
         private static void GetCsvFwhmMeanDeviationIndex(string field, int index)
         {
-            if (field.Equals("FwhmMeanDeviation"))
+            if (field.Equals("FWHMMeanDeviation"))
             {
-                mSubFrameData.FwhmMeanDeviationIndex = index;
+                SubFrameKeywordLists.FwhmMeanDeviationIndex = index;
             }
         }
 
         private static void AddCsvFwhmMeanDeviation(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.FwhmMeanDeviationIndex)
+            if (index == SubFrameKeywordLists.FwhmMeanDeviationIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.FwhmMeanDeviation.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.FwhmMeanDeviation.Add(BuildKeyword("FwhmMeanDeviation", value));
             }
         }
 
@@ -242,20 +307,18 @@
         {
             if (field.Equals("Median"))
             {
-                mSubFrameData.MedianIndex = index;
+                SubFrameKeywordLists.MedianIndex = index;
             }
         }
 
         private static void AddCsvMedian(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.MedianIndex)
+            if (index == SubFrameKeywordLists.MedianIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Median.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.Median.Add(BuildKeyword("Median", value));
             }
         }
 
@@ -266,20 +329,18 @@
         {
             if (field.Equals("MedianMeanDeviation"))
             {
-                mSubFrameData.MedianMeanDeviationIndex = index;
+                SubFrameKeywordLists.MedianMeanDeviationIndex = index;
             }
         }
 
         private static void AddCsvMedianMeanDeviation(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.MedianMeanDeviationIndex)
+            if (index == SubFrameKeywordLists.MedianMeanDeviationIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.MedianMeanDeviation.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.MedianMeanDeviation.Add(BuildKeyword("MedianMeanDeviation", value));
             }
         }
 
@@ -290,19 +351,17 @@
         {
             if (field.Equals("Noise"))
             {
-                mSubFrameData.NoiseIndex = index;
+                SubFrameKeywordLists.NoiseIndex = index;
             }
         }
         private static void AddCsvNoise(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.NoiseIndex)
+            if (index == SubFrameKeywordLists.NoiseIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Noise.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.Noise.Add(BuildKeyword("Noise", value));
             }
         }
 
@@ -313,19 +372,17 @@
         {
             if (field.Equals("NoiseRatio"))
             {
-                mSubFrameData.NoiseRatioIndex = index;
+                SubFrameKeywordLists.NoiseRatioIndex = index;
             }
         }
         private static void AddCsvNoiseRatio(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.NoiseRatioIndex)
+            if (index == SubFrameKeywordLists.NoiseRatioIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.NoiseRatio.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.NoiseRatio.Add(BuildKeyword("NoiseRatio", value));
             }
         }
 
@@ -336,19 +393,17 @@
         {
             if (field.Equals("SNRWeight"))
             {
-                mSubFrameData.SnrWeightIndex = index;
+                SubFrameKeywordLists.SnrWeightIndex = index;
             }
         }
         private static void AddCsvSnrWeight(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.SnrWeightIndex)
+            if (index == SubFrameKeywordLists.SnrWeightIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.SnrWeight.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.SnrWeight.Add(BuildKeyword("SNRWeight", value));
             }
         }
 
@@ -359,19 +414,17 @@
         {
             if (field.Equals("Stars"))
             {
-                mSubFrameData.StarsIndex = index;
+                SubFrameKeywordLists.StarsIndex = index;
             }
         }
         private static void AddCsvStars(string field, int index)
         {
-            bool status;
-            double value;
+            int value = int.MinValue;
 
-            if (index == mSubFrameData.StarsIndex)
+            if (index == SubFrameKeywordLists.StarsIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Stars.Add((status == true) ? value : -1);
+                int.TryParse(field, out value);
+                SubFrameKeywordLists.Stars.Add(BuildKeyword("Stars", value)); ;
             }
         }
 
@@ -382,19 +435,17 @@
         {
             if (field.Equals("StarResidual"))
             {
-                mSubFrameData.StarResidualIndex = index;
+                SubFrameKeywordLists.StarResidualIndex = index;
             }
         }
         private static void AddCsvStarResidual(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.StarResidualIndex)
+            if (index == SubFrameKeywordLists.StarResidualIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.StarResidual.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.StarResidual.Add(BuildKeyword("StarResidual", value));
             }
         }
 
@@ -403,44 +454,40 @@
 
         private static void GetCsvStarResidualMeanDeviationIndex(string field, int index)
         {
-            if (field.Equals("StarResidual"))
+            if (field.Equals("StarResidualMeanDeviation"))
             {
-                mSubFrameData.StarResidualIndex = index;
+                SubFrameKeywordLists.StarResidualMeanDeviationIndex = index;
             }
         }
         private static void AddCsvStarResidualMeanDeviation(string field, int index)
         {
-            bool status;
-            double value;
+            double value = Double.NaN;
 
-            if (index == mSubFrameData.StarResidualMeanDeviationIndex)
+            if (index == SubFrameKeywordLists.StarResidualMeanDeviationIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.StarResidualMeanDeviation.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.StarResidualMeanDeviation.Add(BuildKeyword("StarResidualMeanDeviation", value));
             }
         }
 
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetCsvWeightIndex(string field, int index)
+        private static void GetCsvSSWeightIndex(string field, int index)
         {
             if (field.Equals("Weight"))
             {
-                mSubFrameData.WeightIndex = index;
+                SubFrameKeywordLists.SSWeightIndex = index;
             }
         }
-        private static void AddCsvWeight(string field, int index)
+        private static void AddCsvSSWeight(string field, int index)
         {
-            bool status;
-            double value;
+            double value = 1.0;
 
-            if (index == mSubFrameData.WeightIndex)
+            if (index == SubFrameKeywordLists.SSWeightIndex)
             {
-                status = double.TryParse(field, out value);
-
-                mSubFrameData.Weight.Add((status == true) ? value : -1);
+                double.TryParse(field, out value);
+                SubFrameKeywordLists.SSWeight.Add(BuildKeyword("SSWEIGHT", value));
             }
         }
 

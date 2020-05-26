@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Markup;
 using System.Xml.Linq;
 
 namespace XisfFileManager.XisfKeywords

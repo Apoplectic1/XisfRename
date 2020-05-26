@@ -12,6 +12,7 @@ using XisfFileManager.SubFrameData;
 using XisfFileManager.XisfKeywords;
 using XisfFileManager.XisfFileOperations;
 using XisfFileManager.XisfFile;
+using System.Threading;
 
 namespace XisfFileManager
 {
@@ -65,6 +66,7 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
+        public bool mAddCsvKeywods;
 
         public MainForm()
         {
@@ -366,10 +368,10 @@ namespace XisfFileManager
                 ProgressBar_XisfFile.Value += 1;
                 mRenameFile.RenameFiles(file);
             }
-
+            ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             mFileList.Clear();
             Label_Task.Text = "Done.";
-            ProgressBar_XisfFile.Value = 0;
+           
             ProgressBar_OverAll.Value = 0;
         }
 
@@ -386,15 +388,17 @@ namespace XisfFileManager
                 ProgressBar_XisfFile.Value += 1;
 
                 XisfFileWrite.TargetName = ComboBox_TargetName.Text;
-                XisfFileWrite.UpdateFiles(file);
+                XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
+                XisfFileWrite.UpdateFiles(file, ReadSubFrameCsv.SubFrameKeywordLists);
             }
-
+            ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             Label_Task.Text = "Done.";
-            ProgressBar_XisfFile.Value = 0;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
         {
+            bool status;
+
             mFileCsv = new OpenFileDialog()
             {
                 Title = "Select Calibarated SubFrameSelected CSV File",
@@ -413,7 +417,11 @@ namespace XisfFileManager
                 return;
             }
 
-            ReadSubFrameCsv.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
+            status = ReadSubFrameCsv.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
+
+            if (status)
+                mAddCsvKeywods = true;
+
         }
 
         private void CheckBox_IncludeWeightsAndStatistics_CheckedChanged(object sender, EventArgs e)

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using XisfFileManager.XisfKeywords;
 
 namespace XisfFileManager.XisfFileOperations
 {
@@ -13,12 +16,13 @@ namespace XisfFileManager.XisfFileOperations
         public static XisfFile.Buffer mBuffer;
         public static List<XisfFile.Buffer> mBufferList;
         public static string TargetName { get; set; }
-        
+        public static bool AddCsvKeywords { get; set; } = false;
+
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFiles(XisfFile.XisfFile mFile)
+        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameData.SubFrameData csvKeywordLists)
         {
             int xmlStart;
             int xisfStart;
@@ -57,10 +61,10 @@ namespace XisfFileManager.XisfFileOperations
                     mFile.KeywordData.RepairTargetName(TargetName);
                     mFile.KeywordData.RemoveKeyword("HISTORY");
 
-                    mFile.KeywordData.AddKeyword("FWHM", 3.1415926539);
-
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(doc, mFile);
+                    ReplaceAllFitsKeywords(doc, mFile, AddCsvKeywords, csvKeywordLists);
+
+                    //RemoveSingleNumberSingleQuotes(doc);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -69,7 +73,7 @@ namespace XisfFileManager.XisfFileOperations
                     // Add each mBuffer to a List and when complete, sequentially write each List element over our XISF File
 
                     // Fixes for PixInsight Parser
-                    xisfString = doc.OuterXml.Replace(" /", "/");
+                    xisfString = doc.OuterXml.Replace(" /", "/").Replace("'", "");
 
                     //xisfString = xisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
 
@@ -154,7 +158,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameData.SubFrameData csvKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -169,10 +173,13 @@ namespace XisfFileManager.XisfFileOperations
 
             foreach (XmlNode item in nodeList)
             {
-                // Add the FITSKeywords in alphabetical order - Not needed but WTF
-                List<XisfKeywords.Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
+                if (enable)
+                    AddCsvKeywordList(enable, csvKeywordLists, mFile);
 
-                foreach (XisfKeywords.Keyword keyword in keywords)
+                // Add the FITSKeywords in alphabetical order - Not needed but WTF
+                List<Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
+
+                foreach (Keyword keyword in keywords)
                 {
                     if (keyword.Type != XisfKeywords.Keyword.EType.NULL)
                     {
@@ -194,7 +201,7 @@ namespace XisfFileManager.XisfFileOperations
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
                             case XisfKeywords.Keyword.EType.STRING:
-                                newElement.SetAttribute("value", "'" + keyword.Value.Replace("'", "") + "'");
+                                newElement.SetAttribute("value", keyword.Value);
                                 break;
                         }
                         newElement.SetAttribute("comment", keyword.Comment);
@@ -205,6 +212,46 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
+        // ****************************************************************************************************
+        // ****************************************************************************************************
+
+        private static void AddCsvKeywordList(bool enable, SubFrameData.SubFrameData csvKeywordLists, XisfFile.XisfFile mFile)
+        {
+
+            List<Keyword> fileNameList = csvKeywordLists.FileName;
+
+            foreach (Keyword file in fileNameList)
+            {
+                int indexer = 0;
+                string fileName = file.Value.Replace("\"", "").Replace("/", @"\");
+
+                if (mFile.SourceFileName == fileName)
+                {
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Approved.ElementAt(indexer).Name, csvKeywordLists.Approved.ElementAt(indexer).Value, csvKeywordLists.Approved.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Eccentricity.ElementAt(indexer).Name, csvKeywordLists.Eccentricity.ElementAt(indexer).Value, csvKeywordLists.Eccentricity.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Fwhm.ElementAt(indexer).Name, csvKeywordLists.Fwhm.ElementAt(indexer).Value, csvKeywordLists.Fwhm.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Median.ElementAt(indexer).Name, csvKeywordLists.Median.ElementAt(indexer).Value, csvKeywordLists.Median.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Noise.ElementAt(indexer).Name, csvKeywordLists.Noise.ElementAt(indexer).Value, csvKeywordLists.Noise.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.NoiseRatio.ElementAt(indexer).Name, csvKeywordLists.NoiseRatio.ElementAt(indexer).Value, csvKeywordLists.NoiseRatio.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.SnrWeight.ElementAt(indexer).Name, csvKeywordLists.SnrWeight.ElementAt(indexer).Value, csvKeywordLists.SnrWeight.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.StarResidual.ElementAt(indexer).Name, csvKeywordLists.StarResidual.ElementAt(indexer).Value, csvKeywordLists.StarResidual.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.Stars.ElementAt(indexer).Name, csvKeywordLists.Stars.ElementAt(indexer).Value, csvKeywordLists.Stars.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.SSWeight.ElementAt(indexer).Name, csvKeywordLists.SSWeight.ElementAt(indexer).Value, csvKeywordLists.SSWeight.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(csvKeywordLists.FileName.ElementAt(indexer).Name, csvKeywordLists.FileName.ElementAt(indexer).Value, csvKeywordLists.FileName.ElementAt(indexer).Comment);
+                }
+
+                indexer++;
+            }
+        }
+
+        private static void RemoveSingleNumberSingleQuotes(string xmlString)
+        {
+
+        }
         // ****************************************************************************************************
         // ****************************************************************************************************
 

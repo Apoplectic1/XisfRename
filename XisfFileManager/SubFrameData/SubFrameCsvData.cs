@@ -2,28 +2,28 @@
 
 namespace XisfFileManager.SubFrameData
 {
-    class SubFrameData
+    public class SubFrameData
     {
-        public List<bool> Approved { get; set; }
-        public List<double> Eccentricity { get; set; }
-        public List<double> EccentricityMeanDeviation { get; set; }
-        public List<double> Fwhm { get; set; }
-        public List<double> FwhmMeanDeviation { get; set; }
-        public List<double> Median { get; set; }
-        public List<double> MedianMeanDeviation { get; set; }
-        public List<double> Noise { get; set; }
-        public List<double> NoiseRatio { get; set; }
-        public List<double> SnrWeight { get; set; }
-        public List<double> StarResidual { get; set; }
-        public List<double> StarResidualMeanDeviation { get; set; }
-        public List<double> Stars { get; set; }
-        public List<double> Weight { get; set; }
-        public List<string> File { get; set; }
+        public List<XisfKeywords.Keyword> Approved { get; set; }
+        public List<XisfKeywords.Keyword> Eccentricity { get; set; }
+        public List<XisfKeywords.Keyword> EccentricityMeanDeviation { get; set; }
+        public List<XisfKeywords.Keyword> Fwhm { get; set; }
+        public List<XisfKeywords.Keyword> FwhmMeanDeviation { get; set; }
+        public List<XisfKeywords.Keyword> Median { get; set; }
+        public List<XisfKeywords.Keyword> MedianMeanDeviation { get; set; }
+        public List<XisfKeywords.Keyword> Noise { get; set; }
+        public List<XisfKeywords.Keyword> NoiseRatio { get; set; }
+        public List<XisfKeywords.Keyword> SnrWeight { get; set; }
+        public List<XisfKeywords.Keyword> StarResidual { get; set; }
+        public List<XisfKeywords.Keyword> StarResidualMeanDeviation { get; set; }
+        public List<XisfKeywords.Keyword> Stars { get; set; }
+        public List<XisfKeywords.Keyword> SSWeight { get; set; }
+        public List<XisfKeywords.Keyword> FileName { get; set; }
 
         public int ApprovedIndex = -1;
         public int EccentricityIndex = -1;
         public int EccentricityMeanDeviationIndex = -1;
-        public int FileIndex = -1;
+        public int FileNameIndex = -1;
         public int FwhmIndex = -1;
         public int FwhmMeanDeviationIndex = -1;
         public int MedianIndex = -1;
@@ -34,26 +34,26 @@ namespace XisfFileManager.SubFrameData
         public int StarResidualIndex = -1;
         public int StarResidualMeanDeviationIndex = -1;
         public int StarsIndex = -1;
-        public int WeightIndex = -1;
+        public int SSWeightIndex = -1;
 
 
         public SubFrameData()
         {
-            Approved = new List<bool>();
-            Eccentricity = new List<double>();
-            EccentricityMeanDeviation = new List<double>();
-            File = new List<string>();
-            Fwhm = new List<double>();
-            FwhmMeanDeviation = new List<double>();
-            Median = new List<double>();
-            MedianMeanDeviation = new List<double>();
-            Noise = new List<double>();
-            NoiseRatio = new List<double>();
-            SnrWeight = new List<double>();
-            Stars = new List<double>();
-            StarResidual = new List<double>();
-            StarResidualMeanDeviation = new List<double>();
-            Weight = new List<double>();
+            Approved = new List<XisfKeywords.Keyword>();
+            Eccentricity = new List<XisfKeywords.Keyword>();
+            EccentricityMeanDeviation = new List<XisfKeywords.Keyword>();
+            FileName = new List<XisfKeywords.Keyword>();
+            Fwhm = new List<XisfKeywords.Keyword>();
+            FwhmMeanDeviation = new List<XisfKeywords.Keyword>();
+            Median = new List<XisfKeywords.Keyword>();
+            MedianMeanDeviation = new List<XisfKeywords.Keyword>();
+            Noise = new List<XisfKeywords.Keyword>();
+            NoiseRatio = new List<XisfKeywords.Keyword>();
+            SnrWeight = new List<XisfKeywords.Keyword>();
+            Stars = new List<XisfKeywords.Keyword>();
+            StarResidual = new List<XisfKeywords.Keyword>();
+            StarResidualMeanDeviation = new List<XisfKeywords.Keyword>();
+            SSWeight = new List<XisfKeywords.Keyword>();
 
         }
     }
