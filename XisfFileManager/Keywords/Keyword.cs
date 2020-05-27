@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XisfFileManager.XisfKeywords
+namespace XisfFileManager.Keywords
 {
     public class Keyword
     {

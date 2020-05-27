@@ -8,8 +8,8 @@ using System.Windows.Forms;
 
 
 using LocalLib;
-using XisfFileManager.SubFrameData;
-using XisfFileManager.XisfKeywords;
+using XisfFileManager.CsvFileOperations;
+using XisfFileManager.Keywords;
 using XisfFileManager.XisfFileOperations;
 using XisfFileManager.XisfFile;
 using System.Threading;
@@ -246,7 +246,14 @@ namespace XisfFileManager
 
                     FileInfo[] Files = d.GetFiles("*.xisf");
 
+                    if (Files.Count() < 1)
+                    {
+                        MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
+                        return;
+                    }
+
                     ProgressBar_OverAll.Maximum = Files.Count();
+
 
                     Label_Task.Text = "Reading Image File Data";
 
@@ -356,6 +363,8 @@ namespace XisfFileManager
 
         private void Button_Rename_Click(object sender, EventArgs e)
         {
+            int index = 1;
+            int indexIncrement;
             Label_Task.Text = "Renaming Images";
 
             ProgressBar_XisfFile.Maximum = mFileList.Count();
@@ -363,10 +372,14 @@ namespace XisfFileManager
 
             mRenameFile.MarkDuplicates(mFileList);
 
+
             foreach (XisfFile.XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
-                mRenameFile.RenameFiles(file);
+                indexIncrement = mRenameFile.RenameFiles(index, file);
+                if (indexIncrement < 0)
+                    break;
+                index += indexIncrement;
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             mFileList.Clear();
@@ -387,9 +400,9 @@ namespace XisfFileManager
             {
                 ProgressBar_XisfFile.Value += 1;
 
-                XisfFileWrite.TargetName = ComboBox_TargetName.Text;
+                XisfFileWrite.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
                 XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
-                XisfFileWrite.UpdateFiles(file, ReadSubFrameCsv.SubFrameKeywordLists);
+                XisfFileWrite.UpdateFiles(file, ReadSubFrameCsvData.SubFrameKeywordLists);
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             Label_Task.Text = "Done.";
@@ -417,7 +430,7 @@ namespace XisfFileManager
                 return;
             }
 
-            status = ReadSubFrameCsv.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
+            status = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
 
             if (status)
                 mAddCsvKeywods = true;

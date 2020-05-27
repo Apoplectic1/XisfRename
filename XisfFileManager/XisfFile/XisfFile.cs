@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using XisfFileManager.XisfKeywords;
+using XisfFileManager.Keywords;
 
 namespace XisfFileManager.XisfFile
 {

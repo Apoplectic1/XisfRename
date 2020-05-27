@@ -1,13 +1,29 @@
 ﻿using System;
 using System.Windows.Forms;
-using XisfFileManager.XisfKeywords;
+using XisfFileManager.Keywords;
 
-namespace XisfFileManager.SubFrameData
+namespace XisfFileManager.CsvFileOperations
 {
-    public static class ReadSubFrameCsv
+    public static class ReadSubFrameCsvData
     {
         private static string mCsvFile;
-        public static SubFrameData SubFrameKeywordLists;
+        public static SubFrameKeywordData SubFrameKeywordLists = new SubFrameKeywordData();
+
+        public static int ApprovedCsvIndex = -1;
+        public static int EccentricityCsvIndex = -1;
+        public static int EccentricityMeanDeviationCsvIndex = -1;
+        public static int FileNameCsvIndex = -1;
+        public static int FwhmCsvIndex = -1;
+        public static int FwhmMeanDeviationCsvIndex = -1;
+        public static int MedianCsvIndex = -1;
+        public static int MedianMeanDeviationCsvIndex = -1;
+        public static int NoiseCsvIndex = -1;
+        public static int NoiseRatioCsvIndex = -1;
+        public static int SnrWeightCsvIndex = -1;
+        public static int StarResidualIndex = -1;
+        public static int StarResidualMeanDeviationCsvIndex = -1;
+        public static int StarsCsvIndex = -1;
+        public static int SSWeightcsvIndex = -1;
 
         public static bool ParseSubFrameSelectorCsvFile(string path)
         {
@@ -26,24 +42,7 @@ namespace XisfFileManager.SubFrameData
             }
         }
 
-        private static void ClearSubFrameLists()
-        {
-            SubFrameKeywordLists.Approved.Clear();
-            SubFrameKeywordLists.Eccentricity.Clear();
-            SubFrameKeywordLists.EccentricityMeanDeviation.Clear();
-            SubFrameKeywordLists.FileName.Clear();
-            SubFrameKeywordLists.Fwhm.Clear();
-            SubFrameKeywordLists.FwhmMeanDeviation.Clear();
-            SubFrameKeywordLists.Median.Clear();
-            SubFrameKeywordLists.MedianMeanDeviation.Clear();
-            SubFrameKeywordLists.Noise.Clear();
-            SubFrameKeywordLists.NoiseRatio.Clear();
-            SubFrameKeywordLists.SnrWeight.Clear();
-            SubFrameKeywordLists.StarResidual.Clear();
-            SubFrameKeywordLists.StarResidualMeanDeviation.Clear();
-            SubFrameKeywordLists.Stars.Clear();
-            SubFrameKeywordLists.SSWeight.Clear();
-        }
+       
 
         private static bool ParseFields()
         {
@@ -62,13 +61,13 @@ namespace XisfFileManager.SubFrameData
             fields = mCsvFile.Substring(0, end);
             fields = fields.Replace(" ", "");
 
-            SubFrameKeywordLists = new SubFrameData();
+            SubFrameKeywordLists = new SubFrameKeywordData();
 
             lines = mCsvFile.Split('\n');
 
             GetColumnIndexes = true;
 
-            ClearSubFrameLists();
+            SubFrameKeywordLists.ClearSubFrameLists();
 
             foreach (string line in lines)
             {
@@ -134,7 +133,7 @@ namespace XisfFileManager.SubFrameData
             keyword.Name = name;
             keyword.Value = value;
             keyword.Comment = comment;
-            keyword.Type = Keyword.EType.STRING;
+            keyword.Type = Keywords.Keyword.EType.STRING;
             return keyword;
         }
 
@@ -180,13 +179,13 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Approved"))
             {
-                SubFrameKeywordLists.ApprovedIndex = index;
+                ApprovedCsvIndex = index;
             }
         }
 
         private static void AddCsvApproved(string field, int index)
         {
-            if (index == SubFrameKeywordLists.ApprovedIndex)
+            if (index == ApprovedCsvIndex)
             {
                 bool value = (field.ToLower().Equals("true")) ? true : false;
                 SubFrameKeywordLists.Approved.Add(BuildKeyword("Approved", value));
@@ -200,7 +199,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Eccentricity"))
             {
-                SubFrameKeywordLists.EccentricityIndex = index;
+                EccentricityCsvIndex = index;
             }
         }
 
@@ -208,7 +207,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.EccentricityIndex)
+            if (index == EccentricityCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.Eccentricity.Add(BuildKeyword("Eccentricity", value));
@@ -222,7 +221,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("EccentricityMeanDeviation"))
             {
-                SubFrameKeywordLists.EccentricityMeanDeviationIndex = index;
+                EccentricityMeanDeviationCsvIndex = index;
             }
         }
 
@@ -230,7 +229,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.EccentricityMeanDeviationIndex)
+            if (index == EccentricityMeanDeviationCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.EccentricityMeanDeviation.Add(BuildKeyword("EccentricityMeanDeviation", value));
@@ -244,13 +243,13 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("File"))
             {
-                SubFrameKeywordLists.FileNameIndex = index;
+                FileNameCsvIndex = index;
             }
         }
 
         private static void AddCsvFileName(string field, int index)
         {
-            if (index == SubFrameKeywordLists.FileNameIndex)
+            if (index == FileNameCsvIndex)
             {
                 SubFrameKeywordLists.FileName.Add(BuildKeyword("FileName", field));
             }
@@ -263,7 +262,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("FWHM"))
             {
-                SubFrameKeywordLists.FwhmIndex = index;
+                FwhmCsvIndex = index;
             }
         }
 
@@ -271,7 +270,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.FwhmIndex)
+            if (index == FwhmCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.Fwhm.Add(BuildKeyword("Fwhm", value));
@@ -285,7 +284,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("FWHMMeanDeviation"))
             {
-                SubFrameKeywordLists.FwhmMeanDeviationIndex = index;
+                FwhmMeanDeviationCsvIndex = index;
             }
         }
 
@@ -293,7 +292,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.FwhmMeanDeviationIndex)
+            if (index == FwhmMeanDeviationCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.FwhmMeanDeviation.Add(BuildKeyword("FwhmMeanDeviation", value));
@@ -307,7 +306,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Median"))
             {
-                SubFrameKeywordLists.MedianIndex = index;
+                MedianCsvIndex = index;
             }
         }
 
@@ -315,7 +314,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.MedianIndex)
+            if (index == MedianCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.Median.Add(BuildKeyword("Median", value));
@@ -329,7 +328,7 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("MedianMeanDeviation"))
             {
-                SubFrameKeywordLists.MedianMeanDeviationIndex = index;
+                MedianMeanDeviationCsvIndex = index;
             }
         }
 
@@ -337,7 +336,7 @@ namespace XisfFileManager.SubFrameData
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.MedianMeanDeviationIndex)
+            if (index == MedianMeanDeviationCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.MedianMeanDeviation.Add(BuildKeyword("MedianMeanDeviation", value));
@@ -351,14 +350,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Noise"))
             {
-                SubFrameKeywordLists.NoiseIndex = index;
+                NoiseCsvIndex = index;
             }
         }
         private static void AddCsvNoise(string field, int index)
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.NoiseIndex)
+            if (index == NoiseCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.Noise.Add(BuildKeyword("Noise", value));
@@ -372,14 +371,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("NoiseRatio"))
             {
-                SubFrameKeywordLists.NoiseRatioIndex = index;
+                NoiseRatioCsvIndex = index;
             }
         }
         private static void AddCsvNoiseRatio(string field, int index)
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.NoiseRatioIndex)
+            if (index == NoiseRatioCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.NoiseRatio.Add(BuildKeyword("NoiseRatio", value));
@@ -393,14 +392,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("SNRWeight"))
             {
-                SubFrameKeywordLists.SnrWeightIndex = index;
+                SnrWeightCsvIndex = index;
             }
         }
         private static void AddCsvSnrWeight(string field, int index)
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.SnrWeightIndex)
+            if (index == SnrWeightCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.SnrWeight.Add(BuildKeyword("SNRWeight", value));
@@ -414,14 +413,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Stars"))
             {
-                SubFrameKeywordLists.StarsIndex = index;
+                StarsCsvIndex = index;
             }
         }
         private static void AddCsvStars(string field, int index)
         {
             int value = int.MinValue;
 
-            if (index == SubFrameKeywordLists.StarsIndex)
+            if (index == StarsCsvIndex)
             {
                 int.TryParse(field, out value);
                 SubFrameKeywordLists.Stars.Add(BuildKeyword("Stars", value)); ;
@@ -435,14 +434,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("StarResidual"))
             {
-                SubFrameKeywordLists.StarResidualIndex = index;
+                StarResidualIndex = index;
             }
         }
         private static void AddCsvStarResidual(string field, int index)
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.StarResidualIndex)
+            if (index == StarResidualIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.StarResidual.Add(BuildKeyword("StarResidual", value));
@@ -456,14 +455,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("StarResidualMeanDeviation"))
             {
-                SubFrameKeywordLists.StarResidualMeanDeviationIndex = index;
+                StarResidualMeanDeviationCsvIndex = index;
             }
         }
         private static void AddCsvStarResidualMeanDeviation(string field, int index)
         {
             double value = Double.NaN;
 
-            if (index == SubFrameKeywordLists.StarResidualMeanDeviationIndex)
+            if (index == StarResidualMeanDeviationCsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.StarResidualMeanDeviation.Add(BuildKeyword("StarResidualMeanDeviation", value));
@@ -477,14 +476,14 @@ namespace XisfFileManager.SubFrameData
         {
             if (field.Equals("Weight"))
             {
-                SubFrameKeywordLists.SSWeightIndex = index;
+                SSWeightcsvIndex = index;
             }
         }
         private static void AddCsvSSWeight(string field, int index)
         {
             double value = 1.0;
 
-            if (index == SubFrameKeywordLists.SSWeightIndex)
+            if (index == SSWeightcsvIndex)
             {
                 double.TryParse(field, out value);
                 SubFrameKeywordLists.SSWeight.Add(BuildKeyword("SSWEIGHT", value));

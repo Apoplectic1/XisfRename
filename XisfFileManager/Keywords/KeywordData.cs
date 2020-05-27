@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace XisfFileManager.XisfKeywords
+namespace XisfFileManager.Keywords
 {
     public class KeywordData 
     {
-        public List<XisfKeywords.Keyword> KeywordList;
+        public List<Keywords.Keyword> KeywordList;
 
         public KeywordData()
         {
@@ -176,7 +176,7 @@ namespace XisfFileManager.XisfKeywords
             string value = string.Empty;
 
             Keyword node = KeywordList.Find(i => i.Name == "EXPOSURE");
-            value = node.Value.Replace("'", "");
+            value = node.Value.Replace("'", "").Replace(" ", "");
             node.Type = Keyword.EType.FLOAT;
 
             return Convert.ToInt32(value).ToString("D4");
@@ -190,7 +190,7 @@ namespace XisfFileManager.XisfKeywords
 
             Keyword node = KeywordList.Find(i => i.Name == "FILTER");
             node.Type = Keyword.EType.STRING;
-            value = node.Value.Replace("'", "");
+            value = node.Value.Replace("'", "").Replace(" ", "");
 
             if (value.Contains("OIII")) value = value.Replace("OIII", "O3");
             if (value.Contains("Oiii")) value = value.Replace("Oiii", "O3");
@@ -407,7 +407,7 @@ namespace XisfFileManager.XisfKeywords
             string value = string.Empty;
 
             Keyword node = KeywordList.Find(i => i.Name == "OBJECT");
-            value = node.Value.Replace("'", "");
+            value = node.Value.Replace("'", "").Replace(" ", ""); ;
             node.Type = Keyword.EType.STRING;
 
             return value;

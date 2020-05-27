@@ -16,44 +16,62 @@ namespace XisfFileManager.XisfFileOperations
         public bool mIndexFirst { get; set; } = false;
         public List<XisfFile.XisfFile> mFileList;
 
-        public void RenameFiles(XisfFile.XisfFile file)
+        private string RecurseDupFileName(string dupFileName)
+        {
+            if (File.Exists(dupFileName) == true)
+            {
+                int lastParen = dupFileName.LastIndexOf(')');
+                dupFileName = dupFileName.Insert(lastParen + 1, "-Dup");
+
+                dupFileName = RecurseDupFileName(dupFileName);
+            }
+            return dupFileName;
+        }
+
+        public int RenameFiles(int index, XisfFile.XisfFile file)
         {
             try
             {
                 string newFileName;
-                int index = 1;
-                int mDupIndex = 1;
+                string dupFileName;
                 string sourceFilePath;
 
                 sourceFilePath = Path.GetDirectoryName(file.SourceFileName);
 
-                newFileName = BuildFileName(index, file);
-                newFileName += ".xisf";
-
                 // Actually rename the file
                 if (file.Unique == true)
                 {
+                    newFileName = BuildFileName(index, file);
+                    int lastParen = newFileName.LastIndexOf(')');
+                    newFileName = newFileName.Remove(lastParen);
+                    newFileName += ").xisf";
+
                     if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
                     {
                         File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
                     }
-                    index++;
+                    return 1;
                 }
                 else
                 {
                     Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
 
-                    int lastParen = newFileName.LastIndexOf(')');
-                    newFileName = newFileName.Insert(lastParen + 1, "-" + mDupIndex.ToString());
+                    dupFileName = BuildFileName(index - 1, file);
+                    int lastParen = dupFileName.LastIndexOf(')');
+                    dupFileName = dupFileName.Remove(lastParen);
+                    dupFileName += ").xisf";
 
-                    File.Move(file.SourceFileName, sourceFilePath + "\\Duplicates\\" + newFileName);
-                    mDupIndex++;
+                    dupFileName = RecurseDupFileName(sourceFilePath + "\\Duplicates\\" + dupFileName);
+
+                    File.Move(file.SourceFileName, dupFileName);
+                
+                    return 0;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
-                return;
+                return -1;
             }
         }
 
@@ -67,6 +85,7 @@ namespace XisfFileManager.XisfFileOperations
                 // Only mark a DateTime once
                 if (entry.KeywordData.CaptureDateTime() == entryDateTime)
                 {
+                    entry.Unique = false;
                     continue;
                 }
 
@@ -108,9 +127,9 @@ namespace XisfFileManager.XisfFileOperations
 
             }
 
-            newName += mFile.KeywordData.TargetName() + " ";
+            newName += " " + mFile.KeywordData.TargetName() + "  ";
             newName += mFile.KeywordData.FocalLength();
-            newName += mFile.KeywordData.AmbientTemperature() + "C ";
+            newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
             if (mFile.KeywordData.FrameType() == "Dark")
             {
@@ -118,10 +137,10 @@ namespace XisfFileManager.XisfFileOperations
             }
             else
             {
-                newName += mFile.KeywordData.FrameType() + "-" + mFile.KeywordData.FilterName() + " ";
+                newName += mFile.KeywordData.FrameType() + "-" + mFile.KeywordData.FilterName() + "  ";
             }
 
-            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
             newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
 
             if (mFile.KeywordData.FrameType() == "Dark")
@@ -130,10 +149,10 @@ namespace XisfFileManager.XisfFileOperations
             }
             else
             {
-                newName += "@" + mFile.KeywordData.SensorTemperature() + "C" + " F" + mFile.KeywordData.FocusPosition() + "@" + mFile.KeywordData.FocusTemperature() + "C";
+                newName += "@" + mFile.KeywordData.SensorTemperature() + "C  " + "F" + mFile.KeywordData.FocusPosition() + "@" + mFile.KeywordData.FocusTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
                 {
-                    newName += " R" + mFile.KeywordData.ImageAngle();
+                    newName += "  R" + mFile.KeywordData.ImageAngle();
                 }
                 else
                 {
@@ -141,7 +160,7 @@ namespace XisfFileManager.XisfFileOperations
                 }
             }
 
-            newName += " (" + mFile.KeywordData.ImageDateTime() + " ";
+            newName += "  (" + mFile.KeywordData.ImageDateTime() + " ";
 
             if (mFile.KeywordData.CaptureSoftware() == "SGP")
             {

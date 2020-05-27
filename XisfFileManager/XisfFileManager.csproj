@@ -125,8 +125,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SubFrameData\SubFrameCsvRead.cs" />
-    <Compile Include="SubFrameData\SubFrameCsvData.cs" />
+    <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
+    <Compile Include="Keywords\SubFrameKeywordData.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,8 +134,8 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="XisfFile\Buffer.cs" />
-    <Compile Include="XisfKeywords\Keyword.cs" />
-    <Compile Include="XisfKeywords\KeywordData.cs" />
+    <Compile Include="Keywords\Keyword.cs" />
+    <Compile Include="Keywords\KeywordData.cs" />
     <Compile Include="XisfFileOperations\XisfFileRead.cs" />
     <Compile Include="XisfFileOperations\XisfFileRename.cs" />
     <Compile Include="XisfFileOperations\XisfFileWrite.cs" />

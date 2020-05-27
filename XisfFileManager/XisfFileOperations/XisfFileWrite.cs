@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using XisfFileManager.XisfKeywords;
+using XisfFileManager.Keywords;
 
 namespace XisfFileManager.XisfFileOperations
 {
@@ -22,7 +22,8 @@ namespace XisfFileManager.XisfFileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameData.SubFrameData csvKeywordLists)
+        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameKeywordData
+            csvKeywordLists)
         {
             int xmlStart;
             int xisfStart;
@@ -158,7 +159,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameData.SubFrameData csvKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordData csvKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -181,26 +182,26 @@ namespace XisfFileManager.XisfFileOperations
 
                 foreach (Keyword keyword in keywords)
                 {
-                    if (keyword.Type != XisfKeywords.Keyword.EType.NULL)
+                    if (keyword.Type != Keywords.Keyword.EType.NULL)
                     {
                         // Create a FITSKeyword under <Image
                         var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                         newElement.SetAttribute("name", keyword.Name);
                         switch (keyword.Type)
                         {
-                            case XisfKeywords.Keyword.EType.COPY:
+                            case Keywords.Keyword.EType.COPY:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case XisfKeywords.Keyword.EType.BOOL:
+                            case Keywords.Keyword.EType.BOOL:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case XisfKeywords.Keyword.EType.FLOAT:
+                            case Keywords.Keyword.EType.FLOAT:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case XisfKeywords.Keyword.EType.INTEGER:
+                            case Keywords.Keyword.EType.INTEGER:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case XisfKeywords.Keyword.EType.STRING:
+                            case Keywords.Keyword.EType.STRING:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
                         }
@@ -215,7 +216,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordList(bool enable, SubFrameData.SubFrameData csvKeywordLists, XisfFile.XisfFile mFile)
+        private static void AddCsvKeywordList(bool enable, SubFrameKeywordData csvKeywordLists, XisfFile.XisfFile mFile)
         {
 
             List<Keyword> fileNameList = csvKeywordLists.FileName;
