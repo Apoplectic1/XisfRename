@@ -2,7 +2,7 @@
 
 namespace XisfFileManager.Keywords
 {
-    public class SubFrameKeywordData
+    public class SubFrameKeywordLists
     {
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
@@ -20,7 +20,7 @@ namespace XisfFileManager.Keywords
         public List<Keyword> SSWeight { get; set; }
         public List<Keyword> FileName { get; set; }
 
-        public SubFrameKeywordData()
+        public SubFrameKeywordLists()
         {
             Approved = new List<Keyword>();
             Eccentricity = new List<Keyword>();

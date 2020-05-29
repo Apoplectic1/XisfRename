@@ -67,6 +67,8 @@ namespace XisfFileManager
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
         public bool mAddCsvKeywods;
+        public SubFrameKeywordLists FileSubFrameKeywordLists;
+        public SubFrameKeywordLists CsvSubFrameKeywordLists;
 
         public MainForm()
         {
@@ -74,6 +76,8 @@ namespace XisfFileManager
             Label_Task.Text = "";
             mFileList = new List<XisfFile.XisfFile>();
             mRenameFile = new XisfFileRename();
+            FileSubFrameKeywordLists = new SubFrameKeywordLists();
+            CsvSubFrameKeywordLists = new SubFrameKeywordLists();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -267,7 +271,7 @@ namespace XisfFileManager
                         mFile = new XisfFile.XisfFile();
                         mFile.SourceFileName = file.FullName;
 
-                        bStatus = XisfFileRead.ParseXisfFile(mFile);
+                        bStatus = XisfFileRead.ParseXisfFile(mFile, FileSubFrameKeywordLists);
 
                         if (bStatus)
                             mFileList.Add(mFile);
@@ -313,32 +317,6 @@ namespace XisfFileManager
                 MessageBox.Show(ex.ToString(), "Button_Browse_Click(object sender, EventArgs e)");
                 return;
             }
-        }
-
-
-        private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mBChronological = RadioButton_Chronological.Checked;
-        }
-
-        private void RadioButton_SSWEIGHT_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mBSsWeight = RadioButton_SSWEIGHT.Checked;
-        }
-
-        private void CheckBox_KeepIndex_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mKeepIndex = CheckBox_KeepIndex.Checked;
-        }
-
-        private void RadioButton_WeightFirst_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mWeightFirst = RadioButton_WeightFirst.Checked;
-        }
-
-        private void RadioButton_IndexFirst_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mIndexFirst = RadioButton_WeightFirst.Checked;
         }
 
         private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -402,7 +380,7 @@ namespace XisfFileManager
 
                 XisfFileWrite.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
                 XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
-                XisfFileWrite.UpdateFiles(file, ReadSubFrameCsvData.SubFrameKeywordLists);
+                XisfFileWrite.UpdateFiles(file, CsvSubFrameKeywordLists);
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             Label_Task.Text = "Done.";
@@ -430,13 +408,36 @@ namespace XisfFileManager
                 return;
             }
 
-            status = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName);
+            status = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName, CsvSubFrameKeywordLists);
 
             if (status)
                 mAddCsvKeywods = true;
 
         }
+        private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.mBChronological = RadioButton_Chronological.Checked;
+        }
 
+        private void RadioButton_SSWEIGHT_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.mBSsWeight = RadioButton_SSWEIGHT.Checked;
+        }
+
+        private void CheckBox_KeepIndex_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.mKeepIndex = CheckBox_KeepIndex.Checked;
+        }
+
+        private void RadioButton_WeightFirst_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.mWeightFirst = RadioButton_WeightFirst.Checked;
+        }
+
+        private void RadioButton_IndexFirst_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.mIndexFirst = RadioButton_WeightFirst.Checked;
+        }
         private void CheckBox_IncludeWeightsAndStatistics_CheckedChanged(object sender, EventArgs e)
         {
             GroupBox_WeightsAndStatistics.Enabled = CheckBox_IncludeWeightsAndStatistics.Checked;

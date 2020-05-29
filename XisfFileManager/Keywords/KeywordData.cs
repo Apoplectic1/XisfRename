@@ -9,12 +9,16 @@ namespace XisfFileManager.Keywords
     public class KeywordData 
     {
         public List<Keywords.Keyword> KeywordList;
+        public SubFrameKeywordLists SubFrameKeywordLists { get; private set; }
+        
 
         public KeywordData()
         {
             KeywordList = new List<Keyword>();
             KeywordList.Clear();
-        }
+            SubFrameKeywordLists = new SubFrameKeywordLists();
+            SubFrameKeywordLists.ClearSubFrameLists();
+    }
 
         // #########################################################################################################
         // #########################################################################################################
@@ -440,6 +444,7 @@ namespace XisfFileManager.Keywords
             keyword.Type = Keyword.EType.FLOAT;
             KeywordList.Add(keyword);
         }
+
         // #########################################################################################################
         // #########################################################################################################
         public void AddKeyword(string name, int value, string comment = "XISF File Manager")
@@ -454,8 +459,8 @@ namespace XisfFileManager.Keywords
             KeywordList.Add(keyword);
         }
 
-        // *********************************************************************************************************
-        // *********************************************************************************************************
+        // #########################################################################################################
+        // #########################################################################################################
         public void AddKeyword(XElement element)
         {
             Keyword keyword = new Keyword();
@@ -481,7 +486,7 @@ namespace XisfFileManager.Keywords
 
             double temperature;
             temperature = Convert.ToDouble(temperatureString);
-            temperature = Math.Round(temperature, 1); // (temperature > -0.1 && (temperature <= 0.0)) ? 0 : temperature;
+            temperature = Math.Round(temperature, 1);
 
             string fmt = "{00:+00.0;-00.0;+00.0}";
             string value = string.Format(fmt, temperature);
@@ -489,7 +494,6 @@ namespace XisfFileManager.Keywords
             return value;
         }
 
-        // #########################################################################################################
-        // #########################################################################################################
+       
     }
 }

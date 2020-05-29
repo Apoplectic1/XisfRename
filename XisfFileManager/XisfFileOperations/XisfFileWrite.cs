@@ -22,7 +22,7 @@ namespace XisfFileManager.XisfFileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameKeywordData
+        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameKeywordLists
             csvKeywordLists)
         {
             int xmlStart;
@@ -159,7 +159,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordData csvKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordLists csvKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -216,7 +216,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordList(bool enable, SubFrameKeywordData csvKeywordLists, XisfFile.XisfFile mFile)
+        private static void AddCsvKeywordList(bool enable, SubFrameKeywordLists csvKeywordLists, XisfFile.XisfFile mFile)
         {
 
             List<Keyword> fileNameList = csvKeywordLists.FileName;

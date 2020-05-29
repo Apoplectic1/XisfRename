@@ -126,7 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
-    <Compile Include="Keywords\SubFrameKeywordData.cs" />
+    <Compile Include="Keywords\SubFrameKeywordLists.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
