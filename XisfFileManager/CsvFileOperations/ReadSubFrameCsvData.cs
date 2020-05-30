@@ -63,7 +63,7 @@ namespace XisfFileManager.CsvFileOperations
 
             GetColumnIndexes = true;
 
-            CsvSubFrameKeywordLists.ClearSubFrameLists();
+            CsvSubFrameKeywordLists.ClearLists();
 
             foreach (string line in lines)
             {

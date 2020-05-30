@@ -6,19 +6,19 @@ using System.Xml.Linq;
 
 namespace XisfFileManager.Keywords
 {
-    public class KeywordData 
+    public class KeywordData
     {
         public List<Keywords.Keyword> KeywordList;
         public SubFrameKeywordLists SubFrameKeywordLists { get; private set; }
-        
+
 
         public KeywordData()
         {
             KeywordList = new List<Keyword>();
             KeywordList.Clear();
             SubFrameKeywordLists = new SubFrameKeywordLists();
-            SubFrameKeywordLists.ClearSubFrameLists();
-    }
+            SubFrameKeywordLists.ClearLists();
+        }
 
         // #########################################################################################################
         // #########################################################################################################
@@ -342,9 +342,9 @@ namespace XisfFileManager.Keywords
 
             if (value.IndexOf(".") > 0)
                 value = value.Replace("T", "  ").Replace("'", "").Remove(value.IndexOf('.')).Replace(".", "").Replace(':', '.');
-            else 
+            else
                 value = value.Replace("T", "  ").Replace("'", "").Replace(':', '.');
-            
+
             return value;
         }
 
@@ -360,7 +360,7 @@ namespace XisfFileManager.Keywords
 
             return Convert.ToInt32(value);
         }
-        
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         public int Offset()
@@ -494,6 +494,6 @@ namespace XisfFileManager.Keywords
             return value;
         }
 
-       
+
     }
 }

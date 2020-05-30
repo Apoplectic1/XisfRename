@@ -42,6 +42,7 @@
             this.RadioButton_Chronological = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
+            this.ProgressBar_XisfFile = new System.Windows.Forms.ProgressBar();
             this.CheckBox_IncludeWeightsAndStatistics = new System.Windows.Forms.CheckBox();
             this.Label_TagetName = new System.Windows.Forms.Label();
             this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
@@ -51,6 +52,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GroupBox_WeightsAndStatistics = new System.Windows.Forms.GroupBox();
+            this.GroupBox_InitialRejectionCriteria = new System.Windows.Forms.GroupBox();
             this.GroupBox_StarResidual = new System.Windows.Forms.GroupBox();
             this.Label_StarResidualRangeLow = new System.Windows.Forms.Label();
             this.Label_StarResidualRangeHigh = new System.Windows.Forms.Label();
@@ -167,7 +169,6 @@
             this.TextBox_FwhmRangeLow = new System.Windows.Forms.TextBox();
             this.Label_FwhmStdDev = new System.Windows.Forms.Label();
             this.Label_Task = new System.Windows.Forms.Label();
-            this.ProgressBar_XisfFile = new System.Windows.Forms.ProgressBar();
             this.GroupBox_Numbering.SuspendLayout();
             this.GroupBox_IndexOrder.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
@@ -338,6 +339,14 @@
             this.GroupBox_XisfFileUpdate.TabStop = false;
             this.GroupBox_XisfFileUpdate.Text = "XISF File Update";
             // 
+            // ProgressBar_XisfFile
+            // 
+            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(347, 113);
+            this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
+            this.ProgressBar_XisfFile.Size = new System.Drawing.Size(324, 11);
+            this.ProgressBar_XisfFile.Step = 1;
+            this.ProgressBar_XisfFile.TabIndex = 13;
+            // 
             // CheckBox_IncludeWeightsAndStatistics
             // 
             this.CheckBox_IncludeWeightsAndStatistics.AutoSize = true;
@@ -410,12 +419,13 @@
             // selectTemplateToolStripMenuItem
             // 
             this.selectTemplateToolStripMenuItem.Name = "selectTemplateToolStripMenuItem";
-            this.selectTemplateToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.selectTemplateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.selectTemplateToolStripMenuItem.Text = "Select Template";
             this.selectTemplateToolStripMenuItem.Click += new System.EventHandler(this.SelectTemplateToolStripMenuItem_Click);
             // 
             // GroupBox_WeightsAndStatistics
             // 
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidual);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidualMeanDeviation);
@@ -432,10 +442,19 @@
             this.GroupBox_WeightsAndStatistics.Enabled = false;
             this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 249);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
-            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 514);
+            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 576);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
             this.GroupBox_WeightsAndStatistics.TabStop = false;
             this.GroupBox_WeightsAndStatistics.Text = "SubFrame Weights and Statistics";
+            // 
+            // GroupBox_InitialRejectionCriteria
+            // 
+            this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(26, 81);
+            this.GroupBox_InitialRejectionCriteria.Name = "GroupBox_InitialRejectionCriteria";
+            this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(632, 51);
+            this.GroupBox_InitialRejectionCriteria.TabIndex = 26;
+            this.GroupBox_InitialRejectionCriteria.TabStop = false;
+            this.GroupBox_InitialRejectionCriteria.Text = "Initial Rejection Criteria";
             // 
             // GroupBox_StarResidual
             // 
@@ -447,7 +466,7 @@
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualPercent);
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeHigh);
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeLow);
-            this.GroupBox_StarResidual.Location = new System.Drawing.Point(242, 399);
+            this.GroupBox_StarResidual.Location = new System.Drawing.Point(242, 456);
             this.GroupBox_StarResidual.Name = "GroupBox_StarResidual";
             this.GroupBox_StarResidual.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarResidual.TabIndex = 24;
@@ -615,7 +634,7 @@
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeHigh);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeLow);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationStdDev);
-            this.GroupBox_StarResidualMeanDeviation.Location = new System.Drawing.Point(458, 399);
+            this.GroupBox_StarResidualMeanDeviation.Location = new System.Drawing.Point(458, 456);
             this.GroupBox_StarResidualMeanDeviation.Name = "GroupBox_StarResidualMeanDeviation";
             this.GroupBox_StarResidualMeanDeviation.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarResidualMeanDeviation.TabIndex = 25;
@@ -709,7 +728,7 @@
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationPercent);
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeHigh);
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeLow);
-            this.GroupBox_MedianMeanDeviationWeight.Location = new System.Drawing.Point(458, 187);
+            this.GroupBox_MedianMeanDeviationWeight.Location = new System.Drawing.Point(458, 244);
             this.GroupBox_MedianMeanDeviationWeight.Name = "GroupBox_MedianMeanDeviationWeight";
             this.GroupBox_MedianMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_MedianMeanDeviationWeight.TabIndex = 18;
@@ -803,7 +822,7 @@
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationPercent);
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeHigh);
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeLow);
-            this.GroupBox_EccentricityMeanDeviationWeight.Location = new System.Drawing.Point(242, 187);
+            this.GroupBox_EccentricityMeanDeviationWeight.Location = new System.Drawing.Point(242, 244);
             this.GroupBox_EccentricityMeanDeviationWeight.Name = "GroupBox_EccentricityMeanDeviationWeight";
             this.GroupBox_EccentricityMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_EccentricityMeanDeviationWeight.TabIndex = 21;
@@ -897,7 +916,7 @@
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeHigh);
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeLow);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarStdDev);
-            this.GroupBox_StarsWeight.Location = new System.Drawing.Point(26, 399);
+            this.GroupBox_StarsWeight.Location = new System.Drawing.Point(26, 456);
             this.GroupBox_StarsWeight.Name = "GroupBox_StarsWeight";
             this.GroupBox_StarsWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarsWeight.TabIndex = 23;
@@ -991,7 +1010,7 @@
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeHigh);
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeLow);
             this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrStdDev);
-            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 293);
+            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 350);
             this.GroupBox_SnrWeight.Name = "GroupBox_SnrWeight";
             this.GroupBox_SnrWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_SnrWeight.TabIndex = 16;
@@ -1085,7 +1104,7 @@
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeHigh);
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeLow);
             this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianStdDev);
-            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 81);
+            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 138);
             this.GroupBox_MedianWeight.Name = "GroupBox_MedianWeight";
             this.GroupBox_MedianWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_MedianWeight.TabIndex = 17;
@@ -1179,7 +1198,7 @@
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeHigh);
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeLow);
             this.GroupBox_NoiseWeight.Controls.Add(this.Label_NoiseStdDev);
-            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(26, 293);
+            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(26, 350);
             this.GroupBox_NoiseWeight.Name = "GroupBox_NoiseWeight";
             this.GroupBox_NoiseWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_NoiseWeight.TabIndex = 19;
@@ -1273,7 +1292,7 @@
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeHigh);
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeLow);
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationStdDev);
-            this.GroupBox_FwhmMeanDeviationWeight.Location = new System.Drawing.Point(26, 187);
+            this.GroupBox_FwhmMeanDeviationWeight.Location = new System.Drawing.Point(26, 244);
             this.GroupBox_FwhmMeanDeviationWeight.Name = "GroupBox_FwhmMeanDeviationWeight";
             this.GroupBox_FwhmMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_FwhmMeanDeviationWeight.TabIndex = 22;
@@ -1367,7 +1386,7 @@
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityPercent);
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityRangeHigh);
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityRangeLow);
-            this.GroupBox_EccentricityWeight.Location = new System.Drawing.Point(242, 81);
+            this.GroupBox_EccentricityWeight.Location = new System.Drawing.Point(242, 138);
             this.GroupBox_EccentricityWeight.Name = "GroupBox_EccentricityWeight";
             this.GroupBox_EccentricityWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_EccentricityWeight.TabIndex = 13;
@@ -1461,7 +1480,7 @@
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeHigh);
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeLow);
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.label_NoiseRatioStdDev);
-            this.GroupBox_NoiseRatioWeight.Location = new System.Drawing.Point(242, 293);
+            this.GroupBox_NoiseRatioWeight.Location = new System.Drawing.Point(242, 350);
             this.GroupBox_NoiseRatioWeight.Name = "GroupBox_NoiseRatioWeight";
             this.GroupBox_NoiseRatioWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_NoiseRatioWeight.TabIndex = 20;
@@ -1555,7 +1574,7 @@
             this.GroupBox_FwhmWeight.Controls.Add(this.TextBox_FwhmRangeHigh);
             this.GroupBox_FwhmWeight.Controls.Add(this.TextBox_FwhmRangeLow);
             this.GroupBox_FwhmWeight.Controls.Add(this.Label_FwhmStdDev);
-            this.GroupBox_FwhmWeight.Location = new System.Drawing.Point(26, 81);
+            this.GroupBox_FwhmWeight.Location = new System.Drawing.Point(26, 138);
             this.GroupBox_FwhmWeight.Name = "GroupBox_FwhmWeight";
             this.GroupBox_FwhmWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_FwhmWeight.TabIndex = 12;
@@ -1648,19 +1667,11 @@
             this.Label_Task.TabIndex = 12;
             this.Label_Task.Text = "label1";
             // 
-            // ProgressBar_XisfFile
-            // 
-            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(347, 113);
-            this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
-            this.ProgressBar_XisfFile.Size = new System.Drawing.Size(324, 11);
-            this.ProgressBar_XisfFile.Step = 1;
-            this.ProgressBar_XisfFile.TabIndex = 13;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(709, 779);
+            this.ClientSize = new System.Drawing.Size(709, 839);
             this.Controls.Add(this.Label_Task);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
             this.Controls.Add(this.ProgressBar_OverAll);
@@ -1854,6 +1865,7 @@
         private System.Windows.Forms.TextBox TextBox_NoiseRatioRangeLow;
         private System.Windows.Forms.Label label_NoiseRatioStdDev;
         private System.Windows.Forms.ProgressBar ProgressBar_XisfFile;
+        private System.Windows.Forms.GroupBox GroupBox_InitialRejectionCriteria;
     }
 }
 

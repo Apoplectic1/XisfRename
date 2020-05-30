@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace XisfFileManager.Keywords
 {
@@ -40,7 +41,7 @@ namespace XisfFileManager.Keywords
 
         }
 
-        public void ClearSubFrameLists()
+        public void ClearLists()
         {
             Approved.Clear();
             Eccentricity.Clear();

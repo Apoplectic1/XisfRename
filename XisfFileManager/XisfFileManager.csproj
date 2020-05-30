@@ -125,6 +125,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calculations\SubFrameWeights.cs" />
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
     <Compile Include="Keywords\SubFrameKeywordLists.cs" />
     <Compile Include="MainForm.cs">

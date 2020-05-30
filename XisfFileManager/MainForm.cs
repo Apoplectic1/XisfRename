@@ -13,6 +13,7 @@ using XisfFileManager.Keywords;
 using XisfFileManager.XisfFileOperations;
 using XisfFileManager.XisfFile;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace XisfFileManager
 {
@@ -69,6 +70,7 @@ namespace XisfFileManager
         public bool mAddCsvKeywods;
         public SubFrameKeywordLists FileSubFrameKeywordLists;
         public SubFrameKeywordLists CsvSubFrameKeywordLists;
+        Calculations.SubFrameWeights mWeightLists; 
 
         public MainForm()
         {
@@ -78,6 +80,7 @@ namespace XisfFileManager
             mRenameFile = new XisfFileRename();
             FileSubFrameKeywordLists = new SubFrameKeywordLists();
             CsvSubFrameKeywordLists = new SubFrameKeywordLists();
+            mWeightLists = new Calculations.SubFrameWeights();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -276,6 +279,8 @@ namespace XisfFileManager
                         if (bStatus)
                             mFileList.Add(mFile);
                     }
+
+                    mWeightLists.BuildLists(FileSubFrameKeywordLists);
                 }
 
                 // Sort Image File List by Capture Time
@@ -319,26 +324,6 @@ namespace XisfFileManager
             }
         }
 
-        private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            mFolder = new OpenFolderDialog()
-            {
-                Title = "Select Template Folder",
-                AutoUpgradeEnabled = true,
-                CheckPathExists = false,
-                InitialDirectory = @"E:\Photography\Astro Photography\Processing",
-                Multiselect = true,
-                RestoreDirectory = true
-            };
-
-            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
-
-            if (result.Equals(DialogResult.OK))
-            {
-
-            }
-        }
-
         private void Button_Rename_Click(object sender, EventArgs e)
         {
             int index = 1;
@@ -368,11 +353,26 @@ namespace XisfFileManager
 
         private void Button_Update_Click(object sender, EventArgs e)
         {
+            bool status;
+
             Label_Task.Text = "Updating Image Keywords";
 
             ProgressBar_XisfFile.Maximum = mFileList.Count();
             ProgressBar_XisfFile.Value = 0;
 
+            status = mWeightLists.ValidateListCounts(mFileList.Count);
+            if (status == false)
+            {
+                MessageBox.Show(
+                    "There is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
+                    "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + mWeightLists.Fwhm.Count() + ").",
+                    "MainForm.cs Button_Update_Click()"); 
+                return;
+            }
+
+            mWeightLists.WeightSubFrameValue(mFileList.Count);
+
+            XisfFileWrite.UpdateCsvSSWeightList(mWeightLists, CsvSubFrameKeywordLists);
 
             foreach (XisfFile.XisfFile file in mFileList)
             {
@@ -380,7 +380,12 @@ namespace XisfFileManager
 
                 XisfFileWrite.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
                 XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
-                XisfFileWrite.UpdateFiles(file, CsvSubFrameKeywordLists);
+                status = XisfFileWrite.UpdateFiles(file, CsvSubFrameKeywordLists);
+                if (status == false)
+                {
+                    Label_Task.Text = "File Write Error";
+                    return;
+                }
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             Label_Task.Text = "Done.";
@@ -408,11 +413,16 @@ namespace XisfFileManager
                 return;
             }
 
+            CsvSubFrameKeywordLists.ClearLists();
+
             status = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName, CsvSubFrameKeywordLists);
 
             if (status)
                 mAddCsvKeywods = true;
 
+           
+            mWeightLists.BuildLists(CsvSubFrameKeywordLists);
+           
         }
         private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
         {
@@ -631,6 +641,26 @@ namespace XisfFileManager
         private void TextBox_StarResidualMeanDevationRangeLow_TextChanged(object sender, EventArgs e)
         {
             mStarResidualMeanDevationRangeLow = ValidateRangeValue(TextBox_StarResidualMeanDevationRangeLow);
+        }
+
+        private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mFolder = new OpenFolderDialog()
+            {
+                Title = "Select Template Folder",
+                AutoUpgradeEnabled = true,
+                CheckPathExists = false,
+                InitialDirectory = @"E:\Photography\Astro Photography\Processing",
+                Multiselect = true,
+                RestoreDirectory = true
+            };
+
+            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
+
+            if (result.Equals(DialogResult.OK))
+            {
+
+            }
         }
 
         private double ValidateRangeValue(TextBox textBox)

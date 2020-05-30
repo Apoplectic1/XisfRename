@@ -214,7 +214,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.SnrWeight.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
@@ -227,7 +227,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.StarResidual.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
@@ -240,7 +240,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.StarResidualMeanDeviation.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
@@ -253,7 +253,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.INTEGER;
 
             FileSubFrameKeywordLists.Stars.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
@@ -266,7 +266,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.SSWeight.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
@@ -279,7 +279,7 @@ namespace XisfFileManager.XisfFileOperations
             if (node == null) return;
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.BOOL;
+            node.Type = Keyword.EType.STRING;
 
             FileSubFrameKeywordLists.FileName.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using XisfFileManager.Calculations;
 using XisfFileManager.Keywords;
 
 namespace XisfFileManager.XisfFileOperations
@@ -22,8 +24,7 @@ namespace XisfFileManager.XisfFileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameKeywordLists
-            csvKeywordLists)
+        public static bool UpdateFiles(XisfFile.XisfFile mFile, SubFrameKeywordLists SubFrameKeywordLists)
         {
             int xmlStart;
             int xisfStart;
@@ -53,8 +54,8 @@ namespace XisfFileManager.XisfFileOperations
 
                     // convert (including) from <xisf to </xisf> to a string and then parse string as xml into a new doc
                     string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
-                    XmlDocument doc = new XmlDocument();
-                    doc.LoadXml(xisfString);
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.LoadXml(xisfString);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -63,20 +64,22 @@ namespace XisfFileManager.XisfFileOperations
                     mFile.KeywordData.RemoveKeyword("HISTORY");
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(doc, mFile, AddCsvKeywords, csvKeywordLists);
+                    ReplaceAllFitsKeywords(xmlDoc, mFile, AddCsvKeywords, SubFrameKeywordLists);
 
-                    //RemoveSingleNumberSingleQuotes(doc);
-
+                    int imageStart;
+                    //Compute new Image Attachment Start Locations
+                    imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
+                        xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16,
+                        mFile.ImageAttachmentLength,
+                        xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16 + mFile.ImageAttachmentLength,
+                        mFile.ThumbnailAttachmentLength);
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Begin setting up output XISF File
-                    // Create a mBuffer to hold our different data types (Binary, Text, Binary Zero's, etc.
+                    // Create a mBuffer to hold our different data types (Binary, Text, Binary Zero's, etc.)
                     // Add each mBuffer to a List and when complete, sequentially write each List element over our XISF File
 
-                    // Fixes for PixInsight Parser
-                    xisfString = doc.OuterXml.Replace(" /", "/").Replace("'", "");
-
-                    //xisfString = xisfString.Replace(" /", "/"); // PixInsight throws up with spaces before the '/'
+                    xisfString = xmlDoc.OuterXml;
 
                     // Add header (includes binary and string portions) up the start of "<xisf version"
                     mBuffer = new XisfFile.Buffer();
@@ -84,20 +87,11 @@ namespace XisfFileManager.XisfFileOperations
                     mBuffer.AsciiData = "XISF0100";
                     mBufferList.Add(mBuffer);
 
-                    // Write xml portion length to XISF Header - See PixInsight XISF Developer info 
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
-                    byte[] headerLength = { Convert.ToByte((xisfString.Length >> 0) & 0xff), Convert.ToByte((xisfString.Length >> 8) & 0xff), Convert.ToByte((xisfString.Length >> 216) & 0xff), Convert.ToByte((xisfString.Length >> 24) & 0xff) };
-                    mBuffer.BinaryData = headerLength;
-                    mBuffer.BinaryByteLength = 4;
-                    mBufferList.Add(mBuffer);
-
-                    // Write reserved bytes as 0's
+                    // Write length (filled out later) and reserved bytes as 0's
                     mBuffer = new XisfFile.Buffer();
                     mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
-                    mBuffer.BinaryByteLength = 4;
+                    mBuffer.BinaryByteLength = 8;
                     mBufferList.Add(mBuffer);
-
 
                     // Add the newly replaced XML ascii potortion to the buffer list 
                     mBuffer = new XisfFile.Buffer();
@@ -105,11 +99,12 @@ namespace XisfFileManager.XisfFileOperations
                     mBuffer.AsciiData = xisfString;
                     mBufferList.Add(mBuffer);
 
-                    // Pad zero's after </xisf> to the start of binary image data
+                    // Pad from current position (which is the end of xisfString xml) to the start of image data
+                    // This is here because it is difficult to consistently determine where the end position is of xisfString. This may be a programming error.
+                    // This "error" may also cause problems for the header lenght field above.
                     mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
-                    mBuffer.BinaryDataStart = 0;
-                    mBuffer.BinaryByteLength = mFile.ImageAttachmentStart - xisfString.Length - xmlStart;
+                    mBuffer.Type = XisfFile.Buffer.TypeEnum.POSITION;
+                    mBuffer.ToPosition = imageStart;
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data from rawFileData after padding
@@ -122,13 +117,6 @@ namespace XisfFileManager.XisfFileOperations
 
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
-                        // Pad zero's after image data to the start of the thumbnail image
-                        mBuffer = new XisfFile.Buffer();
-                        mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
-                        mBuffer.BinaryDataStart = 0;
-                        mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentStart - (mFile.ImageAttachmentStart + mFile.ImageAttachmentLength);
-                        mBufferList.Add(mBuffer);
-
                         // Add the binary thumbnail image data from rawFileData after image data and padding
                         mBuffer = new XisfFile.Buffer();
                         mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
@@ -156,10 +144,42 @@ namespace XisfFileManager.XisfFileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
+        private static int UpdateImageAttachmentLocationsXml(XmlDocument document, int imageStart, int imageLength, int thumbnailStart, int thumbnailLength)
+        {
+            XmlNodeList nodeList;
+            int remainder;
+
+            remainder = imageStart % 256;
+
+            imageStart += (256 - remainder);
+
+            nodeList = document.GetElementsByTagName("Image", document.DocumentElement.NamespaceURI);
+
+            foreach (XmlNode node in nodeList)
+            {
+                if (node.Name.Equals("Image"))
+                {
+                    node.Attributes["location"].Value = "attachment:" + imageStart.ToString() + ":" + imageLength.ToString();
+
+                    XmlNodeList childNodeList = node.ChildNodes;
+
+                    foreach (XmlNode childNode in childNodeList)
+                    {
+                        if (childNode.Name.Equals("Thumbnail"))
+                        {
+                            childNode.Attributes["location"].Value = "attachment:" + thumbnailStart.ToString() + ":" + thumbnailLength.ToString();
+                        }
+                    }
+                }
+            }
+
+            return imageStart;
+        }
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordLists csvKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordLists CsvSubFrameKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -175,33 +195,33 @@ namespace XisfFileManager.XisfFileOperations
             foreach (XmlNode item in nodeList)
             {
                 if (enable)
-                    AddCsvKeywordList(enable, csvKeywordLists, mFile);
+                    AddCsvKeywordList(enable, CsvSubFrameKeywordLists, mFile);
 
                 // Add the FITSKeywords in alphabetical order - Not needed but WTF
                 List<Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
 
                 foreach (Keyword keyword in keywords)
                 {
-                    if (keyword.Type != Keywords.Keyword.EType.NULL)
+                    if (keyword.Type != Keyword.EType.NULL)
                     {
                         // Create a FITSKeyword under <Image
                         var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                         newElement.SetAttribute("name", keyword.Name);
                         switch (keyword.Type)
                         {
-                            case Keywords.Keyword.EType.COPY:
+                            case Keyword.EType.COPY:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keywords.Keyword.EType.BOOL:
+                            case Keyword.EType.BOOL:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keywords.Keyword.EType.FLOAT:
+                            case Keyword.EType.FLOAT:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keywords.Keyword.EType.INTEGER:
+                            case Keyword.EType.INTEGER:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keywords.Keyword.EType.STRING:
+                            case Keyword.EType.STRING:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
                         }
@@ -213,13 +233,24 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
+        public static void UpdateCsvSSWeightList(SubFrameWeights WeightLists, SubFrameKeywordLists CsvWeightLists)
+        {
+            int index = 0;
+
+            foreach (double value in WeightLists.SSWeight)
+            {
+                CsvWeightLists.SSWeight[index].Value = WeightLists.SSWeight[index].ToString();
+                index++;
+            }
+        }
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordList(bool enable, SubFrameKeywordLists csvKeywordLists, XisfFile.XisfFile mFile)
+        private static void AddCsvKeywordList(bool enable, SubFrameKeywordLists CsvWeightLists, XisfFile.XisfFile mFile)
         {
 
-            List<Keyword> fileNameList = csvKeywordLists.FileName;
+            List<Keyword> fileNameList = CsvWeightLists.FileName;
 
             foreach (Keyword file in fileNameList)
             {
@@ -228,31 +259,27 @@ namespace XisfFileManager.XisfFileOperations
 
                 if (mFile.SourceFileName == fileName)
                 {
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Approved.ElementAt(indexer).Name, csvKeywordLists.Approved.ElementAt(indexer).Value, csvKeywordLists.Approved.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Eccentricity.ElementAt(indexer).Name, csvKeywordLists.Eccentricity.ElementAt(indexer).Value, csvKeywordLists.Eccentricity.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.EccentricityMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Fwhm.ElementAt(indexer).Name, csvKeywordLists.Fwhm.ElementAt(indexer).Value, csvKeywordLists.Fwhm.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.FwhmMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Median.ElementAt(indexer).Name, csvKeywordLists.Median.ElementAt(indexer).Value, csvKeywordLists.Median.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.MedianMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Noise.ElementAt(indexer).Name, csvKeywordLists.Noise.ElementAt(indexer).Value, csvKeywordLists.Noise.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.NoiseRatio.ElementAt(indexer).Name, csvKeywordLists.NoiseRatio.ElementAt(indexer).Value, csvKeywordLists.NoiseRatio.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.SnrWeight.ElementAt(indexer).Name, csvKeywordLists.SnrWeight.ElementAt(indexer).Value, csvKeywordLists.SnrWeight.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.StarResidual.ElementAt(indexer).Name, csvKeywordLists.StarResidual.ElementAt(indexer).Value, csvKeywordLists.StarResidual.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Name, csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Value, csvKeywordLists.StarResidualMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.Stars.ElementAt(indexer).Name, csvKeywordLists.Stars.ElementAt(indexer).Value, csvKeywordLists.Stars.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.SSWeight.ElementAt(indexer).Name, csvKeywordLists.SSWeight.ElementAt(indexer).Value, csvKeywordLists.SSWeight.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(csvKeywordLists.FileName.ElementAt(indexer).Name, csvKeywordLists.FileName.ElementAt(indexer).Value, csvKeywordLists.FileName.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Approved[indexer].Name, CsvWeightLists.Approved[indexer].Value, CsvWeightLists.Approved.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Eccentricity.ElementAt(indexer).Name, CsvWeightLists.Eccentricity.ElementAt(indexer).Value, CsvWeightLists.Eccentricity.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.EccentricityMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.EccentricityMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.EccentricityMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Fwhm.ElementAt(indexer).Name, CsvWeightLists.Fwhm.ElementAt(indexer).Value, CsvWeightLists.Fwhm.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.FwhmMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.FwhmMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.FwhmMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Median.ElementAt(indexer).Name, CsvWeightLists.Median.ElementAt(indexer).Value, CsvWeightLists.Median.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.MedianMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.MedianMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.MedianMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Noise.ElementAt(indexer).Name, CsvWeightLists.Noise.ElementAt(indexer).Value, CsvWeightLists.Noise.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.NoiseRatio.ElementAt(indexer).Name, CsvWeightLists.NoiseRatio.ElementAt(indexer).Value, CsvWeightLists.NoiseRatio.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SnrWeight.ElementAt(indexer).Name, CsvWeightLists.SnrWeight.ElementAt(indexer).Value, CsvWeightLists.SnrWeight.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.StarResidual.ElementAt(indexer).Name, CsvWeightLists.StarResidual.ElementAt(indexer).Value, CsvWeightLists.StarResidual.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Stars.ElementAt(indexer).Name, CsvWeightLists.Stars.ElementAt(indexer).Value, CsvWeightLists.Stars.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SSWeight.ElementAt(indexer).Name, CsvWeightLists.SSWeight.ElementAt(indexer).Value, CsvWeightLists.SSWeight.ElementAt(indexer).Comment);
+                    //mFile.KeywordData.AddKeyword(CsvWeightLists.FileName.ElementAt(indexer).Name, CsvWeightLists.FileName.ElementAt(indexer).Value, CsvWeightLists.FileName.ElementAt(indexer).Comment);
                 }
 
                 indexer++;
             }
         }
 
-        private static void RemoveSingleNumberSingleQuotes(string xmlString)
-        {
-
-        }
         // ****************************************************************************************************
         // ****************************************************************************************************
 
@@ -283,34 +310,80 @@ namespace XisfFileManager.XisfFileOperations
 
         private static bool WriteBinaryFile(string fileName)
         {
+            byte[] zero = { 0x00 };
+
             try
             {
-                Stream stream = new FileStream(fileName, FileMode.Create);
-                BinaryWriter bw = new BinaryWriter(stream);
-
-                foreach (XisfFile.Buffer buffer in mBufferList)
+                using (MemoryStream rawStream = new MemoryStream())
                 {
-                    switch (buffer.Type)
+                    using (BinaryWriter rawWriter = new BinaryWriter(rawStream))
                     {
-                        case XisfFile.Buffer.TypeEnum.ASCII:
-                            bw.Write(Encoding.UTF8.GetBytes(buffer.AsciiData));
-                            break;
+                        foreach (XisfFile.Buffer buffer in mBufferList)
+                        {
+                            long position = rawStream.Position;
 
-                        case XisfFile.Buffer.TypeEnum.BINARY:
-                            bw.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
-                            break;
-
-                        case XisfFile.Buffer.TypeEnum.ZEROS:
-                            for (int i = 0; i < buffer.BinaryByteLength; i++)
+                            switch (buffer.Type)
                             {
-                                bw.Write((byte)0x00);
+                                case XisfFile.Buffer.TypeEnum.ASCII:
+                                    rawWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
+                                    break;
+
+                                case XisfFile.Buffer.TypeEnum.BINARY:
+                                    rawWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
+                                    break;
+
+                                case XisfFile.Buffer.TypeEnum.ZEROS:
+                                    for (int i = (int)position; i < buffer.BinaryByteLength + position; i++)
+                                    {
+                                        rawWriter.Write(zero, 0, 1);
+                                    }
+                                    break;
+
+                                case XisfFile.Buffer.TypeEnum.POSITION:
+                                    if ((int)position > buffer.ToPosition)
+                                    {
+                                        MessageBox.Show("The length of xml xisfString is after the start of image data:\n" +
+                                            "Current Position:     " + position.ToString() + "\n" +
+                                            "Image Start Position: " + buffer.ToPosition.ToString(),
+                                            "MainForm.cs WriteBinaryFile(" + fileName + ")");
+                                        return false;
+                                    }
+
+                                    for (long i = position; i < buffer.ToPosition; i++)
+                                    {
+                                        rawWriter.Write(zero, 0, 1);
+                                    }
+                                    break;
                             }
-                            break;
+                        }
+                    }
+
+                    // Fix Header length
+                    int binaryDataLength = rawStream.ToArray().Length;
+                    byte[] binaryData = new byte[binaryDataLength];
+                    
+                    binaryData = rawStream.ToArray();
+
+                    int xisfStart = BinaryFind(binaryData, "<?xml"); // returns the position of '<'
+                    int xisfEnd = BinaryFind(binaryData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'             
+                    int xisfLength = xisfEnd - xisfStart;
+
+                    // Write '<'?xml to </xisf'>' length to XISF Header length portion - See PixInsight XISF Developer info 
+                    binaryData[8] = Convert.ToByte((xisfLength >> 0) & 0xff);
+                    binaryData[9] = Convert.ToByte((xisfLength >> 8) & 0xff);
+                    binaryData[10] = Convert.ToByte((xisfLength >> 16) & 0xff);
+                    binaryData[11] = Convert.ToByte((xisfLength >> 24) & 0xff);
+
+                    using (Stream fileStream = new FileStream(fileName, FileMode.Create))
+                    {
+                        using (BinaryWriter rawWriter = new BinaryWriter(fileStream))
+                        {
+                            fileStream.Write(binaryData, 0, binaryDataLength);
+                            rawWriter.Flush();
+                            rawWriter.Close();
+                        }
                     }
                 }
-
-                bw.Flush();
-                bw.Close();
 
                 return true;
             }
@@ -319,10 +392,10 @@ namespace XisfFileManager.XisfFileOperations
                 MessageBox.Show(ex.ToString(), "WriteBinaryFile(" + fileName + ")");
                 return false;
             }
+
+            // ##############################################################################################################################################
+            // ##############################################################################################################################################
+
         }
-
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
-
     }
 }
