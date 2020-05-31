@@ -70,14 +70,17 @@ namespace XisfFileManager
         public bool mAddCsvKeywods;
         public SubFrameKeywordLists FileSubFrameKeywordLists;
         public SubFrameKeywordLists CsvSubFrameKeywordLists;
-        Calculations.SubFrameWeights mWeightLists; 
+        Calculations.SubFrameWeights mWeightLists;
+ 
 
+        
         public MainForm()
         {
             InitializeComponent();
             Label_Task.Text = "";
             mFileList = new List<XisfFile.XisfFile>();
             mRenameFile = new XisfFileRename();
+            mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
             FileSubFrameKeywordLists = new SubFrameKeywordLists();
             CsvSubFrameKeywordLists = new SubFrameKeywordLists();
             mWeightLists = new Calculations.SubFrameWeights();
@@ -264,26 +267,50 @@ namespace XisfFileManager
 
                     Label_Task.Text = "Reading Image File Data";
 
+                    // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
                     mFileList.Clear();
+                    FileSubFrameKeywordLists.ClearLists();
+                    CsvSubFrameKeywordLists.ClearLists();
+                    mWeightLists.ClearLists();
 
                     foreach (FileInfo file in Files)
                     {
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
 
+                        // Create a new xisf file instance
                         mFile = new XisfFile.XisfFile();
                         mFile.SourceFileName = file.FullName;
 
+                        // Get the keyword data contained found within the current file
+                        // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
+                        //
+                        // FileSubFrameKeywordLists
+                        // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
+                        // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
+                        // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
+                        // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
+                        // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
+                        // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
+                        //
+                        // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
+                        // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
+
                         bStatus = XisfFileRead.ParseXisfFile(mFile, FileSubFrameKeywordLists);
 
+                        // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                         if (bStatus)
                             mFileList.Add(mFile);
                     }
 
-                    mWeightLists.BuildLists(FileSubFrameKeywordLists);
+                    // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
+                    // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
+                    mWeightLists.BuildNumericSubFrameDataKeywordLists(FileSubFrameKeywordLists);
                 }
 
                 // Sort Image File List by Capture Time
+                // Careful - make sure this doesn't screw up the SubFrameKeyword list order later when writing back SubFrameKeyword data.
+                // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
                 mFileList.Sort(XisfFile.XisfFile.CaptureTimeComparison);
 
 
@@ -377,6 +404,7 @@ namespace XisfFileManager
             foreach (XisfFile.XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
+                Application.DoEvents();
 
                 XisfFileWrite.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
                 XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
@@ -389,6 +417,10 @@ namespace XisfFileManager
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
             Label_Task.Text = "Done.";
+            Application.DoEvents();
+            Thread.Sleep(1000);
+            ProgressBar_XisfFile.Value = 0;
+
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -421,33 +453,10 @@ namespace XisfFileManager
                 mAddCsvKeywods = true;
 
            
-            mWeightLists.BuildLists(CsvSubFrameKeywordLists);
+            mWeightLists.BuildNumericSubFrameDataKeywordLists(CsvSubFrameKeywordLists);
            
         }
-        private void RadioButton_Chronological_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mBChronological = RadioButton_Chronological.Checked;
-        }
-
-        private void RadioButton_SSWEIGHT_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mBSsWeight = RadioButton_SSWEIGHT.Checked;
-        }
-
-        private void CheckBox_KeepIndex_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mKeepIndex = CheckBox_KeepIndex.Checked;
-        }
-
-        private void RadioButton_WeightFirst_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mWeightFirst = RadioButton_WeightFirst.Checked;
-        }
-
-        private void RadioButton_IndexFirst_CheckedChanged(object sender, EventArgs e)
-        {
-            mRenameFile.mIndexFirst = RadioButton_WeightFirst.Checked;
-        }
+        
         private void CheckBox_IncludeWeightsAndStatistics_CheckedChanged(object sender, EventArgs e)
         {
             GroupBox_WeightsAndStatistics.Enabled = CheckBox_IncludeWeightsAndStatistics.Checked;
@@ -681,6 +690,38 @@ namespace XisfFileManager
             textBox.Text = rangedValue.ToString("F0");
 
             return rangedValue;
+        }
+
+        private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButton_WeightIndex.Checked)
+            {
+                mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHTINDEX;
+            }
+        }
+
+        private void RadioButton_Index_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButton_Index.Checked)
+            {
+                mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEX;
+            }
+        }
+
+        private void RadioButton_Weight_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButton_Weight.Checked)
+            {
+                mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHT;
+            }
+        }
+
+        private void RadioButton_IndexWeight_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButton_IndexWeight.Checked)
+            {
+                mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
+            }
         }
     }
 }

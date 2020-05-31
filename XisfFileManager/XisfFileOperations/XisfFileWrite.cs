@@ -100,8 +100,7 @@ namespace XisfFileManager.XisfFileOperations
                     mBufferList.Add(mBuffer);
 
                     // Pad from current position (which is the end of xisfString xml) to the start of image data
-                    // This is here because it is difficult to consistently determine where the end position is of xisfString. This may be a programming error.
-                    // This "error" may also cause problems for the header lenght field above.
+                    // This is here because it is difficult to determine where the end position is of xisfString. 
                     mBuffer = new XisfFile.Buffer();
                     mBuffer.Type = XisfFile.Buffer.TypeEnum.POSITION;
                     mBuffer.ToPosition = imageStart;
@@ -257,6 +256,7 @@ namespace XisfFileManager.XisfFileOperations
                 int indexer = 0;
                 string fileName = file.Value.Replace("\"", "").Replace("/", @"\");
 
+                // This equality check makes sure the correct data is used for the current file.
                 if (mFile.SourceFileName == fileName)
                 {
                     mFile.KeywordData.AddKeyword(CsvWeightLists.Approved[indexer].Name, CsvWeightLists.Approved[indexer].Value, CsvWeightLists.Approved.ElementAt(indexer).Comment);
@@ -316,7 +316,7 @@ namespace XisfFileManager.XisfFileOperations
             {
                 using (MemoryStream rawStream = new MemoryStream())
                 {
-                    using (BinaryWriter rawWriter = new BinaryWriter(rawStream))
+                    using (BinaryWriter binaryWriter = new BinaryWriter(rawStream))
                     {
                         foreach (XisfFile.Buffer buffer in mBufferList)
                         {
@@ -325,17 +325,17 @@ namespace XisfFileManager.XisfFileOperations
                             switch (buffer.Type)
                             {
                                 case XisfFile.Buffer.TypeEnum.ASCII:
-                                    rawWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
+                                    binaryWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
                                     break;
 
                                 case XisfFile.Buffer.TypeEnum.BINARY:
-                                    rawWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
+                                    binaryWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
                                     break;
 
                                 case XisfFile.Buffer.TypeEnum.ZEROS:
                                     for (int i = (int)position; i < buffer.BinaryByteLength + position; i++)
                                     {
-                                        rawWriter.Write(zero, 0, 1);
+                                        binaryWriter.Write(zero, 0, 1);
                                     }
                                     break;
 
@@ -351,7 +351,7 @@ namespace XisfFileManager.XisfFileOperations
 
                                     for (long i = position; i < buffer.ToPosition; i++)
                                     {
-                                        rawWriter.Write(zero, 0, 1);
+                                        binaryWriter.Write(zero, 0, 1);
                                     }
                                     break;
                             }
@@ -376,13 +376,15 @@ namespace XisfFileManager.XisfFileOperations
 
                     using (Stream fileStream = new FileStream(fileName, FileMode.Create))
                     {
-                        using (BinaryWriter rawWriter = new BinaryWriter(fileStream))
+                        using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
                         {
                             fileStream.Write(binaryData, 0, binaryDataLength);
-                            rawWriter.Flush();
-                            rawWriter.Close();
+                            binaryWriter.Flush();
+                            binaryWriter.Close();
                         }
                     }
+
+                    binaryData = null;
                 }
 
                 return true;

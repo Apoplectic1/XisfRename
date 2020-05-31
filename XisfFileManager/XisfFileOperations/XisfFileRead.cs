@@ -90,26 +90,21 @@ namespace XisfFileManager.XisfFileOperations
 
         private static void FindKeywordApproved(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Approved");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.BOOL;
 
             FileSubFrameKeywordLists.Approved.Add(node);
             xFile.KeywordData.KeywordList.Remove(node);
         }
-
         private static void FindKeywordEccentricity(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Eccentricity");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.Eccentricity.Add(node);
@@ -117,12 +112,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordEccentricityMeanDeviation(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "EccentricityMeanDeviation");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.EccentricityMeanDeviation.Add(node);
@@ -130,12 +123,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordFwhm(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Fwhm");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.Fwhm.Add(node);
@@ -143,12 +134,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordFwhmMeanDeviation(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "FwhmMeanDeviation");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.FwhmMeanDeviation.Add(node);
@@ -156,12 +145,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordMedian(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Median");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.Median.Add(node);
@@ -169,12 +156,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordMedianMeanDeviation(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "MedianMeanDeviation");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.MedianMeanDeviation.Add(node);
@@ -182,12 +167,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordNoise(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Noise");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.Noise.Add(node);
@@ -195,12 +178,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordNoiseRatio(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "NoiseRatio");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.NoiseRatio.Add(node);
@@ -208,12 +189,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordSnrWeight(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SnrWeight");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.SnrWeight.Add(node);
@@ -221,12 +200,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordStarResidual(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "StarResidual");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.StarResidual.Add(node);
@@ -234,12 +211,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordStarResidualMeanDeviation(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "StarResidualMeanDeviation");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.StarResidualMeanDeviation.Add(node);
@@ -247,12 +222,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordStars(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "Stars");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.INTEGER;
 
             FileSubFrameKeywordLists.Stars.Add(node);
@@ -260,12 +233,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordSSWeight(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SSWeight");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.FLOAT;
 
             FileSubFrameKeywordLists.SSWeight.Add(node);
@@ -273,12 +244,10 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordFileName(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            string value = string.Empty;
-
             Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "FileName");
             if (node == null) return;
 
-            value = node.Value.Replace("'", "");
+            node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;
 
             FileSubFrameKeywordLists.FileName.Add(node);

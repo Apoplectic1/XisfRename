@@ -1,10 +1,6 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using XisfFileManager.Keywords;
 
 namespace XisfFileManager.Calculations
@@ -255,9 +251,9 @@ namespace XisfFileManager.Calculations
             }
         }
 
-        public void BuildLists(SubFrameKeywordLists KeywordLists)
+        public void BuildNumericSubFrameDataKeywordLists(SubFrameKeywordLists KeywordLists)
         {
-            ClearLists();
+            //ClearLists();
 
             foreach (Keyword keyword in KeywordLists.Approved)
             {

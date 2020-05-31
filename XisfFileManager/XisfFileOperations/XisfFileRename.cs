@@ -8,13 +8,11 @@ namespace XisfFileManager.XisfFileOperations
 {
     public class XisfFileRename
     {
-        public bool mBChronological { get; set; } = false;
         private int mDupIndex;
-        public bool mBSsWeight { get; set; } = true;
-        public bool mKeepIndex { get; set; } = true;
-        public bool mWeightFirst { get; set; } = true;
-        public bool mIndexFirst { get; set; } = false;
+       
         public List<XisfFile.XisfFile> mFileList;
+        public enum OrderType { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }
+        public OrderType RenameOrder;
 
         private string RecurseDupFileName(string dupFileName)
         {
@@ -96,54 +94,58 @@ namespace XisfFileManager.XisfFileOperations
 
         private string BuildFileName(int index, XisfFile.XisfFile mFile)
         {
-            string newName;
+            string newName = string.Empty;
 
-            if ((mFile.KeywordData.SSWeight() == int.MinValue) || (mBChronological == true))
+            switch (RenameOrder)
             {
-                newName = index.ToString("D3") + " ";
-            }
-            else
-            {
-                string fileName = Path.GetFileName(mFile.SourceFileName);
+                case OrderType.INDEX:
+                    newName = index.ToString("D3") + " ";
+                    break;
 
-                bool hasIndex = fileName.Substring(0, 2).All(char.IsDigit);
-
-                if (mKeepIndex && hasIndex)
-                {
-                    if (mWeightFirst)
+                case OrderType.INDEXWEIGHT:
+                    if (Double.IsNaN(mFile.KeywordData.SSWeight()))
                     {
-                        newName = mFile.KeywordData.SSWeight() + " " + fileName.Substring(0, 4);
+                        newName = index.ToString("D3") + " ";
                     }
                     else
                     {
-                        newName = fileName.Substring(0, 4) + mFile.KeywordData.SSWeight() + " ";
+                        newName = index.ToString("D3") + " " + string.Format("{0:0000}", mFile.KeywordData.SSWeight().ToString()) + " ";
                     }
-                }
-
-                else
-                {
-                    newName = mFile.KeywordData.SSWeight() + " ";
-                }
-
+                    break;
+                case OrderType.WEIGHT:
+                    newName = mFile.KeywordData.SSWeight().ToString("D4") + " ";
+                    break;
+                case OrderType.WEIGHTINDEX:
+                    newName = mFile.KeywordData.SSWeight().ToString("D4") + " " + index.ToString("D3") + " ";
+                    break;
             }
 
-            newName += " " + mFile.KeywordData.TargetName() + "  ";
-            newName += mFile.KeywordData.FocalLength();
-            newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
-            if (mFile.KeywordData.FrameType() == "Dark")
+            if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "F"))
             {
-                newName += mFile.KeywordData.FrameType() + " ";
+                if (mFile.KeywordData.FrameType() == "D")
+                {
+                    newName += " Dark  ";
+                }
+                else
+                {
+                    newName += " Flat-" + mFile.KeywordData.FilterName() + "  ";
+                    newName += mFile.KeywordData.FocalLength() + "  ";
+                }
             }
             else
             {
+                newName += " " + mFile.KeywordData.TargetName() + "  ";
+                newName += mFile.KeywordData.FocalLength();
+                newName += mFile.KeywordData.AmbientTemperature() + "C  ";
+
                 newName += mFile.KeywordData.FrameType() + "-" + mFile.KeywordData.FilterName() + "  ";
             }
 
             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
             newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
 
-            if (mFile.KeywordData.FrameType() == "Dark")
+            if (mFile.KeywordData.FrameType() == "D")
             {
                 newName += "@" + mFile.KeywordData.SensorTemperature() + "C ";
             }

@@ -63,6 +63,8 @@ namespace XisfFileManager.CsvFileOperations
 
             GetColumnIndexes = true;
 
+
+            // Can I delete this? Is it better to clear the lists in the calling routine?
             CsvSubFrameKeywordLists.ClearLists();
 
             foreach (string line in lines)
