@@ -113,10 +113,24 @@ namespace XisfFileManager.XisfFileOperations
                     }
                     break;
                 case OrderType.WEIGHT:
-                    newName = mFile.KeywordData.SSWeight().ToString("D4") + " ";
+                    if (Double.IsNaN(mFile.KeywordData.SSWeight()))
+                    {
+                        newName = index.ToString("D3") + " ";
+                    }
+                    else
+                    {
+                        newName = string.Format("{0:0000}", mFile.KeywordData.SSWeight().ToString()) + " ";
+                    }
                     break;
                 case OrderType.WEIGHTINDEX:
-                    newName = mFile.KeywordData.SSWeight().ToString("D4") + " " + index.ToString("D3") + " ";
+                    if (Double.IsNaN(mFile.KeywordData.SSWeight()))
+                    {
+                        newName = index.ToString("D3") + " ";
+                    }
+                    else
+                    {
+                        newName = string.Format("{0:0000}", mFile.KeywordData.SSWeight().ToString()) + " " + index.ToString("D3") + " ";
+                    }
                     break;
             }
 
@@ -151,7 +165,7 @@ namespace XisfFileManager.XisfFileOperations
             }
             else
             {
-                newName += "@" + mFile.KeywordData.SensorTemperature() + "C  " + "F" + mFile.KeywordData.FocusPosition() + "@" + mFile.KeywordData.FocusTemperature() + "C";
+                newName += "@" + mFile.KeywordData.SensorTemperature() + "C  " + "F" + mFile.KeywordData.FocuserPosition() + "@" + mFile.KeywordData.FocuserTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
                 {
                     newName += "  R" + mFile.KeywordData.ImageAngle();
@@ -162,18 +176,8 @@ namespace XisfFileManager.XisfFileOperations
                 }
             }
 
-            newName += "  (" + mFile.KeywordData.ImageDateTime() + " ";
-
-            if (mFile.KeywordData.CaptureSoftware() == "SGP")
-            {
-                newName += "SGP";// + file.SgpProfile();
-            }
-
-            if (mFile.KeywordData.CaptureSoftware() == "TheSkyX")
-            {
-                newName += "TSX";
-            }
-
+            newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
+            newName += mFile.KeywordData.CaptureSoftware();
             newName += ")";
 
             return newName;

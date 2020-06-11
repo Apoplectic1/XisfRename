@@ -96,7 +96,7 @@ namespace XisfFileManager.Keywords
 
             if (node == null)
             {
-                AddKeyword("AOCAMBT", FocusTemperature());
+                AddKeyword("AOCAMBT", FocuserTemperature());
                 node = KeywordList.Find(i => i.Name == "AOCAMBT");
                 node.Type = Keyword.EType.FLOAT;
             }
@@ -132,7 +132,7 @@ namespace XisfFileManager.Keywords
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
-            if (value.Contains("183"))
+            if (value.Contains("183") || (value.Contains("ASI") && (SensorWidth() == 5496) && (SensorHeight() == 3672)))
             {
                 return "Z183";
             }
@@ -151,16 +151,57 @@ namespace XisfFileManager.Keywords
         {
             string value = string.Empty;
             Keyword node = new Keyword();
+            int index;
+            bool status;
+
+            DateTime parsedDateTime;
+
 
             node = KeywordList.Find(i => i.Name == "DATE-LOC");
-            value = node.Value;
+
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "LOCALTIM");
+
+            value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;
 
-            if (value.IndexOf(".") > 0)
+            if (value.Contains("AM"))
+            {
+                value = value.Remove(value.IndexOf('.')) + " AM";
+
+                DateTime dt;
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss tt",
+                          CultureInfo.InvariantCulture,
+                          DateTimeStyles.None, out dt);
+                return dt;
+            }
+
+            if (value.Contains("PM"))
+            {
+                value = value.Remove(value.IndexOf('.')) + " PM";
+
+                DateTime dt;
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss tt",
+                          CultureInfo.InvariantCulture,
+                          DateTimeStyles.None, out dt);
+                return dt;
+            }
+
+
+            if ((index = value.IndexOf(".")) > 0)
                 value = value.Replace("T", "  ").Replace("'", "").Remove(value.IndexOf('.')).Replace(".", "");
             else
                 value = value.Replace("T", "  ").Replace("'", "");
 
+            //value = value.Replace("/", "-");
+
+            status = DateTime.TryParse(value, out parsedDateTime);
+
+            if (status)
+            {
+                return parsedDateTime;
+            }
+            
 
             return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss", CultureInfo.InvariantCulture);
         }
@@ -173,12 +214,21 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "CREATOR");
+
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "NOTES");
+
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
             if (value.Contains("Sequence"))
             {
                 return "SGP";
+            }
+
+            if (value.Contains("VOYAGER"))
+            {
+                return "VGR";
             }
 
             if (value.Contains("SkyX"))
@@ -199,6 +249,12 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "EXPOSURE");
+
+            if (node == null)
+            {
+                node = KeywordList.Find(i => i.Name == "EXPTIME");
+            }
+
             value = node.Value.Replace("'", "").Replace(" ", "");
             node.Type = Keyword.EType.FLOAT;
 
@@ -275,16 +331,21 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FocusPosition()
+        public string FocuserPosition()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "FOCPOS");
+
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "FOCUSPOS");
+
             if (node == null) return string.Empty;
 
             node.Type = Keyword.EType.INTEGER;
-            value = node.Value;
+
+            value = node.Value.Replace(".", "");
 
 
             return value;
@@ -292,12 +353,16 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FocusTemperature()
+        public string FocuserTemperature()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "FOCTEMP");
+
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "FOCUSTEM");
+
             if (node == null) return string.Empty;
 
             node.Type = Keyword.EType.FLOAT;
@@ -349,6 +414,12 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "GAIN");
+
+            if (node == null)
+            {
+                node = KeywordList.Find(i => i.Name == "GAINRAW");
+            }
+
             value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.INTEGER;
 
@@ -363,6 +434,10 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "POSANGLE");
+
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "ROTATANG");
+
             if (node == null) return string.Empty;
 
             value = node.Value;
@@ -383,26 +458,6 @@ namespace XisfFileManager.Keywords
             node.Type = Keyword.EType.STRING;
 
             return value.Replace("'", "");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string ImageDateTime()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "DATE-LOC");
-            node.Type = Keyword.EType.STRING;
-            value = node.Value;
-
-
-            if (value.IndexOf(".") > 0)
-                value = value.Replace("T", "  ").Replace("'", "").Remove(value.IndexOf('.')).Replace(".", "").Replace(':', '.');
-            else
-                value = value.Replace("T", "  ").Replace("'", "").Replace(':', '.');
-
-            return value;
         }
 
         // *********************************************************************************************************
@@ -435,6 +490,33 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        public int SensorHeight()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "NAXIS2");
+            value = node.Value.Replace("'", "");
+            node.Type = Keyword.EType.INTEGER;
+
+            return Convert.ToInt32(value);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string SensorSetPointTemperature()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "SET-TEMP");
+            value = node.Value.Replace("'", "");
+            node.Type = Keyword.EType.STRING;
+
+            return FormatTemperatureString(value);
+        }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public string SensorTemperature()
         {
             string value = string.Empty;
@@ -447,6 +529,19 @@ namespace XisfFileManager.Keywords
             return FormatTemperatureString(value);
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public int SensorWidth()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "NAXIS1");
+            value = node.Value.Replace("'", "");
+            node.Type = Keyword.EType.INTEGER;
+
+            return Convert.ToInt32(value);
+        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double SSWeight()
@@ -472,7 +567,7 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OBJECT");
-            value = node.Value.Replace("'", "").Replace(" ", ""); ;
+            value = node.Value.Replace("'", "").Replace(" ", "");
             node.Type = Keyword.EType.STRING;
 
             return value;
