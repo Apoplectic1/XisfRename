@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace XisfFileManager.Keywords
 {
     public class SubFrameKeywordLists
     {
+        
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
         public List<Keyword> EccentricityMeanDeviation { get; set; }

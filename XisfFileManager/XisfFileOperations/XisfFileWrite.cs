@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -41,11 +38,9 @@ namespace XisfFileManager.XisfFileOperations
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Read entire XISF file (up to 1 GB) into rawFileData and create an xml document
-
-                    //Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open);
-                    BinaryReader bw = new BinaryReader(stream);
-                    rawFileData = bw.ReadBytes((int)1e9);
-                    bw.Close();
+                    BinaryReader br = new BinaryReader(stream);
+                    rawFileData = br.ReadBytes((int)1e9);
+                    br.Close();
 
                     // Set up some pointers to xml start and stop positions
                     xmlStart = BinaryFind(rawFileData, "<?xml version"); // returns the position of '<'
@@ -68,10 +63,16 @@ namespace XisfFileManager.XisfFileOperations
 
                     int imageStart;
                     //Compute new Image Attachment Start Locations
+                    //imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
+                    //    xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16,
+                    //    mFile.ImageAttachmentLength,
+                    //    xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16 + mFile.ImageAttachmentLength,
+                    //    mFile.ThumbnailAttachmentLength);
+
                     imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
-                        xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16,
+                        xmlDoc.OuterXml.Length + 16,
                         mFile.ImageAttachmentLength,
-                        xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16 + mFile.ImageAttachmentLength,
+                        xmlDoc.OuterXml.Length + 16 + mFile.ImageAttachmentLength,
                         mFile.ThumbnailAttachmentLength);
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -129,7 +130,9 @@ namespace XisfFileManager.XisfFileOperations
                     // *******************************************************************************************************************************
 
                     // Now that the mBuffer List is done, write the XISF File
-                    WriteBinaryFile(mFile.SourceFileName);
+                    bool bStatus = WriteBinaryFile(mFile.SourceFileName);
+                    if (bStatus == false)
+                        return false;
                 }
             }
             catch (Exception ex)
@@ -342,10 +345,11 @@ namespace XisfFileManager.XisfFileOperations
                                 case XisfFile.Buffer.TypeEnum.POSITION:
                                     if ((int)position > buffer.ToPosition)
                                     {
-                                        MessageBox.Show("The length of xml xisfString is after the start of image data:\n" +
-                                            "Current Position:     " + position.ToString() + "\n" +
-                                            "Image Start Position: " + buffer.ToPosition.ToString(),
-                                            "MainForm.cs WriteBinaryFile(" + fileName + ")");
+                                        MessageBox.Show(fileName + "\n\nThe length of xml xisfString is after the start of image data:\n" +
+                                            "    Current Write Position:     " + position.ToString() + "\n" +
+                                            "    Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.",
+                                            "MainForm.cs WriteBinaryFile()",
+                                            MessageBoxButtons.OK);
                                         return false;
                                     }
 

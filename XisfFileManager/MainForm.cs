@@ -67,13 +67,14 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-        public bool mAddCsvKeywods;
         public SubFrameKeywordLists FileSubFrameKeywordLists;
         public SubFrameKeywordLists CsvSubFrameKeywordLists;
-        Calculations.SubFrameWeights mWeightLists;
- 
+        private Calculations.SubFrameWeights mWeightLists;
+        private Calculations.SubFrameWeights.SubFrameValidEnum eSubFrameValidListsValid;
 
-        
+        private Calculations.Image mImageLists;
+
+
         public MainForm()
         {
             InitializeComponent();
@@ -84,6 +85,9 @@ namespace XisfFileManager
             FileSubFrameKeywordLists = new SubFrameKeywordLists();
             CsvSubFrameKeywordLists = new SubFrameKeywordLists();
             mWeightLists = new Calculations.SubFrameWeights();
+            mImageLists = new Calculations.Image();
+            Label_Task.Text = "No Images Selected";
+            Label_TempratureCompensation.Text = "Temerature Coefficient:";
         }
 
         protected override void OnLoad(EventArgs e)
@@ -271,7 +275,8 @@ namespace XisfFileManager
                     mFileList.Clear();
                     FileSubFrameKeywordLists.ClearLists();
                     CsvSubFrameKeywordLists.ClearLists();
-                    mWeightLists.ClearLists();
+                    mWeightLists.ClearWeightLists();
+                    mImageLists.ClearImageLists();
 
                     foreach (FileInfo file in Files)
                     {
@@ -297,16 +302,20 @@ namespace XisfFileManager
                         // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
                         bStatus = XisfFileRead.ParseXisfFile(mFile, FileSubFrameKeywordLists);
-
+                        
                         // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                         if (bStatus)
+                        {
                             mFileList.Add(mFile);
+                        }
                     }
 
                     // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
                     // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
                     mWeightLists.BuildNumericSubFrameDataKeywordLists(FileSubFrameKeywordLists);
                 }
+
+                SetUISubFrameGroupBoxState();
 
                 // Sort Image File List by Capture Time
                 // Careful - make sure this doesn't screw up the SubFrameKeyword list order later when writing back SubFrameKeyword data.
@@ -320,7 +329,11 @@ namespace XisfFileManager
                 foreach (XisfFile.XisfFile file in mFileList)
                 {
                     TargetNames.Add(file.KeywordData.TargetName());
+                    mImageLists.BuildNumericImageKeywordLists(file.KeywordData);
                 }
+
+                string stepsPerDegree = mImageLists.ComputeFocuserTemperatureCompensationCoefficient();
+                Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
                 TargetNames = TargetNames.Distinct().ToList();
 
@@ -380,36 +393,47 @@ namespace XisfFileManager
 
         private void Button_Update_Click(object sender, EventArgs e)
         {
-            bool status;
+            bool bStatus;
 
             Label_Task.Text = "Updating Image Keywords";
 
             ProgressBar_XisfFile.Maximum = mFileList.Count();
             ProgressBar_XisfFile.Value = 0;
 
-            status = mWeightLists.ValidateListCounts(mFileList.Count);
-            if (status == false)
+            eSubFrameValidListsValid = mWeightLists.ValidateListCounts(mFileList.Count);
+
+            if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.INVALD)
             {
-                MessageBox.Show(
+                var result = MessageBox.Show(
                     "There is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
                     "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + mWeightLists.Fwhm.Count() + ").",
-                    "MainForm.cs Button_Update_Click()"); 
-                return;
+                    "\nMainForm.cs Button_Update_Click()",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
             }
 
-            mWeightLists.WeightSubFrameValue(mFileList.Count);
 
-            XisfFileWrite.UpdateCsvSSWeightList(mWeightLists, CsvSubFrameKeywordLists);
+            if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
+            {
+                mWeightLists.WeightSubFrameValue(mFileList.Count);
+                XisfFileWrite.UpdateCsvSSWeightList(mWeightLists, CsvSubFrameKeywordLists);
+            }
 
+ 
             foreach (XisfFile.XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
                 Application.DoEvents();
 
                 XisfFileWrite.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileWrite.AddCsvKeywords = mAddCsvKeywods;
-                status = XisfFileWrite.UpdateFiles(file, CsvSubFrameKeywordLists);
-                if (status == false)
+                XisfFileWrite.AddCsvKeywords = eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID ? true : false;
+                bStatus = XisfFileWrite.UpdateFiles(file, CsvSubFrameKeywordLists);
+                if (bStatus == false)
                 {
                     Label_Task.Text = "File Write Error";
                     return;
@@ -448,13 +472,11 @@ namespace XisfFileManager
             CsvSubFrameKeywordLists.ClearLists();
 
             status = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName, CsvSubFrameKeywordLists);
-
-            if (status)
-                mAddCsvKeywods = true;
-
            
             mWeightLists.BuildNumericSubFrameDataKeywordLists(CsvSubFrameKeywordLists);
-           
+
+            SetUISubFrameGroupBoxState();
+
         }
         
         private void CheckBox_IncludeWeightsAndStatistics_CheckedChanged(object sender, EventArgs e)
@@ -721,6 +743,53 @@ namespace XisfFileManager
             if (RadioButton_IndexWeight.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
+            }
+        }
+
+        private void SetUISubFrameGroupBoxState()
+        {
+            eSubFrameValidListsValid = mWeightLists.ValidateListCounts(mFileList.Count);
+
+            if (mFileList.Count != 0)
+            {
+                if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
+                {
+                    GroupBox_EccentricityMeanDeviationWeight.Enabled = true;
+                    GroupBox_EccentricityWeight.Enabled = true;
+                    GroupBox_FwhmMeanDeviationWeight.Enabled = true;
+                    GroupBox_FwhmWeight.Enabled = true;
+                    GroupBox_InitialRejectionCriteria.Enabled = true;
+                    GroupBox_MedianMeanDeviationWeight.Enabled = true;
+                    GroupBox_MedianWeight.Enabled = true;
+                    GroupBox_NoiseRatioWeight.Enabled = true;
+                    GroupBox_NoiseWeight.Enabled = true;
+                    GroupBox_SnrWeight.Enabled = true;
+                    GroupBox_StarResidual.Enabled = true;
+                    GroupBox_StarResidualMeanDeviation.Enabled = true;
+                    GroupBox_StarsWeight.Enabled = true;
+                }
+                else
+                {
+                    GroupBox_EccentricityMeanDeviationWeight.Enabled = false;
+                    GroupBox_EccentricityWeight.Enabled = false;
+                    GroupBox_FwhmMeanDeviationWeight.Enabled = false;
+                    GroupBox_FwhmWeight.Enabled = false;
+                    GroupBox_InitialRejectionCriteria.Enabled = false;
+                    GroupBox_MedianMeanDeviationWeight.Enabled = false;
+                    GroupBox_MedianWeight.Enabled = false;
+                    GroupBox_NoiseRatioWeight.Enabled = false;
+                    GroupBox_NoiseWeight.Enabled = false;
+                    GroupBox_SnrWeight.Enabled = false;
+                    GroupBox_StarResidual.Enabled = false;
+                    GroupBox_StarResidualMeanDeviation.Enabled = false;
+                    GroupBox_StarsWeight.Enabled = false;
+                }
+
+                GroupBox_WeightsAndStatistics.Enabled = true;
+            }
+            else
+            {
+                GroupBox_WeightsAndStatistics.Enabled = false;
             }
         }
     }

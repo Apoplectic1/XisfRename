@@ -189,7 +189,7 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordSnrWeight(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SnrWeight");
+            Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SNRWeight");
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
@@ -233,7 +233,7 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordSSWeight(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SSWeight");
+            Keyword node = xFile.KeywordData.KeywordList.Find(i => i.Name == "SSWEIGHT");
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
