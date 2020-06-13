@@ -108,9 +108,9 @@ namespace XisfFileManager.Calculations
         public double StarsPercent { private get; set; } = 0.0;
 
 
-        public List<double> SSWeight { get; set; }
-        public double SSWeightRangeMin { private get; set; } = 50.0;
-        public double SSWeightRangeMax { private get; set; } = 100.0;
+        public List<double> Weight { get; set; }
+        public double WeightRangeMin { private get; set; } = 50.0;
+        public double WeightRangeMax { private get; set; } = 100.0;
 
         public List<string> FileName { get; private set; }
 
@@ -130,7 +130,7 @@ namespace XisfFileManager.Calculations
             StarResidual = new List<double>();
             StarResidualMeanDeviation = new List<double>();
             Stars = new List<double>();
-            SSWeight = new List<double>();
+            Weight = new List<double>();
             FileName = new List<string>();
         }
 
@@ -149,7 +149,7 @@ namespace XisfFileManager.Calculations
             StarResidual.Clear();
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
-            SSWeight.Clear();
+            Weight.Clear();
             FileName.Clear();
         }
 
@@ -197,8 +197,8 @@ namespace XisfFileManager.Calculations
             bStatus = Stars.Count == SubFrameCount ? bStatus : false;
             bZero = Stars.Count == 0 ? bZero : false;
 
-            bStatus = SSWeight.Count == SubFrameCount ? bStatus : false;
-            bZero = SSWeight.Count == 0 ? bZero : false;
+            //bStatus = Weight.Count == SubFrameCount ? bStatus : false;
+            //bZero = Weight.Count == 0 ? bZero : false;
 
             //bStatus = FileName.Count == SubFrameCount ? bStatus : false;
             //bZero = FileName.Count == 0 ? bZero : false;
@@ -258,7 +258,7 @@ namespace XisfFileManager.Calculations
             SubFrameIndex = 0;
             while (SubFrameIndex < SubFrameCount)
             {
-                SSWeight[SubFrameIndex] = Scale(weightList[SubFrameIndex], weightList.Min(), weightList.Max(), SSWeightRangeMin, SSWeightRangeMax);
+                Weight[SubFrameIndex] = Scale(weightList[SubFrameIndex], weightList.Min(), weightList.Max(), WeightRangeMin, WeightRangeMax);
                 SubFrameIndex++;
             }
         }
@@ -330,9 +330,9 @@ namespace XisfFileManager.Calculations
                 Stars.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.SSWeight)
+            foreach (Keyword keyword in KeywordLists.Weight)
             {
-                SSWeight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Weight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.FileName)

@@ -88,8 +88,8 @@ namespace XisfFileManager.CsvFileOperations
                         GetCsvSnrWeightIndex(field, index);
                         GetCsvStarResidualIndex(field, index);
                         GetCsvStarResidualMeanDeviationIndex(field, index);
+                        GetCsvWeightIndex(field, index);
                         GetCsvStarsIndex(field, index);
-                        GetCsvSSWeightIndex(field, index);
 
                         index++;
                     }
@@ -114,7 +114,7 @@ namespace XisfFileManager.CsvFileOperations
                     AddCsvStarResidual(field, index, CsvSubFrameKeywordLists);
                     AddCsvStarResidualMeanDeviation(field, index, CsvSubFrameKeywordLists);
                     AddCsvStars(field, index, CsvSubFrameKeywordLists);
-                    AddCsvSSWeight(field, index, CsvSubFrameKeywordLists);
+                    AddCsvWeight(field, index, CsvSubFrameKeywordLists);
 
                     index++;
                 }
@@ -470,21 +470,21 @@ namespace XisfFileManager.CsvFileOperations
         // **************************************************************************************************************
         // **************************************************************************************************************
 
-        private static void GetCsvSSWeightIndex(string field, int index)
+        private static void GetCsvWeightIndex(string field, int index)
         {
             if (field.Equals("Weight"))
             {
                 SSWeightcsvIndex = index;
             }
         }
-        private static void AddCsvSSWeight(string field, int index, SubFrameKeywordLists CsvSubFrameKeywordLists)
+        private static void AddCsvWeight(string field, int index, SubFrameKeywordLists CsvSubFrameKeywordLists)
         {
             double value = 1.0;
 
             if (index == SSWeightcsvIndex)
             {
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SSWeight.Add(BuildKeyword("SSWEIGHT", value));
+                CsvSubFrameKeywordLists.Weight.Add(BuildKeyword("WEIGHT", value));
             }
         }
 

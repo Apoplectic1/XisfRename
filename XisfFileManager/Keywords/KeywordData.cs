@@ -8,7 +8,7 @@ namespace XisfFileManager.Keywords
 {
     public class KeywordData
     {
-        public List<Keywords.Keyword> KeywordList;
+        public List<Keyword> KeywordList;
         public SubFrameKeywordLists SubFrameKeywordLists { get; private set; }
 
 
@@ -515,6 +515,7 @@ namespace XisfFileManager.Keywords
 
             return FormatTemperatureString(value);
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string SensorTemperature()
@@ -542,6 +543,7 @@ namespace XisfFileManager.Keywords
 
             return Convert.ToInt32(value);
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double SSWeight()

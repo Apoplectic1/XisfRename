@@ -4,10 +4,11 @@ namespace XisfFileManager.Keywords
 {
     public class SubFrameKeywordLists
     {
-        
+
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
         public List<Keyword> EccentricityMeanDeviation { get; set; }
+        public List<Keyword> FileName { get; set; }
         public List<Keyword> Fwhm { get; set; }
         public List<Keyword> FwhmMeanDeviation { get; set; }
         public List<Keyword> Median { get; set; }
@@ -18,8 +19,7 @@ namespace XisfFileManager.Keywords
         public List<Keyword> StarResidual { get; set; }
         public List<Keyword> StarResidualMeanDeviation { get; set; }
         public List<Keyword> Stars { get; set; }
-        public List<Keyword> SSWeight { get; set; }
-        public List<Keyword> FileName { get; set; }
+        public List<Keyword> Weight { get; set; }
 
         public SubFrameKeywordLists()
         {
@@ -34,11 +34,10 @@ namespace XisfFileManager.Keywords
             Noise = new List<Keyword>();
             NoiseRatio = new List<Keyword>();
             SnrWeight = new List<Keyword>();
-            Stars = new List<Keyword>();
             StarResidual = new List<Keyword>();
             StarResidualMeanDeviation = new List<Keyword>();
-            SSWeight = new List<Keyword>();
-
+            Stars = new List<Keyword>();
+            Weight = new List<Keyword>();
         }
 
         public void ClearLists()
@@ -57,7 +56,8 @@ namespace XisfFileManager.Keywords
             StarResidual.Clear();
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
-            SSWeight.Clear();
+            Weight.Clear();
+
         }
     }
 }

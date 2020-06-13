@@ -235,13 +235,13 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
-        public static void UpdateCsvSSWeightList(SubFrameWeights WeightLists, SubFrameKeywordLists CsvWeightLists)
+        public static void UpdateCsvWeightList(SubFrameWeights WeightLists, SubFrameKeywordLists CsvWeightLists)
         {
             int index = 0;
 
-            foreach (double value in WeightLists.SSWeight)
+            foreach (double value in WeightLists.Weight)
             {
-                CsvWeightLists.SSWeight[index].Value = WeightLists.SSWeight[index].ToString();
+                CsvWeightLists.Weight[index].Value = WeightLists.Weight[index].ToString();
                 index++;
             }
         }
@@ -275,7 +275,7 @@ namespace XisfFileManager.XisfFileOperations
                     mFile.KeywordData.AddKeyword(CsvWeightLists.StarResidual.ElementAt(indexer).Name, CsvWeightLists.StarResidual.ElementAt(indexer).Value, CsvWeightLists.StarResidual.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.Stars.ElementAt(indexer).Name, CsvWeightLists.Stars.ElementAt(indexer).Value, CsvWeightLists.Stars.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SSWeight.ElementAt(indexer).Name, CsvWeightLists.SSWeight.ElementAt(indexer).Value, CsvWeightLists.SSWeight.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.Weight.ElementAt(indexer).Name, CsvWeightLists.Weight.ElementAt(indexer).Value, CsvWeightLists.Weight.ElementAt(indexer).Comment);
                     //mFile.KeywordData.AddKeyword(CsvWeightLists.FileName.ElementAt(indexer).Name, CsvWeightLists.FileName.ElementAt(indexer).Value, CsvWeightLists.FileName.ElementAt(indexer).Comment);
                 }
 

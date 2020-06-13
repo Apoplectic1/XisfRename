@@ -71,7 +71,7 @@
             this.Label_StarResidualMeanDevationMean = new System.Windows.Forms.Label();
             this.Label_StarResidualMeanDevationRangeHigh = new System.Windows.Forms.Label();
             this.Label_StarResidualMeanDevationPercent = new System.Windows.Forms.Label();
-            this.TextBox_StarResidualMeanDevationPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_StarResidualMeanDeviationPercent = new System.Windows.Forms.TextBox();
             this.TextBox_StarResidualMeanDevationRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_StarResidualMeanDevationRangeLow = new System.Windows.Forms.TextBox();
             this.Label_StarResidualMeanDevationStdDev = new System.Windows.Forms.Label();
@@ -98,7 +98,7 @@
             this.Label_StarMean = new System.Windows.Forms.Label();
             this.Label_StarRangeHigh = new System.Windows.Forms.Label();
             this.Label_StarPercent = new System.Windows.Forms.Label();
-            this.TextBox_StarPercent = new System.Windows.Forms.TextBox();
+            this.TextBox_StarsPercent = new System.Windows.Forms.TextBox();
             this.TextBox_StarRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_StarRangeLow = new System.Windows.Forms.TextBox();
             this.Label_StarStdDev = new System.Windows.Forms.Label();
@@ -167,11 +167,18 @@
             this.Label_FwhmStdDev = new System.Windows.Forms.Label();
             this.Label_Task = new System.Windows.Forms.Label();
             this.Label_TempratureCompensation = new System.Windows.Forms.Label();
+            this.Label_Rejection_FWHM = new System.Windows.Forms.Label();
+            this.Label_Rejection_Eccentricity = new System.Windows.Forms.Label();
+            this.Label_Rejection_Total = new System.Windows.Forms.Label();
+            this.TextBox_Rejection_Total = new System.Windows.Forms.TextBox();
+            this.numericUpDown_Rejection_FWHM = new System.Windows.Forms.NumericUpDown();
+            this.NumericUpDown_Rejection_Eccentricity = new System.Windows.Forms.NumericUpDown();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_DirectorySelection.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.GroupBox_WeightsAndStatistics.SuspendLayout();
+            this.GroupBox_InitialRejectionCriteria.SuspendLayout();
             this.GroupBox_StarResidual.SuspendLayout();
             this.GroupBox_UpdateStatistics.SuspendLayout();
             this.GroupBox_StarResidualMeanDeviation.SuspendLayout();
@@ -185,6 +192,8 @@
             this.GroupBox_EccentricityWeight.SuspendLayout();
             this.GroupBox_NoiseRatioWeight.SuspendLayout();
             this.GroupBox_FwhmWeight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).BeginInit();
             this.SuspendLayout();
             // 
             // Button_Browse
@@ -410,6 +419,12 @@
             // 
             // GroupBox_InitialRejectionCriteria
             // 
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Eccentricity);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.numericUpDown_Rejection_FWHM);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.TextBox_Rejection_Total);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Total);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Eccentricity);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_FWHM);
             this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(26, 81);
             this.GroupBox_InitialRejectionCriteria.Name = "GroupBox_InitialRejectionCriteria";
             this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(632, 51);
@@ -524,7 +539,7 @@
             this.GroupBox_UpdateStatistics.Size = new System.Drawing.Size(632, 56);
             this.GroupBox_UpdateStatistics.TabIndex = 20;
             this.GroupBox_UpdateStatistics.TabStop = false;
-            this.GroupBox_UpdateStatistics.Text = "Update Image Statistics";
+            this.GroupBox_UpdateStatistics.Text = "Set Image Statistics";
             // 
             // Button_UpdateStatisticsFromCSV
             // 
@@ -539,11 +554,11 @@
             // Label_UpdateStatistics
             // 
             this.Label_UpdateStatistics.AutoSize = true;
-            this.Label_UpdateStatistics.Location = new System.Drawing.Point(262, 27);
+            this.Label_UpdateStatistics.Location = new System.Drawing.Point(305, 27);
             this.Label_UpdateStatistics.Name = "Label_UpdateStatistics";
-            this.Label_UpdateStatistics.Size = new System.Drawing.Size(192, 13);
+            this.Label_UpdateStatistics.Size = new System.Drawing.Size(153, 13);
             this.Label_UpdateStatistics.TabIndex = 20;
-            this.Label_UpdateStatistics.Text = "ReScale SSWEIGHT Between Range:";
+            this.Label_UpdateStatistics.Text = "ReScale SSWEIGHT - Range:";
             // 
             // TextBox_UpdateStatisticsRangeHigh
             // 
@@ -591,7 +606,7 @@
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationMean);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationRangeHigh);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationPercent);
-            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationPercent);
+            this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDeviationPercent);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeHigh);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeLow);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationStdDev);
@@ -642,13 +657,13 @@
             // 
             // TextBox_StarResidualMeanDevationPercent
             // 
-            this.TextBox_StarResidualMeanDevationPercent.Location = new System.Drawing.Point(18, 56);
-            this.TextBox_StarResidualMeanDevationPercent.Name = "TextBox_StarResidualMeanDevationPercent";
-            this.TextBox_StarResidualMeanDevationPercent.Size = new System.Drawing.Size(33, 20);
-            this.TextBox_StarResidualMeanDevationPercent.TabIndex = 1;
-            this.TextBox_StarResidualMeanDevationPercent.Text = "0";
-            this.TextBox_StarResidualMeanDevationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_StarResidualMeanDevationPercent.TextChanged += new System.EventHandler(this.TextBox_StarResidualMeanDevationPercent_TextChanged);
+            this.TextBox_StarResidualMeanDeviationPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_StarResidualMeanDeviationPercent.Name = "TextBox_StarResidualMeanDevationPercent";
+            this.TextBox_StarResidualMeanDeviationPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_StarResidualMeanDeviationPercent.TabIndex = 1;
+            this.TextBox_StarResidualMeanDeviationPercent.Text = "0";
+            this.TextBox_StarResidualMeanDeviationPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarResidualMeanDeviationPercent.TextChanged += new System.EventHandler(this.TextBox_StarResidualMeanDevationPercent_TextChanged);
             // 
             // TextBox_StarResidualMeanDevationRangeHigh
             // 
@@ -873,7 +888,7 @@
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarMean);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarRangeHigh);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarPercent);
-            this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarPercent);
+            this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarsPercent);
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeHigh);
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeLow);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarStdDev);
@@ -924,13 +939,13 @@
             // 
             // TextBox_StarPercent
             // 
-            this.TextBox_StarPercent.Location = new System.Drawing.Point(18, 56);
-            this.TextBox_StarPercent.Name = "TextBox_StarPercent";
-            this.TextBox_StarPercent.Size = new System.Drawing.Size(33, 20);
-            this.TextBox_StarPercent.TabIndex = 1;
-            this.TextBox_StarPercent.Text = "0";
-            this.TextBox_StarPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_StarPercent.TextChanged += new System.EventHandler(this.TextBox_StarsPercent_TextChanged);
+            this.TextBox_StarsPercent.Location = new System.Drawing.Point(18, 56);
+            this.TextBox_StarsPercent.Name = "TextBox_StarPercent";
+            this.TextBox_StarsPercent.Size = new System.Drawing.Size(33, 20);
+            this.TextBox_StarsPercent.TabIndex = 1;
+            this.TextBox_StarsPercent.Text = "0";
+            this.TextBox_StarsPercent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_StarsPercent.TextChanged += new System.EventHandler(this.TextBox_StarsPercent_TextChanged);
             // 
             // TextBox_StarRangeHigh
             // 
@@ -1637,6 +1652,90 @@
             this.Label_TempratureCompensation.TabIndex = 13;
             this.Label_TempratureCompensation.Text = "L";
             // 
+            // Label_Rejection_FWHM
+            // 
+            this.Label_Rejection_FWHM.AutoSize = true;
+            this.Label_Rejection_FWHM.Location = new System.Drawing.Point(47, 24);
+            this.Label_Rejection_FWHM.Name = "Label_Rejection_FWHM";
+            this.Label_Rejection_FWHM.Size = new System.Drawing.Size(44, 13);
+            this.Label_Rejection_FWHM.TabIndex = 2;
+            this.Label_Rejection_FWHM.Text = "FWHM:";
+            // 
+            // Label_Rejection_Eccentricity
+            // 
+            this.Label_Rejection_Eccentricity.AutoSize = true;
+            this.Label_Rejection_Eccentricity.Location = new System.Drawing.Point(154, 24);
+            this.Label_Rejection_Eccentricity.Name = "Label_Rejection_Eccentricity";
+            this.Label_Rejection_Eccentricity.Size = new System.Drawing.Size(65, 13);
+            this.Label_Rejection_Eccentricity.TabIndex = 3;
+            this.Label_Rejection_Eccentricity.Text = "Eccentricity:";
+            // 
+            // Label_Rejection_Total
+            // 
+            this.Label_Rejection_Total.AutoSize = true;
+            this.Label_Rejection_Total.Location = new System.Drawing.Point(404, 24);
+            this.Label_Rejection_Total.Name = "Label_Rejection_Total";
+            this.Label_Rejection_Total.Size = new System.Drawing.Size(136, 13);
+            this.Label_Rejection_Total.TabIndex = 4;
+            this.Label_Rejection_Total.Text = "Total Rejected SubFrames:";
+            // 
+            // TextBox_Rejection_Total
+            // 
+            this.TextBox_Rejection_Total.Enabled = false;
+            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(542, 20);
+            this.TextBox_Rejection_Total.Name = "TextBox_Rejection_Total";
+            this.TextBox_Rejection_Total.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_Rejection_Total.TabIndex = 5;
+            this.TextBox_Rejection_Total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // numericUpDown_Rejection_FWHM
+            // 
+            this.numericUpDown_Rejection_FWHM.DecimalPlaces = 1;
+            this.numericUpDown_Rejection_FWHM.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(93, 20);
+            this.numericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
+            7,
+            0,
+            0,
+            0});
+            this.numericUpDown_Rejection_FWHM.Name = "numericUpDown_Rejection_FWHM";
+            this.numericUpDown_Rejection_FWHM.Size = new System.Drawing.Size(44, 20);
+            this.numericUpDown_Rejection_FWHM.TabIndex = 6;
+            this.numericUpDown_Rejection_FWHM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown_Rejection_FWHM.Value = new decimal(new int[] {
+            45,
+            0,
+            0,
+            65536});
+            // 
+            // NumericUpDown_Rejection_Eccentricity
+            // 
+            this.NumericUpDown_Rejection_Eccentricity.DecimalPlaces = 2;
+            this.NumericUpDown_Rejection_Eccentricity.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.NumericUpDown_Rejection_Eccentricity.Location = new System.Drawing.Point(221, 20);
+            this.NumericUpDown_Rejection_Eccentricity.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumericUpDown_Rejection_Eccentricity.Name = "NumericUpDown_Rejection_Eccentricity";
+            this.NumericUpDown_Rejection_Eccentricity.Size = new System.Drawing.Size(44, 20);
+            this.NumericUpDown_Rejection_Eccentricity.TabIndex = 7;
+            this.NumericUpDown_Rejection_Eccentricity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.NumericUpDown_Rejection_Eccentricity.Value = new decimal(new int[] {
+            65,
+            0,
+            0,
+            131072});
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1662,6 +1761,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.GroupBox_WeightsAndStatistics.ResumeLayout(false);
+            this.GroupBox_InitialRejectionCriteria.ResumeLayout(false);
+            this.GroupBox_InitialRejectionCriteria.PerformLayout();
             this.GroupBox_StarResidual.ResumeLayout(false);
             this.GroupBox_StarResidual.PerformLayout();
             this.GroupBox_UpdateStatistics.ResumeLayout(false);
@@ -1688,6 +1789,8 @@
             this.GroupBox_NoiseRatioWeight.PerformLayout();
             this.GroupBox_FwhmWeight.ResumeLayout(false);
             this.GroupBox_FwhmWeight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1786,7 +1889,7 @@
         private System.Windows.Forms.Label Label_StarResidualMeanDevationMean;
         private System.Windows.Forms.Label Label_StarResidualMeanDevationRangeHigh;
         private System.Windows.Forms.Label Label_StarResidualMeanDevationPercent;
-        private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationPercent;
+        private System.Windows.Forms.TextBox TextBox_StarResidualMeanDeviationPercent;
         private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationRangeHigh;
         private System.Windows.Forms.TextBox TextBox_StarResidualMeanDevationRangeLow;
         private System.Windows.Forms.Label Label_StarResidualMeanDevationStdDev;
@@ -1804,7 +1907,7 @@
         private System.Windows.Forms.Label Label_StarMean;
         private System.Windows.Forms.Label Label_StarRangeHigh;
         private System.Windows.Forms.Label Label_StarPercent;
-        private System.Windows.Forms.TextBox TextBox_StarPercent;
+        private System.Windows.Forms.TextBox TextBox_StarsPercent;
         private System.Windows.Forms.TextBox TextBox_StarRangeHigh;
         private System.Windows.Forms.TextBox TextBox_StarRangeLow;
         private System.Windows.Forms.Label Label_StarStdDev;
@@ -1833,6 +1936,12 @@
         private System.Windows.Forms.RadioButton RadioButton_IndexWeight;
         private System.Windows.Forms.RadioButton RadioButton_WeightIndex;
         private System.Windows.Forms.Label Label_TempratureCompensation;
+        private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Eccentricity;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Rejection_FWHM;
+        private System.Windows.Forms.TextBox TextBox_Rejection_Total;
+        private System.Windows.Forms.Label Label_Rejection_Total;
+        private System.Windows.Forms.Label Label_Rejection_Eccentricity;
+        private System.Windows.Forms.Label Label_Rejection_FWHM;
     }
 }
 

@@ -14,6 +14,7 @@ using XisfFileManager.XisfFileOperations;
 using XisfFileManager.XisfFile;
 using System.Threading;
 using System.Windows.Forms.VisualStyles;
+using System.Drawing;
 
 namespace XisfFileManager
 {
@@ -162,13 +163,13 @@ namespace XisfFileManager
             TextBox_SnrPercent.Text = mSnrPercent.ToString("F0");
             TextBox_SnrRangeHigh.Text = mSnrRangeHigh.ToString("F0");
             TextBox_SnrRangeLow.Text = mSnrRangeLow.ToString("F0");
-            TextBox_StarResidualMeanDevationPercent.Text = mStarResidualMeanDevationPercent.ToString("F0");
+            TextBox_StarResidualMeanDeviationPercent.Text = mStarResidualMeanDevationPercent.ToString("F0");
             TextBox_StarResidualMeanDevationRangeHigh.Text = mStarResidualMeanDevationRangeHigh.ToString("F0");
             TextBox_StarResidualMeanDevationRangeLow.Text = mStarResidualMeanDevationRangeLow.ToString("F0");
             TextBox_StarResidualPercent.Text = mStarResidualPercent.ToString("F0");
             TextBox_StarResidualRangeHigh.Text = mStarResidualRangeHigh.ToString("F0");
             TextBox_StarResidualRangeLow.Text = mStarResidualRangeLow.ToString("F0");
-            TextBox_StarPercent.Text = mStarsPercent.ToString("F0");
+            TextBox_StarsPercent.Text = mStarsPercent.ToString("F0");
             TextBox_StarRangeHigh.Text = mStarsRangeHigh.ToString("F0");
             TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
@@ -421,7 +422,7 @@ namespace XisfFileManager
             if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
             {
                 mWeightLists.WeightSubFrameValue(mFileList.Count);
-                XisfFileWrite.UpdateCsvSSWeightList(mWeightLists, CsvSubFrameKeywordLists);
+                XisfFileWrite.UpdateCsvWeightList(mWeightLists, CsvSubFrameKeywordLists);
             }
 
  
@@ -631,7 +632,7 @@ namespace XisfFileManager
 
         private void TextBox_StarsPercent_TextChanged(object sender, EventArgs e)
         {
-            mStarsPercent = ValidateRangeValue(TextBox_StarPercent);
+            mStarsPercent = ValidateRangeValue(TextBox_StarsPercent);
         }
 
         private void TextBox_StarsRangeHigh_TextChanged(object sender, EventArgs e)
@@ -661,7 +662,7 @@ namespace XisfFileManager
 
         private void TextBox_StarResidualMeanDevationPercent_TextChanged(object sender, EventArgs e)
         {
-            mStarResidualMeanDevationPercent = ValidateRangeValue(TextBox_StarResidualMeanDevationPercent);
+            mStarResidualMeanDevationPercent = ValidateRangeValue(TextBox_StarResidualMeanDeviationPercent);
         }
 
         private void TextBox_StarResidualMeanDevationRangeHigh_TextChanged(object sender, EventArgs e)
@@ -754,19 +755,46 @@ namespace XisfFileManager
             {
                 if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
                 {
-                    GroupBox_EccentricityMeanDeviationWeight.Enabled = true;
-                    GroupBox_EccentricityWeight.Enabled = true;
-                    GroupBox_FwhmMeanDeviationWeight.Enabled = true;
-                    GroupBox_FwhmWeight.Enabled = true;
                     GroupBox_InitialRejectionCriteria.Enabled = true;
+
+                    GroupBox_EccentricityMeanDeviationWeight.Enabled = true;
+                    if (TextBox_EccentricityMeanDeviationPercent.Text == "0") { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+                    
+                    GroupBox_FwhmWeight.Enabled = true;
+                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+                    
+                    GroupBox_EccentricityWeight.Enabled = true;
+                    if (TextBox_EccentricityPercent.Text == "0") { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
+                    GroupBox_FwhmMeanDeviationWeight.Enabled = true;
+                    if (TextBox_FwhmMeanDeviationPercent.Text == "0") { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+                    
+                    GroupBox_FwhmWeight.Enabled = true;
+                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }                   
+                   
                     GroupBox_MedianMeanDeviationWeight.Enabled = true;
+                    if (TextBox_MedianMeanDeviationPercent.Text == "0") { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_MedianWeight.Enabled = true;
+                    if (TextBox_MedianPercent.Text == "0") { GroupBox_MedianWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_MedianWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_NoiseRatioWeight.Enabled = true;
+                    if (TextBox_NoiseRatioPercent.Text == "0") { GroupBox_NoiseRatioWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_NoiseRatioWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_NoiseWeight.Enabled = true;
+                    if (TextBox_NoisePercent.Text == "0") { GroupBox_NoiseWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_NoiseWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_SnrWeight.Enabled = true;
+                    if (TextBox_SnrPercent.Text == "0") { GroupBox_SnrWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_SnrWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_StarResidual.Enabled = true;
+                    if (TextBox_StarResidualPercent.Text == "0") { GroupBox_StarResidual.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarResidual.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_StarResidualMeanDeviation.Enabled = true;
+                    if (TextBox_StarResidualMeanDeviationPercent.Text == "0") { GroupBox_StarResidualMeanDeviation.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarResidualMeanDeviation.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_StarsWeight.Enabled = true;
+                    if (TextBox_StarsPercent.Text == "0") { GroupBox_StarsWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarsWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
                 }
                 else
                 {
