@@ -130,7 +130,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calculations\Image.cs" />
+    <Compile Include="Calculations\ImageCalculations.cs" />
     <Compile Include="Calculations\SubFrameWeights.cs" />
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
     <Compile Include="Keywords\SubFrameKeywordLists.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Keywords\KeywordData.cs" />
     <Compile Include="XisfFileOperations\XisfFileRead.cs" />
     <Compile Include="XisfFileOperations\XisfFileRename.cs" />
-    <Compile Include="XisfFileOperations\XisfFileWrite.cs" />
+    <Compile Include="XisfFileOperations\XisfFileUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XisfFile\XisfFile.cs" />

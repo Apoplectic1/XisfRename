@@ -197,12 +197,6 @@ namespace XisfFileManager.Calculations
             bStatus = Stars.Count == SubFrameCount ? bStatus : false;
             bZero = Stars.Count == 0 ? bZero : false;
 
-            //bStatus = Weight.Count == SubFrameCount ? bStatus : false;
-            //bZero = Weight.Count == 0 ? bZero : false;
-
-            //bStatus = FileName.Count == SubFrameCount ? bStatus : false;
-            //bZero = FileName.Count == 0 ? bZero : false;
-
             if (bZero)
                 return SubFrameValidEnum.EMPTY;
             else
@@ -215,12 +209,23 @@ namespace XisfFileManager.Calculations
         }
 
 
-        private double Scale(double value, double vMin, double vMax, double rMin, double rMax)
+        public static double Scale(double value, double vMin, double vMax, double rMin, double rMax)
         {
             double scale = (rMax - rMin) / (vMax - vMin);
             double scaled = rMin + ((value - vMin) * scale);
             return scaled;
         }
+
+        public double ReScaleSSWeight(double weight, double WeightRangeMin, double WeightRangeMax)
+        {
+            double WeightScaled;
+
+            WeightScaled = SubFrameWeights.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+
+            return WeightScaled;
+        }
+
+
 
         public void WeightSubFrameValue(int SubFrameCount)
         {

@@ -1,41 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XisfFileManager.Keywords;
-using MathNet.Numerics.LinearRegression;
 using MathNet.Numerics;
 
 namespace XisfFileManager.Calculations
 {
-    public class Image
+    public class ImageCalculations
     {
         public List<double> FocuserPosition { get; set; }
         public List<double> FocuserTemperature { get; set; }
         public List<double> AmbientTemperature { get; set; }
+        public List<double> FileSSWeight { get; set; }
 
 
-        public Image()
+        public ImageCalculations()
         {
             FocuserPosition = new List<double>();
             FocuserTemperature = new List<double>();
             AmbientTemperature = new List<double>();
+            FileSSWeight = new List<double>();
         }
 
-        public void ClearImageLists()
+        public void ClearImageParamterLists()
         {
             FocuserPosition.Clear();
             FocuserTemperature.Clear();
             AmbientTemperature.Clear();
+            FileSSWeight.Clear();
+        }
+
+        public double ReScaleFileSSWeight(double weight, double WeightRangeMin, double WeightRangeMax)
+        {
+            double WeightScaled;
+
+            WeightScaled = SubFrameWeights.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+
+            return WeightScaled;
+        }
+
+        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordData Keywords, SubFrameWeights CsvSubFrameKeywordLists, SubFrameWeights FileSubFrameKeywordLists)
+        {
+
         }
 
 
-        public void BuildNumericImageKeywordLists(KeywordData Keywords)
+        public void BuildImageParameterValueLists(KeywordData Keywords)
         {
             FocuserPosition.Add(Convert.ToDouble(Keywords.FocuserPosition()));
             FocuserTemperature.Add(Convert.ToDouble(Keywords.FocuserTemperature()));
             AmbientTemperature.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+
+            FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
         }
 
 

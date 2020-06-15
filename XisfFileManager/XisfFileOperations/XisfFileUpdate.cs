@@ -10,12 +10,12 @@ using XisfFileManager.Keywords;
 
 namespace XisfFileManager.XisfFileOperations
 {
-    public static class XisfFileWrite
+    public static class XisfFileUpdate
     {
         public static XisfFile.Buffer mBuffer;
         public static List<XisfFile.Buffer> mBufferList;
         public static string TargetName { get; set; }
-        public static bool AddCsvKeywords { get; set; } = false;
+        public static bool bAddCsvKeywords { get; set; } = false;
 
 
         // ##############################################################################################################################################
@@ -54,26 +54,34 @@ namespace XisfFileManager.XisfFileOperations
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
+                    // Keywords are added in this section
+                    // First, all the Keywords in mFile KeywordData are adjusted - add, remove, or otherwise changed.
+                    // Then all FITSKeywords are removed from the xmlDoc
+                    // Keywords are then added in this order:
+                    //    1. All keywords found in AddCsvKeywordList
+                    //       This is all the keywords found in the original file
+                    //    2. Add keywords from CSV File
 
+                    // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords
                     mFile.KeywordData.RepairTargetName(TargetName);
                     mFile.KeywordData.RemoveKeyword("HISTORY");
+                    mFile.KeywordData.RemoveKeyword("ALIGNH");
+                    mFile.KeywordData.RemoveKeyword("COMMENT");
+                    mFile.KeywordData.RemoveKeyword("NOISE");
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(xmlDoc, mFile, AddCsvKeywords, SubFrameKeywordLists);
+                    ReplaceAllFitsKeywords(xmlDoc, mFile, bAddCsvKeywords, SubFrameKeywordLists);
 
-                    int imageStart;
-                    //Compute new Image Attachment Start Locations
-                    //imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
-                    //    xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16,
-                    //    mFile.ImageAttachmentLength,
-                    //    xmlDoc.OuterXml.Replace(" /", "/").Replace("'", "").Length + 16 + mFile.ImageAttachmentLength,
-                    //    mFile.ThumbnailAttachmentLength);
 
-                    imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
+                    int imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
                         xmlDoc.OuterXml.Length + 16,
                         mFile.ImageAttachmentLength,
                         xmlDoc.OuterXml.Length + 16 + mFile.ImageAttachmentLength,
                         mFile.ThumbnailAttachmentLength);
+                    
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Begin setting up output XISF File
@@ -181,7 +189,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool enable, SubFrameKeywordLists CsvSubFrameKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool bAddCsvSubFrameKeywords, SubFrameKeywordLists CsvSubFrameKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -190,18 +198,29 @@ namespace XisfFileManager.XisfFileOperations
                 nodeList[i].ParentNode.RemoveChild(nodeList[i]);
             }
 
+            // At this point, our xmlDoc only contains header boilerplate
 
-            // Find the <Image tag - We are going to add the updated FITSKeyword list under here
+            // Find the "<Image" tag. We are going to add the entire contents of the KeywordData keyword list as individual child elements under it
             nodeList = document.GetElementsByTagName("Image");
 
             foreach (XmlNode item in nodeList)
             {
-                if (enable)
-                    AddCsvKeywordList(enable, CsvSubFrameKeywordLists, mFile);
+                // If enabled, add the CSV File keyword data to KeywordData
+                if (bAddCsvSubFrameKeywords)
+                    AddCsvKeywordListToKeywordData(bAddCsvSubFrameKeywords, CsvSubFrameKeywordLists, mFile);
 
-                // Add the FITSKeywords in alphabetical order - Not needed but WTF
+                // Deal with SSWEIGHT and WEIGHT
+                // SSWEIGHT may already be part of mFile or not
+                // We want to selectively update an existing SSWEIGHT value, add a new one or leave it alone (leaving it alone inludes a non-existent SSWEIGHT by default)
+                // For adding and updating, we need to consider SSWEIGHT vs WEIGHT
+                // WEIGHT is produced by this program while SSWEIGHT is produced by PixInsight
+
+
+
+                // Alphabetize the KeywordData FITSKeywords - Not needed but WTF
                 List<Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
 
+                // Now add all FITSKeywords found in KeywordData to the xmlDocument
                 foreach (Keyword keyword in keywords)
                 {
                     if (keyword.Type != Keyword.EType.NULL)
@@ -249,7 +268,7 @@ namespace XisfFileManager.XisfFileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordList(bool enable, SubFrameKeywordLists CsvWeightLists, XisfFile.XisfFile mFile)
+        private static void AddCsvKeywordListToKeywordData(bool enable, SubFrameKeywordLists CsvWeightLists, XisfFile.XisfFile mFile)
         {
 
             List<Keyword> fileNameList = CsvWeightLists.FileName;
@@ -276,7 +295,6 @@ namespace XisfFileManager.XisfFileOperations
                     mFile.KeywordData.AddKeyword(CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.StarResidualMeanDeviation.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.Stars.ElementAt(indexer).Name, CsvWeightLists.Stars.ElementAt(indexer).Value, CsvWeightLists.Stars.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.Weight.ElementAt(indexer).Name, CsvWeightLists.Weight.ElementAt(indexer).Value, CsvWeightLists.Weight.ElementAt(indexer).Comment);
-                    //mFile.KeywordData.AddKeyword(CsvWeightLists.FileName.ElementAt(indexer).Name, CsvWeightLists.FileName.ElementAt(indexer).Value, CsvWeightLists.FileName.ElementAt(indexer).Comment);
                 }
 
                 indexer++;

@@ -575,6 +575,23 @@ namespace XisfFileManager.Keywords
             return value;
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double Weight()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "SSWEIGHT");
+
+            if (node == null) return Double.NaN;
+            double SSWeight = Convert.ToDouble(node.GetValue());
+
+            if (Double.IsNaN(SSWeight)) return Double.NaN;
+
+            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 0, MidpointRounding.AwayFromZero));
+        }
+
         // #########################################################################################################
         // #########################################################################################################
         public void AddKeyword(string name, string value, string comment = "XISF File Manager")
@@ -633,7 +650,7 @@ namespace XisfFileManager.Keywords
         // #########################################################################################################
         public void RemoveKeyword(string name)
         {
-            KeywordList.RemoveAll(i => i.Name == name);
+            KeywordList.RemoveAll(i => i.Name.Contains(name));
         }
 
         // #########################################################################################################
