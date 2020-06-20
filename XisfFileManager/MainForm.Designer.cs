@@ -40,8 +40,8 @@
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_SubFrameKeywords = new System.Windows.Forms.GroupBox();
-            this.RadioButton_SubFrameKeywords_Rescale = new System.Windows.Forms.RadioButton();
-            this.RadioButton_SubFrameKeyWords_Update = new System.Windows.Forms.RadioButton();
+            this.CheckBox_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData = new System.Windows.Forms.RadioButton();
             this.RadioButton_SubFrameKeywords_Alphabetize = new System.Windows.Forms.RadioButton();
             this.Button_UpdateXisfFiles = new System.Windows.Forms.Button();
             this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
@@ -53,6 +53,9 @@
             this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GroupBox_WeightsAndStatistics = new System.Windows.Forms.GroupBox();
             this.GroupBox_InitialRejectionCriteria = new System.Windows.Forms.GroupBox();
+            this.Button_Regection_MoveRejected = new System.Windows.Forms.Button();
+            this.NumericUpDown_Rejection_Median = new System.Windows.Forms.NumericUpDown();
+            this.Label_Rejection_Median = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_Eccentricity = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_Rejection_FWHM = new System.Windows.Forms.NumericUpDown();
             this.TextBox_Rejection_Total = new System.Windows.Forms.TextBox();
@@ -69,7 +72,10 @@
             this.TextBox_StarResidualRangeHigh = new System.Windows.Forms.TextBox();
             this.TextBox_StarResidualRangeLow = new System.Windows.Forms.TextBox();
             this.GroupBox_UpdateStatistics = new System.Windows.Forms.GroupBox();
-            this.Button_UpdateStatisticsFromCSV = new System.Windows.Forms.Button();
+            this.RadioButton_SetImageStatistics_CalculateWeights = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SetImageStatistics_RescaleWeights = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SetImageStatistics_KeepWeights = new System.Windows.Forms.RadioButton();
+            this.Button_ReadSubFrameSelectorCsvFile = new System.Windows.Forms.Button();
             this.Label_UpdateStatistics = new System.Windows.Forms.Label();
             this.TextBox_UpdateStatisticsRangeHigh = new System.Windows.Forms.TextBox();
             this.Label_UpdateStatisticsRangeLow = new System.Windows.Forms.Label();
@@ -181,7 +187,7 @@
             this.Label_OPercent = new System.Windows.Forms.Label();
             this.Label_OSeconds = new System.Windows.Forms.Label();
             this.Label_OverheadSeconds = new System.Windows.Forms.Label();
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames = new System.Windows.Forms.CheckBox();
+            this.GroupBox_WeightCalculations = new System.Windows.Forms.GroupBox();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_SubFrameKeywords.SuspendLayout();
@@ -189,6 +195,7 @@
             this.menuStrip1.SuspendLayout();
             this.GroupBox_WeightsAndStatistics.SuspendLayout();
             this.GroupBox_InitialRejectionCriteria.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Median)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).BeginInit();
             this.GroupBox_StarResidual.SuspendLayout();
@@ -204,6 +211,7 @@
             this.GroupBox_EccentricityWeight.SuspendLayout();
             this.GroupBox_NoiseRatioWeight.SuspendLayout();
             this.GroupBox_FwhmWeight.SuspendLayout();
+            this.GroupBox_WeightCalculations.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_Browse
@@ -318,9 +326,8 @@
             // 
             // GroupBox_SubFrameKeywords
             // 
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SubFrameKeywords_UpdateTargetNames);
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Rescale);
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_Update);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SubFrameKeywords_UpdateTargetName);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_EnableSubFrameData);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Alphabetize);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Button_UpdateXisfFiles);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_TargetName);
@@ -332,45 +339,47 @@
             this.GroupBox_SubFrameKeywords.TabStop = false;
             this.GroupBox_SubFrameKeywords.Text = "SubFrame Keywords";
             // 
-            // RadioButton_SubFrameKeywords_Rescale
+            // CheckBox_SubFrameKeywords_UpdateTargetName
             // 
-            this.RadioButton_SubFrameKeywords_Rescale.AutoSize = true;
-            this.RadioButton_SubFrameKeywords_Rescale.Location = new System.Drawing.Point(222, 61);
-            this.RadioButton_SubFrameKeywords_Rescale.Name = "RadioButton_SubFrameKeywords_Rescale";
-            this.RadioButton_SubFrameKeywords_Rescale.Size = new System.Drawing.Size(125, 17);
-            this.RadioButton_SubFrameKeywords_Rescale.TabIndex = 16;
-            this.RadioButton_SubFrameKeywords_Rescale.Text = "Rescale File Weights";
-            this.RadioButton_SubFrameKeywords_Rescale.UseVisualStyleBackColor = true;
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.AutoSize = true;
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(211, 72);
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_SubFrameKeywords_UpdateTargetName";
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(126, 17);
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name";
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_SubFrameKeyWords_Update
+            // RadioButton_SubFrameKeyWords_EnableSubFrameData
             // 
-            this.RadioButton_SubFrameKeyWords_Update.AutoSize = true;
-            this.RadioButton_SubFrameKeyWords_Update.Location = new System.Drawing.Point(222, 38);
-            this.RadioButton_SubFrameKeyWords_Update.Name = "RadioButton_SubFrameKeyWords_Update";
-            this.RadioButton_SubFrameKeyWords_Update.Size = new System.Drawing.Size(156, 17);
-            this.RadioButton_SubFrameKeyWords_Update.TabIndex = 15;
-            this.RadioButton_SubFrameKeyWords_Update.Text = "Update SubFrame Statistics";
-            this.RadioButton_SubFrameKeyWords_Update.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.AutoSize = true;
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Location = new System.Drawing.Point(211, 48);
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Name = "RadioButton_SubFrameKeyWords_EnableSubFrameData";
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Size = new System.Drawing.Size(135, 17);
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.TabIndex = 15;
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Text = "Enable SubFrame Data";
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeyWords_Update_CheckedChanged);
             // 
             // RadioButton_SubFrameKeywords_Alphabetize
             // 
             this.RadioButton_SubFrameKeywords_Alphabetize.AutoSize = true;
             this.RadioButton_SubFrameKeywords_Alphabetize.Checked = true;
-            this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(222, 15);
+            this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(211, 24);
             this.RadioButton_SubFrameKeywords_Alphabetize.Name = "RadioButton_SubFrameKeywords_Alphabetize";
-            this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(104, 17);
+            this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(168, 17);
             this.RadioButton_SubFrameKeywords_Alphabetize.TabIndex = 14;
             this.RadioButton_SubFrameKeywords_Alphabetize.TabStop = true;
-            this.RadioButton_SubFrameKeywords_Alphabetize.Text = "Alphabetize Only";
+            this.RadioButton_SubFrameKeywords_Alphabetize.Text = "Alphabetize Existing Keywords";
             this.RadioButton_SubFrameKeywords_Alphabetize.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeywords_Alphabetize.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged);
             // 
             // Button_UpdateXisfFiles
             // 
-            this.Button_UpdateXisfFiles.Location = new System.Drawing.Point(36, 72);
+            this.Button_UpdateXisfFiles.Location = new System.Drawing.Point(21, 72);
             this.Button_UpdateXisfFiles.Name = "Button_UpdateXisfFiles";
-            this.Button_UpdateXisfFiles.Size = new System.Drawing.Size(124, 23);
+            this.Button_UpdateXisfFiles.Size = new System.Drawing.Size(167, 23);
             this.Button_UpdateXisfFiles.TabIndex = 4;
-            this.Button_UpdateXisfFiles.Text = "Update XISF Files";
+            this.Button_UpdateXisfFiles.Text = "Update XISF File Keywords";
             this.Button_UpdateXisfFiles.UseVisualStyleBackColor = true;
             this.Button_UpdateXisfFiles.Click += new System.EventHandler(this.Button_Update_Click);
             // 
@@ -378,7 +387,7 @@
             // 
             this.ComboBox_TargetName.AllowDrop = true;
             this.ComboBox_TargetName.FormattingEnabled = true;
-            this.ComboBox_TargetName.Location = new System.Drawing.Point(15, 43);
+            this.ComboBox_TargetName.Location = new System.Drawing.Point(21, 43);
             this.ComboBox_TargetName.Name = "ComboBox_TargetName";
             this.ComboBox_TargetName.Size = new System.Drawing.Size(167, 21);
             this.ComboBox_TargetName.Sorted = true;
@@ -388,7 +397,7 @@
             // 
             this.Label_TagetName.AllowDrop = true;
             this.Label_TagetName.AutoSize = true;
-            this.Label_TagetName.Location = new System.Drawing.Point(64, 24);
+            this.Label_TagetName.Location = new System.Drawing.Point(70, 24);
             this.Label_TagetName.Name = "Label_TagetName";
             this.Label_TagetName.Size = new System.Drawing.Size(69, 13);
             this.Label_TagetName.TabIndex = 0;
@@ -441,42 +450,76 @@
             // 
             // GroupBox_WeightsAndStatistics
             // 
+            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_WeightCalculations);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidual);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarResidualMeanDeviation);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MedianMeanDeviationWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_EccentricityMeanDeviationWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_StarsWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_SnrWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_MedianWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_NoiseWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_FwhmMeanDeviationWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_EccentricityWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_NoiseRatioWeight);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_FwhmWeight);
             this.GroupBox_WeightsAndStatistics.Enabled = false;
             this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 273);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
-            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 567);
+            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(685, 619);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
             this.GroupBox_WeightsAndStatistics.TabStop = false;
             this.GroupBox_WeightsAndStatistics.Text = "SubFrame Weights and Statistics";
             // 
             // GroupBox_InitialRejectionCriteria
             // 
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Button_Regection_MoveRejected);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Median);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Median);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Eccentricity);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.numericUpDown_Rejection_FWHM);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.TextBox_Rejection_Total);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Total);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Eccentricity);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_FWHM);
-            this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(26, 82);
+            this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(18, 99);
             this.GroupBox_InitialRejectionCriteria.Name = "GroupBox_InitialRejectionCriteria";
-            this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(632, 51);
+            this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(648, 56);
             this.GroupBox_InitialRejectionCriteria.TabIndex = 26;
             this.GroupBox_InitialRejectionCriteria.TabStop = false;
             this.GroupBox_InitialRejectionCriteria.Text = "Initial Rejection Criteria";
+            // 
+            // Button_Regection_MoveRejected
+            // 
+            this.Button_Regection_MoveRejected.Location = new System.Drawing.Point(526, 22);
+            this.Button_Regection_MoveRejected.Name = "Button_Regection_MoveRejected";
+            this.Button_Regection_MoveRejected.Size = new System.Drawing.Size(75, 23);
+            this.Button_Regection_MoveRejected.TabIndex = 10;
+            this.Button_Regection_MoveRejected.Text = "Move";
+            this.Button_Regection_MoveRejected.UseVisualStyleBackColor = true;
+            // 
+            // NumericUpDown_Rejection_Median
+            // 
+            this.NumericUpDown_Rejection_Median.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.NumericUpDown_Rejection_Median.Location = new System.Drawing.Point(285, 23);
+            this.NumericUpDown_Rejection_Median.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.NumericUpDown_Rejection_Median.Name = "NumericUpDown_Rejection_Median";
+            this.NumericUpDown_Rejection_Median.Size = new System.Drawing.Size(47, 20);
+            this.NumericUpDown_Rejection_Median.TabIndex = 9;
+            this.NumericUpDown_Rejection_Median.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.NumericUpDown_Rejection_Median.Value = new decimal(new int[] {
+            4000,
+            0,
+            0,
+            0});
+            // 
+            // Label_Rejection_Median
+            // 
+            this.Label_Rejection_Median.AutoSize = true;
+            this.Label_Rejection_Median.Location = new System.Drawing.Point(237, 27);
+            this.Label_Rejection_Median.Name = "Label_Rejection_Median";
+            this.Label_Rejection_Median.Size = new System.Drawing.Size(45, 13);
+            this.Label_Rejection_Median.TabIndex = 8;
+            this.Label_Rejection_Median.Text = "Median:";
+            this.Label_Rejection_Median.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // NumericUpDown_Rejection_Eccentricity
             // 
@@ -486,7 +529,7 @@
             0,
             0,
             131072});
-            this.NumericUpDown_Rejection_Eccentricity.Location = new System.Drawing.Point(221, 20);
+            this.NumericUpDown_Rejection_Eccentricity.Location = new System.Drawing.Point(190, 23);
             this.NumericUpDown_Rejection_Eccentricity.Maximum = new decimal(new int[] {
             1,
             0,
@@ -510,7 +553,7 @@
             0,
             0,
             65536});
-            this.numericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(93, 20);
+            this.numericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(70, 23);
             this.numericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
             7,
             0,
@@ -528,8 +571,7 @@
             // 
             // TextBox_Rejection_Total
             // 
-            this.TextBox_Rejection_Total.Enabled = false;
-            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(542, 20);
+            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(452, 23);
             this.TextBox_Rejection_Total.Name = "TextBox_Rejection_Total";
             this.TextBox_Rejection_Total.Size = new System.Drawing.Size(44, 20);
             this.TextBox_Rejection_Total.TabIndex = 5;
@@ -538,29 +580,32 @@
             // Label_Rejection_Total
             // 
             this.Label_Rejection_Total.AutoSize = true;
-            this.Label_Rejection_Total.Location = new System.Drawing.Point(404, 24);
+            this.Label_Rejection_Total.Location = new System.Drawing.Point(342, 27);
             this.Label_Rejection_Total.Name = "Label_Rejection_Total";
-            this.Label_Rejection_Total.Size = new System.Drawing.Size(136, 13);
+            this.Label_Rejection_Total.Size = new System.Drawing.Size(109, 13);
             this.Label_Rejection_Total.TabIndex = 4;
-            this.Label_Rejection_Total.Text = "Total Rejected SubFrames:";
+            this.Label_Rejection_Total.Text = "Rejected SubFrames:";
+            this.Label_Rejection_Total.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Label_Rejection_Eccentricity
             // 
             this.Label_Rejection_Eccentricity.AutoSize = true;
-            this.Label_Rejection_Eccentricity.Location = new System.Drawing.Point(154, 24);
+            this.Label_Rejection_Eccentricity.Location = new System.Drawing.Point(122, 27);
             this.Label_Rejection_Eccentricity.Name = "Label_Rejection_Eccentricity";
             this.Label_Rejection_Eccentricity.Size = new System.Drawing.Size(65, 13);
             this.Label_Rejection_Eccentricity.TabIndex = 3;
             this.Label_Rejection_Eccentricity.Text = "Eccentricity:";
+            this.Label_Rejection_Eccentricity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Label_Rejection_FWHM
             // 
             this.Label_Rejection_FWHM.AutoSize = true;
-            this.Label_Rejection_FWHM.Location = new System.Drawing.Point(47, 24);
+            this.Label_Rejection_FWHM.Location = new System.Drawing.Point(25, 27);
             this.Label_Rejection_FWHM.Name = "Label_Rejection_FWHM";
             this.Label_Rejection_FWHM.Size = new System.Drawing.Size(44, 13);
             this.Label_Rejection_FWHM.TabIndex = 2;
             this.Label_Rejection_FWHM.Text = "FWHM:";
+            this.Label_Rejection_FWHM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // GroupBox_StarResidual
             // 
@@ -572,7 +617,7 @@
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualPercent);
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeHigh);
             this.GroupBox_StarResidual.Controls.Add(this.TextBox_StarResidualRangeLow);
-            this.GroupBox_StarResidual.Location = new System.Drawing.Point(242, 457);
+            this.GroupBox_StarResidual.Location = new System.Drawing.Point(224, 339);
             this.GroupBox_StarResidual.Name = "GroupBox_StarResidual";
             this.GroupBox_StarResidual.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarResidual.TabIndex = 24;
@@ -658,33 +703,71 @@
             // 
             // GroupBox_UpdateStatistics
             // 
-            this.GroupBox_UpdateStatistics.Controls.Add(this.Button_UpdateStatisticsFromCSV);
+            this.GroupBox_UpdateStatistics.Controls.Add(this.RadioButton_SetImageStatistics_CalculateWeights);
+            this.GroupBox_UpdateStatistics.Controls.Add(this.RadioButton_SetImageStatistics_RescaleWeights);
+            this.GroupBox_UpdateStatistics.Controls.Add(this.RadioButton_SetImageStatistics_KeepWeights);
+            this.GroupBox_UpdateStatistics.Controls.Add(this.Button_ReadSubFrameSelectorCsvFile);
             this.GroupBox_UpdateStatistics.Controls.Add(this.Label_UpdateStatistics);
             this.GroupBox_UpdateStatistics.Controls.Add(this.TextBox_UpdateStatisticsRangeHigh);
             this.GroupBox_UpdateStatistics.Controls.Add(this.Label_UpdateStatisticsRangeLow);
             this.GroupBox_UpdateStatistics.Controls.Add(this.TextBox_UpdateStatisticsRangeLow);
             this.GroupBox_UpdateStatistics.Controls.Add(this.Label_UpdateStatisticsRangeHigh);
-            this.GroupBox_UpdateStatistics.Location = new System.Drawing.Point(26, 20);
+            this.GroupBox_UpdateStatistics.Location = new System.Drawing.Point(18, 20);
             this.GroupBox_UpdateStatistics.Name = "GroupBox_UpdateStatistics";
-            this.GroupBox_UpdateStatistics.Size = new System.Drawing.Size(632, 56);
+            this.GroupBox_UpdateStatistics.Size = new System.Drawing.Size(648, 73);
             this.GroupBox_UpdateStatistics.TabIndex = 20;
             this.GroupBox_UpdateStatistics.TabStop = false;
             this.GroupBox_UpdateStatistics.Text = "Set Image Statistics";
             // 
-            // Button_UpdateStatisticsFromCSV
+            // RadioButton_SetImageStatistics_CalculateWeights
             // 
-            this.Button_UpdateStatisticsFromCSV.Location = new System.Drawing.Point(32, 22);
-            this.Button_UpdateStatisticsFromCSV.Name = "Button_UpdateStatisticsFromCSV";
-            this.Button_UpdateStatisticsFromCSV.Size = new System.Drawing.Size(202, 23);
-            this.Button_UpdateStatisticsFromCSV.TabIndex = 0;
-            this.Button_UpdateStatisticsFromCSV.Text = "Update from SubFrameSelector CSV";
-            this.Button_UpdateStatisticsFromCSV.UseVisualStyleBackColor = true;
-            this.Button_UpdateStatisticsFromCSV.Click += new System.EventHandler(this.Button_ReadCSV_Click);
+            this.RadioButton_SetImageStatistics_CalculateWeights.AutoSize = true;
+            this.RadioButton_SetImageStatistics_CalculateWeights.Location = new System.Drawing.Point(173, 47);
+            this.RadioButton_SetImageStatistics_CalculateWeights.Name = "RadioButton_SetImageStatistics_CalculateWeights";
+            this.RadioButton_SetImageStatistics_CalculateWeights.Size = new System.Drawing.Size(111, 17);
+            this.RadioButton_SetImageStatistics_CalculateWeights.TabIndex = 24;
+            this.RadioButton_SetImageStatistics_CalculateWeights.Text = "Calculate Weights";
+            this.RadioButton_SetImageStatistics_CalculateWeights.UseVisualStyleBackColor = true;
+            this.RadioButton_SetImageStatistics_CalculateWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged);
+            // 
+            // RadioButton_SetImageStatistics_RescaleWeights
+            // 
+            this.RadioButton_SetImageStatistics_RescaleWeights.AutoSize = true;
+            this.RadioButton_SetImageStatistics_RescaleWeights.Location = new System.Drawing.Point(173, 30);
+            this.RadioButton_SetImageStatistics_RescaleWeights.Name = "RadioButton_SetImageStatistics_RescaleWeights";
+            this.RadioButton_SetImageStatistics_RescaleWeights.Size = new System.Drawing.Size(106, 17);
+            this.RadioButton_SetImageStatistics_RescaleWeights.TabIndex = 22;
+            this.RadioButton_SetImageStatistics_RescaleWeights.Text = "Rescale Weights";
+            this.RadioButton_SetImageStatistics_RescaleWeights.UseVisualStyleBackColor = true;
+            this.RadioButton_SetImageStatistics_RescaleWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_RescaleCSVWeights_CheckedChanged);
+            // 
+            // RadioButton_SetImageStatistics_KeepWeights
+            // 
+            this.RadioButton_SetImageStatistics_KeepWeights.AutoSize = true;
+            this.RadioButton_SetImageStatistics_KeepWeights.Checked = true;
+            this.RadioButton_SetImageStatistics_KeepWeights.Location = new System.Drawing.Point(173, 13);
+            this.RadioButton_SetImageStatistics_KeepWeights.Name = "RadioButton_SetImageStatistics_KeepWeights";
+            this.RadioButton_SetImageStatistics_KeepWeights.Size = new System.Drawing.Size(92, 17);
+            this.RadioButton_SetImageStatistics_KeepWeights.TabIndex = 21;
+            this.RadioButton_SetImageStatistics_KeepWeights.TabStop = true;
+            this.RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Weights";
+            this.RadioButton_SetImageStatistics_KeepWeights.UseVisualStyleBackColor = true;
+            this.RadioButton_SetImageStatistics_KeepWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_KeepCSVWeights_CheckedChanged);
+            // 
+            // Button_ReadSubFrameSelectorCsvFile
+            // 
+            this.Button_ReadSubFrameSelectorCsvFile.Location = new System.Drawing.Point(19, 21);
+            this.Button_ReadSubFrameSelectorCsvFile.Name = "Button_ReadSubFrameSelectorCsvFile";
+            this.Button_ReadSubFrameSelectorCsvFile.Size = new System.Drawing.Size(132, 34);
+            this.Button_ReadSubFrameSelectorCsvFile.TabIndex = 0;
+            this.Button_ReadSubFrameSelectorCsvFile.Text = "Read SubFrame Selector CSV File";
+            this.Button_ReadSubFrameSelectorCsvFile.UseVisualStyleBackColor = true;
+            this.Button_ReadSubFrameSelectorCsvFile.Click += new System.EventHandler(this.Button_ReadCSV_Click);
             // 
             // Label_UpdateStatistics
             // 
             this.Label_UpdateStatistics.AutoSize = true;
-            this.Label_UpdateStatistics.Location = new System.Drawing.Point(290, 27);
+            this.Label_UpdateStatistics.Location = new System.Drawing.Point(317, 32);
             this.Label_UpdateStatistics.Name = "Label_UpdateStatistics";
             this.Label_UpdateStatistics.Size = new System.Drawing.Size(151, 13);
             this.Label_UpdateStatistics.TabIndex = 20;
@@ -692,7 +775,7 @@
             // 
             // TextBox_UpdateStatisticsRangeHigh
             // 
-            this.TextBox_UpdateStatisticsRangeHigh.Location = new System.Drawing.Point(473, 23);
+            this.TextBox_UpdateStatisticsRangeHigh.Location = new System.Drawing.Point(500, 28);
             this.TextBox_UpdateStatisticsRangeHigh.Name = "TextBox_UpdateStatisticsRangeHigh";
             this.TextBox_UpdateStatisticsRangeHigh.Size = new System.Drawing.Size(44, 20);
             this.TextBox_UpdateStatisticsRangeHigh.TabIndex = 16;
@@ -703,7 +786,7 @@
             // Label_UpdateStatisticsRangeLow
             // 
             this.Label_UpdateStatisticsRangeLow.AutoSize = true;
-            this.Label_UpdateStatisticsRangeLow.Location = new System.Drawing.Point(529, 27);
+            this.Label_UpdateStatisticsRangeLow.Location = new System.Drawing.Point(556, 32);
             this.Label_UpdateStatisticsRangeLow.Name = "Label_UpdateStatisticsRangeLow";
             this.Label_UpdateStatisticsRangeLow.Size = new System.Drawing.Size(27, 13);
             this.Label_UpdateStatisticsRangeLow.TabIndex = 19;
@@ -712,7 +795,7 @@
             // 
             // TextBox_UpdateStatisticsRangeLow
             // 
-            this.TextBox_UpdateStatisticsRangeLow.Location = new System.Drawing.Point(558, 23);
+            this.TextBox_UpdateStatisticsRangeLow.Location = new System.Drawing.Point(585, 28);
             this.TextBox_UpdateStatisticsRangeLow.Name = "TextBox_UpdateStatisticsRangeLow";
             this.TextBox_UpdateStatisticsRangeLow.Size = new System.Drawing.Size(44, 20);
             this.TextBox_UpdateStatisticsRangeLow.TabIndex = 17;
@@ -723,7 +806,7 @@
             // Label_UpdateStatisticsRangeHigh
             // 
             this.Label_UpdateStatisticsRangeHigh.AutoSize = true;
-            this.Label_UpdateStatisticsRangeHigh.Location = new System.Drawing.Point(442, 27);
+            this.Label_UpdateStatisticsRangeHigh.Location = new System.Drawing.Point(469, 32);
             this.Label_UpdateStatisticsRangeHigh.Name = "Label_UpdateStatisticsRangeHigh";
             this.Label_UpdateStatisticsRangeHigh.Size = new System.Drawing.Size(29, 13);
             this.Label_UpdateStatisticsRangeHigh.TabIndex = 18;
@@ -740,7 +823,7 @@
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeHigh);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.TextBox_StarResidualMeanDevationRangeLow);
             this.GroupBox_StarResidualMeanDeviation.Controls.Add(this.Label_StarResidualMeanDevationStdDev);
-            this.GroupBox_StarResidualMeanDeviation.Location = new System.Drawing.Point(458, 457);
+            this.GroupBox_StarResidualMeanDeviation.Location = new System.Drawing.Point(440, 339);
             this.GroupBox_StarResidualMeanDeviation.Name = "GroupBox_StarResidualMeanDeviation";
             this.GroupBox_StarResidualMeanDeviation.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarResidualMeanDeviation.TabIndex = 25;
@@ -834,7 +917,7 @@
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationPercent);
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeHigh);
             this.GroupBox_MedianMeanDeviationWeight.Controls.Add(this.TextBox_MedianMeanDeviationRangeLow);
-            this.GroupBox_MedianMeanDeviationWeight.Location = new System.Drawing.Point(458, 245);
+            this.GroupBox_MedianMeanDeviationWeight.Location = new System.Drawing.Point(440, 127);
             this.GroupBox_MedianMeanDeviationWeight.Name = "GroupBox_MedianMeanDeviationWeight";
             this.GroupBox_MedianMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_MedianMeanDeviationWeight.TabIndex = 18;
@@ -928,7 +1011,7 @@
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationPercent);
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeHigh);
             this.GroupBox_EccentricityMeanDeviationWeight.Controls.Add(this.TextBox_EccentricityMeanDeviationRangeLow);
-            this.GroupBox_EccentricityMeanDeviationWeight.Location = new System.Drawing.Point(242, 245);
+            this.GroupBox_EccentricityMeanDeviationWeight.Location = new System.Drawing.Point(224, 127);
             this.GroupBox_EccentricityMeanDeviationWeight.Name = "GroupBox_EccentricityMeanDeviationWeight";
             this.GroupBox_EccentricityMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_EccentricityMeanDeviationWeight.TabIndex = 21;
@@ -1022,7 +1105,7 @@
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeHigh);
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarRangeLow);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarStdDev);
-            this.GroupBox_StarsWeight.Location = new System.Drawing.Point(26, 457);
+            this.GroupBox_StarsWeight.Location = new System.Drawing.Point(8, 339);
             this.GroupBox_StarsWeight.Name = "GroupBox_StarsWeight";
             this.GroupBox_StarsWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_StarsWeight.TabIndex = 23;
@@ -1116,7 +1199,7 @@
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeHigh);
             this.GroupBox_SnrWeight.Controls.Add(this.TextBox_SnrRangeLow);
             this.GroupBox_SnrWeight.Controls.Add(this.Label_SnrStdDev);
-            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(458, 351);
+            this.GroupBox_SnrWeight.Location = new System.Drawing.Point(440, 233);
             this.GroupBox_SnrWeight.Name = "GroupBox_SnrWeight";
             this.GroupBox_SnrWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_SnrWeight.TabIndex = 16;
@@ -1210,7 +1293,7 @@
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeHigh);
             this.GroupBox_MedianWeight.Controls.Add(this.TextBox_MedianRangeLow);
             this.GroupBox_MedianWeight.Controls.Add(this.Label_MedianStdDev);
-            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(458, 139);
+            this.GroupBox_MedianWeight.Location = new System.Drawing.Point(440, 21);
             this.GroupBox_MedianWeight.Name = "GroupBox_MedianWeight";
             this.GroupBox_MedianWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_MedianWeight.TabIndex = 17;
@@ -1304,7 +1387,7 @@
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeHigh);
             this.GroupBox_NoiseWeight.Controls.Add(this.TextBox_NoiseRangeLow);
             this.GroupBox_NoiseWeight.Controls.Add(this.Label_NoiseStdDev);
-            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(26, 351);
+            this.GroupBox_NoiseWeight.Location = new System.Drawing.Point(8, 233);
             this.GroupBox_NoiseWeight.Name = "GroupBox_NoiseWeight";
             this.GroupBox_NoiseWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_NoiseWeight.TabIndex = 19;
@@ -1398,7 +1481,7 @@
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeHigh);
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.TextBox_FwhmMeanDeviationRangeLow);
             this.GroupBox_FwhmMeanDeviationWeight.Controls.Add(this.Label_FwhmMeanDeviationStdDev);
-            this.GroupBox_FwhmMeanDeviationWeight.Location = new System.Drawing.Point(26, 245);
+            this.GroupBox_FwhmMeanDeviationWeight.Location = new System.Drawing.Point(8, 127);
             this.GroupBox_FwhmMeanDeviationWeight.Name = "GroupBox_FwhmMeanDeviationWeight";
             this.GroupBox_FwhmMeanDeviationWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_FwhmMeanDeviationWeight.TabIndex = 22;
@@ -1492,7 +1575,7 @@
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityPercent);
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityRangeHigh);
             this.GroupBox_EccentricityWeight.Controls.Add(this.TextBox_EccentricityRangeLow);
-            this.GroupBox_EccentricityWeight.Location = new System.Drawing.Point(242, 139);
+            this.GroupBox_EccentricityWeight.Location = new System.Drawing.Point(224, 21);
             this.GroupBox_EccentricityWeight.Name = "GroupBox_EccentricityWeight";
             this.GroupBox_EccentricityWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_EccentricityWeight.TabIndex = 13;
@@ -1586,7 +1669,7 @@
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeHigh);
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.TextBox_NoiseRatioRangeLow);
             this.GroupBox_NoiseRatioWeight.Controls.Add(this.label_NoiseRatioStdDev);
-            this.GroupBox_NoiseRatioWeight.Location = new System.Drawing.Point(242, 351);
+            this.GroupBox_NoiseRatioWeight.Location = new System.Drawing.Point(224, 233);
             this.GroupBox_NoiseRatioWeight.Name = "GroupBox_NoiseRatioWeight";
             this.GroupBox_NoiseRatioWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_NoiseRatioWeight.TabIndex = 20;
@@ -1680,7 +1763,7 @@
             this.GroupBox_FwhmWeight.Controls.Add(this.TextBox_FwhmRangeHigh);
             this.GroupBox_FwhmWeight.Controls.Add(this.TextBox_FwhmRangeLow);
             this.GroupBox_FwhmWeight.Controls.Add(this.Label_FwhmStdDev);
-            this.GroupBox_FwhmWeight.Location = new System.Drawing.Point(26, 139);
+            this.GroupBox_FwhmWeight.Location = new System.Drawing.Point(8, 21);
             this.GroupBox_FwhmWeight.Name = "GroupBox_FwhmWeight";
             this.GroupBox_FwhmWeight.Size = new System.Drawing.Size(200, 100);
             this.GroupBox_FwhmWeight.TabIndex = 12;
@@ -1785,11 +1868,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(372, 45);
+            this.label1.Location = new System.Drawing.Point(422, 45);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(160, 13);
+            this.label1.Size = new System.Drawing.Size(108, 13);
             this.label1.TabIndex = 14;
-            this.label1.Text = "Sequence SubFrame Overhead:";
+            this.label1.Text = "SubFrame Overhead:";
             // 
             // Label_OverheadPercent
             // 
@@ -1827,21 +1910,32 @@
             this.Label_OverheadSeconds.TabIndex = 18;
             this.Label_OverheadSeconds.Text = "N/A";
             // 
-            // CheckBox_SubFrameKeywords_UpdateTargetNames
+            // GroupBox_WeightCalculations
             // 
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.AutoSize = true;
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Location = new System.Drawing.Point(222, 84);
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Name = "CheckBox_SubFrameKeywords_UpdateTargetNames";
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Size = new System.Drawing.Size(131, 17);
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.TabIndex = 17;
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Text = "Update Target Names";
-            this.CheckBox_SubFrameKeywords_UpdateTargetNames.UseVisualStyleBackColor = true;
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_StarResidual);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_FwhmWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_NoiseRatioWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_StarResidualMeanDeviation);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_EccentricityWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_FwhmMeanDeviationWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_MedianMeanDeviationWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_NoiseWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_MedianWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_EccentricityMeanDeviationWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_SnrWeight);
+            this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_StarsWeight);
+            this.GroupBox_WeightCalculations.Location = new System.Drawing.Point(18, 161);
+            this.GroupBox_WeightCalculations.Name = "GroupBox_WeightCalculations";
+            this.GroupBox_WeightCalculations.Size = new System.Drawing.Size(648, 450);
+            this.GroupBox_WeightCalculations.TabIndex = 27;
+            this.GroupBox_WeightCalculations.TabStop = false;
+            this.GroupBox_WeightCalculations.Text = "Weight Caluculations";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(709, 852);
+            this.ClientSize = new System.Drawing.Size(709, 901);
             this.Controls.Add(this.Label_OverheadSeconds);
             this.Controls.Add(this.Label_OSeconds);
             this.Controls.Add(this.Label_OPercent);
@@ -1870,6 +1964,7 @@
             this.GroupBox_WeightsAndStatistics.ResumeLayout(false);
             this.GroupBox_InitialRejectionCriteria.ResumeLayout(false);
             this.GroupBox_InitialRejectionCriteria.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Median)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).EndInit();
             this.GroupBox_StarResidual.ResumeLayout(false);
@@ -1898,6 +1993,7 @@
             this.GroupBox_NoiseRatioWeight.PerformLayout();
             this.GroupBox_FwhmWeight.ResumeLayout(false);
             this.GroupBox_FwhmWeight.PerformLayout();
+            this.GroupBox_WeightCalculations.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1919,7 +2015,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectTemplateToolStripMenuItem;
         private System.Windows.Forms.GroupBox GroupBox_WeightsAndStatistics;
-        private System.Windows.Forms.Button Button_UpdateStatisticsFromCSV;
+        private System.Windows.Forms.Button Button_ReadSubFrameSelectorCsvFile;
         private System.Windows.Forms.Label Label_FwhmStdDev;
         private System.Windows.Forms.Label Label_FwhmMean;
         private System.Windows.Forms.TextBox TextBox_FwhmRangeLow;
@@ -2049,15 +2145,21 @@
         private System.Windows.Forms.Label Label_Rejection_Eccentricity;
         private System.Windows.Forms.Label Label_Rejection_FWHM;
         private System.Windows.Forms.GroupBox GroupBox_SubFrameKeywords;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_Rescale;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWords_Update;
+        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWords_EnableSubFrameData;
         private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_Alphabetize;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label Label_OverheadPercent;
         private System.Windows.Forms.Label Label_OPercent;
         private System.Windows.Forms.Label Label_OSeconds;
         private System.Windows.Forms.Label Label_OverheadSeconds;
-        private System.Windows.Forms.CheckBox CheckBox_SubFrameKeywords_UpdateTargetNames;
+        private System.Windows.Forms.CheckBox CheckBox_SubFrameKeywords_UpdateTargetName;
+        private System.Windows.Forms.Button Button_Regection_MoveRejected;
+        private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Median;
+        private System.Windows.Forms.Label Label_Rejection_Median;
+        private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_CalculateWeights;
+        private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_RescaleWeights;
+        private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_KeepWeights;
+        private System.Windows.Forms.GroupBox GroupBox_WeightCalculations;
     }
 }
 

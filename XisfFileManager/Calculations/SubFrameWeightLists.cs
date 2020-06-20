@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using XisfFileManager.Keywords;
 
@@ -7,7 +8,7 @@ namespace XisfFileManager.Calculations
 {
     public class SubFrameWeightLists
     {
-        public enum SubFrameWeightListsValidEnum { EMPTY, INVALD, VALID }
+        public enum SubFrameWeightListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
 
         public List<bool> Approved { get; set; }
 
@@ -156,6 +157,7 @@ namespace XisfFileManager.Calculations
         {
             bool bStatus = true;
             bool bZero = true;
+            bool bFileExists = true;
 
             bStatus = Approved.Count == SubFrameCount ? bStatus : false;
             bZero = Approved.Count == 0 ? bZero : false;
@@ -201,6 +203,19 @@ namespace XisfFileManager.Calculations
 
             bStatus = Weight.Count == SubFrameCount ? bStatus : false;
             bZero = Weight.Count == 0 ? bZero : false;
+            
+            if (bZero == false)
+            {
+                foreach (string filename in FileName)
+                {
+                    bFileExists = File.Exists(filename) ? bFileExists : false;
+                }
+            }
+
+            if (! bFileExists)
+            {
+                return SubFrameWeightListsValidEnum.MISMATCH;
+            }
 
             if (bZero)
                 return SubFrameWeightListsValidEnum.EMPTY;

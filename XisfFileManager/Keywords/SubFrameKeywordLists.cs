@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace XisfFileManager.Keywords
 {
     public class SubFrameKeywordLists
     {
-        public enum SubFrameListsValidEnum { EMPTY, INVALD, VALID }
+        public enum SubFrameListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
 
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
@@ -66,6 +67,7 @@ namespace XisfFileManager.Keywords
         {
             bool bStatus = true;
             bool bZero = true;
+            bool bFileExists = true;
 
             bStatus = Approved.Count == SubFrameCount ? bStatus : false;
             bZero = Approved.Count == 0 ? bZero : false;
@@ -111,6 +113,19 @@ namespace XisfFileManager.Keywords
 
             bStatus = Weight.Count == SubFrameCount ? bStatus : false;
             bZero = Weight.Count == 0 ? bZero : false;
+
+            if (bZero == false)
+            {
+                foreach (Keyword filename in FileName)
+                {
+                    bFileExists = File.Exists(filename.Value) ? bFileExists : false;
+                }
+            }
+
+            if (!bFileExists)
+            {
+                return SubFrameListsValidEnum.MISMATCH;
+            }
 
             if (bZero)
                 return SubFrameListsValidEnum.EMPTY;

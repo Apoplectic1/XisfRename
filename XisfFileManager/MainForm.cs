@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
+using System.Deployment.Application;
 
 using LocalLib;
 using XisfFileManager.CsvFileOperations;
@@ -87,7 +87,18 @@ namespace XisfFileManager
             mNumericWeightLists = new SubFrameWeightLists();
             mImageCalculationLists = new ImageCalculations();
             Label_Task.Text = "No Images Selected";
-            Label_TempratureCompensation.Text = "Temerature Coefficient:";
+            Label_TempratureCompensation.Text = "Temerature Coefficient: N/A";
+
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                System.Deployment.Application.ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+                Version version = ad.CurrentVersion;
+                Text = "XISF File Manager - Version: " + version.ToString();
+            }
+            else
+            {
+                Text = "XISF File Manager - Version: " + File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -332,6 +343,7 @@ namespace XisfFileManager
                     mImageCalculationLists.BuildImageParameterValueLists(file.KeywordData);
                 }
 
+
                 string stepsPerDegree = mImageCalculationLists.ComputeFocuserTemperatureCompensationCoefficient();
                 Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
@@ -433,11 +445,6 @@ namespace XisfFileManager
                 XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
                 XisfFileUpdate.bAddCsvKeywords = eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID ? true : false;
 
-                //if (CheckBox_IncludeWeights.Checked == true)
-                //{
-                //    ImageCalculations.ReScaleFileSSWeight(ImageCalculations.FileSSWeight, mUpdateStatisticsRangeLow, mUpdateStatisticsRangeHigh);
-                //        }
-
                 bStatus = XisfFileUpdate.UpdateFiles(file, CsvSubFrameKeywordLists);
                 if (bStatus == false)
                 {
@@ -490,10 +497,19 @@ namespace XisfFileManager
 
             eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
+            switch (eSubFrameValidListsValid)
             {
-                MessageBox.Show(mFileCsv.FileName, "CSV file data did not numerically parse properly.");
-                return;
+                case SubFrameWeightLists.SubFrameWeightListsValidEnum.EMPTY:
+                    MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
+                    return;
+
+                case SubFrameWeightLists.SubFrameWeightListsValidEnum.MISMATCH:
+                    MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
+                    return;
+
+                case SubFrameWeightLists.SubFrameWeightListsValidEnum.INVALD:
+                    MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
+                    return;
             }
 
             SetUISubFrameGroupBoxState();
@@ -774,7 +790,29 @@ namespace XisfFileManager
 
         private void SetUISubFrameGroupBoxState()
         {
+           
             eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
+
+            GroupBox_WeightsAndStatistics.Enabled = RadioButton_SubFrameKeywords_Alphabetize.Checked ? false : true;
+
+            if (RadioButton_SetImageStatistics_KeepWeights.Checked)
+            {
+                GroupBox_WeightCalculations.Enabled = false;
+                Label_UpdateStatistics.Enabled = false;
+                Label_UpdateStatisticsRangeHigh.Enabled = false;
+                TextBox_UpdateStatisticsRangeHigh.Enabled = false;
+                Label_UpdateStatisticsRangeLow.Enabled = false;
+                TextBox_UpdateStatisticsRangeLow.Enabled = false;
+            }
+            else
+            {
+                GroupBox_WeightCalculations.Enabled = RadioButton_SetImageStatistics_CalculateWeights.Checked;
+                Label_UpdateStatistics.Enabled = true;
+                Label_UpdateStatisticsRangeHigh.Enabled = true;
+                TextBox_UpdateStatisticsRangeHigh.Enabled = true;
+                Label_UpdateStatisticsRangeLow.Enabled = true;
+                TextBox_UpdateStatisticsRangeLow.Enabled = true;
+            }
 
             if (mFileList.Count != 0)
             {
@@ -784,19 +822,19 @@ namespace XisfFileManager
 
                     GroupBox_EccentricityMeanDeviationWeight.Enabled = true;
                     if (TextBox_EccentricityMeanDeviationPercent.Text == "0") { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-                    
+
                     GroupBox_FwhmWeight.Enabled = true;
                     if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-                    
+
                     GroupBox_EccentricityWeight.Enabled = true;
                     if (TextBox_EccentricityPercent.Text == "0") { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
 
                     GroupBox_FwhmMeanDeviationWeight.Enabled = true;
                     if (TextBox_FwhmMeanDeviationPercent.Text == "0") { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-                    
+
                     GroupBox_FwhmWeight.Enabled = true;
-                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }                   
-                   
+                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
+
                     GroupBox_MedianMeanDeviationWeight.Enabled = true;
                     if (TextBox_MedianMeanDeviationPercent.Text == "0") { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
 
@@ -823,11 +861,12 @@ namespace XisfFileManager
                 }
                 else
                 {
+                    GroupBox_InitialRejectionCriteria.Enabled = false;
+
                     GroupBox_EccentricityMeanDeviationWeight.Enabled = false;
                     GroupBox_EccentricityWeight.Enabled = false;
                     GroupBox_FwhmMeanDeviationWeight.Enabled = false;
                     GroupBox_FwhmWeight.Enabled = false;
-                    GroupBox_InitialRejectionCriteria.Enabled = false;
                     GroupBox_MedianMeanDeviationWeight.Enabled = false;
                     GroupBox_MedianWeight.Enabled = false;
                     GroupBox_NoiseRatioWeight.Enabled = false;
@@ -837,13 +876,32 @@ namespace XisfFileManager
                     GroupBox_StarResidualMeanDeviation.Enabled = false;
                     GroupBox_StarsWeight.Enabled = false;
                 }
+            }
+        }
 
-                GroupBox_WeightsAndStatistics.Enabled = true;
-            }
-            else
-            {
-                GroupBox_WeightsAndStatistics.Enabled = false;
-            }
+        private void RadioButton_SetImageStatistics_KeepCSVWeights_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void RadioButton_SetImageStatistics_RescaleCSVWeights_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
         }
     }
 }
