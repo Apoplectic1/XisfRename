@@ -41,8 +41,8 @@
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_SubFrameKeywords = new System.Windows.Forms.GroupBox();
             this.RadioButton_SubFrameKeywords_Rescale = new System.Windows.Forms.RadioButton();
-            this.RadioButton_SubFrameKeyWord_ReCalculate = new System.Windows.Forms.RadioButton();
-            this.RadioButton_SubFrameKeyword_Alphabetize = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SubFrameKeyWords_Update = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SubFrameKeywords_Alphabetize = new System.Windows.Forms.RadioButton();
             this.Button_UpdateXisfFiles = new System.Windows.Forms.Button();
             this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
             this.Label_TagetName = new System.Windows.Forms.Label();
@@ -181,6 +181,7 @@
             this.Label_OPercent = new System.Windows.Forms.Label();
             this.Label_OSeconds = new System.Windows.Forms.Label();
             this.Label_OverheadSeconds = new System.Windows.Forms.Label();
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames = new System.Windows.Forms.CheckBox();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_SubFrameKeywords.SuspendLayout();
@@ -317,9 +318,10 @@
             // 
             // GroupBox_SubFrameKeywords
             // 
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SubFrameKeywords_UpdateTargetNames);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Rescale);
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWord_ReCalculate);
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyword_Alphabetize);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_Update);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Alphabetize);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Button_UpdateXisfFiles);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_TargetName);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Label_TagetName);
@@ -333,34 +335,34 @@
             // RadioButton_SubFrameKeywords_Rescale
             // 
             this.RadioButton_SubFrameKeywords_Rescale.AutoSize = true;
-            this.RadioButton_SubFrameKeywords_Rescale.Location = new System.Drawing.Point(222, 68);
+            this.RadioButton_SubFrameKeywords_Rescale.Location = new System.Drawing.Point(222, 61);
             this.RadioButton_SubFrameKeywords_Rescale.Name = "RadioButton_SubFrameKeywords_Rescale";
-            this.RadioButton_SubFrameKeywords_Rescale.Size = new System.Drawing.Size(164, 17);
+            this.RadioButton_SubFrameKeywords_Rescale.Size = new System.Drawing.Size(125, 17);
             this.RadioButton_SubFrameKeywords_Rescale.TabIndex = 16;
-            this.RadioButton_SubFrameKeywords_Rescale.Text = "Rescale Existing File Weights";
+            this.RadioButton_SubFrameKeywords_Rescale.Text = "Rescale File Weights";
             this.RadioButton_SubFrameKeywords_Rescale.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_SubFrameKeyWord_ReCalculate
+            // RadioButton_SubFrameKeyWords_Update
             // 
-            this.RadioButton_SubFrameKeyWord_ReCalculate.AutoSize = true;
-            this.RadioButton_SubFrameKeyWord_ReCalculate.Location = new System.Drawing.Point(222, 45);
-            this.RadioButton_SubFrameKeyWord_ReCalculate.Name = "RadioButton_SubFrameKeyWord_ReCalculate";
-            this.RadioButton_SubFrameKeyWord_ReCalculate.Size = new System.Drawing.Size(137, 17);
-            this.RadioButton_SubFrameKeyWord_ReCalculate.TabIndex = 15;
-            this.RadioButton_SubFrameKeyWord_ReCalculate.Text = "Statistically Recalculate";
-            this.RadioButton_SubFrameKeyWord_ReCalculate.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeyWords_Update.AutoSize = true;
+            this.RadioButton_SubFrameKeyWords_Update.Location = new System.Drawing.Point(222, 38);
+            this.RadioButton_SubFrameKeyWords_Update.Name = "RadioButton_SubFrameKeyWords_Update";
+            this.RadioButton_SubFrameKeyWords_Update.Size = new System.Drawing.Size(156, 17);
+            this.RadioButton_SubFrameKeyWords_Update.TabIndex = 15;
+            this.RadioButton_SubFrameKeyWords_Update.Text = "Update SubFrame Statistics";
+            this.RadioButton_SubFrameKeyWords_Update.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_SubFrameKeyword_Alphabetize
+            // RadioButton_SubFrameKeywords_Alphabetize
             // 
-            this.RadioButton_SubFrameKeyword_Alphabetize.AutoSize = true;
-            this.RadioButton_SubFrameKeyword_Alphabetize.Checked = true;
-            this.RadioButton_SubFrameKeyword_Alphabetize.Location = new System.Drawing.Point(222, 22);
-            this.RadioButton_SubFrameKeyword_Alphabetize.Name = "RadioButton_SubFrameKeyword_Alphabetize";
-            this.RadioButton_SubFrameKeyword_Alphabetize.Size = new System.Drawing.Size(153, 17);
-            this.RadioButton_SubFrameKeyword_Alphabetize.TabIndex = 14;
-            this.RadioButton_SubFrameKeyword_Alphabetize.TabStop = true;
-            this.RadioButton_SubFrameKeyword_Alphabetize.Text = "Alphabetize Keywords Only";
-            this.RadioButton_SubFrameKeyword_Alphabetize.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeywords_Alphabetize.AutoSize = true;
+            this.RadioButton_SubFrameKeywords_Alphabetize.Checked = true;
+            this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(222, 15);
+            this.RadioButton_SubFrameKeywords_Alphabetize.Name = "RadioButton_SubFrameKeywords_Alphabetize";
+            this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(104, 17);
+            this.RadioButton_SubFrameKeywords_Alphabetize.TabIndex = 14;
+            this.RadioButton_SubFrameKeywords_Alphabetize.TabStop = true;
+            this.RadioButton_SubFrameKeywords_Alphabetize.Text = "Alphabetize Only";
+            this.RadioButton_SubFrameKeywords_Alphabetize.UseVisualStyleBackColor = true;
             // 
             // Button_UpdateXisfFiles
             // 
@@ -1825,6 +1827,16 @@
             this.Label_OverheadSeconds.TabIndex = 18;
             this.Label_OverheadSeconds.Text = "N/A";
             // 
+            // CheckBox_SubFrameKeywords_UpdateTargetNames
+            // 
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.AutoSize = true;
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Location = new System.Drawing.Point(222, 84);
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Name = "CheckBox_SubFrameKeywords_UpdateTargetNames";
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Size = new System.Drawing.Size(131, 17);
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.TabIndex = 17;
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.Text = "Update Target Names";
+            this.CheckBox_SubFrameKeywords_UpdateTargetNames.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2038,13 +2050,14 @@
         private System.Windows.Forms.Label Label_Rejection_FWHM;
         private System.Windows.Forms.GroupBox GroupBox_SubFrameKeywords;
         private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_Rescale;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWord_ReCalculate;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyword_Alphabetize;
+        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWords_Update;
+        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_Alphabetize;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label Label_OverheadPercent;
         private System.Windows.Forms.Label Label_OPercent;
         private System.Windows.Forms.Label Label_OSeconds;
         private System.Windows.Forms.Label Label_OverheadSeconds;
+        private System.Windows.Forms.CheckBox CheckBox_SubFrameKeywords_UpdateTargetNames;
     }
 }
 

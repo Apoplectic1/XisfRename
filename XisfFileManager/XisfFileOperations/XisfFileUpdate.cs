@@ -254,7 +254,7 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
-        public static void UpdateCsvWeightList(SubFrameWeights WeightLists, SubFrameKeywordLists CsvWeightLists)
+        public static void UpdateCsvWeightList(SubFrameWeightLists WeightLists, SubFrameKeywordLists CsvWeightLists)
         {
             int index = 0;
 

@@ -65,7 +65,7 @@ namespace XisfFileManager.CsvFileOperations
 
 
             // Can I delete this? Is it better to clear the lists in the calling routine?
-            CsvSubFrameKeywordLists.ClearLists();
+            CsvSubFrameKeywordLists.ClearKeywordLists();
 
             foreach (string line in lines)
             {

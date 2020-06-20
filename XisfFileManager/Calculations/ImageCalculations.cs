@@ -34,12 +34,12 @@ namespace XisfFileManager.Calculations
         {
             double WeightScaled;
 
-            WeightScaled = SubFrameWeights.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+            WeightScaled = SubFrameWeightLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
 
             return WeightScaled;
         }
 
-        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordData Keywords, SubFrameWeights CsvSubFrameKeywordLists, SubFrameWeights FileSubFrameKeywordLists)
+        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordData Keywords, SubFrameWeightLists CsvSubFrameKeywordLists, SubFrameWeightLists FileSubFrameKeywordLists)
         {
 
         }

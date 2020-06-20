@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using XisfFileManager.Keywords;
 
 namespace XisfFileManager.Calculations
 {
-    public class SubFrameWeights
+    public class SubFrameWeightLists
     {
-        public enum SubFrameValidEnum { EMPTY, INVALD, VALID }
+        public enum SubFrameWeightListsValidEnum { EMPTY, INVALD, VALID }
 
         public List<bool> Approved { get; set; }
 
@@ -115,11 +114,12 @@ namespace XisfFileManager.Calculations
         public List<string> FileName { get; private set; }
 
 
-        public SubFrameWeights()
+        public SubFrameWeightLists()
         {
             Approved = new List<bool>();
             Eccentricity = new List<double>();
             EccentricityMeanDeviation = new List<double>();
+            FileName = new List<string>();
             Fwhm = new List<double>();
             FwhmMeanDeviation = new List<double>();
             Median = new List<double>();
@@ -131,7 +131,6 @@ namespace XisfFileManager.Calculations
             StarResidualMeanDeviation = new List<double>();
             Stars = new List<double>();
             Weight = new List<double>();
-            FileName = new List<string>();
         }
 
         public void ClearWeightLists()
@@ -139,21 +138,21 @@ namespace XisfFileManager.Calculations
             Approved.Clear();
             Eccentricity.Clear();
             EccentricityMeanDeviation.Clear();
+            FileName.Clear();
             Fwhm.Clear();
             FwhmMeanDeviation.Clear();
             Median.Clear();
             MedianMeanDeviation.Clear();
             Noise.Clear();
             NoiseRatio.Clear();
-            NoiseRatio.Clear();
+            SnrWeight.Clear();
             StarResidual.Clear();
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
             Weight.Clear();
-            FileName.Clear();
         }
 
-        public SubFrameValidEnum ValidateListCounts(int SubFrameCount)
+        public SubFrameWeightListsValidEnum ValidateWeightLists(int SubFrameCount)
         {
             bool bStatus = true;
             bool bZero = true;
@@ -167,20 +166,23 @@ namespace XisfFileManager.Calculations
             bStatus = EccentricityMeanDeviation.Count == SubFrameCount ? bStatus : false;
             bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
 
+            bStatus = FileName.Count == SubFrameCount ? bStatus : false;
+            bZero = FileName.Count == 0 ? bZero : false;
+
             bStatus = Fwhm.Count == SubFrameCount ? bStatus : false;
-            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+            bZero = Fwhm.Count == 0 ? bZero : false;
 
             bStatus = FwhmMeanDeviation.Count == SubFrameCount ? bStatus : false;
-            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+            bZero = FwhmMeanDeviation.Count == 0 ? bZero : false;
 
             bStatus = Median.Count == SubFrameCount ? bStatus : false;
-            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
-
-            bStatus = MedianMeanDeviation.Count == SubFrameCount ? bStatus : false;
             bZero = Median.Count == 0 ? bZero : false;
 
+            bStatus = MedianMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bZero = MedianMeanDeviation.Count == 0 ? bZero : false;
+
             bStatus = Noise.Count == SubFrameCount ? bStatus : false;
-            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+            bZero = Noise.Count == 0 ? bZero : false;
 
             bStatus = NoiseRatio.Count == SubFrameCount ? bStatus : false;
             bZero = NoiseRatio.Count == 0 ? bZero : false;
@@ -189,7 +191,7 @@ namespace XisfFileManager.Calculations
             bZero = SnrWeight.Count == 0 ? bZero : false;
 
             bStatus = StarResidual.Count == SubFrameCount ? bStatus : false;
-            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+            bZero = StarResidual.Count == 0 ? bZero : false;
 
             bStatus = StarResidualMeanDeviation.Count == SubFrameCount ? bStatus : false;
             bZero = StarResidualMeanDeviation.Count == 0 ? bZero : false;
@@ -197,14 +199,17 @@ namespace XisfFileManager.Calculations
             bStatus = Stars.Count == SubFrameCount ? bStatus : false;
             bZero = Stars.Count == 0 ? bZero : false;
 
+            bStatus = Weight.Count == SubFrameCount ? bStatus : false;
+            bZero = Weight.Count == 0 ? bZero : false;
+
             if (bZero)
-                return SubFrameValidEnum.EMPTY;
+                return SubFrameWeightListsValidEnum.EMPTY;
             else
             {
                 if (bStatus)
-                    return SubFrameValidEnum.VALID;
+                    return SubFrameWeightListsValidEnum.VALID;
                 else
-                    return SubFrameValidEnum.INVALD;
+                    return SubFrameWeightListsValidEnum.INVALD;
             }
         }
 
@@ -218,14 +223,12 @@ namespace XisfFileManager.Calculations
 
         public double ReScaleSSWeight(double weight, double WeightRangeMin, double WeightRangeMax)
         {
-            double WeightScaled;
+            double WeightScaled = 1.0;
 
-            WeightScaled = SubFrameWeights.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+            //WeightScaled = SubFrameWeightLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
 
             return WeightScaled;
         }
-
-
 
         public void WeightSubFrameValue(int SubFrameCount)
         {

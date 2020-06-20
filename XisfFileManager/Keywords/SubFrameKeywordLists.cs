@@ -4,6 +4,7 @@ namespace XisfFileManager.Keywords
 {
     public class SubFrameKeywordLists
     {
+        public enum SubFrameListsValidEnum { EMPTY, INVALD, VALID }
 
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
@@ -40,7 +41,7 @@ namespace XisfFileManager.Keywords
             Weight = new List<Keyword>();
         }
 
-        public void ClearLists()
+        public void ClearKeywordLists()
         {
             Approved.Clear();
             Eccentricity.Clear();
@@ -58,6 +59,68 @@ namespace XisfFileManager.Keywords
             Stars.Clear();
             Weight.Clear();
 
+        }
+
+
+        public SubFrameListsValidEnum ValidateKeywordLists(int SubFrameCount)
+        {
+            bool bStatus = true;
+            bool bZero = true;
+
+            bStatus = Approved.Count == SubFrameCount ? bStatus : false;
+            bZero = Approved.Count == 0 ? bZero : false;
+
+            bStatus = Eccentricity.Count == SubFrameCount ? bStatus : false;
+            bZero = Eccentricity.Count == 0 ? bZero : false;
+
+            bStatus = EccentricityMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+
+            bStatus = FileName.Count == SubFrameCount ? bStatus : false;
+            bZero = FileName.Count == 0 ? bZero : false;
+
+            bStatus = Fwhm.Count == SubFrameCount ? bStatus : false;
+            bZero = Fwhm.Count == 0 ? bZero : false;
+
+            bStatus = FwhmMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
+
+            bStatus = Median.Count == SubFrameCount ? bStatus : false;
+            bZero = Median.Count == 0 ? bZero : false;
+
+            bStatus = MedianMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bZero = MedianMeanDeviation.Count == 0 ? bZero : false;
+
+            bStatus = Noise.Count == SubFrameCount ? bStatus : false;
+            bZero = Noise.Count == 0 ? bZero : false;
+
+            bStatus = NoiseRatio.Count == SubFrameCount ? bStatus : false;
+            bZero = NoiseRatio.Count == 0 ? bZero : false;
+
+            bStatus = SnrWeight.Count == SubFrameCount ? bStatus : false;
+            bZero = SnrWeight.Count == 0 ? bZero : false;
+
+            bStatus = StarResidual.Count == SubFrameCount ? bStatus : false;
+            bZero = StarResidual.Count == 0 ? bZero : false;
+
+            bStatus = StarResidualMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bZero = StarResidualMeanDeviation.Count == 0 ? bZero : false;
+
+            bStatus = Stars.Count == SubFrameCount ? bStatus : false;
+            bZero = Stars.Count == 0 ? bZero : false;
+
+            bStatus = Weight.Count == SubFrameCount ? bStatus : false;
+            bZero = Weight.Count == 0 ? bZero : false;
+
+            if (bZero)
+                return SubFrameListsValidEnum.EMPTY;
+            else
+            {
+                if (bStatus)
+                    return SubFrameListsValidEnum.VALID;
+                else
+                    return SubFrameListsValidEnum.INVALD;
+            }
         }
     }
 }

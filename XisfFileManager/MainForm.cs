@@ -69,8 +69,8 @@ namespace XisfFileManager
         private string mFolderCsvBrowseState;
         public SubFrameKeywordLists FileSubFrameKeywordLists;
         public SubFrameKeywordLists CsvSubFrameKeywordLists;
-        private SubFrameWeights mNumericWeightLists;
-        private SubFrameWeights.SubFrameValidEnum eSubFrameValidListsValid;
+        private SubFrameWeightLists mNumericWeightLists;
+        private SubFrameWeightLists.SubFrameWeightListsValidEnum eSubFrameValidListsValid;
 
         private ImageCalculations mImageCalculationLists;
 
@@ -84,7 +84,7 @@ namespace XisfFileManager
             mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
             FileSubFrameKeywordLists = new SubFrameKeywordLists();
             CsvSubFrameKeywordLists = new SubFrameKeywordLists();
-            mNumericWeightLists = new SubFrameWeights();
+            mNumericWeightLists = new SubFrameWeightLists();
             mImageCalculationLists = new ImageCalculations();
             Label_Task.Text = "No Images Selected";
             Label_TempratureCompensation.Text = "Temerature Coefficient:";
@@ -273,8 +273,8 @@ namespace XisfFileManager
 
                     // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
                     mFileList.Clear();
-                    FileSubFrameKeywordLists.ClearLists();
-                    CsvSubFrameKeywordLists.ClearLists();
+                    FileSubFrameKeywordLists.ClearKeywordLists();
+                    CsvSubFrameKeywordLists.ClearKeywordLists();
                     mNumericWeightLists.ClearWeightLists();
                     mImageCalculationLists.ClearImageParamterLists();
 
@@ -339,11 +339,11 @@ namespace XisfFileManager
 
                 if (TargetNames.Count > 1)
                 {
-                    Label_TagetName.ForeColor = System.Drawing.Color.Red;
+                    Label_TagetName.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_TagetName.ForeColor = System.Drawing.Color.Black;
+                    Label_TagetName.ForeColor = Color.Black;
                 }
 
                 TargetNames = TargetNames.OrderBy(q => q).ToList();
@@ -400,12 +400,12 @@ namespace XisfFileManager
             ProgressBar_XisfFile.Maximum = mFileList.Count();
             ProgressBar_XisfFile.Value = 0;
 
-            eSubFrameValidListsValid = mNumericWeightLists.ValidateListCounts(mFileList.Count);
+            eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.INVALD)
+            if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.INVALD)
             {
                 var result = MessageBox.Show(
-                    "There is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
+                    "SubFrame Numerical Weight List is invalid\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
                     "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + mNumericWeightLists.Fwhm.Count() + ").",
                     "\nMainForm.cs Button_Update_Click()",
                     MessageBoxButtons.YesNo,
@@ -418,7 +418,7 @@ namespace XisfFileManager
             }
 
 
-            if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
+            if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
             {
                 mNumericWeightLists.WeightSubFrameValue(mFileList.Count);
                 XisfFileUpdate.UpdateCsvWeightList(mNumericWeightLists, CsvSubFrameKeywordLists);
@@ -431,12 +431,12 @@ namespace XisfFileManager
                 Application.DoEvents();
 
                 XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileUpdate.bAddCsvKeywords = eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID ? true : false;
+                XisfFileUpdate.bAddCsvKeywords = eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID ? true : false;
 
-                if (CheckBox_IncludeWeights.Checked == true)
-                {
-                    ImageCalculations.ReScaleFileSSWeight(ImageCalculations.FileSSWeight, mUpdateStatisticsRangeLow, mUpdateStatisticsRangeHigh);
-                        }
+                //if (CheckBox_IncludeWeights.Checked == true)
+                //{
+                //    ImageCalculations.ReScaleFileSSWeight(ImageCalculations.FileSSWeight, mUpdateStatisticsRangeLow, mUpdateStatisticsRangeHigh);
+                //        }
 
                 bStatus = XisfFileUpdate.UpdateFiles(file, CsvSubFrameKeywordLists);
                 if (bStatus == false)
@@ -475,7 +475,7 @@ namespace XisfFileManager
                 return;
             }
 
-            CsvSubFrameKeywordLists.ClearLists();
+            CsvSubFrameKeywordLists.ClearKeywordLists();
             mNumericWeightLists.ClearWeightLists();
 
             bStatus = ReadSubFrameCsvData.ParseSubFrameSelectorCsvFile(mFileCsv.FileName, CsvSubFrameKeywordLists);
@@ -488,9 +488,9 @@ namespace XisfFileManager
            
             mNumericWeightLists.BuildNumericSubFrameDataKeywordLists(CsvSubFrameKeywordLists);
 
-            eSubFrameValidListsValid = mNumericWeightLists.ValidateListCounts(mFileList.Count);
+            eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
+            if (eSubFrameValidListsValid != SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
             {
                 MessageBox.Show(mFileCsv.FileName, "CSV file data did not numerically parse properly.");
                 return;
@@ -774,11 +774,11 @@ namespace XisfFileManager
 
         private void SetUISubFrameGroupBoxState()
         {
-            eSubFrameValidListsValid = mNumericWeightLists.ValidateListCounts(mFileList.Count);
+            eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == Calculations.SubFrameWeights.SubFrameValidEnum.VALID)
+                if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
