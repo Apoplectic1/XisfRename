@@ -57,8 +57,6 @@ namespace XisfFileManager.XisfFile
         {
             if (object1 == null) return 1;
             if (object2 == null) return 1;
-
-
             if (object1.KeywordData.CaptureDateTime() > object2.KeywordData.CaptureDateTime()) return 1;
             if (object1.KeywordData.CaptureDateTime() < object2.KeywordData.CaptureDateTime()) return -1;
             return 0;

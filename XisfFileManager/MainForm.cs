@@ -72,7 +72,7 @@ namespace XisfFileManager
         private SubFrameWeightLists mNumericWeightLists;
         private SubFrameWeightLists.SubFrameWeightListsValidEnum eSubFrameValidListsValid;
 
-        private ImageCalculations mImageCalculationLists;
+        private ImageCalculations mImageParameterLists;
 
 
         public MainForm()
@@ -82,10 +82,10 @@ namespace XisfFileManager
             mFileList = new List<XisfFile.XisfFile>();
             mRenameFile = new XisfFileRename();
             mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
-            FileSubFrameKeywordLists = new SubFrameKeywordLists();
             CsvSubFrameKeywordLists = new SubFrameKeywordLists();
+            FileSubFrameKeywordLists = new SubFrameKeywordLists();
             mNumericWeightLists = new SubFrameWeightLists();
-            mImageCalculationLists = new ImageCalculations();
+            mImageParameterLists = new ImageCalculations();
             Label_Task.Text = "No Images Selected";
             Label_TempratureCompensation.Text = "Temerature Coefficient: N/A";
 
@@ -284,10 +284,10 @@ namespace XisfFileManager
 
                     // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
                     mFileList.Clear();
-                    FileSubFrameKeywordLists.ClearKeywordLists();
                     CsvSubFrameKeywordLists.ClearKeywordLists();
+                    FileSubFrameKeywordLists.ClearKeywordLists();
                     mNumericWeightLists.ClearWeightLists();
-                    mImageCalculationLists.ClearImageParamterLists();
+                    mImageParameterLists.ClearImageParamterLists();
 
                     foreach (FileInfo file in Files)
                     {
@@ -312,6 +312,7 @@ namespace XisfFileManager
                         // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
                         // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
+                        
                         bStatus = XisfFileRead.ParseXisfFile(mFile, FileSubFrameKeywordLists);
                         
                         // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
@@ -340,11 +341,11 @@ namespace XisfFileManager
                 foreach (XisfFile.XisfFile file in mFileList)
                 {
                     TargetNames.Add(file.KeywordData.TargetName());
-                    mImageCalculationLists.BuildImageParameterValueLists(file.KeywordData);
+                    mImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
                 }
 
 
-                string stepsPerDegree = mImageCalculationLists.ComputeFocuserTemperatureCompensationCoefficient();
+                string stepsPerDegree = mImageParameterLists.ComputeFocuserTemperatureCompensationCoefficient();
                 Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
                 TargetNames = TargetNames.Distinct().ToList();
@@ -793,6 +794,15 @@ namespace XisfFileManager
            
             eSubFrameValidListsValid = mNumericWeightLists.ValidateWeightLists(mFileList.Count);
 
+            if (eSubFrameValidListsValid != SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
+            {
+                GroupBox_InitialRejectionCriteria.Enabled = false;
+                GroupBox_WeightCalculations.Enabled = false;
+                return;
+            }
+
+            UpdateWeightCalculations();
+
             GroupBox_WeightsAndStatistics.Enabled = RadioButton_SubFrameKeywords_Alphabetize.Checked ? false : true;
 
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
@@ -902,6 +912,22 @@ namespace XisfFileManager
         private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
         {
             SetUISubFrameGroupBoxState();
+        }
+
+        private void UpdateWeightCalculations()
+        {
+            Label_FwhmMean.Text = "Mean: " + mNumericWeightLists.Fwhm.Average().ToString("F2");
+            Label_EccentricyMean.Text = "Mean: " + mNumericWeightLists.Eccentricity.Average().ToString("F2");
+            Label_MedianMean.Text = "Mean: " + mNumericWeightLists.Median.Average().ToString("F0");
+            Label_FwhmMeanDeviationMean.Text = "Mean: " + mNumericWeightLists.FwhmMeanDeviation.Average().ToString("F2");
+            Label_EccentricityMeanDeviationMean.Text = "Mean: " + mNumericWeightLists.EccentricityMeanDeviation.Average().ToString("F2");
+            Label_MedianMeanDeviationMean.Text = "Mean: " + mNumericWeightLists.MedianMeanDeviation.Average().ToString("F2");
+            Label_NoiseMean.Text = "Mean: " + mNumericWeightLists.Noise.Average().ToString("F2");
+            Label_NoiseRatioMean.Text = "Mean: " + mNumericWeightLists.NoiseRatio.Average().ToString("F2");
+            Label_SnrMean.Text = "Mean: " + mNumericWeightLists.SnrWeight.Average().ToString("F2");
+            Label_StarsMean.Text = "Mean: " + mNumericWeightLists.Stars.Average().ToString("F0");
+            Label_StarResidualMean.Text = "Mean: " + mNumericWeightLists.StarResidual.Average().ToString("F2");
+            Label_StarResidualMeanDevationMean.Text = "Mean: " + mNumericWeightLists.StarResidualMeanDeviation.Average().ToString("F2");
         }
     }
 }

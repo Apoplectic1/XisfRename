@@ -110,7 +110,7 @@
             this.TextBox_EccentricityMeanDeviationRangeLow = new System.Windows.Forms.TextBox();
             this.GroupBox_StarsWeight = new System.Windows.Forms.GroupBox();
             this.Label_StarRangeLow = new System.Windows.Forms.Label();
-            this.Label_StarMean = new System.Windows.Forms.Label();
+            this.Label_StarsMean = new System.Windows.Forms.Label();
             this.Label_StarRangeHigh = new System.Windows.Forms.Label();
             this.Label_StarPercent = new System.Windows.Forms.Label();
             this.TextBox_StarsPercent = new System.Windows.Forms.TextBox();
@@ -1098,7 +1098,7 @@
             // GroupBox_StarsWeight
             // 
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarRangeLow);
-            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarMean);
+            this.GroupBox_StarsWeight.Controls.Add(this.Label_StarsMean);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarRangeHigh);
             this.GroupBox_StarsWeight.Controls.Add(this.Label_StarPercent);
             this.GroupBox_StarsWeight.Controls.Add(this.TextBox_StarsPercent);
@@ -1124,12 +1124,12 @@
             // 
             // Label_StarMean
             // 
-            this.Label_StarMean.AutoSize = true;
-            this.Label_StarMean.Location = new System.Drawing.Point(29, 26);
-            this.Label_StarMean.Name = "Label_StarMean";
-            this.Label_StarMean.Size = new System.Drawing.Size(40, 13);
-            this.Label_StarMean.TabIndex = 4;
-            this.Label_StarMean.Text = "Mean: ";
+            this.Label_StarsMean.AutoSize = true;
+            this.Label_StarsMean.Location = new System.Drawing.Point(29, 26);
+            this.Label_StarsMean.Name = "Label_StarMean";
+            this.Label_StarsMean.Size = new System.Drawing.Size(40, 13);
+            this.Label_StarsMean.TabIndex = 4;
+            this.Label_StarsMean.Text = "Mean: ";
             // 
             // Label_StarRangeHigh
             // 
@@ -2106,7 +2106,7 @@
         private System.Windows.Forms.TextBox TextBox_EccentricityMeanDeviationRangeLow;
         private System.Windows.Forms.GroupBox GroupBox_StarsWeight;
         private System.Windows.Forms.Label Label_StarRangeLow;
-        private System.Windows.Forms.Label Label_StarMean;
+        private System.Windows.Forms.Label Label_StarsMean;
         private System.Windows.Forms.Label Label_StarRangeHigh;
         private System.Windows.Forms.Label Label_StarPercent;
         private System.Windows.Forms.TextBox TextBox_StarsPercent;

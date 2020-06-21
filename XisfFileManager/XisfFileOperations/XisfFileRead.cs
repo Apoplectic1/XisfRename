@@ -258,9 +258,11 @@ namespace XisfFileManager.XisfFileOperations
         }
         private static void FindKeywordFileName(XisfFile.XisfFile xFile, SubFrameKeywordLists FileSubFrameKeywordLists)
         {
-            Keyword node = new Keyword(); 
-            node = xFile.KeywordData.KeywordList.Find(i => i.Name == "FileName");
-            if (node == null) return;
+            Keyword node = new Keyword();
+
+            node.Comment = "XISF File Manager - CSV";
+            node.Value = xFile.SourceFileName;
+            node.Name = "FileName";
 
             node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;

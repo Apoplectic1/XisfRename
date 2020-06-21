@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\ImageCalculations.cs" />
+    <Compile Include="Calculations\PositionTemperature.cs" />
     <Compile Include="Calculations\SubFrameWeightLists.cs" />
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
     <Compile Include="Keywords\SubFrameKeywordLists.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using XisfFileManager.Keywords;
 using MathNet.Numerics;
+using MathNet.Numerics.Statistics;
 
 namespace XisfFileManager.Calculations
 {
@@ -58,18 +59,18 @@ namespace XisfFileManager.Calculations
         public string ComputeFocuserTemperatureCompensationCoefficient()
         {
             int index;
-            positionTemperature pt;
+            PositionTemperature pt;
 
             if (FocuserPosition.Count != FocuserTemperature.Count || FocuserPosition.Count == 0 || FocuserTemperature.Count == 0)
             {
                 return "Invalid Focuser Data";
             }
 
-            List<positionTemperature> ptList = new List<positionTemperature>();
+            List<PositionTemperature> ptList = new List<PositionTemperature>();
 
             for (index = 0; index < FocuserPosition.Count(); index++)
             {
-                pt = new positionTemperature();
+                pt = new PositionTemperature();
 
                 pt.Position = FocuserPosition[index];
                 pt.Temperature = Math.Round(FocuserTemperature[index], 1);
@@ -109,11 +110,11 @@ namespace XisfFileManager.Calculations
 
             return p.Item2.ToString("F1") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
         }
-    }
 
-    class positionTemperature
-    {
-        public double Position;
-        public double Temperature;
+        public double FindMean(List<double> valueList)
+        {
+            return valueList.Mean();
+        }
+
     }
 }

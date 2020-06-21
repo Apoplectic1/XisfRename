@@ -59,7 +59,6 @@ namespace XisfFileManager.Keywords
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
             Weight.Clear();
-
         }
 
 
