@@ -134,7 +134,8 @@
     <Compile Include="Calculations\PositionTemperature.cs" />
     <Compile Include="Calculations\SubFrameWeightLists.cs" />
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
-    <Compile Include="Keywords\SubFrameKeywordLists.cs" />
+    <Compile Include="Keywords\SubFrame.cs" />
+    <Compile Include="Keywords\SubFrameLists.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

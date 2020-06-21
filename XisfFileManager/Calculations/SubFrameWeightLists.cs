@@ -134,7 +134,7 @@ namespace XisfFileManager.Calculations
             Weight = new List<double>();
         }
 
-        public void ClearWeightLists()
+        public void Clear()
         {
             Approved.Clear();
             Eccentricity.Clear();
@@ -286,79 +286,79 @@ namespace XisfFileManager.Calculations
             }
         }
 
-        public void BuildNumericSubFrameDataKeywordLists(SubFrameKeywordLists KeywordLists)
+        public void BuildNumericSubFrameDataKeywordLists(SubFrameLists KeywordLists)
         {
-            foreach (Keyword keyword in KeywordLists.Approved)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Approved)
             {
                 Approved.Add((bool)Convert.ChangeType(keyword.GetValue(), typeof(bool)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Eccentricity)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Eccentricity)
             {
                 Eccentricity.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.EccentricityMeanDeviation)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.EccentricityMeanDeviation)
             {
                 EccentricityMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Fwhm)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Fwhm)
             {
                 Fwhm.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.FwhmMeanDeviation)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.FwhmMeanDeviation)
             {
                 FwhmMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Median)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Median)
             {
                 Median.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.MedianMeanDeviation)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.MedianMeanDeviation)
             {
                 MedianMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Noise)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Noise)
             {
                 Noise.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.NoiseRatio)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.NoiseRatio)
             {
                 NoiseRatio.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.SnrWeight)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.SnrWeight)
             {
                 SnrWeight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.StarResidual)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidual)
             {
                 StarResidual.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.StarResidualMeanDeviation)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidualMeanDeviation)
             {
                 StarResidualMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Stars)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Stars)
             {
                 Stars.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.Weight)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.Weight)
             {
                 Weight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            foreach (Keyword keyword in KeywordLists.FileName)
+            foreach (Keyword keyword in KeywordLists.SubFrameList.FileName)
             {
                 FileName.Add((string)Convert.ChangeType(keyword.GetValue(), typeof(string)));
             }

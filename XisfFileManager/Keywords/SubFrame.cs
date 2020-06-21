@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace XisfFileManager.Keywords
 {
-    public class SubFrameKeywordLists
+    public class SubFrame
     {
-        public enum SubFrameListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
+        public enum ValidationEnum { EMPTY, INVALD, VALID, MISMATCH }
 
         public List<Keyword> Approved { get; set; }
         public List<Keyword> Eccentricity { get; set; }
@@ -23,7 +27,7 @@ namespace XisfFileManager.Keywords
         public List<Keyword> Stars { get; set; }
         public List<Keyword> Weight { get; set; }
 
-        public SubFrameKeywordLists()
+        public SubFrame()
         {
             Approved = new List<Keyword>();
             Eccentricity = new List<Keyword>();
@@ -42,7 +46,7 @@ namespace XisfFileManager.Keywords
             Weight = new List<Keyword>();
         }
 
-        public void ClearKeywordLists()
+        public void Clear()
         {
             Approved.Clear();
             Eccentricity.Clear();
@@ -61,8 +65,7 @@ namespace XisfFileManager.Keywords
             Weight.Clear();
         }
 
-
-        public SubFrameListsValidEnum ValidateKeywordLists(int SubFrameCount)
+        public ValidationEnum Validate(int SubFrameCount)
         {
             bool bStatus = true;
             bool bZero = true;
@@ -123,17 +126,19 @@ namespace XisfFileManager.Keywords
 
             if (!bFileExists)
             {
-                return SubFrameListsValidEnum.MISMATCH;
+                return ValidationEnum.MISMATCH;
             }
 
             if (bZero)
-                return SubFrameListsValidEnum.EMPTY;
+            {
+                return ValidationEnum.EMPTY;
+            }
             else
             {
                 if (bStatus)
-                    return SubFrameListsValidEnum.VALID;
+                    return ValidationEnum.VALID;
                 else
-                    return SubFrameListsValidEnum.INVALD;
+                    return ValidationEnum.INVALD;
             }
         }
     }

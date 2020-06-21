@@ -23,7 +23,7 @@ namespace XisfFileManager.Calculations
             FileSSWeight = new List<double>();
         }
 
-        public void ClearImageParamterLists()
+        public void Clear()
         {
             FocuserPosition.Clear();
             FocuserTemperature.Clear();
@@ -110,6 +110,12 @@ namespace XisfFileManager.Calculations
 
             return p.Item2.ToString("F1") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
         }
+
+        public int RejectSubFrames(SubFrameWeightLists weightLists)
+        {
+            return 0;
+        }
+
 
         public double FindMean(List<double> valueList)
         {

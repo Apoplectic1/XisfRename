@@ -9,14 +9,10 @@ namespace XisfFileManager.Keywords
     public class KeywordData
     {
         public List<Keyword> KeywordList;
-        public SubFrameKeywordLists SubFrameKeywordLists { get; private set; }
-
-
+ 
         public KeywordData()
         {
             KeywordList = new List<Keyword>();
-            KeywordList.Clear();
-            SubFrameKeywordLists = new SubFrameKeywordLists();
         }
 
         // #########################################################################################################
@@ -557,8 +553,8 @@ namespace XisfFileManager.Keywords
             double SSWeight = Convert.ToDouble(node.GetValue());
 
             if (Double.IsNaN(SSWeight)) return Double.NaN;
-
-            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 0, MidpointRounding.AwayFromZero));
+            
+            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 1, MidpointRounding.AwayFromZero));
         }
 
         // *********************************************************************************************************
