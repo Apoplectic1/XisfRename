@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Windows.Forms;
 using XisfFileManager.Keywords;
 
 namespace XisfFileManager.Calculations
@@ -114,6 +116,8 @@ namespace XisfFileManager.Calculations
 
         public List<string> FileName { get; private set; }
 
+        List<string> Rejected;
+
 
         public SubFrameWeightLists()
         {
@@ -132,6 +136,7 @@ namespace XisfFileManager.Calculations
             StarResidualMeanDeviation = new List<double>();
             Stars = new List<double>();
             Weight = new List<double>();
+            Rejected = new List<string>();
         }
 
         public void Clear()
@@ -151,6 +156,7 @@ namespace XisfFileManager.Calculations
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
             Weight.Clear();
+            Rejected.Clear();
         }
 
         public SubFrameWeightListsValidEnum ValidateWeightLists(int SubFrameCount)
@@ -203,7 +209,7 @@ namespace XisfFileManager.Calculations
 
             bStatus = Weight.Count == SubFrameCount ? bStatus : false;
             bZero = Weight.Count == 0 ? bZero : false;
-            
+
             if (bZero == false)
             {
                 foreach (string filename in FileName)
@@ -212,7 +218,7 @@ namespace XisfFileManager.Calculations
                 }
             }
 
-            if (! bFileExists)
+            if (!bFileExists)
             {
                 return SubFrameWeightListsValidEnum.MISMATCH;
             }
@@ -243,6 +249,47 @@ namespace XisfFileManager.Calculations
             //WeightScaled = SubFrameWeightLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
 
             return WeightScaled;
+        }
+
+        public int FindRejectedSubFrames(decimal FwhmMax, decimal EccentricityMax, decimal MedianMax)
+        {
+            int index;
+
+            Rejected.Clear();
+
+            index = 0;
+            foreach(double fwhm in Fwhm)
+            {
+                if (fwhm > Convert.ToDouble(FwhmMax))
+                {
+                    Rejected.Add(FileName[index]);
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double ecccentricity in Eccentricity)
+            {
+                if (ecccentricity > Convert.ToDouble(EccentricityMax))
+                {
+                    Rejected.Add(FileName[index]);
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double median in Median)
+            {
+                if (median > Convert.ToDouble(MedianMax))
+                {
+                    Rejected.Add(FileName[index]);
+                }
+                index++;
+            }
+
+            Rejected = Rejected.Distinct().ToList();
+
+            return Rejected.Count();
         }
 
         public void WeightSubFrameValue(int SubFrameCount)

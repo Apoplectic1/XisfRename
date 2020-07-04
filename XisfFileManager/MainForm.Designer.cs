@@ -166,7 +166,7 @@
             this.NumericUpDown_Rejection_Median = new System.Windows.Forms.NumericUpDown();
             this.Label_Rejection_Median = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_Eccentricity = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown_Rejection_FWHM = new System.Windows.Forms.NumericUpDown();
+            this.NumericUpDown_Rejection_FWHM = new System.Windows.Forms.NumericUpDown();
             this.TextBox_Rejection_Total = new System.Windows.Forms.TextBox();
             this.Label_Rejection_Total = new System.Windows.Forms.Label();
             this.Label_Rejection_Eccentricity = new System.Windows.Forms.Label();
@@ -210,7 +210,7 @@
             this.GroupBox_InitialRejectionCriteria.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Median)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_FWHM)).BeginInit();
             this.GroupBox_UpdateStatistics.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1616,7 +1616,7 @@
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Median);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Median);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Eccentricity);
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.numericUpDown_Rejection_FWHM);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_FWHM);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.TextBox_Rejection_Total);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Total);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Eccentricity);
@@ -1659,6 +1659,7 @@
             0,
             0,
             0});
+            this.NumericUpDown_Rejection_Median.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_Median_ValueChanged);
             // 
             // Label_Rejection_Median
             // 
@@ -1693,30 +1694,32 @@
             0,
             0,
             131072});
+            this.NumericUpDown_Rejection_Eccentricity.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_Eccentricity_ValueChanged);
             // 
-            // numericUpDown_Rejection_FWHM
+            // NumericUpDown_Rejection_FWHM
             // 
-            this.numericUpDown_Rejection_FWHM.DecimalPlaces = 1;
-            this.numericUpDown_Rejection_FWHM.Increment = new decimal(new int[] {
+            this.NumericUpDown_Rejection_FWHM.DecimalPlaces = 2;
+            this.NumericUpDown_Rejection_FWHM.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
-            this.numericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(70, 23);
-            this.numericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
+            131072});
+            this.NumericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(70, 23);
+            this.NumericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
             7,
             0,
             0,
             0});
-            this.numericUpDown_Rejection_FWHM.Name = "numericUpDown_Rejection_FWHM";
-            this.numericUpDown_Rejection_FWHM.Size = new System.Drawing.Size(44, 20);
-            this.numericUpDown_Rejection_FWHM.TabIndex = 6;
-            this.numericUpDown_Rejection_FWHM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown_Rejection_FWHM.Value = new decimal(new int[] {
+            this.NumericUpDown_Rejection_FWHM.Name = "NumericUpDown_Rejection_FWHM";
+            this.NumericUpDown_Rejection_FWHM.Size = new System.Drawing.Size(44, 20);
+            this.NumericUpDown_Rejection_FWHM.TabIndex = 6;
+            this.NumericUpDown_Rejection_FWHM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.NumericUpDown_Rejection_FWHM.Value = new decimal(new int[] {
             45,
             0,
             0,
             65536});
+            this.NumericUpDown_Rejection_FWHM.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_FWHM_ValueChanged);
             // 
             // TextBox_Rejection_Total
             // 
@@ -1991,7 +1994,7 @@
             this.GroupBox_InitialRejectionCriteria.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Median)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Rejection_FWHM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_FWHM)).EndInit();
             this.GroupBox_UpdateStatistics.ResumeLayout(false);
             this.GroupBox_UpdateStatistics.PerformLayout();
             this.ResumeLayout(false);
@@ -2139,7 +2142,7 @@
         private System.Windows.Forms.RadioButton RadioButton_RenameOrder_WeightIndex;
         private System.Windows.Forms.Label Label_TempratureCompensation;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Eccentricity;
-        private System.Windows.Forms.NumericUpDown numericUpDown_Rejection_FWHM;
+        private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_FWHM;
         private System.Windows.Forms.TextBox TextBox_Rejection_Total;
         private System.Windows.Forms.Label Label_Rejection_Total;
         private System.Windows.Forms.Label Label_Rejection_Eccentricity;

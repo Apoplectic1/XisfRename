@@ -70,8 +70,7 @@ namespace XisfFileManager
         private string mFolderCsvBrowseState;
         public SubFrameLists SubFrameKeywordLists;
         private SubFrameWeightLists NumericWeightLists;
-        private SubFrameWeightLists.SubFrameWeightListsValidEnum eSubFrameValidListsValid;
-
+        private SubFrameWeightListsValidEnum eSubFrameValidListsValid;
         private ImageCalculations ImageParameterLists;
 
 
@@ -351,6 +350,10 @@ namespace XisfFileManager
                     // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
                     NumericWeightLists.BuildNumericSubFrameDataKeywordLists(SubFrameKeywordLists);
                 }
+
+                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(NumericWeightLists.Fwhm.Max());
+                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(NumericWeightLists.Eccentricity.Max());
+                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(NumericWeightLists.Median.Max());
 
                 SetUISubFrameGroupBoxState();
 
@@ -935,7 +938,35 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
         {
+            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+                NumericUpDown_Rejection_FWHM.Value, 
+                NumericUpDown_Rejection_Eccentricity.Value, 
+                NumericUpDown_Rejection_Median.Value).ToString();
+
             SetUISubFrameGroupBoxState();
+        }
+
+        private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
+        {
+            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+                NumericUpDown_Rejection_FWHM.Value,
+                NumericUpDown_Rejection_Eccentricity.Value,
+                NumericUpDown_Rejection_Median.Value).ToString();
+        }
+        private void NumericUpDown_Rejection_Eccentricity_ValueChanged(object sender, EventArgs e)
+        {
+            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+                NumericUpDown_Rejection_FWHM.Value,
+                NumericUpDown_Rejection_Eccentricity.Value,
+                NumericUpDown_Rejection_Median.Value).ToString();
+        }
+
+        private void NumericUpDown_Rejection_Median_ValueChanged(object sender, EventArgs e)
+        {
+            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+                NumericUpDown_Rejection_FWHM.Value,
+                NumericUpDown_Rejection_Eccentricity.Value,
+                NumericUpDown_Rejection_Median.Value).ToString();
         }
 
         private void UpdateWeightCalculations()
@@ -973,5 +1004,7 @@ namespace XisfFileManager
             Label_StarResidualStdDev.Text = "StdDev: " + NumericWeightLists.StarResidual.StandardDeviation().ToString("F2");
             Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + NumericWeightLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
         }
+
+       
     }
 }

@@ -56,8 +56,10 @@ namespace XisfFileManager.XisfFileOperations
                     xFile.KeywordData.AddKeyword(element);
                 }
 
+                xFile.KeywordData.RepairEGain();
                 xFile.KeywordData.RepairSiteLatitude();
                 xFile.KeywordData.RepairSiteLongitude();
+
 
                 return true;
             }

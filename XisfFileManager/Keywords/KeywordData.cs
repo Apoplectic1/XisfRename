@@ -17,6 +17,43 @@ namespace XisfFileManager.Keywords
 
         // #########################################################################################################
         // #########################################################################################################
+        
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Various programs appear to screw this up - fix it
+        public void RepairEGain()
+        {
+            double? gain = Gain();
+            if (!gain.HasValue) return;
+
+            string camera = Camera();
+            if (camera == string.Empty) return;
+
+            double egain = -1.0;
+
+            if (camera == "Z183")
+            {
+                egain = 3.6059 * Math.Exp(-0.011 * gain.Value);
+            }
+            else
+            {
+                if (Camera() == "Q178")
+                {
+                    if (gain < 4.0)
+                    {
+                        egain = 2.6;
+                    }
+                    else
+                    {
+                        egain = 3.8018 * Math.Exp(-0.0117 * gain.Value);
+                    }
+                }
+            }
+
+            if (egain == -1.0) return;
+
+            AddKeyword("EGAIN", egain, "XSIF File Manager Calculated electrons per ADU");
+        }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -27,6 +64,8 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "SITELAT");
+            if (node == null) return;
+
             value = node.Value;
 
             if (value.Contains("N"))
@@ -47,6 +86,8 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "SITELONG");
+            if (node == null) return;
+
             value = node.Value;
 
             if (value.Contains("W"))
@@ -404,7 +445,7 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int Gain()
+        public int? Gain()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
@@ -415,6 +456,9 @@ namespace XisfFileManager.Keywords
             {
                 node = KeywordList.Find(i => i.Name == "GAINRAW");
             }
+
+            if (node == null)
+                return null;
 
             value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.INTEGER;

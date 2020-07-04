@@ -121,6 +121,5 @@ namespace XisfFileManager.Calculations
         {
             return valueList.Mean();
         }
-
     }
 }
