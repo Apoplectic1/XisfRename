@@ -150,12 +150,11 @@ namespace XisfFileManager.FileOperations
             }
 
 
-            // After Keyword update, move rejected files to the "Rejected" subdirectory
+            // After Keyword update, move rejected file (Approved = false) to the "Rejected" subdirectory
             if (mFile.KeywordData.Approved() == false)
             {
                 sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
                 Directory.CreateDirectory(sourceFilePath + "\\Rejected");
-
                 File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
              }
 

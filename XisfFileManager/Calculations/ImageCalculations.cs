@@ -111,12 +111,6 @@ namespace XisfFileManager.Calculations
             return p.Item2.ToString("F1") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
         }
 
-        public int RejectSubFrames(SubFrameNumericLists weightLists)
-        {
-            return 0;
-        }
-
-
         public double FindMean(List<double> valueList)
         {
             return valueList.Mean();

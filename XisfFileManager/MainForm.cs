@@ -985,14 +985,17 @@ namespace XisfFileManager
             {
                 return;
             }
+
             int index = 0;
             foreach (XisfFile file in mFileList)
             {
                 // Add keyword will remove all instances of the keyword to be added and then add it
-                file.KeywordData.AddKeyword("Approved", SubFrameNumericLists.Approved[index]);
+                SubFrameLists.SubFrameList.Approved[index].Value = SubFrameNumericLists.Approved[index].ToString();
+                
                 index++;
             }
         }
+
         private void UpdateWeightCalculations()
         {
             SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
