@@ -127,7 +127,7 @@ namespace XisfFileManager.FileOperations
             keyword.Name = name;
             keyword.Value = value;
             keyword.Comment = comment;
-            keyword.Type = Keywords.Keyword.EType.STRING;
+            keyword.Type = Keyword.EType.STRING;
             return keyword;
         }
 

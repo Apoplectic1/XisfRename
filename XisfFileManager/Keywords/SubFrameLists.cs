@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace XisfFileManager.Keywords
+﻿namespace XisfFileManager.Keywords
 {
     public class SubFrameLists
     {

@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using XisfFileManager.Keywords;
 
-namespace XisfFileManager.XisfFile
+namespace XisfFileManager.FileOperations
 {
     public class XisfFile
     {

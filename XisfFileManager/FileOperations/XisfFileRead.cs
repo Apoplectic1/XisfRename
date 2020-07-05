@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using XisfFileManager.Keywords;
 
 namespace XisfFileManager.FileOperations
 {
@@ -12,7 +11,7 @@ namespace XisfFileManager.FileOperations
         private static string mXmlString;
         private static XDocument mXDoc;
 
-        public static bool ReadXisfFile(XisfFile.XisfFile xFile)
+        public static bool ReadXisfFile(XisfFile xFile)
         {
             using (StreamReader reader = new StreamReader(xFile.SourceFileName))
             {

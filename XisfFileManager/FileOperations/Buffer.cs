@@ -1,4 +1,4 @@
-﻿namespace XisfFileManager.XisfFile
+﻿namespace XisfFileManager.FileOperations
 {
     public class Buffer
     {

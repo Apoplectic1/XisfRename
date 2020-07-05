@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace XisfFileManager.FileOperations
@@ -10,7 +9,7 @@ namespace XisfFileManager.FileOperations
     {
         private int mDupIndex;
        
-        public List<XisfFile.XisfFile> mFileList;
+        public List<XisfFile> mFileList;
         public enum OrderType { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }
         public OrderType RenameOrder;
 
@@ -26,7 +25,7 @@ namespace XisfFileManager.FileOperations
             return dupFileName;
         }
 
-        public int RenameFiles(int index, XisfFile.XisfFile file)
+        public int RenameFiles(int index, XisfFile file)
         {
             try
             {
@@ -73,7 +72,7 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        public void MarkDuplicates(List<XisfFile.XisfFile> fileList)
+        public void MarkDuplicates(List<XisfFile> fileList)
         {
             // Duplicates are files with identical image capture times
             DateTime entryDateTime = DateTime.Now;
@@ -92,7 +91,7 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        private string BuildFileName(int index, XisfFile.XisfFile mFile)
+        private string BuildFileName(int index, XisfFile mFile)
         {
             string newName = string.Empty;
 
@@ -182,7 +181,7 @@ namespace XisfFileManager.FileOperations
 
             return newName;
         }
-        private void MoveDuplicates(XisfFile.XisfFile currentFile, string sourceFilePath, string newFileName)
+        private void MoveDuplicates(XisfFile currentFile, string sourceFilePath, string newFileName)
         {
             mDupIndex = 1;
 

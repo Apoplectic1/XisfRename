@@ -23,13 +23,13 @@ namespace XisfFileManager
     {
         private DirectoryInfo d;
         private ImageCalculations ImageParameterLists;
-        private List<XisfFile.XisfFile> mFileList;
+        private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
         private SubFrameLists SubFrameLists;
         private SubFrameNumericLists SubFrameNumericLists;
         private SubFrameNumericListsValidEnum eSubFrameValidListsValid;
-        private XisfFile.XisfFile mFile;
+        private XisfFile mFile;
         private XisfFileRename mRenameFile;
         private double mEccentricityMeanDeviationPercent;
         private double mEccentricityMeanDeviationRangeHigh;
@@ -79,7 +79,7 @@ namespace XisfFileManager
         {
             InitializeComponent();
             Label_Task.Text = "";
-            mFileList = new List<XisfFile.XisfFile>();
+            mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename();
             mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
 
@@ -98,7 +98,7 @@ namespace XisfFileManager
 
             if (ApplicationDeployment.IsNetworkDeployed)
             {
-                System.Deployment.Application.ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
                 Version version = ad.CurrentVersion;
                 Text = "XISF File Manager - Version: " + version.ToString();
             }
@@ -301,7 +301,7 @@ namespace XisfFileManager
                         ProgressBar_OverAll.Value += 1;
 
                         // Create a new xisf file instance
-                        mFile = new XisfFile.XisfFile();
+                        mFile = new XisfFile();
                         mFile.SourceFileName = file.FullName;
 
                         // Get the keyword data contained found within the current file
@@ -331,11 +331,11 @@ namespace XisfFileManager
                     // Sort Image File List by Capture Time
                     // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
                     // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
-                    mFileList.Sort(XisfFile.XisfFile.CaptureTimeComparison);
+                    mFileList.Sort(XisfFile.CaptureTimeComparison);
 
                     // If the following Keywords exist in the source XISF file, add the keyword value to FileSubFrameKeywordLists
 
-                    foreach (XisfFile.XisfFile file in mFileList)
+                    foreach (XisfFile file in mFileList)
                     {
                         SubFrameLists.AddKeywordApproved(file.KeywordData);
                         SubFrameLists.AddKeywordEccentricity(file.KeywordData);
@@ -372,7 +372,7 @@ namespace XisfFileManager
                 Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
                 List<string> TargetNames = new List<string>();
-                foreach (XisfFile.XisfFile file in mFileList)
+                foreach (XisfFile file in mFileList)
                 {
                     TargetNames.Add(file.KeywordData.TargetName());
                     ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
@@ -423,7 +423,7 @@ namespace XisfFileManager
             mRenameFile.MarkDuplicates(mFileList);
 
 
-            foreach (XisfFile.XisfFile file in mFileList)
+            foreach (XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
                 indexIncrement = mRenameFile.RenameFiles(index, file);
@@ -449,7 +449,7 @@ namespace XisfFileManager
 
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.INVALD)
+            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.INVALD)
             {
                 var result = MessageBox.Show(
                     "SubFrame Numerical Weight List is invalid\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
@@ -465,20 +465,20 @@ namespace XisfFileManager
             }
 
 
-            if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
             {
                 SubFrameNumericLists.WeightSubFrameValue(mFileList.Count);
                 XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
             }
 
  
-            foreach (XisfFile.XisfFile file in mFileList)
+            foreach (XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
                 Application.DoEvents();
 
                 XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID) ? true : false;
+                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID) ? true : false;
 
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
                 if (bStatus == false)
@@ -534,15 +534,15 @@ namespace XisfFileManager
 
             switch (eSubFrameValidListsValid)
             {
-                case SubFrameNumericLists.SubFrameNumericListsValidEnum.EMPTY:
+                case SubFrameNumericListsValidEnum.EMPTY:
                     MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
-                case SubFrameNumericLists.SubFrameNumericListsValidEnum.MISMATCH:
+                case SubFrameNumericListsValidEnum.MISMATCH:
                     MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
-                case SubFrameNumericLists.SubFrameNumericListsValidEnum.INVALD:
+                case SubFrameNumericListsValidEnum.INVALD:
                     MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
                     return;
             }
@@ -830,7 +830,7 @@ namespace XisfFileManager
            
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid != SubFrameNumericListsValidEnum.VALID)
             {
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
@@ -862,7 +862,7 @@ namespace XisfFileManager
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
+                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
@@ -986,7 +986,7 @@ namespace XisfFileManager
                 return;
             }
             int index = 0;
-            foreach (XisfFile.XisfFile file in mFileList)
+            foreach (XisfFile file in mFileList)
             {
                 // Add keyword will remove all instances of the keyword to be added and then add it
                 file.KeywordData.AddKeyword("Approved", SubFrameNumericLists.Approved[index]);

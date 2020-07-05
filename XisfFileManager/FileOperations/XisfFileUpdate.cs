@@ -12,8 +12,8 @@ namespace XisfFileManager.FileOperations
 {
     public static class XisfFileUpdate
     {
-        public static XisfFile.Buffer mBuffer;
-        public static List<XisfFile.Buffer> mBufferList;
+        public static Buffer mBuffer;
+        public static List<Buffer> mBufferList;
         public static string TargetName { get; set; }
         public static bool bAddCsvKeywords { get; set; } = false;
 
@@ -21,13 +21,13 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile.XisfFile mFile, SubFrameLists SubFrameKeywordLists)
+        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists)
         {
             int xmlStart;
             int xisfStart;
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
-            mBufferList = new List<XisfFile.Buffer>();
+            mBufferList = new List<Buffer>();
             string sourceFilePath;
             try
             {
@@ -91,33 +91,33 @@ namespace XisfFileManager.FileOperations
                     xisfString = xmlDoc.OuterXml;
 
                     // Add header (includes binary and string portions) up the start of "<xisf version"
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ASCII;
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ASCII;
                     mBuffer.AsciiData = "XISF0100";
                     mBufferList.Add(mBuffer);
 
                     // Write length (filled out later) and reserved bytes as 0's
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ZEROS;
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
                     mBuffer.BinaryByteLength = 8;
                     mBufferList.Add(mBuffer);
 
                     // Add the newly replaced XML ascii potortion to the buffer list 
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.ASCII;
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.ASCII;
                     mBuffer.AsciiData = xisfString;
                     mBufferList.Add(mBuffer);
 
                     // Pad from current position (which is the end of xisfString xml) to the start of image data
                     // This is here because it is difficult to determine where the end position is of xisfString. 
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.POSITION;
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.POSITION;
                     mBuffer.ToPosition = imageStart;
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data from rawFileData after padding
-                    mBuffer = new XisfFile.Buffer();
-                    mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
+                    mBuffer = new Buffer();
+                    mBuffer.Type = Buffer.TypeEnum.BINARY;
                     mBuffer.BinaryDataStart = mFile.ImageAttachmentStart;
                     mBuffer.BinaryByteLength = mFile.ImageAttachmentLength;
                     mBuffer.BinaryData = rawFileData;
@@ -126,8 +126,8 @@ namespace XisfFileManager.FileOperations
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
                         // Add the binary thumbnail image data from rawFileData after image data and padding
-                        mBuffer = new XisfFile.Buffer();
-                        mBuffer.Type = XisfFile.Buffer.TypeEnum.BINARY;
+                        mBuffer = new Buffer();
+                        mBuffer.Type = Buffer.TypeEnum.BINARY;
                         mBuffer.BinaryDataStart = mFile.ThumbnailAttachmentStart;
                         mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentLength;
                         mBuffer.BinaryData = rawFileData;
@@ -199,7 +199,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile.XisfFile mFile, bool bAddCsvSubFrameKeywords, SubFrameLists CsvSubFrameKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile, bool bAddCsvSubFrameKeywords, SubFrameLists CsvSubFrameKeywordLists)
         {
             // First Clean Up by removing all FITSKeywords
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -278,7 +278,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordListToKeywordData(bool enable, SubFrameLists CsvWeightLists, XisfFile.XisfFile mFile)
+        private static void AddCsvKeywordListToKeywordData(bool enable, SubFrameLists CsvWeightLists, XisfFile mFile)
         {
             int indexer;
             List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileName;
@@ -349,28 +349,28 @@ namespace XisfFileManager.FileOperations
                 {
                     using (BinaryWriter binaryWriter = new BinaryWriter(rawStream))
                     {
-                        foreach (XisfFile.Buffer buffer in mBufferList)
+                        foreach (Buffer buffer in mBufferList)
                         {
                             long position = rawStream.Position;
 
                             switch (buffer.Type)
                             {
-                                case XisfFile.Buffer.TypeEnum.ASCII:
+                                case Buffer.TypeEnum.ASCII:
                                     binaryWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
                                     break;
 
-                                case XisfFile.Buffer.TypeEnum.BINARY:
+                                case Buffer.TypeEnum.BINARY:
                                     binaryWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
                                     break;
 
-                                case XisfFile.Buffer.TypeEnum.ZEROS:
+                                case Buffer.TypeEnum.ZEROS:
                                     for (int i = (int)position; i < buffer.BinaryByteLength + position; i++)
                                     {
                                         binaryWriter.Write(zero, 0, 1);
                                     }
                                     break;
 
-                                case XisfFile.Buffer.TypeEnum.POSITION:
+                                case Buffer.TypeEnum.POSITION:
                                     if ((int)position > buffer.ToPosition)
                                     {
                                         MessageBox.Show(fileName + "\n\nThe length of xml xisfString is after the start of image data:\n" +
