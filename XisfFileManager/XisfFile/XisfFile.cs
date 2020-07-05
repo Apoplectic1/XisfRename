@@ -12,12 +12,12 @@ namespace XisfFileManager.XisfFile
         public int ThumbnailAttachmentLength { get; set; } = 0;
         public int ThumbnailAttachmentStart { get; set; } = 0;
         public string SourceFileName { get; set; }
-        public KeywordData KeywordData { get; set; }
+        public KeywordLists KeywordData { get; set; }
         public bool Unique;
 
         public XisfFile()
         {
-            KeywordData = new KeywordData();
+            KeywordData = new KeywordLists();
         }
 
         // ************************************************************************************************

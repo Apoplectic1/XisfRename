@@ -162,7 +162,7 @@
             this.TextBox_StarRangeLow = new System.Windows.Forms.TextBox();
             this.Label_StarsStdDev = new System.Windows.Forms.Label();
             this.GroupBox_InitialRejectionCriteria = new System.Windows.Forms.GroupBox();
-            this.Button_Regection_MoveRejected = new System.Windows.Forms.Button();
+            this.Button_Rejection_RejectionSet = new System.Windows.Forms.Button();
             this.NumericUpDown_Rejection_Median = new System.Windows.Forms.NumericUpDown();
             this.Label_Rejection_Median = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_Eccentricity = new System.Windows.Forms.NumericUpDown();
@@ -1612,7 +1612,7 @@
             // 
             // GroupBox_InitialRejectionCriteria
             // 
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Button_Regection_MoveRejected);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Button_Rejection_RejectionSet);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Median);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Median);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Eccentricity);
@@ -1628,14 +1628,15 @@
             this.GroupBox_InitialRejectionCriteria.TabStop = false;
             this.GroupBox_InitialRejectionCriteria.Text = "Initial Rejection Criteria";
             // 
-            // Button_Regection_MoveRejected
+            // Button_Rejection_RejectionSet
             // 
-            this.Button_Regection_MoveRejected.Location = new System.Drawing.Point(526, 22);
-            this.Button_Regection_MoveRejected.Name = "Button_Regection_MoveRejected";
-            this.Button_Regection_MoveRejected.Size = new System.Drawing.Size(75, 23);
-            this.Button_Regection_MoveRejected.TabIndex = 10;
-            this.Button_Regection_MoveRejected.Text = "Move";
-            this.Button_Regection_MoveRejected.UseVisualStyleBackColor = true;
+            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(526, 22);
+            this.Button_Rejection_RejectionSet.Name = "Button_Rejection_RejectionSet";
+            this.Button_Rejection_RejectionSet.Size = new System.Drawing.Size(75, 23);
+            this.Button_Rejection_RejectionSet.TabIndex = 10;
+            this.Button_Rejection_RejectionSet.Text = "Reject";
+            this.Button_Rejection_RejectionSet.UseVisualStyleBackColor = true;
+            this.Button_Rejection_RejectionSet.Click += new System.EventHandler(this.Button_Rejection_RejectionSet_Click);
             // 
             // NumericUpDown_Rejection_Median
             // 
@@ -2156,7 +2157,7 @@
         private System.Windows.Forms.Label Label_OSeconds;
         private System.Windows.Forms.Label Label_OverheadSeconds;
         private System.Windows.Forms.CheckBox CheckBox_SubFrameKeywords_UpdateTargetName;
-        private System.Windows.Forms.Button Button_Regection_MoveRejected;
+        private System.Windows.Forms.Button Button_Rejection_RejectionSet;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Median;
         private System.Windows.Forms.Label Label_Rejection_Median;
         private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_CalculateWeights;

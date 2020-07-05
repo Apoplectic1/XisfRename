@@ -132,7 +132,7 @@
   <ItemGroup>
     <Compile Include="Calculations\ImageCalculations.cs" />
     <Compile Include="Calculations\PositionTemperature.cs" />
-    <Compile Include="Calculations\SubFrameWeightLists.cs" />
+    <Compile Include="Keywords\NumericWeightLists.cs" />
     <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
     <Compile Include="Keywords\SubFrame.cs" />
     <Compile Include="Keywords\SubFrameLists.cs" />
@@ -144,7 +144,7 @@
     </Compile>
     <Compile Include="XisfFile\Buffer.cs" />
     <Compile Include="Keywords\Keyword.cs" />
-    <Compile Include="Keywords\KeywordData.cs" />
+    <Compile Include="Keywords\KeywordLists.cs" />
     <Compile Include="XisfFileOperations\XisfFileRead.cs" />
     <Compile Include="XisfFileOperations\XisfFileRename.cs" />
     <Compile Include="XisfFileOperations\XisfFileUpdate.cs" />

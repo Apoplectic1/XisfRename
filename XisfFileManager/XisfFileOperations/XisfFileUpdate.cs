@@ -28,9 +28,19 @@ namespace XisfFileManager.XisfFileOperations
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
             mBufferList = new List<XisfFile.Buffer>();
-
+            string sourceFilePath;
             try
             {
+                // Move Rejected Files 
+                if (mFile.KeywordData.Approved() == false)
+                {
+                    sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
+                    Directory.CreateDirectory(sourceFilePath + "\\Rejected");
+
+                    File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
+                    return true;
+                }
+
                 using (Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open))
                 {
                     mBufferList.Clear();
@@ -254,7 +264,7 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
-        public static void UpdateCsvWeightList(SubFrameWeightLists WeightLists, SubFrameLists CsvWeightLists)
+        public static void UpdateCsvWeightList(NumericWeightLists WeightLists, SubFrameLists CsvWeightLists)
         {
             int index = 0;
 

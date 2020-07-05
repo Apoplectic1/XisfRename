@@ -14,7 +14,7 @@ using XisfFileManager.XisfFileOperations;
 using System.Threading;
 using System.Drawing;
 using XisfFileManager.Calculations;
-using static XisfFileManager.Calculations.SubFrameWeightLists;
+using static XisfFileManager.Calculations.NumericWeightLists;
 
 namespace XisfFileManager
 {
@@ -22,12 +22,15 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        List<XisfFile.XisfFile> mFileList;
-        XisfFile.XisfFile mFile;
-        XisfFileRename mRenameFile;
         private DirectoryInfo d;
+        private ImageCalculations ImageParameterLists;
+        private List<XisfFile.XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
+        private NumericWeightLists NumericWeightLists;
+        private SubFrameWeightListsValidEnum eSubFrameValidListsValid;
+        private XisfFile.XisfFile mFile;
+        private XisfFileRename mRenameFile;
         private double mEccentricityMeanDeviationPercent;
         private double mEccentricityMeanDeviationRangeHigh;
         private double mEccentricityMeanDeviationRangeLow;
@@ -69,9 +72,7 @@ namespace XisfFileManager
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
         public SubFrameLists SubFrameKeywordLists;
-        private SubFrameWeightLists NumericWeightLists;
-        private SubFrameWeightListsValidEnum eSubFrameValidListsValid;
-        private ImageCalculations ImageParameterLists;
+
 
 
         public MainForm()
@@ -81,9 +82,17 @@ namespace XisfFileManager
             mFileList = new List<XisfFile.XisfFile>();
             mRenameFile = new XisfFileRename();
             mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
+
+            // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
+            // Data is stored as Keyword XML nodes - strings
             SubFrameKeywordLists = new SubFrameLists();
-            NumericWeightLists = new SubFrameWeightLists();
+
+            // This set of lists contains only numeric values (not XML node strings) to be used for weight calculations  
+            NumericWeightLists = new NumericWeightLists();
+
+            // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
+
             Label_Task.Text = "No Images Selected";
             Label_TempratureCompensation.Text = "Temerature Coefficient: N/A";
 
@@ -440,7 +449,7 @@ namespace XisfFileManager
 
             eSubFrameValidListsValid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.INVALD)
+            if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.INVALD)
             {
                 var result = MessageBox.Show(
                     "SubFrame Numerical Weight List is invalid\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
@@ -456,7 +465,7 @@ namespace XisfFileManager
             }
 
 
-            if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
             {
                 NumericWeightLists.WeightSubFrameValue(mFileList.Count);
                 XisfFileUpdate.UpdateCsvWeightList(NumericWeightLists, SubFrameKeywordLists);
@@ -469,7 +478,7 @@ namespace XisfFileManager
                 Application.DoEvents();
 
                 XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID) ? true : false;
+                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID) ? true : false;
 
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameKeywordLists);
                 if (bStatus == false)
@@ -525,15 +534,15 @@ namespace XisfFileManager
 
             switch (eSubFrameValidListsValid)
             {
-                case SubFrameWeightLists.SubFrameWeightListsValidEnum.EMPTY:
+                case NumericWeightLists.SubFrameWeightListsValidEnum.EMPTY:
                     MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
-                case SubFrameWeightLists.SubFrameWeightListsValidEnum.MISMATCH:
+                case NumericWeightLists.SubFrameWeightListsValidEnum.MISMATCH:
                     MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
-                case SubFrameWeightLists.SubFrameWeightListsValidEnum.INVALD:
+                case NumericWeightLists.SubFrameWeightListsValidEnum.INVALD:
                     MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
                     return;
             }
@@ -821,7 +830,7 @@ namespace XisfFileManager
            
             eSubFrameValidListsValid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
+            if (eSubFrameValidListsValid != NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
             {
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
@@ -853,7 +862,7 @@ namespace XisfFileManager
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == SubFrameWeightLists.SubFrameWeightListsValidEnum.VALID)
+                if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
@@ -938,7 +947,7 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value, 
                 NumericUpDown_Rejection_Eccentricity.Value, 
                 NumericUpDown_Rejection_Median.Value).ToString();
@@ -948,14 +957,14 @@ namespace XisfFileManager
 
         private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
         }
         private void NumericUpDown_Rejection_Eccentricity_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
@@ -963,12 +972,26 @@ namespace XisfFileManager
 
         private void NumericUpDown_Rejection_Median_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.FindRejectedSubFrames(
+            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
         }
 
+        private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
+        {
+            SubFrameWeightListsValidEnum valid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
+            if (valid != SubFrameWeightListsValidEnum.VALID)
+            {
+                return;
+            }
+
+            foreach (XisfFile.XisfFile file in mFileList)
+            {
+                // Add keyword will remove all instances of the keyword to be added and then add it
+                file.KeywordData.AddKeyword("Approved", NumericWeightLists.Approved.ToString()); 
+            }
+        }
         private void UpdateWeightCalculations()
         {
             SubFrameWeightListsValidEnum valid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
@@ -1004,7 +1027,5 @@ namespace XisfFileManager
             Label_StarResidualStdDev.Text = "StdDev: " + NumericWeightLists.StarResidual.StandardDeviation().ToString("F2");
             Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + NumericWeightLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
         }
-
-       
     }
 }

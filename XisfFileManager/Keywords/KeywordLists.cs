@@ -6,11 +6,11 @@ using System.Xml.Linq;
 
 namespace XisfFileManager.Keywords
 {
-    public class KeywordData
+    public class KeywordLists
     {
         public List<Keyword> KeywordList;
  
-        public KeywordData()
+        public KeywordLists()
         {
             KeywordList = new List<Keyword>();
         }
@@ -144,6 +144,23 @@ namespace XisfFileManager.Keywords
             return FormatTemperatureString(value);
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public bool Approved()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "Approved");
+            if (node == null)
+            {
+                AddKeyword("Approved", true);
+            }
+
+            node = KeywordList.Find(i => i.Name == "Approved");
+
+            return (node.Value == "true") ? true : false;
+        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string Binning()
@@ -671,6 +688,20 @@ namespace XisfFileManager.Keywords
             keyword.Value = value.ToString();
             keyword.Comment = comment;
             keyword.Type = Keyword.EType.INTEGER;
+            KeywordList.Add(keyword);
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public void AddKeyword(string name, bool value, string comment = "XISF File Manager")
+        {
+            KeywordList.RemoveAll(i => i.Name == name);
+
+            Keyword keyword = new Keyword();
+            keyword.Name = name;
+            keyword.Value = value.ToString();
+            keyword.Comment = comment;
+            keyword.Type = Keyword.EType.BOOL;
             KeywordList.Add(keyword);
         }
 

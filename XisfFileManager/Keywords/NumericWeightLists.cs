@@ -8,7 +8,7 @@ using XisfFileManager.Keywords;
 
 namespace XisfFileManager.Calculations
 {
-    public class SubFrameWeightLists
+    public class NumericWeightLists
     {
         public enum SubFrameWeightListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
 
@@ -116,10 +116,8 @@ namespace XisfFileManager.Calculations
 
         public List<string> FileName { get; private set; }
 
-        List<string> Rejected;
 
-
-        public SubFrameWeightLists()
+        public NumericWeightLists()
         {
             Approved = new List<bool>();
             Eccentricity = new List<double>();
@@ -136,7 +134,6 @@ namespace XisfFileManager.Calculations
             StarResidualMeanDeviation = new List<double>();
             Stars = new List<double>();
             Weight = new List<double>();
-            Rejected = new List<string>();
         }
 
         public void Clear()
@@ -156,7 +153,6 @@ namespace XisfFileManager.Calculations
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
             Weight.Clear();
-            Rejected.Clear();
         }
 
         public SubFrameWeightListsValidEnum ValidateWeightLists(int SubFrameCount)
@@ -251,18 +247,21 @@ namespace XisfFileManager.Calculations
             return WeightScaled;
         }
 
-        public int FindRejectedSubFrames(decimal FwhmMax, decimal EccentricityMax, decimal MedianMax)
+        public int SetRejectedSubFrames(decimal FwhmMax, decimal EccentricityMax, decimal MedianMax)
         {
             int index;
 
-            Rejected.Clear();
+            for(index = 0; index < Approved.Count; index++)
+            {
+                Approved[index] = true;
+            }
 
             index = 0;
-            foreach(double fwhm in Fwhm)
+            foreach (double fwhm in Fwhm)
             {
                 if (fwhm > Convert.ToDouble(FwhmMax))
                 {
-                    Rejected.Add(FileName[index]);
+                    Approved[index] = false;
                 }
                 index++;
             }
@@ -272,7 +271,7 @@ namespace XisfFileManager.Calculations
             {
                 if (ecccentricity > Convert.ToDouble(EccentricityMax))
                 {
-                    Rejected.Add(FileName[index]);
+                    Approved[index] = false;
                 }
                 index++;
             }
@@ -282,14 +281,19 @@ namespace XisfFileManager.Calculations
             {
                 if (median > Convert.ToDouble(MedianMax))
                 {
-                    Rejected.Add(FileName[index]);
+                    Approved[index] = false;
                 }
                 index++;
             }
 
-            Rejected = Rejected.Distinct().ToList();
+            index = 0;
+            foreach (bool approved in Approved)
+            {
+                if (approved == false)
+                    index++;
+            }
 
-            return Rejected.Count();
+            return index;
         }
 
         public void WeightSubFrameValue(int SubFrameCount)
