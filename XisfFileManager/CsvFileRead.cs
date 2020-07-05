@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using XisfFileManager.Keywords;
 
-namespace XisfFileManager.CsvFileOperations
+namespace XisfFileManager.FileOperations
 {
     public static class ReadSubFrameCsvData
     {

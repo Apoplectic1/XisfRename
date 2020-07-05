@@ -8,9 +8,8 @@ using System.Windows.Forms;
 using System.Deployment.Application;
 
 using LocalLib;
-using XisfFileManager.CsvFileOperations;
+using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
-using XisfFileManager.XisfFileOperations;
 using System.Threading;
 using System.Drawing;
 using XisfFileManager.Calculations;

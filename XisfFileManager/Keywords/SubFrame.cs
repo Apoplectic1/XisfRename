@@ -120,7 +120,7 @@ namespace XisfFileManager.Keywords
             {
                 foreach (Keyword filename in FileName)
                 {
-                    bFileExists = File.Exists(filename.Value) ? bFileExists : false;
+                    bFileExists = System.IO.File.Exists(filename.Value) ? bFileExists : false;
                 }
             }
 

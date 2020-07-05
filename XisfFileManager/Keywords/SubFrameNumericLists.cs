@@ -208,7 +208,7 @@ namespace XisfFileManager.Calculations
             {
                 foreach (string filename in FileName)
                 {
-                    bFileExists = File.Exists(filename) ? bFileExists : false;
+                    bFileExists = System.IO.File.Exists(filename) ? bFileExists : false;
                 }
             }
 
