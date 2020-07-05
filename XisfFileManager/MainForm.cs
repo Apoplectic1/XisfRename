@@ -14,7 +14,7 @@ using XisfFileManager.XisfFileOperations;
 using System.Threading;
 using System.Drawing;
 using XisfFileManager.Calculations;
-using static XisfFileManager.Calculations.NumericWeightLists;
+using static XisfFileManager.Calculations.SubFrameNumericLists;
 
 namespace XisfFileManager
 {
@@ -27,8 +27,9 @@ namespace XisfFileManager
         private List<XisfFile.XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
-        private NumericWeightLists NumericWeightLists;
-        private SubFrameWeightListsValidEnum eSubFrameValidListsValid;
+        private SubFrameLists SubFrameLists;
+        private SubFrameNumericLists SubFrameNumericLists;
+        private SubFrameNumericListsValidEnum eSubFrameValidListsValid;
         private XisfFile.XisfFile mFile;
         private XisfFileRename mRenameFile;
         private double mEccentricityMeanDeviationPercent;
@@ -71,7 +72,7 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-        public SubFrameLists SubFrameKeywordLists;
+       
 
 
 
@@ -85,10 +86,10 @@ namespace XisfFileManager
 
             // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
             // Data is stored as Keyword XML nodes - strings
-            SubFrameKeywordLists = new SubFrameLists();
+            SubFrameLists = new SubFrameLists();
 
             // This set of lists contains only numeric values (not XML node strings) to be used for weight calculations  
-            NumericWeightLists = new NumericWeightLists();
+            SubFrameNumericLists = new SubFrameNumericLists();
 
             // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
@@ -291,8 +292,8 @@ namespace XisfFileManager
 
                     // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
                     mFileList.Clear();
-                    SubFrameKeywordLists.Clear();
-                    NumericWeightLists.Clear();
+                    SubFrameLists.Clear();
+                    SubFrameNumericLists.Clear();
                     ImageParameterLists.Clear();
 
                     foreach (FileInfo file in Files)
@@ -337,32 +338,32 @@ namespace XisfFileManager
 
                     foreach (XisfFile.XisfFile file in mFileList)
                     {
-                        SubFrameKeywordLists.AddKeywordApproved(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordEccentricity(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordFileName(file.SourceFileName);
-                        SubFrameKeywordLists.AddKeywordFwhm(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordFwhmMeanDeviation(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordMedian(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordMedianMeanDeviation(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordNoise(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordNoiseRatio(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordSnrWeight(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordStarResidual(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordStarResidualMeanDeviation(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordStars(file.KeywordData);
-                        SubFrameKeywordLists.AddKeywordWeight(file.KeywordData);
+                        SubFrameLists.AddKeywordApproved(file.KeywordData);
+                        SubFrameLists.AddKeywordEccentricity(file.KeywordData);
+                        SubFrameLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
+                        SubFrameLists.AddKeywordFileName(file.SourceFileName);
+                        SubFrameLists.AddKeywordFwhm(file.KeywordData);
+                        SubFrameLists.AddKeywordFwhmMeanDeviation(file.KeywordData);
+                        SubFrameLists.AddKeywordMedian(file.KeywordData);
+                        SubFrameLists.AddKeywordMedianMeanDeviation(file.KeywordData);
+                        SubFrameLists.AddKeywordNoise(file.KeywordData);
+                        SubFrameLists.AddKeywordNoiseRatio(file.KeywordData);
+                        SubFrameLists.AddKeywordSnrWeight(file.KeywordData);
+                        SubFrameLists.AddKeywordStarResidual(file.KeywordData);
+                        SubFrameLists.AddKeywordStarResidualMeanDeviation(file.KeywordData);
+                        SubFrameLists.AddKeywordStars(file.KeywordData);
+                        SubFrameLists.AddKeywordWeight(file.KeywordData);
                     }
 
                     // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
                     // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
                     // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
-                    NumericWeightLists.BuildNumericSubFrameDataKeywordLists(SubFrameKeywordLists);
+                    SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
                 }
 
-                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(NumericWeightLists.Fwhm.Max());
-                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(NumericWeightLists.Eccentricity.Max());
-                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(NumericWeightLists.Median.Max());
+                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
+                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
+                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
 
                 SetUISubFrameGroupBoxState();
 
@@ -447,13 +448,13 @@ namespace XisfFileManager
             ProgressBar_XisfFile.Maximum = mFileList.Count();
             ProgressBar_XisfFile.Value = 0;
 
-            eSubFrameValidListsValid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
+            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.INVALD)
+            if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.INVALD)
             {
                 var result = MessageBox.Show(
                     "SubFrame Numerical Weight List is invalid\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
-                    "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + NumericWeightLists.Fwhm.Count() + ").",
+                    "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + SubFrameNumericLists.Fwhm.Count() + ").",
                     "\nMainForm.cs Button_Update_Click()",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -465,10 +466,10 @@ namespace XisfFileManager
             }
 
 
-            if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
             {
-                NumericWeightLists.WeightSubFrameValue(mFileList.Count);
-                XisfFileUpdate.UpdateCsvWeightList(NumericWeightLists, SubFrameKeywordLists);
+                SubFrameNumericLists.WeightSubFrameValue(mFileList.Count);
+                XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
             }
 
  
@@ -478,9 +479,9 @@ namespace XisfFileManager
                 Application.DoEvents();
 
                 XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID) ? true : false;
+                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID) ? true : false;
 
-                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameKeywordLists);
+                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
                 if (bStatus == false)
                 {
                     Label_Task.Text = "File Write Error";
@@ -517,10 +518,10 @@ namespace XisfFileManager
                 return;
             }
 
-            SubFrameKeywordLists.Clear();
-            NumericWeightLists.Clear();
+            SubFrameLists.Clear();
+            SubFrameNumericLists.Clear();
 
-            bStatus = ReadSubFrameCsvData.ReadCsvFile(mFileCsv.FileName, SubFrameKeywordLists);
+            bStatus = ReadSubFrameCsvData.ReadCsvFile(mFileCsv.FileName, SubFrameLists);
 
             if (bStatus == false)
             {
@@ -528,21 +529,21 @@ namespace XisfFileManager
                 return;
             }
            
-            NumericWeightLists.BuildNumericSubFrameDataKeywordLists(SubFrameKeywordLists);
+            SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
 
-            eSubFrameValidListsValid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
+            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
             switch (eSubFrameValidListsValid)
             {
-                case NumericWeightLists.SubFrameWeightListsValidEnum.EMPTY:
+                case SubFrameNumericLists.SubFrameNumericListsValidEnum.EMPTY:
                     MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
-                case NumericWeightLists.SubFrameWeightListsValidEnum.MISMATCH:
+                case SubFrameNumericLists.SubFrameNumericListsValidEnum.MISMATCH:
                     MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
-                case NumericWeightLists.SubFrameWeightListsValidEnum.INVALD:
+                case SubFrameNumericLists.SubFrameNumericListsValidEnum.INVALD:
                     MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
                     return;
             }
@@ -828,9 +829,9 @@ namespace XisfFileManager
         private void SetUISubFrameGroupBoxState()
         {
            
-            eSubFrameValidListsValid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
+            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
+            if (eSubFrameValidListsValid != SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
             {
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
@@ -862,7 +863,7 @@ namespace XisfFileManager
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == NumericWeightLists.SubFrameWeightListsValidEnum.VALID)
+                if (eSubFrameValidListsValid == SubFrameNumericLists.SubFrameNumericListsValidEnum.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
@@ -947,7 +948,7 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
+            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value, 
                 NumericUpDown_Rejection_Eccentricity.Value, 
                 NumericUpDown_Rejection_Median.Value).ToString();
@@ -957,14 +958,14 @@ namespace XisfFileManager
 
         private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
+            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
         }
         private void NumericUpDown_Rejection_Eccentricity_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
+            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
@@ -972,7 +973,7 @@ namespace XisfFileManager
 
         private void NumericUpDown_Rejection_Median_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = NumericWeightLists.SetRejectedSubFrames(
+            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
                 NumericUpDown_Rejection_FWHM.Value,
                 NumericUpDown_Rejection_Eccentricity.Value,
                 NumericUpDown_Rejection_Median.Value).ToString();
@@ -980,52 +981,53 @@ namespace XisfFileManager
 
         private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
         {
-            SubFrameWeightListsValidEnum valid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
-            if (valid != SubFrameWeightListsValidEnum.VALID)
+            SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != SubFrameNumericListsValidEnum.VALID)
             {
                 return;
             }
-
+            int index = 0;
             foreach (XisfFile.XisfFile file in mFileList)
             {
                 // Add keyword will remove all instances of the keyword to be added and then add it
-                file.KeywordData.AddKeyword("Approved", NumericWeightLists.Approved.ToString()); 
+                file.KeywordData.AddKeyword("Approved", SubFrameNumericLists.Approved[index]);
+                index++;
             }
         }
         private void UpdateWeightCalculations()
         {
-            SubFrameWeightListsValidEnum valid = NumericWeightLists.ValidateWeightLists(mFileList.Count);
-            if (valid != SubFrameWeightListsValidEnum.VALID)
+            SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != SubFrameNumericListsValidEnum.VALID)
             {
                 return;
             }
 
 
-            Label_FwhmMean.Text = "Mean: " + NumericWeightLists.Fwhm.Average().ToString("F2");
-            Label_EccentricityMean.Text = "Mean: " + NumericWeightLists.Eccentricity.Average().ToString("F2");
-            Label_MedianMean.Text = "Mean: " + NumericWeightLists.Median.Average().ToString("F0");
-            Label_FwhmMeanDeviationMean.Text = "Mean: " + NumericWeightLists.FwhmMeanDeviation.Average().ToString("F2");
-            Label_EccentricityMeanDeviationMean.Text = "Mean: " + NumericWeightLists.EccentricityMeanDeviation.Average().ToString("F2");
-            Label_MedianMeanDeviationMean.Text = "Mean: " + NumericWeightLists.MedianMeanDeviation.Average().ToString("F2");
-            Label_NoiseMean.Text = "Mean: " + NumericWeightLists.Noise.Average().ToString("F2");
-            Label_NoiseRatioMean.Text = "Mean: " + NumericWeightLists.NoiseRatio.Average().ToString("F2");
-            Label_SnrMean.Text = "Mean: " + NumericWeightLists.SnrWeight.Average().ToString("F2");
-            Label_StarsMean.Text = "Mean: " + NumericWeightLists.Stars.Average().ToString("F0");
-            Label_StarResidualMean.Text = "Mean: " + NumericWeightLists.StarResidual.Average().ToString("F2");
-            Label_StarResidualMeanDevationMean.Text = "Mean: " + NumericWeightLists.StarResidualMeanDeviation.Average().ToString("F2");
+            Label_FwhmMean.Text = "Mean: " + SubFrameNumericLists.Fwhm.Average().ToString("F2");
+            Label_EccentricityMean.Text = "Mean: " + SubFrameNumericLists.Eccentricity.Average().ToString("F2");
+            Label_MedianMean.Text = "Mean: " + SubFrameNumericLists.Median.Average().ToString("F0");
+            Label_FwhmMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.FwhmMeanDeviation.Average().ToString("F2");
+            Label_EccentricityMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.EccentricityMeanDeviation.Average().ToString("F2");
+            Label_MedianMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.MedianMeanDeviation.Average().ToString("F2");
+            Label_NoiseMean.Text = "Mean: " + SubFrameNumericLists.Noise.Average().ToString("F2");
+            Label_NoiseRatioMean.Text = "Mean: " + SubFrameNumericLists.NoiseRatio.Average().ToString("F2");
+            Label_SnrMean.Text = "Mean: " + SubFrameNumericLists.SnrWeight.Average().ToString("F2");
+            Label_StarsMean.Text = "Mean: " + SubFrameNumericLists.Stars.Average().ToString("F0");
+            Label_StarResidualMean.Text = "Mean: " + SubFrameNumericLists.StarResidual.Average().ToString("F2");
+            Label_StarResidualMeanDevationMean.Text = "Mean: " + SubFrameNumericLists.StarResidualMeanDeviation.Average().ToString("F2");
 
-            Label_FwhmStdDev.Text = "StdDev: " + NumericWeightLists.Fwhm.StandardDeviation().ToString("F2");
-            Label_EccentricityStdDev.Text = "StdDev: " + NumericWeightLists.Eccentricity.StandardDeviation().ToString("F2");
-            Label_MedianStdDev.Text = "StdDev: " + NumericWeightLists.Median.StandardDeviation().ToString("F2");
-            Label_FwhmMeanDeviationStdDev.Text = "StdDev: " + NumericWeightLists.FwhmMeanDeviation.StandardDeviation().ToString("F2");
-            Label_EccentricityMeanDeviationStdDev.Text = "StdDev: " + NumericWeightLists.EccentricityMeanDeviation.StandardDeviation().ToString("F2");
-            Label_MedianMeanDeviationStdDev.Text = "StdDev: " + NumericWeightLists.MedianMeanDeviation.StandardDeviation().ToString("F2");
-            Label_NoiseStdDev.Text = "StdDev: " + NumericWeightLists.Noise.StandardDeviation().ToString("F2");
-            Label_NoiseRatioStdDev.Text = "StdDev: " + NumericWeightLists.NoiseRatio.StandardDeviation().ToString("F2");
-            Label_SnrStdDev.Text = "StdDev: " + NumericWeightLists.SnrWeight.StandardDeviation().ToString("F2");
-            Label_StarsStdDev.Text = "StdDev: " + NumericWeightLists.Stars.StandardDeviation().ToString("F2");
-            Label_StarResidualStdDev.Text = "StdDev: " + NumericWeightLists.StarResidual.StandardDeviation().ToString("F2");
-            Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + NumericWeightLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
+            Label_FwhmStdDev.Text = "StdDev: " + SubFrameNumericLists.Fwhm.StandardDeviation().ToString("F2");
+            Label_EccentricityStdDev.Text = "StdDev: " + SubFrameNumericLists.Eccentricity.StandardDeviation().ToString("F2");
+            Label_MedianStdDev.Text = "StdDev: " + SubFrameNumericLists.Median.StandardDeviation().ToString("F2");
+            Label_FwhmMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.FwhmMeanDeviation.StandardDeviation().ToString("F2");
+            Label_EccentricityMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.EccentricityMeanDeviation.StandardDeviation().ToString("F2");
+            Label_MedianMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.MedianMeanDeviation.StandardDeviation().ToString("F2");
+            Label_NoiseStdDev.Text = "StdDev: " + SubFrameNumericLists.Noise.StandardDeviation().ToString("F2");
+            Label_NoiseRatioStdDev.Text = "StdDev: " + SubFrameNumericLists.NoiseRatio.StandardDeviation().ToString("F2");
+            Label_SnrStdDev.Text = "StdDev: " + SubFrameNumericLists.SnrWeight.StandardDeviation().ToString("F2");
+            Label_StarsStdDev.Text = "StdDev: " + SubFrameNumericLists.Stars.StandardDeviation().ToString("F2");
+            Label_StarResidualStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidual.StandardDeviation().ToString("F2");
+            Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
         }
     }
 }

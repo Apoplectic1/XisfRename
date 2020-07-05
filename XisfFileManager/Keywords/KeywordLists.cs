@@ -159,7 +159,7 @@ namespace XisfFileManager.Keywords
 
             node = KeywordList.Find(i => i.Name == "Approved");
 
-            return (node.Value == "true") ? true : false;
+            return (node.Value == "True") ? true : false;
         }
         // *********************************************************************************************************
         // *********************************************************************************************************

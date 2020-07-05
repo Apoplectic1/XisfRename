@@ -35,12 +35,12 @@ namespace XisfFileManager.Calculations
         {
             double WeightScaled;
 
-            WeightScaled = NumericWeightLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+            WeightScaled = SubFrameNumericLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
 
             return WeightScaled;
         }
 
-        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordLists Keywords, NumericWeightLists CsvSubFrameKeywordLists, NumericWeightLists FileSubFrameKeywordLists)
+        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordLists Keywords, SubFrameNumericLists CsvSubFrameKeywordLists, SubFrameNumericLists FileSubFrameKeywordLists)
         {
 
         }
@@ -111,7 +111,7 @@ namespace XisfFileManager.Calculations
             return p.Item2.ToString("F1") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
         }
 
-        public int RejectSubFrames(NumericWeightLists weightLists)
+        public int RejectSubFrames(SubFrameNumericLists weightLists)
         {
             return 0;
         }

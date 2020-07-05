@@ -31,16 +31,6 @@ namespace XisfFileManager.XisfFileOperations
             string sourceFilePath;
             try
             {
-                // Move Rejected Files 
-                if (mFile.KeywordData.Approved() == false)
-                {
-                    sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
-                    Directory.CreateDirectory(sourceFilePath + "\\Rejected");
-
-                    File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
-                    return true;
-                }
-
                 using (Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open))
                 {
                     mBufferList.Clear();
@@ -159,6 +149,16 @@ namespace XisfFileManager.XisfFileOperations
                 return false;
             }
 
+
+            // After Keyword update, move rejected files to the "Rejected" subdirectory
+            if (mFile.KeywordData.Approved() == false)
+            {
+                sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
+                Directory.CreateDirectory(sourceFilePath + "\\Rejected");
+
+                File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
+             }
+
             return true;
         }
         // ##############################################################################################################################################
@@ -264,7 +264,7 @@ namespace XisfFileManager.XisfFileOperations
             }
         }
 
-        public static void UpdateCsvWeightList(NumericWeightLists WeightLists, SubFrameLists CsvWeightLists)
+        public static void UpdateCsvWeightList(SubFrameNumericLists WeightLists, SubFrameLists CsvWeightLists)
         {
             int index = 0;
 

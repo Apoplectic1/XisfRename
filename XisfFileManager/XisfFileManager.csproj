@@ -132,8 +132,8 @@
   <ItemGroup>
     <Compile Include="Calculations\ImageCalculations.cs" />
     <Compile Include="Calculations\PositionTemperature.cs" />
-    <Compile Include="Keywords\NumericWeightLists.cs" />
-    <Compile Include="CsvFileOperations\ReadSubFrameCsvData.cs" />
+    <Compile Include="Keywords\SubFrameNumericLists.cs" />
+    <Compile Include="CsvFile\ReadSubFrameCsvData.cs" />
     <Compile Include="Keywords\SubFrame.cs" />
     <Compile Include="Keywords\SubFrameLists.cs" />
     <Compile Include="MainForm.cs">

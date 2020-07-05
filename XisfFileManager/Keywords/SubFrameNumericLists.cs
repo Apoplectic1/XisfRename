@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Windows.Forms;
 using XisfFileManager.Keywords;
 
 namespace XisfFileManager.Calculations
 {
-    public class NumericWeightLists
+    public class SubFrameNumericLists
     {
-        public enum SubFrameWeightListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
+        public enum SubFrameNumericListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
 
         public List<bool> Approved { get; set; }
 
@@ -117,7 +115,7 @@ namespace XisfFileManager.Calculations
         public List<string> FileName { get; private set; }
 
 
-        public NumericWeightLists()
+        public SubFrameNumericLists()
         {
             Approved = new List<bool>();
             Eccentricity = new List<double>();
@@ -155,7 +153,7 @@ namespace XisfFileManager.Calculations
             Weight.Clear();
         }
 
-        public SubFrameWeightListsValidEnum ValidateWeightLists(int SubFrameCount)
+        public SubFrameNumericListsValidEnum ValidatenumericLists(int SubFrameCount)
         {
             bool bStatus = true;
             bool bZero = true;
@@ -216,17 +214,17 @@ namespace XisfFileManager.Calculations
 
             if (!bFileExists)
             {
-                return SubFrameWeightListsValidEnum.MISMATCH;
+                return SubFrameNumericListsValidEnum.MISMATCH;
             }
 
             if (bZero)
-                return SubFrameWeightListsValidEnum.EMPTY;
+                return SubFrameNumericListsValidEnum.EMPTY;
             else
             {
                 if (bStatus)
-                    return SubFrameWeightListsValidEnum.VALID;
+                    return SubFrameNumericListsValidEnum.VALID;
                 else
-                    return SubFrameWeightListsValidEnum.INVALD;
+                    return SubFrameNumericListsValidEnum.INVALD;
             }
         }
 
