@@ -96,6 +96,8 @@ namespace XisfFileManager
             Label_Task.Text = "No Images Selected";
             Label_TempratureCompensation.Text = "Temerature Coefficient: N/A";
 
+
+            // Version Number
             if (ApplicationDeployment.IsNetworkDeployed)
             {
                 ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
@@ -250,6 +252,7 @@ namespace XisfFileManager
             try
             {
                 ProgressBar_OverAll.Value = 0;
+                ProgressBar_XisfFile.Value = 0;
 
                 mFolder = new OpenFolderDialog()
                 {
@@ -360,9 +363,10 @@ namespace XisfFileManager
                     SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
                 }
 
-                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
-                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
-                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
+
+                //NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
+               // NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
+               // NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
 
                 SetUISubFrameGroupBoxState();
 
@@ -401,6 +405,7 @@ namespace XisfFileManager
                 }
 
                 ComboBox_TargetName.SelectedIndex = 0;
+                GroupBox_XisfFileUpdate.Enabled= true;
 
 
             }
@@ -432,67 +437,76 @@ namespace XisfFileManager
                 index += indexIncrement;
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
-            mFileList.Clear();
-            Label_Task.Text = mFileList.Count().ToString() + "Images Processed.";
            
+            Label_Task.Text = mFileList.Count().ToString() + " Images Renamed";
+
+            mFileList.Clear();
+
             ProgressBar_OverAll.Value = 0;
+
+            GroupBox_XisfFileUpdate.Enabled = false;
         }
 
         private void Button_Update_Click(object sender, EventArgs e)
         {
             bool bStatus;
 
-            Label_Task.Text = "Updating " + mFileList.Count().ToString() + "Image Keywords";
-
+            Label_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_XisfFile.Maximum = mFileList.Count();
             ProgressBar_XisfFile.Value = 0;
 
-            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-
-            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.INVALD)
+            // Only fill out the weight lists if in fact, we are actually updating them
+            if (XisfFileUpdate.Operation == XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS)
             {
-                var result = MessageBox.Show(
-                    "SubFrame Numerical Weight List is invalid\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
-                    "compared to the number files in at least one mWeightLists list. Example: mWeightLists.Fwhm.Count(" + SubFrameNumericLists.Fwhm.Count() + ").",
-                    "\nMainForm.cs Button_Update_Click()",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (result == DialogResult.No)
+                // If the data in at least one of the read source XISF files is bad or inconsistent, do not allow that data to be updated without
+                // re-reading a new PixInsight Subframe Selector generated CSV file (to either initially fill out or to correct bogus data)
+                eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.INVALD)
                 {
+                    var result = MessageBox.Show(
+                        "SubFrame Numerical Weight List is Invalid.\n\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
+                        "compared to the number files in at least one Numeric Weight list.\n\nExample:\n    mWeightLists.Approved.Count = " + SubFrameNumericLists.Approved.Count() + "",
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                    Label_Task.Text = "Update Aborted";
                     return;
+                }
+
+                // If we've got good consistent file and SubFrame data, then update the numerical lists 
+                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+                {
+                    // Fisrt calculate a new WEIGHT Keyword (not SSWEIGHT yet) based on the current state of the UI and file/list contents
+                    SubFrameNumericLists.CalculateNewSubFrameWeights(mFileList.Count);
+
+                    // Now copy the newly calculated WEIGHTs to the SubFrame Lists (the data structure that will be used to update file contents)
+                    XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
                 }
             }
 
+            XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'", "").Replace("\"", "");
 
-            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
-            {
-                SubFrameNumericLists.WeightSubFrameValue(mFileList.Count);
-                XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
-            }
-
- 
             foreach (XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
-                Application.DoEvents();
-
-                XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'","").Replace("\"","");
-                XisfFileUpdate.bAddCsvKeywords = (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID) ? true : false;
 
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
                 if (bStatus == false)
                 {
                     Label_Task.Text = "File Write Error";
+
+                    var result = MessageBox.Show(
+                        "File Update Failed.\n\n" + file.SourceFileName,
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
                     return;
                 }
             }
-            ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
-            Label_Task.Text = mFileList.Count().ToString() + "Images Processed.";
-            Application.DoEvents();
-            Thread.Sleep(1000);
-            ProgressBar_XisfFile.Value = 0;
 
+            Label_Task.Text = mFileList.Count().ToString() + " Images Updated";
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -832,12 +846,12 @@ namespace XisfFileManager
 
             if (eSubFrameValidListsValid != SubFrameNumericListsValidEnum.VALID)
             {
+
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
                 //return;
             }
 
-            UpdateWeightCalculations();
 
             GroupBox_WeightsAndStatistics.Enabled = RadioButton_SubFrameKeywords_Alphabetize.Checked ? false : true;
 
@@ -927,16 +941,19 @@ namespace XisfFileManager
 
         private void RadioButton_SetImageStatistics_KeepCSVWeights_CheckedChanged(object sender, EventArgs e)
         {
-            SetUISubFrameGroupBoxState();
+           XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.KEEP_WEIGHTS;
+           SetUISubFrameGroupBoxState();
         }
 
         private void RadioButton_SetImageStatistics_RescaleCSVWeights_CheckedChanged(object sender, EventArgs e)
         {
+            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS; 
             SetUISubFrameGroupBoxState();
         }
 
-        private void RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SetImageStatistics_CalculatedWeights_CheckedChanged(object sender, EventArgs e)
         {
+            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS;
             SetUISubFrameGroupBoxState();
         }
 

@@ -52,7 +52,7 @@ namespace XisfFileManager.Keywords
 
             if (egain == -1.0) return;
 
-            AddKeyword("EGAIN", egain, "XSIF File Manager Calculated electrons per ADU");
+            AddKeyword("EGAIN", egain, "XSIF File Manager - Calculated electrons per ADU");
         }
 
         // *********************************************************************************************************

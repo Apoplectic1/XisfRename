@@ -41,7 +41,7 @@
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_SubFrameKeywords = new System.Windows.Forms.GroupBox();
             this.CheckBox_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData = new System.Windows.Forms.RadioButton();
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations = new System.Windows.Forms.RadioButton();
             this.RadioButton_SubFrameKeywords_Alphabetize = new System.Windows.Forms.RadioButton();
             this.Button_UpdateXisfFiles = new System.Windows.Forms.Button();
             this.ComboBox_TargetName = new System.Windows.Forms.ComboBox();
@@ -317,6 +317,7 @@
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_SubFrameKeywords);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_Order);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.ProgressBar_XisfFile);
+            this.GroupBox_XisfFileUpdate.Enabled = false;
             this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 111);
             this.GroupBox_XisfFileUpdate.Name = "GroupBox_XisfFileUpdate";
             this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(685, 156);
@@ -327,7 +328,7 @@
             // GroupBox_SubFrameKeywords
             // 
             this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SubFrameKeywords_UpdateTargetName);
-            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_EnableSubFrameData);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Alphabetize);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Button_UpdateXisfFiles);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_TargetName);
@@ -349,16 +350,16 @@
             this.CheckBox_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name";
             this.CheckBox_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_SubFrameKeyWords_EnableSubFrameData
+            // RadioButton_SubFrameKeyWords_SubFrameWeightCalculations
             // 
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.AutoSize = true;
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Location = new System.Drawing.Point(211, 48);
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Name = "RadioButton_SubFrameKeyWords_EnableSubFrameData";
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Size = new System.Drawing.Size(135, 17);
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.TabIndex = 15;
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.Text = "Enable SubFrame Data";
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.UseVisualStyleBackColor = true;
-            this.RadioButton_SubFrameKeyWords_EnableSubFrameData.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeyWords_Update_CheckedChanged);
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.AutoSize = true;
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Location = new System.Drawing.Point(211, 48);
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Name = "RadioButton_SubFrameKeyWords_SubFrameWeightCalculations";
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Size = new System.Drawing.Size(170, 17);
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.TabIndex = 15;
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Text = "SubFrame Weight Calculations";
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.UseVisualStyleBackColor = true;
+            this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeyWords_Update_CheckedChanged);
             // 
             // RadioButton_SubFrameKeywords_Alphabetize
             // 
@@ -1630,7 +1631,7 @@
             // 
             // Button_Rejection_RejectionSet
             // 
-            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(526, 22);
+            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(553, 22);
             this.Button_Rejection_RejectionSet.Name = "Button_Rejection_RejectionSet";
             this.Button_Rejection_RejectionSet.Size = new System.Drawing.Size(75, 23);
             this.Button_Rejection_RejectionSet.TabIndex = 10;
@@ -1645,14 +1646,14 @@
             0,
             0,
             0});
-            this.NumericUpDown_Rejection_Median.Location = new System.Drawing.Point(285, 23);
+            this.NumericUpDown_Rejection_Median.Location = new System.Drawing.Point(304, 23);
             this.NumericUpDown_Rejection_Median.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
             this.NumericUpDown_Rejection_Median.Name = "NumericUpDown_Rejection_Median";
-            this.NumericUpDown_Rejection_Median.Size = new System.Drawing.Size(47, 20);
+            this.NumericUpDown_Rejection_Median.Size = new System.Drawing.Size(59, 20);
             this.NumericUpDown_Rejection_Median.TabIndex = 9;
             this.NumericUpDown_Rejection_Median.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NumericUpDown_Rejection_Median.Value = new decimal(new int[] {
@@ -1665,7 +1666,7 @@
             // Label_Rejection_Median
             // 
             this.Label_Rejection_Median.AutoSize = true;
-            this.Label_Rejection_Median.Location = new System.Drawing.Point(237, 27);
+            this.Label_Rejection_Median.Location = new System.Drawing.Point(256, 27);
             this.Label_Rejection_Median.Name = "Label_Rejection_Median";
             this.Label_Rejection_Median.Size = new System.Drawing.Size(45, 13);
             this.Label_Rejection_Median.TabIndex = 8;
@@ -1687,7 +1688,7 @@
             0,
             0});
             this.NumericUpDown_Rejection_Eccentricity.Name = "NumericUpDown_Rejection_Eccentricity";
-            this.NumericUpDown_Rejection_Eccentricity.Size = new System.Drawing.Size(44, 20);
+            this.NumericUpDown_Rejection_Eccentricity.Size = new System.Drawing.Size(59, 20);
             this.NumericUpDown_Rejection_Eccentricity.TabIndex = 7;
             this.NumericUpDown_Rejection_Eccentricity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NumericUpDown_Rejection_Eccentricity.Value = new decimal(new int[] {
@@ -1705,14 +1706,14 @@
             0,
             0,
             131072});
-            this.NumericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(70, 23);
+            this.NumericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(55, 23);
             this.NumericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
             7,
             0,
             0,
             0});
             this.NumericUpDown_Rejection_FWHM.Name = "NumericUpDown_Rejection_FWHM";
-            this.NumericUpDown_Rejection_FWHM.Size = new System.Drawing.Size(44, 20);
+            this.NumericUpDown_Rejection_FWHM.Size = new System.Drawing.Size(59, 20);
             this.NumericUpDown_Rejection_FWHM.TabIndex = 6;
             this.NumericUpDown_Rejection_FWHM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NumericUpDown_Rejection_FWHM.Value = new decimal(new int[] {
@@ -1724,7 +1725,7 @@
             // 
             // TextBox_Rejection_Total
             // 
-            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(452, 23);
+            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(499, 23);
             this.TextBox_Rejection_Total.Name = "TextBox_Rejection_Total";
             this.TextBox_Rejection_Total.Size = new System.Drawing.Size(44, 20);
             this.TextBox_Rejection_Total.TabIndex = 5;
@@ -1733,7 +1734,7 @@
             // Label_Rejection_Total
             // 
             this.Label_Rejection_Total.AutoSize = true;
-            this.Label_Rejection_Total.Location = new System.Drawing.Point(342, 27);
+            this.Label_Rejection_Total.Location = new System.Drawing.Point(389, 27);
             this.Label_Rejection_Total.Name = "Label_Rejection_Total";
             this.Label_Rejection_Total.Size = new System.Drawing.Size(109, 13);
             this.Label_Rejection_Total.TabIndex = 4;
@@ -1753,7 +1754,7 @@
             // Label_Rejection_FWHM
             // 
             this.Label_Rejection_FWHM.AutoSize = true;
-            this.Label_Rejection_FWHM.Location = new System.Drawing.Point(25, 27);
+            this.Label_Rejection_FWHM.Location = new System.Drawing.Point(10, 27);
             this.Label_Rejection_FWHM.Name = "Label_Rejection_FWHM";
             this.Label_Rejection_FWHM.Size = new System.Drawing.Size(44, 13);
             this.Label_Rejection_FWHM.TabIndex = 2;
@@ -1783,11 +1784,11 @@
             this.RadioButton_SetImageStatistics_CalculateWeights.AutoSize = true;
             this.RadioButton_SetImageStatistics_CalculateWeights.Location = new System.Drawing.Point(173, 47);
             this.RadioButton_SetImageStatistics_CalculateWeights.Name = "RadioButton_SetImageStatistics_CalculateWeights";
-            this.RadioButton_SetImageStatistics_CalculateWeights.Size = new System.Drawing.Size(111, 17);
+            this.RadioButton_SetImageStatistics_CalculateWeights.Size = new System.Drawing.Size(117, 17);
             this.RadioButton_SetImageStatistics_CalculateWeights.TabIndex = 24;
-            this.RadioButton_SetImageStatistics_CalculateWeights.Text = "Calculate Weights";
+            this.RadioButton_SetImageStatistics_CalculateWeights.Text = "Calculated Weights";
             this.RadioButton_SetImageStatistics_CalculateWeights.UseVisualStyleBackColor = true;
-            this.RadioButton_SetImageStatistics_CalculateWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged);
+            this.RadioButton_SetImageStatistics_CalculateWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_CalculatedWeights_CheckedChanged);
             // 
             // RadioButton_SetImageStatistics_RescaleWeights
             // 
@@ -1886,9 +1887,9 @@
             this.Label_TempratureCompensation.AutoSize = true;
             this.Label_TempratureCompensation.Location = new System.Drawing.Point(274, 68);
             this.Label_TempratureCompensation.Name = "Label_TempratureCompensation";
-            this.Label_TempratureCompensation.Size = new System.Drawing.Size(13, 13);
+            this.Label_TempratureCompensation.Size = new System.Drawing.Size(87, 13);
             this.Label_TempratureCompensation.TabIndex = 13;
-            this.Label_TempratureCompensation.Text = "L";
+            this.Label_TempratureCompensation.Text = "Temp Coefficient";
             // 
             // label1
             // 
@@ -1954,6 +1955,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "XSIF File Manager";
             this.GroupBox_Order.ResumeLayout(false);
@@ -2149,7 +2151,7 @@
         private System.Windows.Forms.Label Label_Rejection_Eccentricity;
         private System.Windows.Forms.Label Label_Rejection_FWHM;
         private System.Windows.Forms.GroupBox GroupBox_SubFrameKeywords;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWords_EnableSubFrameData;
+        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeyWords_SubFrameWeightCalculations;
         private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_Alphabetize;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label Label_OverheadPercent;

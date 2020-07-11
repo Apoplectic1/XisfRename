@@ -12,12 +12,12 @@ namespace XisfFileManager.FileOperations
 {
     public static class XisfFileUpdate
     {
+        public enum OperationEnum { KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
+        public static OperationEnum Operation { get; set; } = OperationEnum.KEEP_WEIGHTS;
         public static Buffer mBuffer;
         public static List<Buffer> mBufferList;
         public static string TargetName { get; set; }
-        public static bool bAddCsvKeywords { get; set; } = false;
-
-
+       
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
@@ -70,7 +70,7 @@ namespace XisfFileManager.FileOperations
                     mFile.KeywordData.RemoveKeyword("NOISE");
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(xmlDoc, mFile, bAddCsvKeywords, SubFrameKeywordLists);
+                    ReplaceAllFitsKeywords(xmlDoc, mFile, SubFrameKeywordLists);
 
 
                     // *******************************************************************************************************************************
@@ -198,9 +198,9 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile, bool bAddCsvSubFrameKeywords, SubFrameLists CsvSubFrameKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile, SubFrameLists SubFrameSelectorKeywordLists)
         {
-            // First Clean Up by removing all FITSKeywords
+            // First remove all FITSKeywords (nodes) from the xml document
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
             for (int i = nodeList.Count - 1; i >= 0; i--)
             {
@@ -209,14 +209,19 @@ namespace XisfFileManager.FileOperations
 
             // At this point, our xmlDoc only contains header boilerplate
 
-            // Find the "<Image" tag. We are going to add the entire contents of the KeywordData keyword list as individual child elements under it
+            // Find the "<Image" tag. We are going to add the entire contents of the KeywordData keyword list as 
+            // individual child elements under it (and selectively includeing SubFrame Selector keywords)
             nodeList = document.GetElementsByTagName("Image");
 
             foreach (XmlNode item in nodeList)
             {
-                // If enabled, add the CSV File keyword data to KeywordData
-                if (bAddCsvSubFrameKeywords)
-                    AddCsvKeywordListToKeywordData(bAddCsvSubFrameKeywords, CsvSubFrameKeywordLists, mFile);
+                // If enabled, remove if existing and then add (i.e. replace) the keywords from PixInsight's SubFrame Selector.
+                // The "replaced" keywords are the orignal xisf file keywords and are replaced with the keywords stored in mFile.KeywordData.KeywordList.
+                // Existing Weights are kept by NOT replacing or adding new ones.
+                if (Operation != OperationEnum.KEEP_WEIGHTS)
+                {
+                    ReplaceSubFrameSelectorKeywords(SubFrameSelectorKeywordLists, mFile);
+                }
 
                 // Deal with SSWEIGHT and WEIGHT
                 // SSWEIGHT may already be part of mFile or not
@@ -224,9 +229,8 @@ namespace XisfFileManager.FileOperations
                 // For adding and updating, we need to consider SSWEIGHT vs WEIGHT
                 // WEIGHT is produced by this program while SSWEIGHT is produced by PixInsight
 
-
-
-                // Alphabetize the KeywordData FITSKeywords - Not needed but WTF
+                // Alphabetize the KeywordData FITSKeywords
+                // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (minus explicit removals and changes)
                 List<Keyword> keywords = mFile.KeywordData.KeywordList.OrderBy(p => p.Name).ToList();
 
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
@@ -277,7 +281,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void AddCsvKeywordListToKeywordData(bool enable, SubFrameLists CsvWeightLists, XisfFile mFile)
+        private static void ReplaceSubFrameSelectorKeywords(SubFrameLists CsvWeightLists, XisfFile mFile)
         {
             int indexer;
             List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileName;
