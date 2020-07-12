@@ -21,7 +21,6 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        private DirectoryInfo d;
         private ImageCalculations ImageParameterLists;
         private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
@@ -71,9 +70,6 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-       
-
-
 
         public MainForm()
         {
@@ -197,7 +193,6 @@ namespace XisfFileManager
 
         protected override void OnClosing(CancelEventArgs e)
         {
-
             base.OnClosing(e);
 
             Properties.Settings.Default.Persist_EccentricityMeanDeviationPercentState = mEccentricityMeanDeviationPercent;
@@ -246,32 +241,41 @@ namespace XisfFileManager
 
         // ##########################################################################################################################
         // ##########################################################################################################################
-
         private void Button_Browse_Click(object sender, EventArgs e)
         {
+            DirectoryInfo d;
+
+            ProgressBar_OverAll.Value = 0;
+            ProgressBar_XisfFile.Value = 0;
+
+            mFolder = new OpenFolderDialog()
+            {
+                Title = "Select .xisf Folder",
+                AutoUpgradeEnabled = true,
+                CheckPathExists = false,
+                InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
+                Multiselect = false,
+                RestoreDirectory = true
+            };
+
+            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
+
+            if (result.Equals(DialogResult.OK) == false)
+            {
+                return;
+            }
+
+            mFolderBrowseState = mFolder.SelectedPaths[0];
+
+            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
+            mFileList.Clear();
+            SubFrameLists.Clear();
+            SubFrameNumericLists.Clear();
+            ImageParameterLists.Clear();
+
             try
             {
-                ProgressBar_OverAll.Value = 0;
-                ProgressBar_XisfFile.Value = 0;
-
-                mFolder = new OpenFolderDialog()
-                {
-                    Title = "Select .xisf Folder",
-                    AutoUpgradeEnabled = true,
-                    CheckPathExists = false,
-                    InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
-                    Multiselect = false,
-                    RestoreDirectory = true
-                };
-
-                DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
-
-                if (result.Equals(DialogResult.OK) == false)
-                {
-                    return;
-                }
-
-                mFolderBrowseState = mFolder.SelectedPaths[0];
+                Label_Task.Text = "Reading Image File Data";
 
                 foreach (string folder in mFolder.SelectedPaths)
                 {
@@ -288,15 +292,6 @@ namespace XisfFileManager
                     }
 
                     ProgressBar_OverAll.Maximum = Files.Count();
-
-
-                    Label_Task.Text = "Reading Image File Data";
-
-                    // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
-                    mFileList.Clear();
-                    SubFrameLists.Clear();
-                    SubFrameNumericLists.Clear();
-                    ImageParameterLists.Clear();
 
                     foreach (FileInfo file in Files)
                     {
@@ -321,100 +316,121 @@ namespace XisfFileManager
                         // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
                         // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
-                        
+
                         bStatus = XisfFileRead.ReadXisfFile(mFile);
-                        
+
                         // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                         if (bStatus)
                         {
                             mFileList.Add(mFile);
                         }
                     }
-
-                    // Sort Image File List by Capture Time
-                    // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
-                    // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
-                    mFileList.Sort(XisfFile.CaptureTimeComparison);
-
-                    // If the following Keywords exist in the source XISF file, add the keyword value to FileSubFrameKeywordLists
-
-                    foreach (XisfFile file in mFileList)
-                    {
-                        SubFrameLists.AddKeywordApproved(file.KeywordData);
-                        SubFrameLists.AddKeywordEccentricity(file.KeywordData);
-                        SubFrameLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
-                        SubFrameLists.AddKeywordFileName(file.SourceFileName);
-                        SubFrameLists.AddKeywordFwhm(file.KeywordData);
-                        SubFrameLists.AddKeywordFwhmMeanDeviation(file.KeywordData);
-                        SubFrameLists.AddKeywordMedian(file.KeywordData);
-                        SubFrameLists.AddKeywordMedianMeanDeviation(file.KeywordData);
-                        SubFrameLists.AddKeywordNoise(file.KeywordData);
-                        SubFrameLists.AddKeywordNoiseRatio(file.KeywordData);
-                        SubFrameLists.AddKeywordSnrWeight(file.KeywordData);
-                        SubFrameLists.AddKeywordStarResidual(file.KeywordData);
-                        SubFrameLists.AddKeywordStarResidualMeanDeviation(file.KeywordData);
-                        SubFrameLists.AddKeywordStars(file.KeywordData);
-                        SubFrameLists.AddKeywordWeight(file.KeywordData);
-                    }
-
-                    // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
-                    // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
-                    // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
-                    SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
                 }
-
-
-                //NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
-               // NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
-               // NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
-
-                SetUISubFrameGroupBoxState();
-
-                
-
-
-                Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
-
-                List<string> TargetNames = new List<string>();
-                foreach (XisfFile file in mFileList)
-                {
-                    TargetNames.Add(file.KeywordData.TargetName());
-                    ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
-                }
-
-
-                string stepsPerDegree = ImageParameterLists.ComputeFocuserTemperatureCompensationCoefficient();
-                Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
-
-                TargetNames = TargetNames.Distinct().ToList();
-
-                if (TargetNames.Count > 1)
-                {
-                    Label_TagetName.ForeColor = Color.Red;
-                }
-                else
-                {
-                    Label_TagetName.ForeColor = Color.Black;
-                }
-
-                TargetNames = TargetNames.OrderBy(q => q).ToList();
-
-                foreach (string item in TargetNames)
-                {
-                    ComboBox_TargetName.Items.Add(item);
-                }
-
-                ComboBox_TargetName.SelectedIndex = 0;
-                GroupBox_XisfFileUpdate.Enabled= true;
-
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Button_Browse_Click(object sender, EventArgs e)");
+                MessageBox.Show(
+                         "An exception occured during file Browse/Read.\n\n" + ex.ToString(),
+                         "\nMainForm.cs Button_Browse_Click()",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error);
+
+                Label_Task.Text = "Browse Aborted";
                 return;
             }
+
+            // Sort Image File List by Capture Time
+            // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
+            // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
+            mFileList.Sort(XisfFile.CaptureTimeComparison);
+
+            // If the following Keywords exist in the source XISF file, add the keyword value to FileSubFrameKeywordLists
+            try
+            {
+                foreach (XisfFile file in mFileList)
+                {
+                    SubFrameLists.AddKeywordApproved(file.KeywordData);
+                    SubFrameLists.AddKeywordEccentricity(file.KeywordData);
+                    SubFrameLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
+                    SubFrameLists.AddKeywordFileName(file.SourceFileName);
+                    SubFrameLists.AddKeywordFwhm(file.KeywordData);
+                    SubFrameLists.AddKeywordFwhmMeanDeviation(file.KeywordData);
+                    SubFrameLists.AddKeywordMedian(file.KeywordData);
+                    SubFrameLists.AddKeywordMedianMeanDeviation(file.KeywordData);
+                    SubFrameLists.AddKeywordNoise(file.KeywordData);
+                    SubFrameLists.AddKeywordNoiseRatio(file.KeywordData);
+                    SubFrameLists.AddKeywordSnrWeight(file.KeywordData);
+                    SubFrameLists.AddKeywordStarResidual(file.KeywordData);
+                    SubFrameLists.AddKeywordStarResidualMeanDeviation(file.KeywordData);
+                    SubFrameLists.AddKeywordStars(file.KeywordData);
+                    SubFrameLists.AddKeywordWeight(file.KeywordData);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                         "An exception occured during KeyWord assignments from source files.\n\n" + ex.ToString(),
+                         "\nMainForm.cs Button_Browse_Click()",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error);
+
+                Label_Task.Text = "Browse Aborted";
+                return;
+            }
+
+            Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+
+            // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
+            // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
+            // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
+            SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
+
+            // **********************************************************************
+            // Get TargetName and populate ComboBox
+            List<string> TargetNames = new List<string>();
+
+            foreach (XisfFile file in mFileList)
+            {
+                TargetNames.Add(file.KeywordData.TargetName());
+            }
+
+            TargetNames = TargetNames.Distinct().ToList();
+            TargetNames = TargetNames.OrderBy(q => q).ToList();
+
+            if (TargetNames.Count > 1)
+            {
+                Label_TagetName.ForeColor = Color.Red;
+            }
+            else
+            {
+                Label_TagetName.ForeColor = Color.Black;
+            }
+
+            foreach (string item in TargetNames)
+            {
+                ComboBox_TargetName.Items.Add(item);
+            }
+            // **********************************************************************
+
+            // **********************************************************************
+            // Calculate Image paramters for UI
+            foreach (XisfFile file in mFileList)
+            {
+                ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
+            }
+
+            string stepsPerDegree = ImageParameterLists.ComputeFocuserTemperatureCompensationCoefficient();
+            Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+
+            // Need to add calculations for average capture duration/overhead
+            // **********************************************************************
+
+            SetUISubFrameGroupBoxState();
+
+            ComboBox_TargetName.SelectedIndex = 0;
+            GroupBox_XisfFileUpdate.Enabled = true;
         }
+
 
         private void Button_Rename_Click(object sender, EventArgs e)
         {
@@ -437,7 +453,7 @@ namespace XisfFileManager
                 index += indexIncrement;
             }
             ProgressBar_XisfFile.Value = ProgressBar_XisfFile.Maximum;
-           
+
             Label_Task.Text = mFileList.Count().ToString() + " Images Renamed";
 
             mFileList.Clear();
@@ -541,7 +557,7 @@ namespace XisfFileManager
                 MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
                 return;
             }
-           
+
             SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
 
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
@@ -561,10 +577,18 @@ namespace XisfFileManager
                     return;
             }
 
-            SetUISubFrameGroupBoxState();
+            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            {
+                // SubFrame data is valid
+                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
+                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
+                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
+            }
+           
 
+            SetUISubFrameGroupBoxState();
         }
-       
+
         private void TextBox_FwhmPercent_TextChanged(object sender, EventArgs e)
         {
             mFwhmPercent = ValidateRangeValue(TextBox_FwhmPercent);
@@ -841,15 +865,21 @@ namespace XisfFileManager
 
         private void SetUISubFrameGroupBoxState()
         {
-           
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
             if (eSubFrameValidListsValid != SubFrameNumericListsValidEnum.VALID)
             {
-
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
-                //return;
+            }
+
+            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            {
+                // SubFrame data is valid
+                TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
+                NumericUpDown_Rejection_FWHM.Value,
+                NumericUpDown_Rejection_Eccentricity.Value,
+                NumericUpDown_Rejection_Median.Value).ToString();
             }
 
 
@@ -939,60 +969,62 @@ namespace XisfFileManager
             }
         }
 
-        private void RadioButton_SetImageStatistics_KeepCSVWeights_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SetImageStatistics_KeepWeights_CheckedChanged(object sender, EventArgs e)
         {
-           XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.KEEP_WEIGHTS;
-           SetUISubFrameGroupBoxState();
+            if (RadioButton_SetImageStatistics_KeepWeights.Checked)
+            {
+                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.KEEP_WEIGHTS;
+                SetUISubFrameGroupBoxState();
+            }
         }
 
-        private void RadioButton_SetImageStatistics_RescaleCSVWeights_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SetImageStatistics_RescaleWeights_CheckedChanged(object sender, EventArgs e)
         {
-            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS; 
-            SetUISubFrameGroupBoxState();
+            if (RadioButton_SetImageStatistics_RescaleWeights.Checked)
+            {
+                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS;
+                SetUISubFrameGroupBoxState();
+            }
         }
 
-        private void RadioButton_SetImageStatistics_CalculatedWeights_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged(object sender, EventArgs e)
         {
-            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS;
-            SetUISubFrameGroupBoxState();
+            if (RadioButton_SetImageStatistics_CalculateWeights.Checked)
+            {
+                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS;
+                SetUISubFrameGroupBoxState();
+            }
         }
 
         private void RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged(object sender, EventArgs e)
         {
-            SetUISubFrameGroupBoxState();
+            if (RadioButton_SubFrameKeywords_Alphabetize.Checked)
+            {
+                SetUISubFrameGroupBoxState();
+            }
         }
 
-        private void RadioButton_SubFrameKeyWords_Update_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_SubFrameKeyWords_SubFrameWeightCalculations_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                NumericUpDown_Rejection_FWHM.Value, 
-                NumericUpDown_Rejection_Eccentricity.Value, 
-                NumericUpDown_Rejection_Median.Value).ToString();
-
-            SetUISubFrameGroupBoxState();
+            if (RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Checked)
+            {
+                SetUISubFrameGroupBoxState();
+            }
         }
 
         private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                NumericUpDown_Rejection_FWHM.Value,
-                NumericUpDown_Rejection_Eccentricity.Value,
-                NumericUpDown_Rejection_Median.Value).ToString();
+            SetUISubFrameGroupBoxState();
         }
+
         private void NumericUpDown_Rejection_Eccentricity_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                NumericUpDown_Rejection_FWHM.Value,
-                NumericUpDown_Rejection_Eccentricity.Value,
-                NumericUpDown_Rejection_Median.Value).ToString();
+            SetUISubFrameGroupBoxState();
         }
 
         private void NumericUpDown_Rejection_Median_ValueChanged(object sender, EventArgs e)
         {
-            TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                NumericUpDown_Rejection_FWHM.Value,
-                NumericUpDown_Rejection_Eccentricity.Value,
-                NumericUpDown_Rejection_Median.Value).ToString();
+            SetUISubFrameGroupBoxState();
         }
 
         private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
@@ -1008,7 +1040,7 @@ namespace XisfFileManager
             {
                 // Add keyword will remove all instances of the keyword to be added and then add it
                 SubFrameLists.SubFrameList.Approved[index].Value = SubFrameNumericLists.Approved[index].ToString();
-                
+
                 index++;
             }
         }
