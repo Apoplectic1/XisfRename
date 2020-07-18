@@ -272,6 +272,9 @@ namespace XisfFileManager.Keywords
             if (node == null)
                 node = KeywordList.Find(i => i.Name == "NOTES");
 
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "SWCREATE");
+
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
@@ -626,7 +629,8 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OBJECT");
-            value = node.Value.Replace("'", "").Replace(" ", "");
+            value = node.Value.Replace("'", "").Replace(" ", "").Replace("/","");
+
             node.Type = Keyword.EType.STRING;
 
             return value;

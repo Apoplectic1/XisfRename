@@ -68,6 +68,16 @@ namespace XisfFileManager.FileOperations
                     mFile.KeywordData.RemoveKeyword("ALIGNH");
                     mFile.KeywordData.RemoveKeyword("COMMENT");
                     mFile.KeywordData.RemoveKeyword("NOISE");
+                    mFile.KeywordData.RemoveKeyword("Bandwidth setting");
+                    //mFile.KeywordData.RemoveKeyword("BTP");
+                    mFile.KeywordData.RemoveKeyword("SBUUID");
+                    mFile.KeywordData.RemoveKeyword("READOUTM");
+                    mFile.KeywordData.RemoveKeyword("CDS");
+                    //mFile.KeywordData.RemoveKeyword("DISPINCR");
+                   // mFile.KeywordData.RemoveKeyword("EXTEND");
+                    mFile.KeywordData.RemoveKeyword("FOCTMPSC");
+                    mFile.KeywordData.RemoveKeyword("PICTTYPE");
+
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
                     ReplaceAllFitsKeywords(xmlDoc, mFile, SubFrameKeywordLists);

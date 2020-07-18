@@ -39,6 +39,15 @@
             this.RadioButton_RenameOrder_WeightIndex = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
+            this.GroupBox_Filter = new System.Windows.Forms.GroupBox();
+            this.CheckBox_Filter_SetFilter = new System.Windows.Forms.CheckBox();
+            this.RadioButton_Filter_S2 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_Blue = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_O3 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_Green = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_Ha = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_Red = new System.Windows.Forms.RadioButton();
+            this.RadioButton_Filter_Luma = new System.Windows.Forms.RadioButton();
             this.GroupBox_SubFrameKeywords = new System.Windows.Forms.GroupBox();
             this.CheckBox_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
             this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations = new System.Windows.Forms.RadioButton();
@@ -190,8 +199,12 @@
             this.Label_OverheadSeconds = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ComboBox_SetKeyword = new System.Windows.Forms.ComboBox();
+            this.TextBox_SetKeyword = new System.Windows.Forms.TextBox();
+            this.CheckBox_SetKeyword = new System.Windows.Forms.CheckBox();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
+            this.GroupBox_Filter.SuspendLayout();
             this.GroupBox_SubFrameKeywords.SuspendLayout();
             this.GroupBox_DirectorySelection.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -230,9 +243,9 @@
             // 
             // ProgressBar_OverAll
             // 
-            this.ProgressBar_OverAll.Location = new System.Drawing.Point(26, 134);
+            this.ProgressBar_OverAll.Location = new System.Drawing.Point(17, 134);
             this.ProgressBar_OverAll.Name = "ProgressBar_OverAll";
-            this.ProgressBar_OverAll.Size = new System.Drawing.Size(632, 11);
+            this.ProgressBar_OverAll.Size = new System.Drawing.Size(1340, 11);
             this.ProgressBar_OverAll.Step = 1;
             this.ProgressBar_OverAll.TabIndex = 1;
             // 
@@ -253,7 +266,7 @@
             this.GroupBox_Order.Controls.Add(this.RadioButton_RenameOrder_IndexWeight);
             this.GroupBox_Order.Controls.Add(this.RadioButton_RenameOrder_WeightIndex);
             this.GroupBox_Order.Controls.Add(this.Button_Rename);
-            this.GroupBox_Order.Location = new System.Drawing.Point(18, 19);
+            this.GroupBox_Order.Location = new System.Drawing.Point(17, 19);
             this.GroupBox_Order.Name = "GroupBox_Order";
             this.GroupBox_Order.Size = new System.Drawing.Size(231, 105);
             this.GroupBox_Order.TabIndex = 3;
@@ -263,7 +276,7 @@
             // RadioButton_RenameOrder_Weight
             // 
             this.RadioButton_RenameOrder_Weight.AutoSize = true;
-            this.RadioButton_RenameOrder_Weight.Location = new System.Drawing.Point(28, 45);
+            this.RadioButton_RenameOrder_Weight.Location = new System.Drawing.Point(28, 48);
             this.RadioButton_RenameOrder_Weight.Name = "RadioButton_RenameOrder_Weight";
             this.RadioButton_RenameOrder_Weight.Size = new System.Drawing.Size(83, 17);
             this.RadioButton_RenameOrder_Weight.TabIndex = 3;
@@ -298,7 +311,7 @@
             // RadioButton_RenameOrder_WeightIndex
             // 
             this.RadioButton_RenameOrder_WeightIndex.AutoSize = true;
-            this.RadioButton_RenameOrder_WeightIndex.Location = new System.Drawing.Point(117, 45);
+            this.RadioButton_RenameOrder_WeightIndex.Location = new System.Drawing.Point(117, 48);
             this.RadioButton_RenameOrder_WeightIndex.Name = "RadioButton_RenameOrder_WeightIndex";
             this.RadioButton_RenameOrder_WeightIndex.Size = new System.Drawing.Size(88, 17);
             this.RadioButton_RenameOrder_WeightIndex.TabIndex = 0;
@@ -318,28 +331,137 @@
             // 
             // GroupBox_XisfFileUpdate
             // 
+            this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_Filter);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_SubFrameKeywords);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_Order);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.ProgressBar_XisfFile);
             this.GroupBox_XisfFileUpdate.Enabled = false;
-            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(703, 27);
+            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 189);
             this.GroupBox_XisfFileUpdate.Name = "GroupBox_XisfFileUpdate";
-            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(685, 156);
+            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(1376, 156);
             this.GroupBox_XisfFileUpdate.TabIndex = 6;
             this.GroupBox_XisfFileUpdate.TabStop = false;
             this.GroupBox_XisfFileUpdate.Text = "File Update";
             // 
+            // GroupBox_Filter
+            // 
+            this.GroupBox_Filter.Controls.Add(this.CheckBox_Filter_SetFilter);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_S2);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Blue);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_O3);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Green);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Ha);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Red);
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Luma);
+            this.GroupBox_Filter.Location = new System.Drawing.Point(952, 19);
+            this.GroupBox_Filter.Name = "GroupBox_Filter";
+            this.GroupBox_Filter.Size = new System.Drawing.Size(227, 105);
+            this.GroupBox_Filter.TabIndex = 18;
+            this.GroupBox_Filter.TabStop = false;
+            this.GroupBox_Filter.Text = "Filters";
+            // 
+            // CheckBox_Filter_SetFilter
+            // 
+            this.CheckBox_Filter_SetFilter.AutoSize = true;
+            this.CheckBox_Filter_SetFilter.Location = new System.Drawing.Point(87, 75);
+            this.CheckBox_Filter_SetFilter.Name = "CheckBox_Filter_SetFilter";
+            this.CheckBox_Filter_SetFilter.Size = new System.Drawing.Size(67, 17);
+            this.CheckBox_Filter_SetFilter.TabIndex = 7;
+            this.CheckBox_Filter_SetFilter.Text = "Set Filter";
+            this.CheckBox_Filter_SetFilter.UseVisualStyleBackColor = true;
+            this.CheckBox_Filter_SetFilter.CheckedChanged += new System.EventHandler(this.CheckBox_Filter_SetFilter_CheckedChanged);
+            // 
+            // RadioButton_Filter_S2
+            // 
+            this.RadioButton_Filter_S2.AutoSize = true;
+            this.RadioButton_Filter_S2.Location = new System.Drawing.Point(175, 22);
+            this.RadioButton_Filter_S2.Name = "RadioButton_Filter_S2";
+            this.RadioButton_Filter_S2.Size = new System.Drawing.Size(41, 17);
+            this.RadioButton_Filter_S2.TabIndex = 6;
+            this.RadioButton_Filter_S2.TabStop = true;
+            this.RadioButton_Filter_S2.Text = "S II";
+            this.RadioButton_Filter_S2.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_Blue
+            // 
+            this.RadioButton_Filter_Blue.AutoSize = true;
+            this.RadioButton_Filter_Blue.Location = new System.Drawing.Point(152, 48);
+            this.RadioButton_Filter_Blue.Name = "RadioButton_Filter_Blue";
+            this.RadioButton_Filter_Blue.Size = new System.Drawing.Size(46, 17);
+            this.RadioButton_Filter_Blue.TabIndex = 5;
+            this.RadioButton_Filter_Blue.TabStop = true;
+            this.RadioButton_Filter_Blue.Text = "Blue";
+            this.RadioButton_Filter_Blue.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_O3
+            // 
+            this.RadioButton_Filter_O3.AutoSize = true;
+            this.RadioButton_Filter_O3.Location = new System.Drawing.Point(124, 22);
+            this.RadioButton_Filter_O3.Name = "RadioButton_Filter_O3";
+            this.RadioButton_Filter_O3.Size = new System.Drawing.Size(45, 17);
+            this.RadioButton_Filter_O3.TabIndex = 4;
+            this.RadioButton_Filter_O3.TabStop = true;
+            this.RadioButton_Filter_O3.Text = "O III";
+            this.RadioButton_Filter_O3.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_Green
+            // 
+            this.RadioButton_Filter_Green.AutoSize = true;
+            this.RadioButton_Filter_Green.Location = new System.Drawing.Point(89, 48);
+            this.RadioButton_Filter_Green.Name = "RadioButton_Filter_Green";
+            this.RadioButton_Filter_Green.Size = new System.Drawing.Size(54, 17);
+            this.RadioButton_Filter_Green.TabIndex = 3;
+            this.RadioButton_Filter_Green.TabStop = true;
+            this.RadioButton_Filter_Green.Text = "Green";
+            this.RadioButton_Filter_Green.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_Ha
+            // 
+            this.RadioButton_Filter_Ha.AutoSize = true;
+            this.RadioButton_Filter_Ha.Location = new System.Drawing.Point(79, 22);
+            this.RadioButton_Filter_Ha.Name = "RadioButton_Filter_Ha";
+            this.RadioButton_Filter_Ha.Size = new System.Drawing.Size(39, 17);
+            this.RadioButton_Filter_Ha.TabIndex = 2;
+            this.RadioButton_Filter_Ha.TabStop = true;
+            this.RadioButton_Filter_Ha.Text = "Ha";
+            this.RadioButton_Filter_Ha.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_Red
+            // 
+            this.RadioButton_Filter_Red.AutoSize = true;
+            this.RadioButton_Filter_Red.Location = new System.Drawing.Point(35, 48);
+            this.RadioButton_Filter_Red.Name = "RadioButton_Filter_Red";
+            this.RadioButton_Filter_Red.Size = new System.Drawing.Size(45, 17);
+            this.RadioButton_Filter_Red.TabIndex = 1;
+            this.RadioButton_Filter_Red.TabStop = true;
+            this.RadioButton_Filter_Red.Text = "Red";
+            this.RadioButton_Filter_Red.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_Filter_Luma
+            // 
+            this.RadioButton_Filter_Luma.AutoSize = true;
+            this.RadioButton_Filter_Luma.Location = new System.Drawing.Point(22, 22);
+            this.RadioButton_Filter_Luma.Name = "RadioButton_Filter_Luma";
+            this.RadioButton_Filter_Luma.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_Filter_Luma.TabIndex = 0;
+            this.RadioButton_Filter_Luma.TabStop = true;
+            this.RadioButton_Filter_Luma.Text = "Luma";
+            this.RadioButton_Filter_Luma.UseVisualStyleBackColor = true;
+            // 
             // GroupBox_SubFrameKeywords
             // 
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SetKeyword);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.TextBox_SetKeyword);
+            this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_SetKeyword);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.CheckBox_SubFrameKeywords_UpdateTargetName);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_Alphabetize);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Button_UpdateXisfFiles);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_TargetName);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Label_TagetName);
-            this.GroupBox_SubFrameKeywords.Location = new System.Drawing.Point(268, 19);
+            this.GroupBox_SubFrameKeywords.Location = new System.Drawing.Point(270, 19);
             this.GroupBox_SubFrameKeywords.Name = "GroupBox_SubFrameKeywords";
-            this.GroupBox_SubFrameKeywords.Size = new System.Drawing.Size(398, 105);
+            this.GroupBox_SubFrameKeywords.Size = new System.Drawing.Size(658, 105);
             this.GroupBox_SubFrameKeywords.TabIndex = 14;
             this.GroupBox_SubFrameKeywords.TabStop = false;
             this.GroupBox_SubFrameKeywords.Text = "SubFrame Keywords";
@@ -347,7 +469,7 @@
             // CheckBox_SubFrameKeywords_UpdateTargetName
             // 
             this.CheckBox_SubFrameKeywords_UpdateTargetName.AutoSize = true;
-            this.CheckBox_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(211, 72);
+            this.CheckBox_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(211, 74);
             this.CheckBox_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_SubFrameKeywords_UpdateTargetName";
             this.CheckBox_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(126, 17);
             this.CheckBox_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
@@ -369,7 +491,7 @@
             // 
             this.RadioButton_SubFrameKeywords_Alphabetize.AutoSize = true;
             this.RadioButton_SubFrameKeywords_Alphabetize.Checked = true;
-            this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(211, 24);
+            this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(211, 22);
             this.RadioButton_SubFrameKeywords_Alphabetize.Name = "RadioButton_SubFrameKeywords_Alphabetize";
             this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(168, 17);
             this.RadioButton_SubFrameKeywords_Alphabetize.TabIndex = 14;
@@ -392,7 +514,7 @@
             // 
             this.ComboBox_TargetName.AllowDrop = true;
             this.ComboBox_TargetName.FormattingEnabled = true;
-            this.ComboBox_TargetName.Location = new System.Drawing.Point(21, 43);
+            this.ComboBox_TargetName.Location = new System.Drawing.Point(21, 46);
             this.ComboBox_TargetName.Name = "ComboBox_TargetName";
             this.ComboBox_TargetName.Size = new System.Drawing.Size(167, 21);
             this.ComboBox_TargetName.Sorted = true;
@@ -411,9 +533,9 @@
             // 
             // ProgressBar_XisfFile
             // 
-            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(26, 134);
+            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(17, 134);
             this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
-            this.ProgressBar_XisfFile.Size = new System.Drawing.Size(632, 11);
+            this.ProgressBar_XisfFile.Size = new System.Drawing.Size(1340, 11);
             this.ProgressBar_XisfFile.Step = 1;
             this.ProgressBar_XisfFile.TabIndex = 13;
             // 
@@ -459,7 +581,7 @@
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
             this.GroupBox_WeightsAndStatistics.Enabled = false;
-            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 189);
+            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 351);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
             this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(1376, 359);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
@@ -1945,9 +2067,9 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.GroupBox_DirectorySelection);
             this.groupBox1.Controls.Add(this.ProgressBar_OverAll);
-            this.groupBox1.Location = new System.Drawing.Point(12, 27);
+            this.groupBox1.Location = new System.Drawing.Point(12, 24);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(685, 156);
+            this.groupBox1.Size = new System.Drawing.Size(1376, 156);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File Selection";
@@ -1968,23 +2090,54 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
+            // ComboBox_SetKeyword
+            // 
+            this.ComboBox_SetKeyword.AllowDrop = true;
+            this.ComboBox_SetKeyword.FormattingEnabled = true;
+            this.ComboBox_SetKeyword.Location = new System.Drawing.Point(418, 20);
+            this.ComboBox_SetKeyword.Name = "ComboBox_SetKeyword";
+            this.ComboBox_SetKeyword.Size = new System.Drawing.Size(217, 21);
+            this.ComboBox_SetKeyword.Sorted = true;
+            this.ComboBox_SetKeyword.TabIndex = 18;
+            // 
+            // TextBox_SetKeyword
+            // 
+            this.TextBox_SetKeyword.Location = new System.Drawing.Point(418, 46);
+            this.TextBox_SetKeyword.Name = "TextBox_SetKeyword";
+            this.TextBox_SetKeyword.Size = new System.Drawing.Size(217, 20);
+            this.TextBox_SetKeyword.TabIndex = 19;
+            // 
+            // CheckBox_SetKeyword
+            // 
+            this.CheckBox_SetKeyword.AutoSize = true;
+            this.CheckBox_SetKeyword.Location = new System.Drawing.Point(483, 75);
+            this.CheckBox_SetKeyword.Name = "CheckBox_SetKeyword";
+            this.CheckBox_SetKeyword.Size = new System.Drawing.Size(86, 17);
+            this.CheckBox_SetKeyword.TabIndex = 20;
+            this.CheckBox_SetKeyword.Text = "Set Keyword";
+            this.CheckBox_SetKeyword.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1400, 555);
+            this.ClientSize = new System.Drawing.Size(1400, 717);
             this.Controls.Add(this.GroupBox_XisfFileUpdate);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "XSIF File Manager";
             this.GroupBox_Order.ResumeLayout(false);
             this.GroupBox_Order.PerformLayout();
             this.GroupBox_XisfFileUpdate.ResumeLayout(false);
+            this.GroupBox_Filter.ResumeLayout(false);
+            this.GroupBox_Filter.PerformLayout();
             this.GroupBox_SubFrameKeywords.ResumeLayout(false);
             this.GroupBox_SubFrameKeywords.PerformLayout();
             this.GroupBox_DirectorySelection.ResumeLayout(false);
@@ -2195,6 +2348,18 @@
         private System.Windows.Forms.GroupBox GroupBox_WeightCalculations;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox GroupBox_Filter;
+        private System.Windows.Forms.CheckBox CheckBox_Filter_SetFilter;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_S2;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Blue;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_O3;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Green;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Ha;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Red;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Luma;
+        private System.Windows.Forms.TextBox TextBox_SetKeyword;
+        private System.Windows.Forms.ComboBox ComboBox_SetKeyword;
+        private System.Windows.Forms.CheckBox CheckBox_SetKeyword;
     }
 }
 

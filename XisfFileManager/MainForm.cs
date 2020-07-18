@@ -10,7 +10,6 @@ using System.Deployment.Application;
 using LocalLib;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
-using System.Threading;
 using System.Drawing;
 using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
@@ -70,7 +69,7 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-
+        private bool mUpdateFilter;
         public MainForm()
         {
             InitializeComponent();
@@ -272,6 +271,7 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
+            mUpdateFilter = false;
 
             try
             {
@@ -426,6 +426,7 @@ namespace XisfFileManager
             // **********************************************************************
 
             SetUISubFrameGroupBoxState();
+            FindMultipleFilters();
 
             ComboBox_TargetName.SelectedIndex = 0;
             GroupBox_XisfFileUpdate.Enabled = true;
@@ -584,7 +585,7 @@ namespace XisfFileManager
                 NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
                 NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
             }
-           
+
 
             SetUISubFrameGroupBoxState();
         }
@@ -1079,6 +1080,185 @@ namespace XisfFileManager
             Label_StarsStdDev.Text = "StdDev: " + SubFrameNumericLists.Stars.StandardDeviation().ToString("F2");
             Label_StarResidualStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidual.StandardDeviation().ToString("F2");
             Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
+        }
+
+        private void CheckBox_Filter_SetFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            mUpdateFilter = CheckBox_Filter_SetFilter.Checked;
+
+            if (mUpdateFilter)
+            {
+                foreach (XisfFile file in mFileList)
+                {
+                    if (RadioButton_Filter_Luma.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Luma");
+
+                    if (RadioButton_Filter_Red.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Red");
+
+                    if (RadioButton_Filter_Green.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Green");
+
+                    if (RadioButton_Filter_Blue.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Blue");
+
+                    if (RadioButton_Filter_Ha.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Ha");
+
+                    if (RadioButton_Filter_O3.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "O3");
+
+                    if (RadioButton_Filter_S2.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "S2");
+                }
+            }
+
+            FindMultipleFilters();
+        }
+
+        private void FindMultipleFilters()
+        {
+            string filter;
+            string firstFilter;
+            bool multipleFilters = false;
+
+            if (mFileList.Count == 0)
+                return;
+
+            firstFilter = mFileList[0].KeywordData.FilterName();
+    
+
+            foreach (XisfFile file in mFileList)
+            {
+                filter = file.KeywordData.FilterName();
+                if (filter != firstFilter)
+                {
+                    if (filter == "Luma")
+                    {
+                        RadioButton_Filter_Luma.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "Red")
+                    {
+                        RadioButton_Filter_Red.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "Green")
+                    {
+                        RadioButton_Filter_Green.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "Blue")
+                    {
+                        RadioButton_Filter_Blue.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "Ha")
+                    {
+                        RadioButton_Filter_Ha.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "O3")
+                    {
+                        RadioButton_Filter_O3.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+
+                    if (filter == "S2")
+                    {
+                        RadioButton_Filter_S2.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
+                }
+
+                if (multipleFilters)
+                {
+                    if (firstFilter == "Luma")
+                    {
+                        RadioButton_Filter_Luma.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "Red")
+                    {
+                        RadioButton_Filter_Red.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "Green")
+                    {
+                        RadioButton_Filter_Green.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "Blue")
+                    {
+                        RadioButton_Filter_Blue.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "Ha")
+                    {
+                        RadioButton_Filter_Ha.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "O3")
+                    {
+                        RadioButton_Filter_O3.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "S2")
+                    {
+                        RadioButton_Filter_S2.ForeColor = Color.Red;
+                    }
+                }
+                else
+                {
+                    if (firstFilter == "Luma")
+                    {
+                        RadioButton_Filter_Luma.Checked = true;
+                    }
+
+                    if (firstFilter == "Red")
+                    {
+                        RadioButton_Filter_Red.Checked = true;
+                    }
+
+                    if (firstFilter == "Green")
+                    {
+                        RadioButton_Filter_Green.Checked = true;
+                    }
+
+                    if (firstFilter == "Blue")
+                    {
+                        RadioButton_Filter_Blue.Checked = true;
+                    }
+
+                    if (firstFilter == "Ha")
+                    {
+                        RadioButton_Filter_Ha.Checked = true;
+                    }
+
+                    if (firstFilter == "O3")
+                    {
+                        RadioButton_Filter_O3.Checked = true;
+                    }
+
+                    if (firstFilter == "S2")
+                    {
+                        RadioButton_Filter_S2.Checked = true;
+                    }
+
+                    RadioButton_Filter_Luma.ForeColor = Color.Black;
+                    RadioButton_Filter_Red.ForeColor = Color.Black;
+                    RadioButton_Filter_Green.ForeColor = Color.Black;
+                    RadioButton_Filter_Blue.ForeColor = Color.Black;
+                    RadioButton_Filter_Ha.ForeColor = Color.Black;
+                    RadioButton_Filter_O3.ForeColor = Color.Black;
+                    RadioButton_Filter_S2.ForeColor = Color.Black;
+                }
+            }
         }
     }
 }
