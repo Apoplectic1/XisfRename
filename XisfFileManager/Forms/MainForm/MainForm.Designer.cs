@@ -49,6 +49,9 @@
             this.RadioButton_Filter_Red = new System.Windows.Forms.RadioButton();
             this.RadioButton_Filter_Luma = new System.Windows.Forms.RadioButton();
             this.GroupBox_SubFrameKeywords = new System.Windows.Forms.GroupBox();
+            this.CheckBox_SetKeyword = new System.Windows.Forms.CheckBox();
+            this.TextBox_SetKeyword = new System.Windows.Forms.TextBox();
+            this.ComboBox_SetKeyword = new System.Windows.Forms.ComboBox();
             this.CheckBox_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
             this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations = new System.Windows.Forms.RadioButton();
             this.RadioButton_SubFrameKeywords_Alphabetize = new System.Windows.Forms.RadioButton();
@@ -199,9 +202,8 @@
             this.Label_OverheadSeconds = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.ComboBox_SetKeyword = new System.Windows.Forms.ComboBox();
-            this.TextBox_SetKeyword = new System.Windows.Forms.TextBox();
-            this.CheckBox_SetKeyword = new System.Windows.Forms.CheckBox();
+            this.Label_UpdateFileName = new System.Windows.Forms.Label();
+            this.Label_BrowseFileName = new System.Windows.Forms.Label();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_Filter.SuspendLayout();
@@ -243,7 +245,7 @@
             // 
             // ProgressBar_OverAll
             // 
-            this.ProgressBar_OverAll.Location = new System.Drawing.Point(17, 134);
+            this.ProgressBar_OverAll.Location = new System.Drawing.Point(17, 155);
             this.ProgressBar_OverAll.Name = "ProgressBar_OverAll";
             this.ProgressBar_OverAll.Size = new System.Drawing.Size(1340, 11);
             this.ProgressBar_OverAll.Step = 1;
@@ -331,14 +333,15 @@
             // 
             // GroupBox_XisfFileUpdate
             // 
+            this.GroupBox_XisfFileUpdate.Controls.Add(this.Label_UpdateFileName);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_Filter);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_SubFrameKeywords);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_Order);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.ProgressBar_XisfFile);
             this.GroupBox_XisfFileUpdate.Enabled = false;
-            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 189);
+            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 212);
             this.GroupBox_XisfFileUpdate.Name = "GroupBox_XisfFileUpdate";
-            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(1376, 156);
+            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(1376, 173);
             this.GroupBox_XisfFileUpdate.TabIndex = 6;
             this.GroupBox_XisfFileUpdate.TabStop = false;
             this.GroupBox_XisfFileUpdate.Text = "File Update";
@@ -466,6 +469,33 @@
             this.GroupBox_SubFrameKeywords.TabStop = false;
             this.GroupBox_SubFrameKeywords.Text = "SubFrame Keywords";
             // 
+            // CheckBox_SetKeyword
+            // 
+            this.CheckBox_SetKeyword.AutoSize = true;
+            this.CheckBox_SetKeyword.Location = new System.Drawing.Point(483, 75);
+            this.CheckBox_SetKeyword.Name = "CheckBox_SetKeyword";
+            this.CheckBox_SetKeyword.Size = new System.Drawing.Size(86, 17);
+            this.CheckBox_SetKeyword.TabIndex = 20;
+            this.CheckBox_SetKeyword.Text = "Set Keyword";
+            this.CheckBox_SetKeyword.UseVisualStyleBackColor = true;
+            // 
+            // TextBox_SetKeyword
+            // 
+            this.TextBox_SetKeyword.Location = new System.Drawing.Point(418, 46);
+            this.TextBox_SetKeyword.Name = "TextBox_SetKeyword";
+            this.TextBox_SetKeyword.Size = new System.Drawing.Size(217, 20);
+            this.TextBox_SetKeyword.TabIndex = 19;
+            // 
+            // ComboBox_SetKeyword
+            // 
+            this.ComboBox_SetKeyword.AllowDrop = true;
+            this.ComboBox_SetKeyword.FormattingEnabled = true;
+            this.ComboBox_SetKeyword.Location = new System.Drawing.Point(418, 20);
+            this.ComboBox_SetKeyword.Name = "ComboBox_SetKeyword";
+            this.ComboBox_SetKeyword.Size = new System.Drawing.Size(217, 21);
+            this.ComboBox_SetKeyword.Sorted = true;
+            this.ComboBox_SetKeyword.TabIndex = 18;
+            // 
             // CheckBox_SubFrameKeywords_UpdateTargetName
             // 
             this.CheckBox_SubFrameKeywords_UpdateTargetName.AutoSize = true;
@@ -533,7 +563,7 @@
             // 
             // ProgressBar_XisfFile
             // 
-            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(17, 134);
+            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(17, 152);
             this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
             this.ProgressBar_XisfFile.Size = new System.Drawing.Size(1340, 11);
             this.ProgressBar_XisfFile.Step = 1;
@@ -581,7 +611,7 @@
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
             this.GroupBox_WeightsAndStatistics.Enabled = false;
-            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 351);
+            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 394);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
             this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(1376, 359);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
@@ -2064,12 +2094,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.Label_BrowseFileName);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.GroupBox_DirectorySelection);
             this.groupBox1.Controls.Add(this.ProgressBar_OverAll);
             this.groupBox1.Location = new System.Drawing.Point(12, 24);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1376, 156);
+            this.groupBox1.Size = new System.Drawing.Size(1376, 182);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File Selection";
@@ -2090,38 +2121,29 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
-            // ComboBox_SetKeyword
+            // Label_UpdateFileName
             // 
-            this.ComboBox_SetKeyword.AllowDrop = true;
-            this.ComboBox_SetKeyword.FormattingEnabled = true;
-            this.ComboBox_SetKeyword.Location = new System.Drawing.Point(418, 20);
-            this.ComboBox_SetKeyword.Name = "ComboBox_SetKeyword";
-            this.ComboBox_SetKeyword.Size = new System.Drawing.Size(217, 21);
-            this.ComboBox_SetKeyword.Sorted = true;
-            this.ComboBox_SetKeyword.TabIndex = 18;
+            this.Label_UpdateFileName.AutoSize = true;
+            this.Label_UpdateFileName.Location = new System.Drawing.Point(17, 134);
+            this.Label_UpdateFileName.Name = "Label_UpdateFileName";
+            this.Label_UpdateFileName.Size = new System.Drawing.Size(92, 13);
+            this.Label_UpdateFileName.TabIndex = 19;
+            this.Label_UpdateFileName.Text = "Update File Name";
             // 
-            // TextBox_SetKeyword
+            // Label_BrowseFileName
             // 
-            this.TextBox_SetKeyword.Location = new System.Drawing.Point(418, 46);
-            this.TextBox_SetKeyword.Name = "TextBox_SetKeyword";
-            this.TextBox_SetKeyword.Size = new System.Drawing.Size(217, 20);
-            this.TextBox_SetKeyword.TabIndex = 19;
-            // 
-            // CheckBox_SetKeyword
-            // 
-            this.CheckBox_SetKeyword.AutoSize = true;
-            this.CheckBox_SetKeyword.Location = new System.Drawing.Point(483, 75);
-            this.CheckBox_SetKeyword.Name = "CheckBox_SetKeyword";
-            this.CheckBox_SetKeyword.Size = new System.Drawing.Size(86, 17);
-            this.CheckBox_SetKeyword.TabIndex = 20;
-            this.CheckBox_SetKeyword.Text = "Set Keyword";
-            this.CheckBox_SetKeyword.UseVisualStyleBackColor = true;
+            this.Label_BrowseFileName.AutoSize = true;
+            this.Label_BrowseFileName.Location = new System.Drawing.Point(17, 134);
+            this.Label_BrowseFileName.Name = "Label_BrowseFileName";
+            this.Label_BrowseFileName.Size = new System.Drawing.Size(92, 13);
+            this.Label_BrowseFileName.TabIndex = 21;
+            this.Label_BrowseFileName.Text = "Browse File Name";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1400, 717);
+            this.ClientSize = new System.Drawing.Size(1400, 771);
             this.Controls.Add(this.GroupBox_XisfFileUpdate);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
@@ -2136,6 +2158,7 @@
             this.GroupBox_Order.ResumeLayout(false);
             this.GroupBox_Order.PerformLayout();
             this.GroupBox_XisfFileUpdate.ResumeLayout(false);
+            this.GroupBox_XisfFileUpdate.PerformLayout();
             this.GroupBox_Filter.ResumeLayout(false);
             this.GroupBox_Filter.PerformLayout();
             this.GroupBox_SubFrameKeywords.ResumeLayout(false);
@@ -2178,6 +2201,7 @@
             this.GroupBox_UpdateStatistics.ResumeLayout(false);
             this.GroupBox_UpdateStatistics.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -2360,6 +2384,8 @@
         private System.Windows.Forms.TextBox TextBox_SetKeyword;
         private System.Windows.Forms.ComboBox ComboBox_SetKeyword;
         private System.Windows.Forms.CheckBox CheckBox_SetKeyword;
+        private System.Windows.Forms.Label Label_UpdateFileName;
+        private System.Windows.Forms.Label Label_BrowseFileName;
     }
 }
 

@@ -25,7 +25,7 @@ namespace XisfFileManager.FileOperations
             return dupFileName;
         }
 
-        public int RenameFiles(int index, XisfFile file)
+        public Tuple<int, string> RenameFiles(int index, XisfFile file)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace XisfFileManager.FileOperations
                     {
                         File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
                     }
-                    return 1;
+                    return new Tuple<int, string>(1, newFileName);
                 }
                 else
                 {
@@ -62,13 +62,13 @@ namespace XisfFileManager.FileOperations
 
                     File.Move(file.SourceFileName, dupFileName);
                 
-                    return 0;
+                    return new Tuple<int, string>(0, dupFileName);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
-                return -1;
+                return new Tuple<int, string>(-1, "");
             }
         }
 

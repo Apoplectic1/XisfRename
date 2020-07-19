@@ -9,7 +9,7 @@ namespace XisfFileManager.Keywords
     public class KeywordLists
     {
         public List<Keyword> KeywordList;
- 
+
         public KeywordLists()
         {
             KeywordList = new List<Keyword>();
@@ -17,7 +17,7 @@ namespace XisfFileManager.Keywords
 
         // #########################################################################################################
         // #########################################################################################################
-        
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
@@ -255,7 +255,7 @@ namespace XisfFileManager.Keywords
             {
                 return parsedDateTime;
             }
-            
+
 
             return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss", CultureInfo.InvariantCulture);
         }
@@ -617,7 +617,7 @@ namespace XisfFileManager.Keywords
             double SSWeight = Convert.ToDouble(node.GetValue());
 
             if (Double.IsNaN(SSWeight)) return Double.NaN;
-            
+
             return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 1, MidpointRounding.AwayFromZero));
         }
 
@@ -629,8 +629,14 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OBJECT");
-            value = node.Value.Replace("'", "").Replace(" ", "").Replace("/","");
+            if (node == null)
+            {
+                AddKeyword("OBJECT", "NoObject");
+                node = KeywordList.Find(i => i.Name == "OBJECT");
+                return "NoObject";
+            }
 
+            value = node.Value.Replace("'", "").Replace(" ", "").Replace("/", "");
             node.Type = Keyword.EType.STRING;
 
             return value;

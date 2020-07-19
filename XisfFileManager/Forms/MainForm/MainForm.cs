@@ -297,10 +297,12 @@ namespace XisfFileManager
                     {
                         bStatus = false;
                         ProgressBar_OverAll.Value += 1;
+                        Application.DoEvents();
 
                         // Create a new xisf file instance
                         mFile = new XisfFile();
                         mFile.SourceFileName = file.FullName;
+                        Label_BrowseFileName.Text = file.FullName;
 
                         // Get the keyword data contained found within the current file
                         // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
@@ -447,8 +449,16 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
+                Tuple<int, string> renameTuple;
                 ProgressBar_XisfFile.Value += 1;
-                indexIncrement = mRenameFile.RenameFiles(index, file);
+                Label_BrowseFileName.Text = file.SourceFileName;
+
+                renameTuple = mRenameFile.RenameFiles(index, file);
+                indexIncrement = renameTuple.Item1;
+                Label_UpdateFileName.Text = renameTuple.Item2;
+                Application.DoEvents();
+
+                
                 if (indexIncrement < 0)
                     break;
                 index += indexIncrement;
@@ -507,8 +517,10 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 ProgressBar_XisfFile.Value += 1;
-
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
+                Label_UpdateFileName.Text = file.SourceFileName;
+                Application.DoEvents();
+
                 if (bStatus == false)
                 {
                     Label_Task.Text = "File Write Error";
@@ -1112,10 +1124,9 @@ namespace XisfFileManager
                         file.KeywordData.AddKeyword("FILTER", "S2");
                 }
             }
-
+           
             FindMultipleFilters();
         }
-
         private void FindMultipleFilters()
         {
             string filter;
@@ -1126,7 +1137,7 @@ namespace XisfFileManager
                 return;
 
             firstFilter = mFileList[0].KeywordData.FilterName();
-    
+
 
             foreach (XisfFile file in mFileList)
             {
