@@ -7,6 +7,7 @@ namespace XisfFileManager.Keywords
         public enum ValidationEnum { EMPTY, INVALD, VALID, MISMATCH }
 
         public List<Keyword> Approved { get; set; }
+        public List<Keyword> AirMass { get; set; }
         public List<Keyword> Eccentricity { get; set; }
         public List<Keyword> EccentricityMeanDeviation { get; set; }
         public List<Keyword> FileName { get; set; }
@@ -25,6 +26,7 @@ namespace XisfFileManager.Keywords
         public SubFrame()
         {
             Approved = new List<Keyword>();
+            AirMass = new List<Keyword>();
             Eccentricity = new List<Keyword>();
             EccentricityMeanDeviation = new List<Keyword>();
             FileName = new List<Keyword>();
@@ -44,6 +46,7 @@ namespace XisfFileManager.Keywords
         public void Clear()
         {
             Approved.Clear();
+            AirMass.Clear();
             Eccentricity.Clear();
             EccentricityMeanDeviation.Clear();
             FileName.Clear();
@@ -68,6 +71,9 @@ namespace XisfFileManager.Keywords
 
             bStatus = Approved.Count == SubFrameCount ? bStatus : false;
             bZero = Approved.Count == 0 ? bZero : false;
+
+            bStatus = AirMass.Count == SubFrameCount ? bStatus : false;
+            bZero = AirMass.Count == 0 ? bZero : false;
 
             bStatus = Eccentricity.Count == SubFrameCount ? bStatus : false;
             bZero = Eccentricity.Count == 0 ? bZero : false;

@@ -4,6 +4,8 @@ using System.Linq;
 using XisfFileManager.Keywords;
 using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
+using XisfFileManager.FileOperations;
+using System.IO;
 
 namespace XisfFileManager.Calculations
 {
@@ -48,15 +50,98 @@ namespace XisfFileManager.Calculations
 
         public void BuildImageParameterValueLists(KeywordLists Keywords)
         {
-            FocuserPosition.Add(Convert.ToDouble(Keywords.FocuserPosition()));
-            FocuserTemperature.Add(Convert.ToDouble(Keywords.FocuserTemperature()));
-            AmbientTemperature.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+            string imageType;
 
-            FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+            imageType = Keywords.FrameType();
+
+            if (imageType == "L")
+            {
+                FocuserPosition.Add(Convert.ToDouble(Keywords.FocuserPosition()));
+                FocuserTemperature.Add(Convert.ToDouble(Keywords.FocuserTemperature()));
+                AmbientTemperature.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+
+                FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+            }
         }
 
+        public string CalculateOverhead(List<XisfFile> fileList)
+        {
+            int index;
+            bool status;
+            double exposure;
+            List<double> subFrameIntervalList;
+            List<double> subFrameExposureList;
+            List<double> exposureList;
+            List<double> intervalList;
 
-        public string ComputeFocuserTemperatureCompensationCoefficient()
+            subFrameIntervalList = new List<double>();
+            subFrameExposureList = new List<double>();
+
+            exposureList = new List<double>();
+            intervalList = new List<double>();
+
+            if (fileList.Count <= 1)
+            {
+                return "SubFrame Overhead: Not Calculated";
+            }
+
+            XisfFile fistFile = fileList[0];
+
+            DateTime firstInterval = new DateTime(2000, 1, 1, 0, 0, 0);
+            DateTime secondInterval = new DateTime(2000, 1, 1, 0, 0, 0);
+
+
+            foreach ( XisfFile file in fileList)
+            {
+                secondInterval = file.KeywordData.CaptureDateTime();
+                double delta = secondInterval.Subtract(firstInterval).TotalSeconds;
+                firstInterval = secondInterval;
+
+                if (delta > (60 * 60))  // Don't add if over 1 hour between frames
+                {
+                    continue;
+                }
+
+                subFrameIntervalList.Add(delta);
+ 
+                status = Double.TryParse(file.KeywordData.ExposureSeconds(), out exposure);
+                if (status == false)
+                {
+                    return "SubFrame Overhead: Calculation Error";
+                }
+                subFrameExposureList.Add(exposure);
+            }
+
+            double sigma = subFrameIntervalList.StandardDeviation();
+
+            if (sigma.Equals(double.NaN))
+            {
+                return "SubFrame Overhead: Calculation Error";
+            }
+
+            for(index = 0; index < subFrameIntervalList.Count; index++)
+            {
+                double interval = Math.Abs(subFrameIntervalList[index]);
+
+                if ((interval < ((sigma * 4) + subFrameIntervalList.Mean())) && (interval > 0))
+                {
+                    intervalList.Add(subFrameIntervalList[index]);
+                    exposureList.Add(subFrameExposureList[index]);
+                }
+            }
+
+            double totalIntervalTime = intervalList.Sum();
+            double totalExposureTime = exposureList.Sum();
+
+            double overheadPercent = ((totalIntervalTime - totalExposureTime) / totalExposureTime) * 100.0;
+            double overheadSeconds = (totalIntervalTime - totalExposureTime) / exposureList.Count();
+         
+            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % with " + overheadSeconds.ToString("F0") + 
+                   " Seconds/Frame Average Overhead\n                                   SubFrame Exposure: " + (totalExposureTime / exposureList.Count()).ToString("F0") + " Seconds" +
+                   " over " + exposureList.Count() + " Frames";
+        }
+
+        public string CalculateFocuserTemperatureCompensationCoefficient()
         {
             int index;
             PositionTemperature pt;
@@ -109,11 +194,6 @@ namespace XisfFileManager.Calculations
             double minTemperature = FocuserTemperature.Min();
 
             return p.Item2.ToString("F0") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
-        }
-
-        public double FindMean(List<double> valueList)
-        {
-            return valueList.Mean();
         }
     }
 }

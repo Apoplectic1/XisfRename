@@ -12,7 +12,7 @@ namespace XisfFileManager.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -85,18 +85,6 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public double Persist_EccentricityPercentState {
-            get {
-                return ((double)(this["Persist_EccentricityPercentState"]));
-            }
-            set {
-                this["Persist_EccentricityPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public double Persist_EccentricityRangeHighState {
             get {
@@ -157,18 +145,6 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_MedianPercentState {
-            get {
-                return ((double)(this["Persist_MedianPercentState"]));
-            }
-            set {
-                this["Persist_MedianPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public double Persist_MedianRangeHighState {
             get {
@@ -188,54 +164,6 @@ namespace XisfFileManager.Properties {
             }
             set {
                 this["Persist_MedianRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_MeanMedianDeviationPercentState {
-            get {
-                return ((double)(this["Persist_MeanMedianDeviationPercentState"]));
-            }
-            set {
-                this["Persist_MeanMedianDeviationPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_MeanMedianDeviationRangeHighState {
-            get {
-                return ((double)(this["Persist_MeanMedianDeviationRangeHighState"]));
-            }
-            set {
-                this["Persist_MeanMedianDeviationRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_MeanMedianDeviationRangeLowState {
-            get {
-                return ((double)(this["Persist_MeanMedianDeviationRangeLowState"]));
-            }
-            set {
-                this["Persist_MeanMedianDeviationRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_NoisePercentState {
-            get {
-                return ((double)(this["Persist_NoisePercentState"]));
-            }
-            set {
-                this["Persist_NoisePercentState"] = value;
             }
         }
         
@@ -289,90 +217,6 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_EccentricityMeanDeviationPercentState {
-            get {
-                return ((double)(this["Persist_EccentricityMeanDeviationPercentState"]));
-            }
-            set {
-                this["Persist_EccentricityMeanDeviationPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_EccentricityMeanDeviationRangeLowState {
-            get {
-                return ((double)(this["Persist_EccentricityMeanDeviationRangeLowState"]));
-            }
-            set {
-                this["Persist_EccentricityMeanDeviationRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_EccentricityMeanDeviationRangeHighState {
-            get {
-                return ((double)(this["Persist_EccentricityMeanDeviationRangeHighState"]));
-            }
-            set {
-                this["Persist_EccentricityMeanDeviationRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_FwhmMeanDeviationPercentState {
-            get {
-                return ((double)(this["Persist_FwhmMeanDeviationPercentState"]));
-            }
-            set {
-                this["Persist_FwhmMeanDeviationPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_FwhmMeanDeviationRangeHighState {
-            get {
-                return ((double)(this["Persist_FwhmMeanDeviationRangeHighState"]));
-            }
-            set {
-                this["Persist_FwhmMeanDeviationRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_FwhmMeanDeviationRangeLowState {
-            get {
-                return ((double)(this["Persist_FwhmMeanDeviationRangeLowState"]));
-            }
-            set {
-                this["Persist_FwhmMeanDeviationRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_NoiseRatioPercentState {
-            get {
-                return ((double)(this["Persist_NoiseRatioPercentState"]));
-            }
-            set {
-                this["Persist_NoiseRatioPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public double Persist_NoiseRatioRangeHighState {
             get {
@@ -392,54 +236,6 @@ namespace XisfFileManager.Properties {
             }
             set {
                 this["Persist_NoiseRatioRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarResidualMeanDevationPercentState {
-            get {
-                return ((double)(this["Persist_StarResidualMeanDevationPercentState"]));
-            }
-            set {
-                this["Persist_StarResidualMeanDevationPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_StarResidualMeanDevationRangeHighState {
-            get {
-                return ((double)(this["Persist_StarResidualMeanDevationRangeHighState"]));
-            }
-            set {
-                this["Persist_StarResidualMeanDevationRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarResidualMeanDevationRangeLowState {
-            get {
-                return ((double)(this["Persist_StarResidualMeanDevationRangeLowState"]));
-            }
-            set {
-                this["Persist_StarResidualMeanDevationRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarResidualPercentState {
-            get {
-                return ((double)(this["Persist_StarResidualPercentState"]));
-            }
-            set {
-                this["Persist_StarResidualPercentState"] = value;
             }
         }
         
@@ -469,18 +265,6 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarsPercentState {
-            get {
-                return ((double)(this["Persist_StarsPercentState"]));
-            }
-            set {
-                this["Persist_StarsPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public double Persist_StarsRangeHighState {
             get {
@@ -500,6 +284,30 @@ namespace XisfFileManager.Properties {
             }
             set {
                 this["Persist_StarsRangeLowState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double Persist_AirMassRangeHighState {
+            get {
+                return ((double)(this["Persist_AirMassRangeHighState"]));
+            }
+            set {
+                this["Persist_AirMassRangeHighState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Persist_AirMassRangeLowState {
+            get {
+                return ((double)(this["Persist_AirMassRangeLowState"]));
+            }
+            set {
+                this["Persist_AirMassRangeLowState"] = value;
             }
         }
     }

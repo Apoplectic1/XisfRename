@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace XisfFileManager.Keywords
@@ -53,6 +54,26 @@ namespace XisfFileManager.Keywords
             if (egain == -1.0) return;
 
             AddKeyword("EGAIN", egain, "XSIF File Manager - Calculated electrons per ADU");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // An older version of TSX did not write OFFSET
+        public void RepairOffset()
+        {
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "OFFSET");
+            if (node != null)
+            {
+                return;
+            }
+
+            if (Camera() == "Z183")
+            {
+                AddKeyword("OFFSET", 10);
+                return;
+            }
         }
 
         // *********************************************************************************************************
@@ -116,7 +137,26 @@ namespace XisfFileManager.Keywords
 
         // #########################################################################################################
         // #########################################################################################################
+        public double AirMass()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
 
+            node = KeywordList.Find(i => i.Name == "AIRMASS");
+            if (node == null)
+            {
+                AddKeyword("AIRMASS", 0.0);
+            }
+
+            node = KeywordList.Find(i => i.Name == "AIRMASS");
+
+            value = node.Value;
+            node.Type = Keyword.EType.FLOAT;
+
+            return Convert.ToDouble(value);
+        }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public string AmbientTemperature()
         {
             string value = string.Empty;
@@ -163,16 +203,16 @@ namespace XisfFileManager.Keywords
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string Binning()
+        public int Binning()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "XBINNING");
             value = node.Value;
-            node.Type = Keyword.EType.STRING;
+            node.Type = Keyword.EType.INTEGER;
 
-            return value;
+            return Convert.ToInt32(value);
         }
 
         // *********************************************************************************************************
@@ -186,7 +226,7 @@ namespace XisfFileManager.Keywords
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
-            if (value.Contains("183") || (value.Contains("ASI") && (SensorWidth() == 5496) && (SensorHeight() == 3672)))
+            if (value.Contains("183") || value.Contains("ASI"))
             {
                 return "Z183";
             }
@@ -210,11 +250,14 @@ namespace XisfFileManager.Keywords
 
             DateTime parsedDateTime;
 
-
             node = KeywordList.Find(i => i.Name == "DATE-LOC");
 
             if (node == null)
+                node = KeywordList.Find(i => i.Name == "DATE-OBS");
+
+            if (node == null)
                 node = KeywordList.Find(i => i.Name == "LOCALTIM");
+
 
             value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;
@@ -267,6 +310,11 @@ namespace XisfFileManager.Keywords
             string value = string.Empty;
             Keyword node = new Keyword();
 
+            if (FrameType() == "D")
+            {
+                return "";
+            }
+
             node = KeywordList.Find(i => i.Name == "CREATOR");
 
             if (node == null)
@@ -275,10 +323,16 @@ namespace XisfFileManager.Keywords
             if (node == null)
                 node = KeywordList.Find(i => i.Name == "SWCREATE");
 
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "TELESCOP");
+
+            if (node == null)
+                return "";
+
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
-            if (value.Contains("Sequence"))
+            if (value.Contains("Sequence") || value.Contains("Riccardi"))
             {
                 return "SGP";
             }
@@ -288,7 +342,7 @@ namespace XisfFileManager.Keywords
                 return "VGR";
             }
 
-            if (value.Contains("SkyX"))
+            if (value.Contains("SkyX") || value.Contains("TheSky"))
             {
                 return "TSX";
             }
@@ -310,6 +364,17 @@ namespace XisfFileManager.Keywords
             if (node == null)
             {
                 node = KeywordList.Find(i => i.Name == "EXPTIME");
+            }
+
+            if (node == null)
+            {
+                var result = MessageBox.Show(
+                        "No Exposure Specified.\n\n",
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                return "0000";
             }
 
             value = node.Value.Replace("'", "").Replace(" ", "");
@@ -342,6 +407,16 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "FILTER");
+
+            if (node == null)
+            {
+                if (FrameType() == "D")
+                {
+                    AddKeyword("FILTER", "!Shutter!");
+                    return "!Shutter!";
+                }
+            }
+
             node.Type = Keyword.EType.STRING;
             value = node.Value.Replace("'", "").Replace(" ", "");
 
@@ -478,9 +553,16 @@ namespace XisfFileManager.Keywords
             }
 
             if (node == null)
-                return null;
+            {
+                var result = MessageBox.Show(
+                        "No GAIN Specified.\n\n",
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
 
-            value = node.Value.Replace("'", "");
+                return 53;
+            }
+            value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);
@@ -528,7 +610,7 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "INDEX");
-            value = node.Value.Replace("'", "");
+            value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);
@@ -542,7 +624,14 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OFFSET");
-            value = node.Value.Replace("'", "");
+            if (node == null)
+            {
+                AddKeyword("OFFSET", 10);
+            }
+
+            node = KeywordList.Find(i => i.Name == "OFFSET");
+
+            value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);
@@ -556,7 +645,45 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "NAXIS2");
-            value = node.Value.Replace("'", "");
+
+            if (node == null)
+            {
+                if (Camera() == "Z183")
+                {
+                    if (Binning() == 1)
+                    {
+                        AddKeyword("NAXIS2", 3672);
+                    }
+
+                    if (Binning() == 2)
+                    {
+                        AddKeyword("NAXIS2", 3672 / 2);
+                    }
+
+                }
+
+                if (Camera() == "Q178")
+                {
+                    if (Binning() == 1)
+                    {
+                        AddKeyword("NAXIS2", 2048);
+                    }
+
+                    if (Binning() == 1)
+                    {
+                        AddKeyword("NAXIS2", 2048 / 2);
+                    }
+
+                }
+
+                node = KeywordList.Find(i => i.Name == "NAXIS2");
+
+                if (node == null)
+                {
+                    return 0;
+                }
+            }
+            value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);
@@ -584,6 +711,19 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "CCD-TEMP");
+
+
+            if (node == null)
+            {
+                var result = MessageBox.Show(
+                        "No CCD-TEMP Specified.\n\n",
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                return "-273";
+            }
+
             node.Type = Keyword.EType.FLOAT;
             value = node.Value;
 
@@ -598,7 +738,28 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "NAXIS1");
-            value = node.Value.Replace("'", "");
+
+            if (node == null)
+            {
+                if (Camera() == "Z183")
+                {
+                    AddKeyword("NAXIS1", 5496);
+                }
+
+                if (Camera() == "Q178")
+                {
+                    AddKeyword("NAXIS1", 3072);
+                }
+
+                node = KeywordList.Find(i => i.Name == "NAXIS1");
+
+                if (node == null)
+                {
+                    return 0;
+                }
+            }
+
+            value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);

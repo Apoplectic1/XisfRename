@@ -15,7 +15,7 @@ namespace XisfFileManager.FileOperations
         {
             using (StreamReader reader = new StreamReader(xFile.SourceFileName))
             {
-                mBuffer = new char[0x3000];
+                mBuffer = new char[0x30000];
                 reader.Read(mBuffer, 0, mBuffer.Length);
 
                 mXmlString = new string(mBuffer);

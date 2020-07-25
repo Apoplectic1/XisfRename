@@ -13,6 +13,7 @@ using XisfFileManager.Keywords;
 using System.Drawing;
 using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
+using MathNet.Numerics.Statistics;
 
 namespace XisfFileManager
 {
@@ -29,40 +30,22 @@ namespace XisfFileManager
         private SubFrameNumericListsValidEnum eSubFrameValidListsValid;
         private XisfFile mFile;
         private XisfFileRename mRenameFile;
-        private double mEccentricityMeanDeviationPercent;
-        private double mEccentricityMeanDeviationRangeHigh;
-        private double mEccentricityMeanDeviationRangeLow;
-        private double mEccentricityPercent;
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
-        private double mFwhmMeanDeviationPercent;
-        private double mFwhmMeanDeviationRangeHigh;
-        private double mFwhmMeanDeviationRangeLow;
         private double mFwhmPercent;
         private double mFwhmRangeHigh;
         private double mFwhmRangeLow;
-        private double mMeanMedianDeviationPercent;
-        private double mMeanMedianDeviationRangeHigh;
-        private double mMeanMedianDeviationRangeLow;
-        private double mMedianPercent;
         private double mMedianRangeHigh;
         private double mMedianRangeLow;
-        private double mNoisePercent;
         private double mNoiseRangeHigh;
         private double mNoiseRangeLow;
-        private double mNoiseRatioPercent;
         private double mNoiseRatioRangeHigh;
         private double mNoiseRatioRangeLow;
         private double mSnrPercent;
         private double mSnrRangeHigh;
         private double mSnrRangeLow;
-        private double mStarResidualMeanDevationPercent;
-        private double mStarResidualMeanDevationRangeHigh;
-        private double mStarResidualMeanDevationRangeLow;
-        private double mStarResidualPercent;
         private double mStarResidualRangeHigh;
         private double mStarResidualRangeLow;
-        private double mStarsPercent;
         private double mStarsRangeHigh;
         private double mStarsRangeLow;
         private double mUpdateStatisticsRangeHigh;
@@ -70,6 +53,7 @@ namespace XisfFileManager
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
         private bool mUpdateFilter;
+
         public MainForm()
         {
             InitializeComponent();
@@ -109,81 +93,41 @@ namespace XisfFileManager
         {
             base.OnLoad(e);
 
-            mEccentricityMeanDeviationPercent = Properties.Settings.Default.Persist_EccentricityMeanDeviationPercentState;
-            mEccentricityMeanDeviationRangeLow = Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeLowState;
-            mEccentricityMeanDeviationRangeHigh = Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeHighState;
-            mEccentricityPercent = Properties.Settings.Default.Persist_EccentricityPercentState;
             mEccentricityRangeHigh = Properties.Settings.Default.Persist_EccentricityRangeHighState;
             mEccentricityRangeLow = Properties.Settings.Default.Persist_EccentricityRangeLowState;
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
-            mFwhmMeanDeviationPercent = Properties.Settings.Default.Persist_FwhmMeanDeviationPercentState;
-            mFwhmMeanDeviationRangeHigh = Properties.Settings.Default.Persist_FwhmMeanDeviationRangeHighState;
-            mFwhmMeanDeviationRangeLow = Properties.Settings.Default.Persist_FwhmMeanDeviationRangeLowState;
             mFwhmPercent = Properties.Settings.Default.Persist_FwhmPercentState;
             mFwhmRangeHigh = Properties.Settings.Default.Persist_FwhmRangeHighState;
             mFwhmRangeLow = Properties.Settings.Default.Persist_FwhmRangeLowState;
-            mMeanMedianDeviationPercent = Properties.Settings.Default.Persist_MeanMedianDeviationPercentState;
-            mMeanMedianDeviationRangeHigh = Properties.Settings.Default.Persist_MeanMedianDeviationRangeHighState;
-            mMeanMedianDeviationRangeLow = Properties.Settings.Default.Persist_MeanMedianDeviationRangeLowState;
-            mMedianPercent = Properties.Settings.Default.Persist_MedianPercentState;
             mMedianRangeHigh = Properties.Settings.Default.Persist_MedianRangeHighState;
             mMedianRangeLow = Properties.Settings.Default.Persist_MedianRangeLowState;
-            mNoisePercent = Properties.Settings.Default.Persist_NoisePercentState;
             mNoiseRangeHigh = Properties.Settings.Default.Persist_NoiseRangeHighState;
             mNoiseRangeLow = Properties.Settings.Default.Persist_NoiseRangeLowState;
-            mNoiseRatioPercent = Properties.Settings.Default.Persist_NoiseRatioPercentState;
             mNoiseRatioRangeHigh = Properties.Settings.Default.Persist_NoiseRatioRangeHighState;
             mNoiseRatioRangeLow = Properties.Settings.Default.Persist_NoiseRatioRangeLowState;
             mSnrPercent = Properties.Settings.Default.Persist_SnrPercentState;
             mSnrRangeHigh = Properties.Settings.Default.Persist_SnrRangeHighState;
             mSnrRangeLow = Properties.Settings.Default.Persist_SnrRangeLowState;
-            mStarResidualMeanDevationPercent = Properties.Settings.Default.Persist_StarResidualMeanDevationPercentState;
-            mStarResidualMeanDevationRangeHigh = Properties.Settings.Default.Persist_StarResidualMeanDevationRangeHighState;
-            mStarResidualMeanDevationRangeLow = Properties.Settings.Default.Persist_StarResidualMeanDevationRangeLowState;
-            mStarResidualPercent = Properties.Settings.Default.Persist_StarResidualPercentState;
             mStarResidualRangeHigh = Properties.Settings.Default.Persist_StarResidualRangeHighState;
             mStarResidualRangeLow = Properties.Settings.Default.Persist_StarResidualRangeLowState;
-            mStarsPercent = Properties.Settings.Default.Persist_StarsPercentState;
             mStarsRangeHigh = Properties.Settings.Default.Persist_StarsRangeHighState;
             mStarsRangeLow = Properties.Settings.Default.Persist_StarsRangeLowState;
             mUpdateStatisticsRangeHigh = Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState;
             mUpdateStatisticsRangeLow = Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState;
 
-            TextBox_EccentricityMeanDeviationPercent.Text = mEccentricityMeanDeviationPercent.ToString("F0");
-            TextBox_EccentricityMeanDeviationRangeHigh.Text = mEccentricityMeanDeviationRangeHigh.ToString("F0");
-            TextBox_EccentricityMeanDeviationRangeLow.Text = mEccentricityMeanDeviationRangeLow.ToString("F0");
-            TextBox_EccentricityPercent.Text = mEccentricityPercent.ToString("F0");
             TextBox_EccentricityRangeHigh.Text = mEccentricityRangeHigh.ToString("F0");
             TextBox_EccentricityRangeLow.Text = mEccentricityRangeLow.ToString("F0");
-            TextBox_FwhmMeanDeviationPercent.Text = mFwhmMeanDeviationPercent.ToString("F0");
-            TextBox_FwhmMeanDeviationRangeHigh.Text = mFwhmMeanDeviationRangeHigh.ToString("F0");
-            TextBox_FwhmMeanDeviationRangeLow.Text = mFwhmMeanDeviationRangeLow.ToString("F0");
-            TextBox_FwhmPercent.Text = mFwhmPercent.ToString("F0");
             TextBox_FwhmRangeHigh.Text = mFwhmRangeHigh.ToString("F0");
             TextBox_FwhmRangeLow.Text = mFwhmRangeLow.ToString("F0");
-            TextBox_MedianMeanDeviationPercent.Text = mMeanMedianDeviationPercent.ToString("F0");
-            TextBox_MedianMeanDeviationRangeHigh.Text = mMeanMedianDeviationRangeHigh.ToString("F0");
-            TextBox_MedianMeanDeviationRangeLow.Text = mMeanMedianDeviationRangeLow.ToString("F0");
-            TextBox_MedianPercent.Text = mMedianPercent.ToString("F0");
             TextBox_MedianRangeHigh.Text = mMedianRangeHigh.ToString("F0");
             TextBox_MedianRangeLow.Text = mMedianRangeLow.ToString("F0");
-            TextBox_NoisePercent.Text = mNoisePercent.ToString("F0");
             TextBox_NoiseRangeHigh.Text = mNoiseRangeHigh.ToString("F0");
             TextBox_NoiseRangeLow.Text = mNoiseRangeLow.ToString("F0");
-            TextBox_NoiseRatioPercent.Text = mNoiseRatioPercent.ToString("F0");
-            TextBox_NoiseRatioRangeHigh.Text = mNoiseRatioRangeHigh.ToString("F0");
-            TextBox_NoiseRatioRangeLow.Text = mNoiseRatioRangeLow.ToString("F0");
-            TextBox_SnrPercent.Text = mSnrPercent.ToString("F0");
             TextBox_SnrRangeHigh.Text = mSnrRangeHigh.ToString("F0");
             TextBox_SnrRangeLow.Text = mSnrRangeLow.ToString("F0");
-            TextBox_StarResidualMeanDeviationPercent.Text = mStarResidualMeanDevationPercent.ToString("F0");
-            TextBox_StarResidualMeanDevationRangeHigh.Text = mStarResidualMeanDevationRangeHigh.ToString("F0");
-            TextBox_StarResidualMeanDevationRangeLow.Text = mStarResidualMeanDevationRangeLow.ToString("F0");
-            TextBox_StarResidualPercent.Text = mStarResidualPercent.ToString("F0");
             TextBox_StarResidualRangeHigh.Text = mStarResidualRangeHigh.ToString("F0");
             TextBox_StarResidualRangeLow.Text = mStarResidualRangeLow.ToString("F0");
-            TextBox_StarsPercent.Text = mStarsPercent.ToString("F0");
             TextBox_StarRangeHigh.Text = mStarsRangeHigh.ToString("F0");
             TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
@@ -194,42 +138,24 @@ namespace XisfFileManager
         {
             base.OnClosing(e);
 
-            Properties.Settings.Default.Persist_EccentricityMeanDeviationPercentState = mEccentricityMeanDeviationPercent;
-            Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeHighState = mEccentricityMeanDeviationRangeHigh;
-            Properties.Settings.Default.Persist_EccentricityMeanDeviationRangeLowState = mEccentricityMeanDeviationRangeLow;
-            Properties.Settings.Default.Persist_EccentricityPercentState = mEccentricityPercent;
             Properties.Settings.Default.Persist_EccentricityRangeHighState = mEccentricityRangeHigh;
             Properties.Settings.Default.Persist_EccentricityRangeLowState = mEccentricityRangeLow;
             Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
             Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
-            Properties.Settings.Default.Persist_FwhmMeanDeviationPercentState = mFwhmMeanDeviationPercent;
-            Properties.Settings.Default.Persist_FwhmMeanDeviationRangeHighState = mFwhmMeanDeviationRangeHigh;
-            Properties.Settings.Default.Persist_FwhmMeanDeviationRangeLowState = mFwhmMeanDeviationRangeLow;
             Properties.Settings.Default.Persist_FwhmPercentState = mFwhmPercent;
             Properties.Settings.Default.Persist_FwhmRangeHighState = mFwhmRangeHigh;
             Properties.Settings.Default.Persist_FwhmRangeLowState = mFwhmRangeLow;
-            Properties.Settings.Default.Persist_MeanMedianDeviationPercentState = mMeanMedianDeviationPercent;
-            Properties.Settings.Default.Persist_MeanMedianDeviationRangeHighState = mMeanMedianDeviationRangeHigh;
-            Properties.Settings.Default.Persist_MeanMedianDeviationRangeLowState = mMeanMedianDeviationRangeLow;
-            Properties.Settings.Default.Persist_MedianPercentState = mMedianPercent;
             Properties.Settings.Default.Persist_MedianRangeHighState = mMedianRangeHigh;
             Properties.Settings.Default.Persist_MedianRangeLowState = mMedianRangeLow;
-            Properties.Settings.Default.Persist_NoisePercentState = mNoisePercent;
             Properties.Settings.Default.Persist_NoiseRangeHighState = mNoiseRangeHigh;
             Properties.Settings.Default.Persist_NoiseRangeLowState = mNoiseRangeLow;
-            Properties.Settings.Default.Persist_NoiseRatioPercentState = mNoiseRatioPercent;
             Properties.Settings.Default.Persist_NoiseRatioRangeHighState = mNoiseRatioRangeHigh;
             Properties.Settings.Default.Persist_NoiseRatioRangeLowState = mNoiseRatioRangeLow;
             Properties.Settings.Default.Persist_SnrPercentState = mSnrPercent;
             Properties.Settings.Default.Persist_SnrRangeHighState = mSnrRangeHigh;
             Properties.Settings.Default.Persist_SnrRangeLowState = mSnrRangeLow;
-            Properties.Settings.Default.Persist_StarResidualMeanDevationPercentState = mStarResidualMeanDevationPercent;
-            Properties.Settings.Default.Persist_StarResidualMeanDevationRangeHighState = mStarResidualMeanDevationRangeHigh;
-            Properties.Settings.Default.Persist_StarResidualMeanDevationRangeLowState = mStarResidualMeanDevationRangeLow;
-            Properties.Settings.Default.Persist_StarResidualPercentState = mStarResidualPercent;
             Properties.Settings.Default.Persist_StarResidualRangeHighState = mStarResidualRangeHigh;
             Properties.Settings.Default.Persist_StarResidualRangeLowState = mStarResidualRangeLow;
-            Properties.Settings.Default.Persist_StarsPercentState = mStarsPercent;
             Properties.Settings.Default.Persist_StarsRangeHighState = mStarsRangeHigh;
             Properties.Settings.Default.Persist_StarsRangeLowState = mStarsRangeLow;
             Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState = mUpdateStatisticsRangeHigh;
@@ -271,6 +197,8 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
+            ComboBox_TargetName.Text = "";
+            ComboBox_TargetName.Items.Clear();
             mUpdateFilter = false;
 
             try
@@ -352,6 +280,7 @@ namespace XisfFileManager
                 foreach (XisfFile file in mFileList)
                 {
                     SubFrameLists.AddKeywordApproved(file.KeywordData);
+                    SubFrameLists.AddKeywordAirMass(file.KeywordData);
                     SubFrameLists.AddKeywordEccentricity(file.KeywordData);
                     SubFrameLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
                     SubFrameLists.AddKeywordFileName(file.SourceFileName);
@@ -387,6 +316,19 @@ namespace XisfFileManager
             // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
             SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
 
+            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            {
+                // SubFrame data is valid
+                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
+                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
+                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
+                NumericUpDown_Rejection_Noise.Value = Convert.ToDecimal(SubFrameNumericLists.Noise.Max());
+                NumericUpDown_Rejection_AirMass.Value = Convert.ToDecimal(SubFrameNumericLists.AirMass.Max());
+                NumericUpDown_Rejection_Stars.Value = Convert.ToDecimal(SubFrameNumericLists.Stars.Max());
+                NumericUpDown_Rejection_StarResidual.Value = Convert.ToDecimal(SubFrameNumericLists.StarResidual.Max());
+                NumericUpDown_Rejection_Snr.Value = Convert.ToDecimal(SubFrameNumericLists.Snr.Max());
+            }
             // **********************************************************************
             // Get TargetName and populate ComboBox
             List<string> TargetNames = new List<string>();
@@ -421,7 +363,8 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
             }
 
-            string stepsPerDegree = ImageParameterLists.ComputeFocuserTemperatureCompensationCoefficient();
+            Label_File_Selection_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
+            string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
             Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // Need to add calculations for average capture duration/overhead
@@ -430,7 +373,11 @@ namespace XisfFileManager
             SetUISubFrameGroupBoxState();
             FindMultipleFilters();
 
-            ComboBox_TargetName.SelectedIndex = 0;
+            if (ComboBox_TargetName.Items.Count != 0)
+            {
+                ComboBox_TargetName.SelectedIndex = 0;
+            }
+            
             GroupBox_XisfFileUpdate.Enabled = true;
         }
 
@@ -458,7 +405,7 @@ namespace XisfFileManager
                 Label_UpdateFileName.Text = renameTuple.Item2;
                 Application.DoEvents();
 
-                
+
                 if (indexIncrement < 0)
                     break;
                 index += indexIncrement;
@@ -477,6 +424,8 @@ namespace XisfFileManager
         private void Button_Update_Click(object sender, EventArgs e)
         {
             bool bStatus;
+            GroupBox_DirectorySelection.Enabled = false;
+            GroupBox_RenameOrder.Enabled = false;
 
             Label_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_XisfFile.Maximum = mFileList.Count();
@@ -498,6 +447,8 @@ namespace XisfFileManager
                         MessageBoxIcon.Error);
 
                     Label_Task.Text = "Update Aborted";
+                    GroupBox_DirectorySelection.Enabled = true;
+                    GroupBox_RenameOrder.Enabled = true;
                     return;
                 }
 
@@ -511,7 +462,6 @@ namespace XisfFileManager
                     XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
                 }
             }
-            
 
             XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'", "").Replace("\"", "");
 
@@ -532,11 +482,15 @@ namespace XisfFileManager
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
+                    GroupBox_DirectorySelection.Enabled = true;
+                    GroupBox_RenameOrder.Enabled = true;
                     return;
                 }
             }
 
             Label_Task.Text = mFileList.Count().ToString() + " Images Updated";
+            GroupBox_DirectorySelection.Enabled = true;
+            GroupBox_RenameOrder.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -597,17 +551,16 @@ namespace XisfFileManager
                 NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
                 NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
                 NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
+                NumericUpDown_Rejection_Noise.Value = Convert.ToDecimal(SubFrameNumericLists.Noise.Max());
+                NumericUpDown_Rejection_AirMass.Value = Convert.ToDecimal(SubFrameNumericLists.AirMass.Max());
+                NumericUpDown_Rejection_Stars.Value = Convert.ToDecimal(SubFrameNumericLists.Stars.Max());
+                NumericUpDown_Rejection_StarResidual.Value = Convert.ToDecimal(SubFrameNumericLists.StarResidual.Max());
+                NumericUpDown_Rejection_Snr.Value = Convert.ToDecimal(SubFrameNumericLists.Snr.Max());
             }
 
             SetUISubFrameGroupBoxState();
 
             XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.NEW_WEIGHTS;
-        }
-
-        private void TextBox_FwhmPercent_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmPercent = ValidateRangeValue(TextBox_FwhmPercent);
-            SetUISubFrameGroupBoxState();
         }
 
         private void TextBox_FwhmRangeHigh_TextChanged(object sender, EventArgs e)
@@ -620,12 +573,6 @@ namespace XisfFileManager
             mFwhmRangeLow = ValidateRangeValue(TextBox_FwhmRangeLow);
         }
 
-        private void TextBox_EccentricityPercent_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityPercent = ValidateRangeValue(TextBox_EccentricityPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
         private void TextBox_EccentricityRangeHigh_TextChanged(object sender, EventArgs e)
         {
             mEccentricityRangeHigh = ValidateRangeValue(TextBox_EccentricityRangeHigh);
@@ -634,11 +581,6 @@ namespace XisfFileManager
         private void TextBox_EccentricityRangeLow_TextChanged(object sender, EventArgs e)
         {
             mEccentricityRangeLow = ValidateRangeValue(TextBox_EccentricityRangeLow);
-        }
-
-        private void TextBox_SnrPercent_TextChanged(object sender, EventArgs e)
-        {
-            mSnrPercent = ValidateRangeValue(TextBox_SnrPercent);
         }
 
         private void TextBox_SnrRangeHigh_TextChanged(object sender, EventArgs e)
@@ -652,12 +594,6 @@ namespace XisfFileManager
             SetUISubFrameGroupBoxState();
         }
 
-        private void TextBox_MedianPercent_TextChanged(object sender, EventArgs e)
-        {
-            mMedianPercent = ValidateRangeValue(TextBox_MedianPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
         private void TextBox_MedianRangeHigh_TextChanged(object sender, EventArgs e)
         {
             mMedianRangeHigh = ValidateRangeValue(TextBox_MedianRangeHigh);
@@ -666,28 +602,6 @@ namespace XisfFileManager
         private void TextBox_MedianRangeLow_TextChanged(object sender, EventArgs e)
         {
             mMedianRangeLow = ValidateRangeValue(TextBox_MedianRangeLow);
-        }
-
-        private void TextBox_MeanMedianDeviationPercent_TextChanged(object sender, EventArgs e)
-        {
-            mMeanMedianDeviationPercent = ValidateRangeValue(TextBox_MedianMeanDeviationPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_MeanMedianDeviationRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mMeanMedianDeviationRangeHigh = ValidateRangeValue(TextBox_MedianMeanDeviationRangeHigh);
-        }
-
-        private void TextBox_MeanMedianDeviationRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mMeanMedianDeviationRangeLow = ValidateRangeValue(TextBox_MedianMeanDeviationRangeLow);
-        }
-
-        private void TextBox_NoisePercent_TextChanged(object sender, EventArgs e)
-        {
-            mNoisePercent = ValidateRangeValue(TextBox_NoisePercent);
-            SetUISubFrameGroupBoxState();
         }
 
         private void TextBox_NoiseRangeHigh_TextChanged(object sender, EventArgs e)
@@ -710,60 +624,6 @@ namespace XisfFileManager
             mUpdateStatisticsRangeLow = ValidateRangeValue(TextBox_UpdateStatisticsRangeLow);
         }
 
-        private void TextBox_NoiseRatioPercent_TextChanged(object sender, EventArgs e)
-        {
-            mNoiseRatioPercent = ValidateRangeValue(TextBox_NoiseRatioPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_NoiseRatioRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mNoiseRatioRangeHigh = ValidateRangeValue(TextBox_NoiseRatioRangeHigh);
-        }
-
-        private void TextBox_NoiseRationRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mNoiseRatioRangeLow = ValidateRangeValue(TextBox_NoiseRatioRangeLow);
-        }
-
-        private void TextBox_EccentricityMeanDeviationPercent_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityMeanDeviationPercent = ValidateRangeValue(TextBox_EccentricityMeanDeviationPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_EccentricityMeanDeviationRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityMeanDeviationRangeHigh = ValidateRangeValue(TextBox_EccentricityMeanDeviationRangeHigh);
-        }
-
-        private void TextBox_EccentricityMeanDeviationRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityMeanDeviationRangeLow = ValidateRangeValue(TextBox_EccentricityMeanDeviationRangeLow);
-        }
-
-        private void TextBox_FwhmMeanDeviationPercent_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmMeanDeviationPercent = ValidateRangeValue(TextBox_FwhmMeanDeviationPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_FwhmMeanDeviationRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmMeanDeviationRangeHigh = ValidateRangeValue(TextBox_FwhmMeanDeviationRangeHigh);
-        }
-
-        private void TextBox_FwhmMeanDeviationRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmMeanDeviationRangeLow = ValidateRangeValue(TextBox_FwhmMeanDeviationRangeLow);
-        }
-
-        private void TextBox_StarsPercent_TextChanged(object sender, EventArgs e)
-        {
-            mStarsPercent = ValidateRangeValue(TextBox_StarsPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
         private void TextBox_StarsRangeHigh_TextChanged(object sender, EventArgs e)
         {
             mStarsRangeHigh = ValidateRangeValue(TextBox_StarRangeHigh);
@@ -774,12 +634,6 @@ namespace XisfFileManager
             mStarsRangeLow = ValidateRangeValue(TextBox_StarRangeLow);
         }
 
-        private void TextBox_StarResidualPercent_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualPercent = ValidateRangeValue(TextBox_StarResidualPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
         private void TextBox_StarResidualRangeHigh_TextChanged(object sender, EventArgs e)
         {
             mStarResidualRangeHigh = ValidateRangeValue(TextBox_StarResidualRangeHigh);
@@ -788,22 +642,6 @@ namespace XisfFileManager
         private void TextBox_StarResidualRangeLow_TextChanged(object sender, EventArgs e)
         {
             mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
-        }
-
-        private void TextBox_StarResidualMeanDevationPercent_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualMeanDevationPercent = ValidateRangeValue(TextBox_StarResidualMeanDeviationPercent);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_StarResidualMeanDevationRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualMeanDevationRangeHigh = ValidateRangeValue(TextBox_StarResidualMeanDevationRangeHigh);
-        }
-
-        private void TextBox_StarResidualMeanDevationRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualMeanDevationRangeLow = ValidateRangeValue(TextBox_StarResidualMeanDevationRangeLow);
         }
 
         private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -885,6 +723,8 @@ namespace XisfFileManager
                 RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
                 RadioButton_SetImageStatistics_RescaleWeights.Enabled = true;
                 RadioButton_SetImageStatistics_CalculateWeights.Enabled = true;
+
+                UpdateWeightCalculations();
             }
             else
             {
@@ -905,9 +745,14 @@ namespace XisfFileManager
             {
                 // SubFrame data is valid
                 TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                NumericUpDown_Rejection_FWHM.Value,
-                NumericUpDown_Rejection_Eccentricity.Value,
-                NumericUpDown_Rejection_Median.Value).ToString();
+                 NumericUpDown_Rejection_FWHM.Value,
+                 NumericUpDown_Rejection_Eccentricity.Value,
+                 NumericUpDown_Rejection_Median.Value,
+                 NumericUpDown_Rejection_Noise.Value,
+                 NumericUpDown_Rejection_AirMass.Value,
+                 NumericUpDown_Rejection_Stars.Value,
+                 NumericUpDown_Rejection_StarResidual.Value,
+                 NumericUpDown_Rejection_Snr.Value).ToString();
             }
 
 
@@ -938,60 +783,22 @@ namespace XisfFileManager
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
-                    GroupBox_EccentricityMeanDeviationWeight.Enabled = true;
-                    if (TextBox_EccentricityMeanDeviationPercent.Text == "0") { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_FwhmWeight.Enabled = true;
-                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_EccentricityWeight.Enabled = true;
-                    if (TextBox_EccentricityPercent.Text == "0") { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_EccentricityWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_FwhmMeanDeviationWeight.Enabled = true;
-                    if (TextBox_FwhmMeanDeviationPercent.Text == "0") { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_FwhmWeight.Enabled = true;
-                    if (TextBox_FwhmPercent.Text == "0") { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_FwhmWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_MedianMeanDeviationWeight.Enabled = true;
-                    if (TextBox_MedianMeanDeviationPercent.Text == "0") { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_MedianMeanDeviationWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_MedianWeight.Enabled = true;
-                    if (TextBox_MedianPercent.Text == "0") { GroupBox_MedianWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_MedianWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_NoiseRatioWeight.Enabled = true;
-                    if (TextBox_NoiseRatioPercent.Text == "0") { GroupBox_NoiseRatioWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_NoiseRatioWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_NoiseWeight.Enabled = true;
-                    if (TextBox_NoisePercent.Text == "0") { GroupBox_NoiseWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_NoiseWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_SnrWeight.Enabled = true;
-                    if (TextBox_SnrPercent.Text == "0") { GroupBox_SnrWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_SnrWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_StarResidual.Enabled = true;
-                    if (TextBox_StarResidualPercent.Text == "0") { GroupBox_StarResidual.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarResidual.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_StarResidualMeanDeviation.Enabled = true;
-                    if (TextBox_StarResidualMeanDeviationPercent.Text == "0") { GroupBox_StarResidualMeanDeviation.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarResidualMeanDeviation.BackColor = Color.FromArgb(255, 240, 240, 240); }
-
-                    GroupBox_StarsWeight.Enabled = true;
-                    if (TextBox_StarsPercent.Text == "0") { GroupBox_StarsWeight.BackColor = Color.FromArgb(255, 200, 200, 200); } else { GroupBox_StarsWeight.BackColor = Color.FromArgb(255, 240, 240, 240); }
                 }
                 else
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = false;
 
-                    GroupBox_EccentricityMeanDeviationWeight.Enabled = false;
+
                     GroupBox_EccentricityWeight.Enabled = false;
-                    GroupBox_FwhmMeanDeviationWeight.Enabled = false;
+                    GroupBox_AirMassWeight.Enabled = false;
                     GroupBox_FwhmWeight.Enabled = false;
-                    GroupBox_MedianMeanDeviationWeight.Enabled = false;
+
                     GroupBox_MedianWeight.Enabled = false;
-                    GroupBox_NoiseRatioWeight.Enabled = false;
+
                     GroupBox_NoiseWeight.Enabled = false;
                     GroupBox_SnrWeight.Enabled = false;
                     GroupBox_StarResidual.Enabled = false;
-                    GroupBox_StarResidualMeanDeviation.Enabled = false;
+
                     GroupBox_StarsWeight.Enabled = false;
                 }
             }
@@ -1055,6 +862,31 @@ namespace XisfFileManager
             SetUISubFrameGroupBoxState();
         }
 
+        private void NumericUpDown_Rejection_Noise_ValueChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void NumericUpDown_Rejection_AirMass_ValueChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void NumericUpDown_Rejection_Stars_ValueChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void NumericUpDown_Rejection_StarResidual_ValueChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
+        private void NumericUpDown_Rejection_Snr_ValueChanged(object sender, EventArgs e)
+        {
+            SetUISubFrameGroupBoxState();
+        }
+
         private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
         {
             SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
@@ -1082,31 +914,54 @@ namespace XisfFileManager
             }
 
 
-            Label_FwhmMean.Text = "Mean: " + SubFrameNumericLists.Fwhm.Average().ToString("F2");
-            Label_EccentricityMean.Text = "Mean: " + SubFrameNumericLists.Eccentricity.Average().ToString("F2");
-            Label_MedianMean.Text = "Mean: " + SubFrameNumericLists.Median.Average().ToString("F0");
-            Label_FwhmMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.FwhmMeanDeviation.Average().ToString("F2");
-            Label_EccentricityMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.EccentricityMeanDeviation.Average().ToString("F2");
-            Label_MedianMeanDeviationMean.Text = "Mean: " + SubFrameNumericLists.MedianMeanDeviation.Average().ToString("F2");
-            Label_NoiseMean.Text = "Mean: " + SubFrameNumericLists.Noise.Average().ToString("F2");
-            Label_NoiseRatioMean.Text = "Mean: " + SubFrameNumericLists.NoiseRatio.Average().ToString("F2");
-            Label_SnrMean.Text = "Mean: " + SubFrameNumericLists.SnrWeight.Average().ToString("F2");
-            Label_StarsMean.Text = "Mean: " + SubFrameNumericLists.Stars.Average().ToString("F0");
-            Label_StarResidualMean.Text = "Mean: " + SubFrameNumericLists.StarResidual.Average().ToString("F2");
-            Label_StarResidualMeanDevationMean.Text = "Mean: " + SubFrameNumericLists.StarResidualMeanDeviation.Average().ToString("F2");
+            Label_FwhmMeanValue.Text = SubFrameNumericLists.Fwhm.Average().ToString("F2");
+            Label_FwhmMedianValue.Text = SubFrameNumericLists.Fwhm.Median().ToString("F2");
+            Label_FwhmMinValue.Text = SubFrameNumericLists.Fwhm.Min().ToString("F2");
+            Label_FwhmMaxValue.Text = SubFrameNumericLists.Fwhm.Max().ToString("F2");
+            Label_FwhmSigmaValue.Text = SubFrameNumericLists.Fwhm.StandardDeviation().ToString("F2");
 
-            Label_FwhmStdDev.Text = "StdDev: " + SubFrameNumericLists.Fwhm.StandardDeviation().ToString("F2");
-            Label_EccentricityStdDev.Text = "StdDev: " + SubFrameNumericLists.Eccentricity.StandardDeviation().ToString("F2");
-            Label_MedianStdDev.Text = "StdDev: " + SubFrameNumericLists.Median.StandardDeviation().ToString("F2");
-            Label_FwhmMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.FwhmMeanDeviation.StandardDeviation().ToString("F2");
-            Label_EccentricityMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.EccentricityMeanDeviation.StandardDeviation().ToString("F2");
-            Label_MedianMeanDeviationStdDev.Text = "StdDev: " + SubFrameNumericLists.MedianMeanDeviation.StandardDeviation().ToString("F2");
-            Label_NoiseStdDev.Text = "StdDev: " + SubFrameNumericLists.Noise.StandardDeviation().ToString("F2");
-            Label_NoiseRatioStdDev.Text = "StdDev: " + SubFrameNumericLists.NoiseRatio.StandardDeviation().ToString("F2");
-            Label_SnrStdDev.Text = "StdDev: " + SubFrameNumericLists.SnrWeight.StandardDeviation().ToString("F2");
-            Label_StarsStdDev.Text = "StdDev: " + SubFrameNumericLists.Stars.StandardDeviation().ToString("F2");
-            Label_StarResidualStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidual.StandardDeviation().ToString("F2");
-            Label_StarResidualMeanDevationStdDev.Text = "StdDev: " + SubFrameNumericLists.StarResidualMeanDeviation.StandardDeviation().ToString("F2");
+            Label_EccentricityMeanValue.Text = SubFrameNumericLists.Eccentricity.Average().ToString("F2");
+            Label_EccentricityMedianValue.Text = SubFrameNumericLists.Eccentricity.Median().ToString("F2");
+            Label_EccentricityMinValue.Text = SubFrameNumericLists.Eccentricity.Min().ToString("F2");
+            Label_EccentricityMaxValue.Text = SubFrameNumericLists.Eccentricity.Max().ToString("F2");
+            Label_EccentricitySigmaValue.Text = SubFrameNumericLists.Eccentricity.StandardDeviation().ToString("F2");
+
+            Label_MedianMeanValue.Text = SubFrameNumericLists.Median.Average().ToString("F0");
+            Label_MedianMedianValue.Text = SubFrameNumericLists.Median.Median().ToString("F0");
+            Label_MedianMinValue.Text = SubFrameNumericLists.Median.Min().ToString("F0");
+            Label_MedianMaxValue.Text = SubFrameNumericLists.Median.Max().ToString("F0");
+            Label_MedianSigmaValue.Text = SubFrameNumericLists.Median.StandardDeviation().ToString("F2");
+
+            Label_NoiseMeanValue.Text = SubFrameNumericLists.Noise.Average().ToString("F2");
+            Label_NoiseMedianValue.Text = SubFrameNumericLists.Noise.Median().ToString("F2");
+            Label_NoiseMinValue.Text = SubFrameNumericLists.Noise.Min().ToString("F2");
+            Label_NoiseMaxValue.Text = SubFrameNumericLists.Noise.Max().ToString("F2");
+            Label_NoiseSigmaValue.Text = SubFrameNumericLists.Noise.StandardDeviation().ToString("F2");
+
+            Label_AirMassMeanValue.Text = SubFrameNumericLists.AirMass.Average().ToString("F2");
+            Label_AirMassMedianValue.Text = SubFrameNumericLists.AirMass.Median().ToString("F2");
+            Label_AirMassMinValue.Text = SubFrameNumericLists.AirMass.Min().ToString("F2");
+            Label_AirMassMaxValue.Text = SubFrameNumericLists.AirMass.Max().ToString("F2");
+            Label_AirMassSigmaValue.Text = SubFrameNumericLists.AirMass.StandardDeviation().ToString("F2");
+
+            Label_StarsMeanValue.Text = SubFrameNumericLists.Stars.Average().ToString("F0");
+            Label_StarsMedianValue.Text = SubFrameNumericLists.Stars.Median().ToString("F0");
+            Label_StarsMinValue.Text = SubFrameNumericLists.Stars.Min().ToString("F0");
+            Label_StarsMaxValue.Text = SubFrameNumericLists.Stars.Max().ToString("F0");
+            Label_StarsSigmaValue.Text = SubFrameNumericLists.Stars.StandardDeviation().ToString("F2");
+
+            Label_StarResidualMeanValue.Text = SubFrameNumericLists.StarResidual.Average().ToString("F2");
+            Label_StarResidualMedianValue.Text = SubFrameNumericLists.StarResidual.Median().ToString("F2");
+            Label_StarResidualMinValue.Text = SubFrameNumericLists.StarResidual.Min().ToString("F2");
+            Label_StarResidualMaxValue.Text = SubFrameNumericLists.StarResidual.Max().ToString("F2");
+            Label_StarResidualSigmaValue.Text = SubFrameNumericLists.StarResidual.StandardDeviation().ToString("F2");
+
+            Label_SnrMeanValue.Text = SubFrameNumericLists.Snr.Average().ToString("F2");
+            Label_SnrMedianValue.Text = SubFrameNumericLists.Snr.Median().ToString("F2");
+            Label_SnrMinValue.Text = SubFrameNumericLists.Snr.Min().ToString("F2");
+            Label_SnrMaxValue.Text = SubFrameNumericLists.Snr.Max().ToString("F2");
+            Label_SnrSigmaValue.Text = SubFrameNumericLists.Snr.StandardDeviation().ToString("F2");
+
         }
 
         private void CheckBox_Filter_SetFilter_CheckedChanged(object sender, EventArgs e)
@@ -1139,7 +994,7 @@ namespace XisfFileManager
                         file.KeywordData.AddKeyword("FILTER", "S2");
                 }
             }
-           
+
             FindMultipleFilters();
         }
         private void FindMultipleFilters()

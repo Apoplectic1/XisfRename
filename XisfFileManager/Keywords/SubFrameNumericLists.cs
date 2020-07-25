@@ -9,6 +9,12 @@ namespace XisfFileManager.Calculations
     {
         public enum SubFrameNumericListsValidEnum { EMPTY, INVALD, VALID, MISMATCH }
 
+        public List<double> AirMass { get; set; }
+        public double AirMassScaled { get; private set; }
+        public double AirMassValue { private get; set; } = 1.0;
+        public double AirMassRangeMin { private get; set; } = 0.0;
+        public double AirMassRangeMax { private get; set; } = 1.0;
+
         public List<bool> Approved { get; set; }
 
         public List<double> Eccentricity { get; set; }
@@ -16,96 +22,72 @@ namespace XisfFileManager.Calculations
         public double EccentricityValue { private get; set; } = 1.0;
         public double EccentricityRangeMin { private get; set; } = 0.0;
         public double EccentricityRangeMax { private get; set; } = 1.0;
-        public double EccentricityPercent { private get; set; } = 0.0;
-
-
+ 
         public List<double> EccentricityMeanDeviation { get; set; }
         public double EccentricityMeanDeviationScaled { get; private set; }
         public double EccentricityMeanDeviationValue { private get; set; } = 1.0;
         public double EccentricityMeanDeviationRangeMin { private get; set; } = 0.0;
         public double EccentricityMeanDeviationRangeMax { private get; set; } = 1.0;
-        public double EccentricityMeanDeviationPercent { private get; set; } = 0.0;
-
 
         public List<double> Fwhm { get; set; }
         public double FwhmScaled { get; private set; }
         public double FwhmValue { private get; set; } = 1.0;
         public double FwhmRangeMin { private get; set; } = 0.0;
         public double FwhmRangeMax { private get; set; } = 1.0;
-        public double FwhmPercent { private get; set; } = 0.0;
-
 
         public List<double> FwhmMeanDeviation { get; set; }
         public double FwhmMeanDeviationScaled { get; private set; }
         public double FwhmMeanDeviationValue { private get; set; } = 1.0;
         public double FwhmMeanDeviationRangeMin { private get; set; } = 0.0;
         public double FwhmMeanDeviationRangeMax { private get; set; } = 1.0;
-        public double FwhmMeanDeviationPercent { private get; set; } = 0.0;
-
 
         public List<double> Median { get; set; }
         public double MedianScaled { get; private set; }
         public double MedianValue { private get; set; } = 1.0;
         public double MedianRangeMin { private get; set; } = 0.0;
         public double MedianRangeMax { private get; set; } = 1.0;
-        public double MedianPercent { private get; set; } = 0.0;
-
 
         public List<double> MedianMeanDeviation { get; set; }
         public double MedianMeanDeviationScaled { get; private set; }
         public double MedianMeanDeviationValue { private get; set; } = 1.0;
         public double MedianMeanDeviationRangeMin { private get; set; } = 0.0;
         public double MedianMeanDeviationRangeMax { private get; set; } = 1.0;
-        public double MedianMeanDeviationPercent { private get; set; } = 0.0;
-
 
         public List<double> Noise { get; set; }
         public double NoiseScaled { get; private set; }
         public double NoiseValue { private get; set; } = 1.0;
         public double NoiseRangeMin { private get; set; } = 0.0;
         public double NoiseRangeMax { private get; set; } = 1.0;
-        public double NoisePercent { private get; set; } = 0.0;
-
 
         public List<double> NoiseRatio { get; set; }
         public double NoiseRatioScaled { get; private set; }
         public double NoiseRatioValue { private get; set; } = 1.0;
         public double NoiseRatioRangeMin { private get; set; } = 0.0;
         public double NoiseRatioRangeMax { private get; set; } = 1.0;
-        public double NoiseRatioPercent { private get; set; } = 0.0;
 
-
-        public List<double> SnrWeight { get; set; }
+        public List<double> Snr { get; set; }
         public double SnrWeightScaled { get; private set; }
         public double SnrWeightValue { private get; set; } = 1.0;
         public double SnrWeightRangeMin { private get; set; } = 0.0;
         public double SnrWeightRangeMax { private get; set; } = 1.0;
-        public double SnrWeightPercent { private get; set; } = 0.0;
-
 
         public List<double> StarResidual { get; set; }
         public double StarResidualScaled { get; private set; }
         public double StarResidualValue { private get; set; } = 1.0;
         public double StarResidualRangeMin { private get; set; } = 0.0;
         public double StarResidualRangeMax { private get; set; } = 1.0;
-        public double StarResidualPercent { private get; set; } = 0.0;
-
 
         public List<double> StarResidualMeanDeviation { get; set; }
         public double StarResidualMeanDeviationScaled { get; private set; }
         public double StarResidualMeanDeviationValue { private get; set; } = 1.0;
         public double StarResidualMeanDeviationRangeMin { private get; set; } = 0.0;
         public double StarResidualMeanDeviationRangeMax { private get; set; } = 1.0;
-        public double StarResidualMeanDeviationPercent { private get; set; } = 0.0;
-
 
         public List<double> Stars { get; set; }
         public double StarsScaled { get; private set; }
         public double StarsValue { private get; set; } = 1.0;
         public double StarsRangeMin { private get; set; } = 0.0;
         public double StarsRangeMax { private get; set; } = 1.0;
-        public double StarsPercent { private get; set; } = 0.0;
-
 
         public List<double> Weight { get; set; }
         public double WeightRangeMin { private get; set; } = 50.0;
@@ -117,6 +99,7 @@ namespace XisfFileManager.Calculations
         public SubFrameNumericLists()
         {
             Approved = new List<bool>();
+            AirMass = new List<double>();
             Eccentricity = new List<double>();
             EccentricityMeanDeviation = new List<double>();
             FileName = new List<string>();
@@ -126,7 +109,7 @@ namespace XisfFileManager.Calculations
             MedianMeanDeviation = new List<double>();
             Noise = new List<double>();
             NoiseRatio = new List<double>();
-            SnrWeight = new List<double>();
+            Snr = new List<double>();
             StarResidual = new List<double>();
             StarResidualMeanDeviation = new List<double>();
             Stars = new List<double>();
@@ -136,6 +119,7 @@ namespace XisfFileManager.Calculations
         public void Clear()
         {
             Approved.Clear();
+            AirMass.Clear();
             Eccentricity.Clear();
             EccentricityMeanDeviation.Clear();
             FileName.Clear();
@@ -145,7 +129,7 @@ namespace XisfFileManager.Calculations
             MedianMeanDeviation.Clear();
             Noise.Clear();
             NoiseRatio.Clear();
-            SnrWeight.Clear();
+            Snr.Clear();
             StarResidual.Clear();
             StarResidualMeanDeviation.Clear();
             Stars.Clear();
@@ -180,6 +164,9 @@ namespace XisfFileManager.Calculations
 
             ApprovedTotal = SubFrameCount;
 
+            bStatus = AirMass.Count == ApprovedTotal ? bStatus : false;
+            bZero = AirMass.Count == 0 ? bZero : false;
+
             bStatus = Eccentricity.Count == ApprovedTotal ? bStatus : false;
             bZero = Eccentricity.Count == 0 ? bZero : false;
 
@@ -204,8 +191,8 @@ namespace XisfFileManager.Calculations
             bStatus = NoiseRatio.Count == ApprovedTotal ? bStatus : false;
             bZero = NoiseRatio.Count == 0 ? bZero : false;
 
-            bStatus = SnrWeight.Count == ApprovedTotal ? bStatus : false;
-            bZero = SnrWeight.Count == 0 ? bZero : false;
+            bStatus = Snr.Count == ApprovedTotal ? bStatus : false;
+            bZero = Snr.Count == 0 ? bZero : false;
 
             bStatus = StarResidual.Count == ApprovedTotal ? bStatus : false;
             bZero = StarResidual.Count == 0 ? bZero : false;
@@ -260,7 +247,8 @@ namespace XisfFileManager.Calculations
             return WeightScaled;
         }
 
-        public int SetRejectedSubFrames(decimal FwhmMax, decimal EccentricityMax, decimal MedianMax)
+        public int SetRejectedSubFrames(decimal FwhmMax, decimal EccentricityMax, decimal MedianMax, decimal NoiseMax, 
+                                        decimal AirMassMax, decimal StarsMax, decimal StarResidualMax, decimal SnrMax )
         {
             int index;
 
@@ -300,6 +288,56 @@ namespace XisfFileManager.Calculations
             }
 
             index = 0;
+            foreach (double noise in Noise)
+            {
+                if (noise > Convert.ToDouble(NoiseMax))
+                {
+                    Approved[index] = false;
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double airMass in AirMass)
+            {
+                if (airMass > Convert.ToDouble(AirMassMax))
+                {
+                    Approved[index] = false;
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double stars in Stars)
+            {
+                if (stars > Convert.ToDouble(StarsMax))
+                {
+                    Approved[index] = false;
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double starResidual in StarResidual)
+            {
+                if (starResidual > Convert.ToDouble(StarResidualMax))
+                {
+                    Approved[index] = false;
+                }
+                index++;
+            }
+
+            index = 0;
+            foreach (double snr in Snr)
+            {
+                if (snr > Convert.ToDouble(SnrMax))
+                {
+                    Approved[index] = false;
+                }
+                index++;
+            }
+
+            index = 0;
             foreach (bool approved in Approved)
             {
                 if (approved == false)
@@ -324,31 +362,28 @@ namespace XisfFileManager.Calculations
 
             while (SubFrameIndex < SubFrameCount)
             {
+                AirMassScaled = Scale(AirMass[SubFrameIndex], AirMass.Min(), AirMass.Max(), AirMassRangeMin, AirMassRangeMax);
                 EccentricityScaled = Scale(Eccentricity[SubFrameIndex], Eccentricity.Min(), Eccentricity.Max(), EccentricityRangeMin, EccentricityRangeMax);
-                EccentricityMeanDeviationScaled = Scale(EccentricityMeanDeviation[SubFrameIndex], EccentricityMeanDeviation.Min(), EccentricityMeanDeviation.Max(), EccentricityMeanDeviationRangeMin, EccentricityMeanDeviationRangeMax);
                 FwhmScaled = Scale(Fwhm[SubFrameIndex], Fwhm.Min(), Fwhm.Max(), FwhmRangeMin, FwhmRangeMax);
-                FwhmMeanDeviationScaled = Scale(FwhmMeanDeviation[SubFrameIndex], FwhmMeanDeviation.Min(), FwhmMeanDeviation.Max(), FwhmMeanDeviationRangeMin, FwhmMeanDeviationRangeMax);
                 MedianScaled = Scale(Median[SubFrameIndex], Median.Min(), Median.Max(), MedianRangeMin, MedianRangeMax);
-                MedianMeanDeviationScaled = Scale(MedianMeanDeviation[SubFrameIndex], MedianMeanDeviation.Min(), MedianMeanDeviation.Max(), MedianMeanDeviationRangeMin, MedianMeanDeviationRangeMax);
                 NoiseScaled = Scale(Noise[SubFrameIndex], Noise.Min(), Noise.Max(), NoiseRangeMin, NoiseRangeMax);
-                NoiseRatioScaled = Scale(NoiseRatio[SubFrameIndex], NoiseRatio.Min(), NoiseRatio.Max(), NoiseRatioRangeMin, NoiseRatioRangeMax);
-                SnrWeightScaled = Scale(SnrWeight[SubFrameIndex], SnrWeight.Min(), SnrWeight.Max(), SnrWeightRangeMin, SnrWeightRangeMax);
+                SnrWeightScaled = Scale(Snr[SubFrameIndex], Snr.Min(), Snr.Max(), SnrWeightRangeMin, SnrWeightRangeMax);
                 StarResidualScaled = Scale(StarResidual[SubFrameIndex], StarResidual.Min(), StarResidual.Max(), StarResidualRangeMin, StarResidualRangeMax);
-                StarResidualMeanDeviationScaled = Scale(StarResidualMeanDeviation[SubFrameIndex], StarResidualMeanDeviation.Min(), StarResidualMeanDeviation.Max(), StarResidualMeanDeviationRangeMin, StarResidualMeanDeviationRangeMax);
                 StarsScaled = Scale(Stars[SubFrameIndex], Stars.Min(), Stars.Max(), StarsRangeMin, StarsRangeMax);
 
-                weight = EccentricityScaled * EccentricityPercent +
-                         EccentricityMeanDeviationScaled * EccentricityMeanDeviationPercent +
-                         FwhmScaled + FwhmPercent +
-                         FwhmMeanDeviationScaled * FwhmMeanDeviationPercent +
-                         MedianScaled * MedianPercent +
-                         MedianMeanDeviationScaled * MedianMeanDeviationPercent +
-                         NoiseScaled * NoisePercent +
-                         NoiseRatioScaled * NoiseRatioPercent +
-                         SnrWeightScaled * SnrWeightPercent +
-                         StarResidualScaled * StarResidualPercent +
-                         StarResidualMeanDeviationScaled * StarResidualMeanDeviationPercent +
-                         StarsScaled * StarsPercent;
+                weight = AirMassScaled +
+                         EccentricityScaled +
+                         EccentricityMeanDeviationScaled +
+                         FwhmScaled +
+                         FwhmMeanDeviationScaled +
+                         MedianScaled +
+                         MedianMeanDeviationScaled +
+                         NoiseScaled +
+                         NoiseRatioScaled +
+                         SnrWeightScaled +
+                         StarResidualScaled +
+                         StarResidualMeanDeviationScaled +
+                         StarsScaled;
 
                 weightList.Add(weight);
 
@@ -372,6 +407,11 @@ namespace XisfFileManager.Calculations
             foreach (Keyword keyword in KeywordLists.SubFrameList.Approved)
             {
                 Approved.Add((bool)Convert.ChangeType(keyword.GetValue(), typeof(bool)));
+            }
+
+            foreach (Keyword keyword in KeywordLists.SubFrameList.AirMass)
+            {
+                AirMass.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.FileName)
@@ -439,7 +479,7 @@ namespace XisfFileManager.Calculations
             foreach (Keyword keyword in KeywordLists.SubFrameList.SnrWeight)
             {
                 //if (Approved[index++] == true) 
-                SnrWeight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Snr.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
             index = 0;
@@ -469,15 +509,6 @@ namespace XisfFileManager.Calculations
                 //if (Approved[index++] == true) 
                 Weight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
-        }
-    }
-
-    public static class Extend
-    {
-        public static double StandardDeviation(this IEnumerable<double> values)
-        {
-            double avg = values.Average();
-            return Math.Sqrt(values.Average(v => Math.Pow(v - avg, 2)));
         }
     }
 }

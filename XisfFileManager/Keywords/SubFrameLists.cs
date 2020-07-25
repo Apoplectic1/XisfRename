@@ -35,6 +35,19 @@
             keywords.KeywordList.Remove(node);
         }
 
+        public void AddKeywordAirMass(KeywordLists keywords)
+        {
+            Keyword node = new Keyword();
+            node = keywords.KeywordList.Find(i => i.Name == "AIRMASS");
+            if (node == null) return;
+
+            node.Value = node.Value.Replace("'", "");
+            node.Type = Keyword.EType.FLOAT;
+
+            SubFrameList.AirMass.Add(node);
+            keywords.KeywordList.Remove(node);
+        }
+
         public void AddKeywordEccentricity(KeywordLists keywords)
         {
             Keyword node = new Keyword();

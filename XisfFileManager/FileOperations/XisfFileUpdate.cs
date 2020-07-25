@@ -64,6 +64,8 @@ namespace XisfFileManager.FileOperations
 
                     // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords
                     mFile.KeywordData.RepairTargetName(TargetName);
+                    mFile.KeywordData.RepairOffset();
+
                     mFile.KeywordData.RemoveKeyword("HISTORY");
                     mFile.KeywordData.RemoveKeyword("ALIGNH");
                     mFile.KeywordData.RemoveKeyword("COMMENT");
