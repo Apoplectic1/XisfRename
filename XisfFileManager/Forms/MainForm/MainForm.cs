@@ -511,6 +511,7 @@ namespace XisfFileManager
                     XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
                 }
             }
+            
 
             XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'", "").Replace("\"", "");
 
@@ -598,8 +599,9 @@ namespace XisfFileManager
                 NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
             }
 
-
             SetUISubFrameGroupBoxState();
+
+            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.NEW_WEIGHTS;
         }
 
         private void TextBox_FwhmPercent_TextChanged(object sender, EventArgs e)
@@ -878,6 +880,19 @@ namespace XisfFileManager
 
         private void SetUISubFrameGroupBoxState()
         {
+            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == SubFrameNumericListsValidEnum.VALID)
+            {
+                RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
+                RadioButton_SetImageStatistics_RescaleWeights.Enabled = true;
+                RadioButton_SetImageStatistics_CalculateWeights.Enabled = true;
+            }
+            else
+            {
+                RadioButton_SetImageStatistics_KeepWeights.Text = "Read CSV File";
+                RadioButton_SetImageStatistics_RescaleWeights.Enabled = false;
+                RadioButton_SetImageStatistics_CalculateWeights.Enabled = false;
+            }
+
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
             if (eSubFrameValidListsValid != SubFrameNumericListsValidEnum.VALID)
@@ -1004,7 +1019,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_CalculateWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS;
+                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }

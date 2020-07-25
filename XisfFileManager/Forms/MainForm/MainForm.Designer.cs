@@ -39,6 +39,7 @@
             this.RadioButton_RenameOrder_WeightIndex = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_XisfFileUpdate = new System.Windows.Forms.GroupBox();
+            this.Label_UpdateFileName = new System.Windows.Forms.Label();
             this.GroupBox_Filter = new System.Windows.Forms.GroupBox();
             this.CheckBox_Filter_SetFilter = new System.Windows.Forms.CheckBox();
             this.RadioButton_Filter_S2 = new System.Windows.Forms.RadioButton();
@@ -201,9 +202,8 @@
             this.Label_OSeconds = new System.Windows.Forms.Label();
             this.Label_OverheadSeconds = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Label_UpdateFileName = new System.Windows.Forms.Label();
             this.Label_BrowseFileName = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.GroupBox_Order.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_Filter.SuspendLayout();
@@ -345,6 +345,15 @@
             this.GroupBox_XisfFileUpdate.TabIndex = 6;
             this.GroupBox_XisfFileUpdate.TabStop = false;
             this.GroupBox_XisfFileUpdate.Text = "File Update";
+            // 
+            // Label_UpdateFileName
+            // 
+            this.Label_UpdateFileName.AutoSize = true;
+            this.Label_UpdateFileName.Location = new System.Drawing.Point(17, 134);
+            this.Label_UpdateFileName.Name = "Label_UpdateFileName";
+            this.Label_UpdateFileName.Size = new System.Drawing.Size(92, 13);
+            this.Label_UpdateFileName.TabIndex = 19;
+            this.Label_UpdateFileName.Text = "Update File Name";
             // 
             // GroupBox_Filter
             // 
@@ -1787,11 +1796,11 @@
             // 
             // Button_Rejection_RejectionSet
             // 
-            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(559, 27);
+            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(551, 27);
             this.Button_Rejection_RejectionSet.Name = "Button_Rejection_RejectionSet";
-            this.Button_Rejection_RejectionSet.Size = new System.Drawing.Size(75, 23);
+            this.Button_Rejection_RejectionSet.Size = new System.Drawing.Size(83, 23);
             this.Button_Rejection_RejectionSet.TabIndex = 10;
-            this.Button_Rejection_RejectionSet.Text = "Reject";
+            this.Button_Rejection_RejectionSet.Text = "Set Rejected";
             this.Button_Rejection_RejectionSet.UseVisualStyleBackColor = true;
             this.Button_Rejection_RejectionSet.Click += new System.EventHandler(this.Button_Rejection_RejectionSet_Click);
             // 
@@ -1864,7 +1873,7 @@
             131072});
             this.NumericUpDown_Rejection_FWHM.Location = new System.Drawing.Point(55, 28);
             this.NumericUpDown_Rejection_FWHM.Maximum = new decimal(new int[] {
-            7,
+            20,
             0,
             0,
             0});
@@ -1881,7 +1890,7 @@
             // 
             // TextBox_Rejection_Total
             // 
-            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(505, 28);
+            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(500, 28);
             this.TextBox_Rejection_Total.Name = "TextBox_Rejection_Total";
             this.TextBox_Rejection_Total.Size = new System.Drawing.Size(44, 20);
             this.TextBox_Rejection_Total.TabIndex = 5;
@@ -1890,7 +1899,7 @@
             // Label_Rejection_Total
             // 
             this.Label_Rejection_Total.AutoSize = true;
-            this.Label_Rejection_Total.Location = new System.Drawing.Point(395, 32);
+            this.Label_Rejection_Total.Location = new System.Drawing.Point(390, 32);
             this.Label_Rejection_Total.Name = "Label_Rejection_Total";
             this.Label_Rejection_Total.Size = new System.Drawing.Size(109, 13);
             this.Label_Rejection_Total.TabIndex = 4;
@@ -1963,10 +1972,10 @@
             this.RadioButton_SetImageStatistics_KeepWeights.Checked = true;
             this.RadioButton_SetImageStatistics_KeepWeights.Location = new System.Drawing.Point(173, 13);
             this.RadioButton_SetImageStatistics_KeepWeights.Name = "RadioButton_SetImageStatistics_KeepWeights";
-            this.RadioButton_SetImageStatistics_KeepWeights.Size = new System.Drawing.Size(92, 17);
+            this.RadioButton_SetImageStatistics_KeepWeights.Size = new System.Drawing.Size(131, 17);
             this.RadioButton_SetImageStatistics_KeepWeights.TabIndex = 21;
             this.RadioButton_SetImageStatistics_KeepWeights.TabStop = true;
-            this.RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Weights";
+            this.RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
             this.RadioButton_SetImageStatistics_KeepWeights.UseVisualStyleBackColor = true;
             this.RadioButton_SetImageStatistics_KeepWeights.CheckedChanged += new System.EventHandler(this.RadioButton_SetImageStatistics_KeepWeights_CheckedChanged);
             // 
@@ -2105,6 +2114,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "File Selection";
             // 
+            // Label_BrowseFileName
+            // 
+            this.Label_BrowseFileName.AutoSize = true;
+            this.Label_BrowseFileName.Location = new System.Drawing.Point(17, 134);
+            this.Label_BrowseFileName.Name = "Label_BrowseFileName";
+            this.Label_BrowseFileName.Size = new System.Drawing.Size(92, 13);
+            this.Label_BrowseFileName.TabIndex = 21;
+            this.Label_BrowseFileName.Text = "Browse File Name";
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.Label_Task);
@@ -2120,24 +2138,6 @@
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
-            // 
-            // Label_UpdateFileName
-            // 
-            this.Label_UpdateFileName.AutoSize = true;
-            this.Label_UpdateFileName.Location = new System.Drawing.Point(17, 134);
-            this.Label_UpdateFileName.Name = "Label_UpdateFileName";
-            this.Label_UpdateFileName.Size = new System.Drawing.Size(92, 13);
-            this.Label_UpdateFileName.TabIndex = 19;
-            this.Label_UpdateFileName.Text = "Update File Name";
-            // 
-            // Label_BrowseFileName
-            // 
-            this.Label_BrowseFileName.AutoSize = true;
-            this.Label_BrowseFileName.Location = new System.Drawing.Point(17, 134);
-            this.Label_BrowseFileName.Name = "Label_BrowseFileName";
-            this.Label_BrowseFileName.Size = new System.Drawing.Size(92, 13);
-            this.Label_BrowseFileName.TabIndex = 21;
-            this.Label_BrowseFileName.Text = "Browse File Name";
             // 
             // MainForm
             // 
