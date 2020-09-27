@@ -208,7 +208,7 @@ namespace XisfFileManager
                 foreach (string folder in mFolder.SelectedPaths)
                 {
                     bool bStatus;
-
+  
                     d = new DirectoryInfo(folder);
 
                     FileInfo[] Files = d.GetFiles("*.xisf");
@@ -229,8 +229,9 @@ namespace XisfFileManager
 
                         // Create a new xisf file instance
                         mFile = new XisfFile();
+
                         mFile.SourceFileName = file.FullName;
-                        Label_BrowseFileName.Text = file.FullName;
+                        Label_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
 
                         // Get the keyword data contained found within the current file
                         // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
@@ -402,7 +403,7 @@ namespace XisfFileManager
 
                 renameTuple = mRenameFile.RenameFiles(index, file);
                 indexIncrement = renameTuple.Item1;
-                Label_UpdateFileName.Text = renameTuple.Item2;
+                Label_UpdateFileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
                 Application.DoEvents();
 
 
@@ -469,7 +470,7 @@ namespace XisfFileManager
             {
                 ProgressBar_XisfFile.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
-                Label_UpdateFileName.Text = file.SourceFileName;
+                Label_UpdateFileName.Text = Label_UpdateFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
                 Application.DoEvents();
 
                 if (bStatus == false)
@@ -477,7 +478,7 @@ namespace XisfFileManager
                     Label_Task.Text = "File Write Error";
 
                     var result = MessageBox.Show(
-                        "File Update Failed.\n\n" + file.SourceFileName,
+                        "File Update Failed.\n\n" + Label_UpdateFileName.Text,
                         "\nMainForm.cs Button_Update_Click()",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);

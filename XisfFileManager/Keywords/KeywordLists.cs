@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
+
 namespace XisfFileManager.Keywords
 {
     public class KeywordLists
@@ -19,6 +20,71 @@ namespace XisfFileManager.Keywords
         // #########################################################################################################
         // #########################################################################################################
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Make sure FITS keyword DATE-LOC exists and is in local time (not UTC)
+        public void RepairDateLocation()
+        {
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "DATE-LOC");
+            if (node != null)
+            {
+                // DATE-LOC exists (and should already be local time) so do nothing and return
+                return;
+            }
+
+            return;
+
+            /*
+            double latitude;
+            double longitude;
+            string value;
+            string[] array;
+            int position;
+
+            RepairSiteLatitude();
+            RepairSiteLongitude();
+
+            node = KeywordList.Find(i => i.Name == "SITELAT");
+            value = node.Value;
+            array = value.Split(' ');
+
+            double[] divisor = { 1.0, 60.0, 3600.0 };
+
+            latitude = 0.0;
+            position = 0;
+            foreach(string arrayValue in array)
+            {
+                latitude += Convert.ToDouble(arrayValue) / divisor[position++];
+            }
+
+            node = KeywordList.Find(i => i.Name == "SITELON");
+            value = node.Value;
+            array = value.Split(' ');
+
+            longitude = 0.0;
+            position = 0;
+            foreach (string arrayValue in array)
+            {
+                longitude += Convert.ToDouble(arrayValue) / divisor[position++];
+            }
+
+            node = KeywordList.Find(i => i.Name == "DATE-LOC");
+
+            DateTime utcDate = CaptureDateTime();
+            string tz1 = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
+            
+            var timeZoneDbUseCases = new TimeZoneDbUseCases();
+            var allTimeZones = timeZoneDbUseCases.GetAllTimeZones();
+            var timeZone = timeZoneDbUseCases.GetTimeZoneWithIanaId(tz1);
+
+            var timeZone1 = TimeZoneInfo.FindSystemTimeZoneById(timeZone.MicrosoftId);
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone1);
+
+            */
+
+        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
@@ -70,6 +136,12 @@ namespace XisfFileManager.Keywords
             }
 
             if (Camera() == "Z183")
+            {
+                AddKeyword("OFFSET", 10);
+                return;
+            }
+
+            if (Camera() == "Q178")
             {
                 AddKeyword("OFFSET", 10);
                 return;
@@ -247,13 +319,35 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
             int index;
             bool status;
+            bool utc = false;
 
             DateTime parsedDateTime;
 
             node = KeywordList.Find(i => i.Name == "DATE-LOC");
 
             if (node == null)
+            {
+                /*
+                // DATE-OBS may be in UTC vs local time
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
+                if (node != null)
+                {
+                    utc = node.Comment.Contains("UTC");
+
+                    if (utc == true)
+                    {
+                        var client = new RestClient("https://maps.googleapis.com");
+                        var request = new RestRequest("maps/api/timezone/json", Method.GET);
+                        request.AddParameter("location", latitude + "," + longitude);
+                        request.AddParameter("timestamp", utcDate.ToTimestamp());
+                        request.AddParameter("sensor", "false");
+                        var response = client.Execute<GoogleTimeZone>(request);
+
+                        return utcDate.AddSeconds(response.Data.rawOffset + response.Data.dstOffset);
+                    }
+                }
+                */
+            }
 
             if (node == null)
                 node = KeywordList.Find(i => i.Name == "LOCALTIM");
@@ -267,7 +361,7 @@ namespace XisfFileManager.Keywords
                 value = value.Remove(value.IndexOf('.')) + " AM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.f tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
@@ -278,7 +372,7 @@ namespace XisfFileManager.Keywords
                 value = value.Remove(value.IndexOf('.')) + " PM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.f tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
@@ -300,7 +394,7 @@ namespace XisfFileManager.Keywords
             }
 
 
-            return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss.f", CultureInfo.InvariantCulture);
         }
 
         // *********************************************************************************************************
@@ -590,20 +684,6 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string ImageLocation()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "SITENAME");
-            value = node.Value;
-            node.Type = Keyword.EType.STRING;
-
-            return value.Replace("'", "");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public int Index()
         {
             string value = string.Empty;
@@ -767,6 +847,20 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        public string SiteLocation()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "SITENAME");
+            value = node.Value;
+            node.Type = Keyword.EType.STRING;
+
+            return value.Replace("'", "");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public double SSWeight()
         {
             string value = string.Empty;
@@ -912,5 +1006,14 @@ namespace XisfFileManager.Keywords
         }
 
 
+    }
+
+    public class GoogleTimeZone
+    {
+        public double dstOffset { get; set; }
+        public double rawOffset { get; set; }
+        public string status { get; set; }
+        public string timeZoneId { get; set; }
+        public string timeZoneName { get; set; }
     }
 }

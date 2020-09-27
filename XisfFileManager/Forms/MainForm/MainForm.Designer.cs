@@ -265,7 +265,7 @@
             // 
             // ProgressBar_OverAll
             // 
-            this.ProgressBar_OverAll.Location = new System.Drawing.Point(28, 155);
+            this.ProgressBar_OverAll.Location = new System.Drawing.Point(28, 166);
             this.ProgressBar_OverAll.Name = "ProgressBar_OverAll";
             this.ProgressBar_OverAll.Size = new System.Drawing.Size(889, 11);
             this.ProgressBar_OverAll.Step = 1;
@@ -358,9 +358,9 @@
             this.GroupBox_XisfFileUpdate.Controls.Add(this.GroupBox_SubFrameKeywords);
             this.GroupBox_XisfFileUpdate.Controls.Add(this.ProgressBar_XisfFile);
             this.GroupBox_XisfFileUpdate.Enabled = false;
-            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 212);
+            this.GroupBox_XisfFileUpdate.Location = new System.Drawing.Point(12, 228);
             this.GroupBox_XisfFileUpdate.Name = "GroupBox_XisfFileUpdate";
-            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(950, 173);
+            this.GroupBox_XisfFileUpdate.Size = new System.Drawing.Size(950, 193);
             this.GroupBox_XisfFileUpdate.TabIndex = 6;
             this.GroupBox_XisfFileUpdate.TabStop = false;
             this.GroupBox_XisfFileUpdate.Text = "File Update";
@@ -368,7 +368,7 @@
             // Label_UpdateFileName
             // 
             this.Label_UpdateFileName.AutoSize = true;
-            this.Label_UpdateFileName.Location = new System.Drawing.Point(17, 134);
+            this.Label_UpdateFileName.Location = new System.Drawing.Point(17, 133);
             this.Label_UpdateFileName.Name = "Label_UpdateFileName";
             this.Label_UpdateFileName.Size = new System.Drawing.Size(92, 13);
             this.Label_UpdateFileName.TabIndex = 19;
@@ -600,7 +600,7 @@
             // 
             // ProgressBar_XisfFile
             // 
-            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(28, 152);
+            this.ProgressBar_XisfFile.Location = new System.Drawing.Point(28, 165);
             this.ProgressBar_XisfFile.Name = "ProgressBar_XisfFile";
             this.ProgressBar_XisfFile.Size = new System.Drawing.Size(889, 11);
             this.ProgressBar_XisfFile.Step = 1;
@@ -648,7 +648,7 @@
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
             this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
             this.GroupBox_WeightsAndStatistics.Enabled = false;
-            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 394);
+            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 427);
             this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
             this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(950, 477);
             this.GroupBox_WeightsAndStatistics.TabIndex = 11;
@@ -2366,7 +2366,7 @@
             this.GroupBox_FileSlection.Controls.Add(this.ProgressBar_OverAll);
             this.GroupBox_FileSlection.Location = new System.Drawing.Point(12, 24);
             this.GroupBox_FileSlection.Name = "GroupBox_FileSlection";
-            this.GroupBox_FileSlection.Size = new System.Drawing.Size(950, 182);
+            this.GroupBox_FileSlection.Size = new System.Drawing.Size(950, 187);
             this.GroupBox_FileSlection.TabIndex = 19;
             this.GroupBox_FileSlection.TabStop = false;
             this.GroupBox_FileSlection.Text = "File Selection";
@@ -2396,7 +2396,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(973, 881);
+            this.ClientSize = new System.Drawing.Size(973, 919);
             this.Controls.Add(this.GroupBox_XisfFileUpdate);
             this.Controls.Add(this.GroupBox_FileSlection);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
