@@ -85,6 +85,57 @@ namespace XisfFileManager.Keywords
             */
 
         }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Various programs appear to screw this up - fix it
+        public void RepairCamera()
+        {
+            if (Camera().Equals("Z183")) return;
+            if (Camera().Equals("Z533")) return;
+            if (Camera().Equals("Q178")) return;
+            if (Camera().Equals("A144")) return;
+
+            string camera = string.Empty;
+
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "INSTRUME");
+            value = node.Value;
+
+
+            double? gain = Gain();
+            if (!gain.HasValue) return;
+
+            if (camera == string.Empty) return;
+
+            double egain = -1.0;
+
+            if (camera == "Z183")
+            {
+                egain = 3.6059 * Math.Exp(-0.011 * gain.Value);
+            }
+            else
+            {
+                if (Camera() == "Q178")
+                {
+                    if (gain < 4.0)
+                    {
+                        egain = 2.6;
+                    }
+                    else
+                    {
+                        egain = 3.8018 * Math.Exp(-0.0117 * gain.Value);
+                    }
+                }
+            }
+
+            if (egain == -1.0) return;
+
+            AddKeyword("EGAIN", egain, "XSIF File Manager - Calculated electrons per ADU");
+        }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
@@ -138,6 +189,12 @@ namespace XisfFileManager.Keywords
             if (Camera() == "Z183")
             {
                 AddKeyword("OFFSET", 10);
+                return;
+            }
+
+            if (Camera() == "Z533")
+            {
+                AddKeyword("OFFSET", 50);
                 return;
             }
 
@@ -291,22 +348,19 @@ namespace XisfFileManager.Keywords
         // *********************************************************************************************************
         public string Camera()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            Keyword naxis1 = new Keyword();
+            Keyword naxis2 = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "INSTRUME");
-            value = node.Value;
-            node.Type = Keyword.EType.STRING;
+            naxis1.Type = Keyword.EType.INTEGER;
+            naxis2.Type = Keyword.EType.INTEGER;
 
-            if (value.Contains("183") || value.Contains("ASI"))
-            {
-                return "Z183";
-            }
+            naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
+            naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
 
-            if (value.Contains("QHY"))
-            {
-                return "Q178";
-            }
+            if (naxis1.Value.Equals("5496") && naxis2.Value.Equals("3672")) return "Z183";
+            if (naxis1.Value.Equals("3008") && naxis2.Value.Equals("3008")) return "Z533";
+            if (naxis1.Value.Equals("3072") && naxis2.Value.Equals("2048")) return "Q178";
+            if (naxis1.Value.Equals("1392") && naxis2.Value.Equals("1040")) return "A144";
 
             return string.Empty;
         }
@@ -319,17 +373,26 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
             int index;
             bool status;
-            bool utc = false;
+            //bool utc = false;
 
             DateTime parsedDateTime;
 
             node = KeywordList.Find(i => i.Name == "DATE-LOC");
 
+
             if (node == null)
-            {
-                /*
                 // DATE-OBS may be in UTC vs local time
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
+
+
+            /*
+            if (node == null)
+            {
+                
+                // DATE-OBS may be in UTC vs local time
+                node = KeywordList.Find(i => i.Name == "DATE-OBS");
+
+                
                 if (node != null)
                 {
                     utc = node.Comment.Contains("UTC");
@@ -346,8 +409,8 @@ namespace XisfFileManager.Keywords
                         return utcDate.AddSeconds(response.Data.rawOffset + response.Data.dstOffset);
                     }
                 }
-                */
             }
+            */
 
             if (node == null)
                 node = KeywordList.Find(i => i.Name == "LOCALTIM");
@@ -506,20 +569,25 @@ namespace XisfFileManager.Keywords
             {
                 if (FrameType() == "D")
                 {
-                    AddKeyword("FILTER", "!Shutter!");
-                    return "!Shutter!";
+                    AddKeyword("FILTER", "Shutter");
+                    return "Shutter";
                 }
             }
 
             node.Type = Keyword.EType.STRING;
             value = node.Value.Replace("'", "").Replace(" ", "");
 
-            if (value.Contains("OIII")) value = value.Replace("OIII", "O3");
-            if (value.Contains("Oiii")) value = value.Replace("Oiii", "O3");
-            if (value.Contains("SII")) value = value.Replace("SII", "S2");
-            if (value.Contains("Sii")) value = value.Replace("Sii", "S2");
-            if (value.Contains("HA")) value = value.Replace("HA", "Ha");
-            if (value.Contains("Ha")) value = value.Replace("Ha", "Ha");
+
+            if (value.ToLower().Contains("ha")) value = "Ha";
+            if (value.ToLower().Contains("oiii")) value = "O3";
+            if (value.ToLower().Contains("o3")) value = "O3";
+            if (value.ToLower().Contains("sii")) value = "S2";
+            if (value.ToLower().Contains("s2")) value = "S2";
+            if (value.ToLower().Contains("red")) value = "Red";
+            if (value.ToLower().Contains("green")) value = "Green";
+            if (value.ToLower().Contains("blue")) value = "Blue";
+
+
 
             return value;
         }
@@ -552,7 +620,7 @@ namespace XisfFileManager.Keywords
                 return "A107@700";
             }
 
-            return string.Empty;
+            return value;
         }
 
         // *********************************************************************************************************
@@ -719,6 +787,26 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        public string Profile()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "Profile");
+            if (node == null)
+            {
+                AddKeyword("Profile", "No Profile");
+            }
+
+            node = KeywordList.Find(i => i.Name == "Profile");
+
+            node.Type = Keyword.EType.STRING;
+
+            return node.Value;
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public int SensorHeight()
         {
             string value = string.Empty;
@@ -742,6 +830,20 @@ namespace XisfFileManager.Keywords
 
                 }
 
+                if (Camera() == "Z533")
+                {
+                    if (Binning() == 1)
+                    {
+                        AddKeyword("NAXIS2", 3008);
+                    }
+
+                    if (Binning() == 2)
+                    {
+                        AddKeyword("NAXIS2", 3008 / 2);
+                    }
+
+                }
+
                 if (Camera() == "Q178")
                 {
                     if (Binning() == 1)
@@ -749,7 +851,7 @@ namespace XisfFileManager.Keywords
                         AddKeyword("NAXIS2", 2048);
                     }
 
-                    if (Binning() == 1)
+                    if (Binning() == 2)
                     {
                         AddKeyword("NAXIS2", 2048 / 2);
                     }
@@ -824,6 +926,11 @@ namespace XisfFileManager.Keywords
                 if (Camera() == "Z183")
                 {
                     AddKeyword("NAXIS1", 5496);
+                }
+
+                if (Camera() == "Z533")
+                {
+                    AddKeyword("NAXIS1", 3008);
                 }
 
                 if (Camera() == "Q178")

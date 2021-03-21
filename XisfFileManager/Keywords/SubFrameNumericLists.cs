@@ -164,8 +164,8 @@ namespace XisfFileManager.Calculations
 
             ApprovedTotal = SubFrameCount;
 
-            bStatus = AirMass.Count == ApprovedTotal ? bStatus : false;
-            bZero = AirMass.Count == 0 ? bZero : false;
+            //bStatus = AirMass.Count == ApprovedTotal ? bStatus : false;
+            //bZero = AirMass.Count == 0 ? bZero : false;
 
             bStatus = Eccentricity.Count == ApprovedTotal ? bStatus : false;
             bZero = Eccentricity.Count == 0 ? bZero : false;
