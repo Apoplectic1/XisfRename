@@ -993,6 +993,9 @@ namespace XisfFileManager
 
                     if (RadioButton_Filter_S2.Checked)
                         file.KeywordData.AddKeyword("FILTER", "S2");
+
+                    if (RadioButton_Filter_Shutter.Checked)
+                        file.KeywordData.AddKeyword("FILTER", "Shutter");
                 }
             }
 
@@ -1056,6 +1059,12 @@ namespace XisfFileManager
                         RadioButton_Filter_S2.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
+
+                    if (filter == "Shutter")
+                    {
+                        RadioButton_Filter_Shutter.ForeColor = Color.Red;
+                        multipleFilters = true;
+                    }
                 }
 
                 if (multipleFilters)
@@ -1093,6 +1102,11 @@ namespace XisfFileManager
                     if (firstFilter == "S2")
                     {
                         RadioButton_Filter_S2.ForeColor = Color.Red;
+                    }
+
+                    if (firstFilter == "Shutter")
+                    {
+                        RadioButton_Filter_Shutter.ForeColor = Color.Red;
                     }
                 }
                 else
@@ -1132,6 +1146,11 @@ namespace XisfFileManager
                         RadioButton_Filter_S2.Checked = true;
                     }
 
+                    if (firstFilter == "Shutter")
+                    {
+                        RadioButton_Filter_Shutter.Checked = true;
+                    }
+
                     RadioButton_Filter_Luma.ForeColor = Color.Black;
                     RadioButton_Filter_Red.ForeColor = Color.Black;
                     RadioButton_Filter_Green.ForeColor = Color.Black;
@@ -1139,6 +1158,7 @@ namespace XisfFileManager
                     RadioButton_Filter_Ha.ForeColor = Color.Black;
                     RadioButton_Filter_O3.ForeColor = Color.Black;
                     RadioButton_Filter_S2.ForeColor = Color.Black;
+                    RadioButton_Filter_Shutter.ForeColor = Color.Black;
                 }
             }
         }

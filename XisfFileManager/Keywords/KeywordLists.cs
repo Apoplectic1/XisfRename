@@ -357,6 +357,25 @@ namespace XisfFileManager.Keywords
             naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
             naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
 
+            /*
+            if ((naxis1 == null) || (naxis2 == null)
+            {
+                Form2 testDialog = new Form2();
+
+                // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                if (testDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Read the contents of testDialog's TextBox.
+                    this.txtResult.Text = testDialog.TextBox1.Text;
+                }
+                else
+                {
+                    this.txtResult.Text = "Cancelled";
+                }
+                testDialog.Dispose();
+            }
+            */
+
             if (naxis1.Value.Equals("5496") && naxis2.Value.Equals("3672")) return "Z183";
             if (naxis1.Value.Equals("3008") && naxis2.Value.Equals("3008")) return "Z533";
             if (naxis1.Value.Equals("3072") && naxis2.Value.Equals("2048")) return "Q178";

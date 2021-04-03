@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace XisfFileManager.FileOperations
@@ -15,12 +16,14 @@ namespace XisfFileManager.FileOperations
         {
             using (StreamReader reader = new StreamReader(xFile.SourceFileName))
             {
-                mBuffer = new char[0x30000];
+                mBuffer = new char[0x300000];
                 reader.Read(mBuffer, 0, mBuffer.Length);
 
                 mXmlString = new string(mBuffer);
+                // Skip first sixteen bytes that contain XISF0100xxxxxxxx 
                 mXmlString = mXmlString.Substring(mXmlString.IndexOf("<?xml"));
-                mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf(@"</xisf>") + 7);
+                // find closing </xisf>. set mXmlString to the entire xml text. Note that the size of mBuffer can be too small and cause this to fail
+                mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf("</xisf>") + 7);
 
                 try
                 {
@@ -28,6 +31,12 @@ namespace XisfFileManager.FileOperations
                 }
                 catch
                 {
+                    var selectedOption = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName + "\n\nXisfRead.cs ReadXisfFile()", "Parse XISF File Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    if (selectedOption == DialogResult.Cancel)
+                    {
+                        Application.Exit();
+                    }
+
                     return false;
                 }
 

@@ -223,6 +223,7 @@
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.Label_BrowseFileName = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.RadioButton_Filter_Shutter = new System.Windows.Forms.RadioButton();
             this.GroupBox_RenameOrder.SuspendLayout();
             this.GroupBox_XisfFileUpdate.SuspendLayout();
             this.GroupBox_Filter.SuspendLayout();
@@ -376,6 +377,7 @@
             // 
             // GroupBox_Filter
             // 
+            this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Shutter);
             this.GroupBox_Filter.Controls.Add(this.CheckBox_Filter_SetFilter);
             this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_S2);
             this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Blue);
@@ -384,9 +386,9 @@
             this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Ha);
             this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Red);
             this.GroupBox_Filter.Controls.Add(this.RadioButton_Filter_Luma);
-            this.GroupBox_Filter.Location = new System.Drawing.Point(696, 19);
+            this.GroupBox_Filter.Location = new System.Drawing.Point(675, 19);
             this.GroupBox_Filter.Name = "GroupBox_Filter";
-            this.GroupBox_Filter.Size = new System.Drawing.Size(227, 105);
+            this.GroupBox_Filter.Size = new System.Drawing.Size(263, 105);
             this.GroupBox_Filter.TabIndex = 18;
             this.GroupBox_Filter.TabStop = false;
             this.GroupBox_Filter.Text = "Filters";
@@ -394,7 +396,7 @@
             // CheckBox_Filter_SetFilter
             // 
             this.CheckBox_Filter_SetFilter.AutoSize = true;
-            this.CheckBox_Filter_SetFilter.Location = new System.Drawing.Point(87, 75);
+            this.CheckBox_Filter_SetFilter.Location = new System.Drawing.Point(103, 75);
             this.CheckBox_Filter_SetFilter.Name = "CheckBox_Filter_SetFilter";
             this.CheckBox_Filter_SetFilter.Size = new System.Drawing.Size(67, 17);
             this.CheckBox_Filter_SetFilter.TabIndex = 7;
@@ -405,7 +407,7 @@
             // RadioButton_Filter_S2
             // 
             this.RadioButton_Filter_S2.AutoSize = true;
-            this.RadioButton_Filter_S2.Location = new System.Drawing.Point(175, 22);
+            this.RadioButton_Filter_S2.Location = new System.Drawing.Point(193, 22);
             this.RadioButton_Filter_S2.Name = "RadioButton_Filter_S2";
             this.RadioButton_Filter_S2.Size = new System.Drawing.Size(41, 17);
             this.RadioButton_Filter_S2.TabIndex = 6;
@@ -416,7 +418,7 @@
             // RadioButton_Filter_Blue
             // 
             this.RadioButton_Filter_Blue.AutoSize = true;
-            this.RadioButton_Filter_Blue.Location = new System.Drawing.Point(152, 48);
+            this.RadioButton_Filter_Blue.Location = new System.Drawing.Point(139, 48);
             this.RadioButton_Filter_Blue.Name = "RadioButton_Filter_Blue";
             this.RadioButton_Filter_Blue.Size = new System.Drawing.Size(46, 17);
             this.RadioButton_Filter_Blue.TabIndex = 5;
@@ -427,7 +429,7 @@
             // RadioButton_Filter_O3
             // 
             this.RadioButton_Filter_O3.AutoSize = true;
-            this.RadioButton_Filter_O3.Location = new System.Drawing.Point(124, 22);
+            this.RadioButton_Filter_O3.Location = new System.Drawing.Point(136, 22);
             this.RadioButton_Filter_O3.Name = "RadioButton_Filter_O3";
             this.RadioButton_Filter_O3.Size = new System.Drawing.Size(45, 17);
             this.RadioButton_Filter_O3.TabIndex = 4;
@@ -438,7 +440,7 @@
             // RadioButton_Filter_Green
             // 
             this.RadioButton_Filter_Green.AutoSize = true;
-            this.RadioButton_Filter_Green.Location = new System.Drawing.Point(89, 48);
+            this.RadioButton_Filter_Green.Location = new System.Drawing.Point(76, 48);
             this.RadioButton_Filter_Green.Name = "RadioButton_Filter_Green";
             this.RadioButton_Filter_Green.Size = new System.Drawing.Size(54, 17);
             this.RadioButton_Filter_Green.TabIndex = 3;
@@ -449,7 +451,7 @@
             // RadioButton_Filter_Ha
             // 
             this.RadioButton_Filter_Ha.AutoSize = true;
-            this.RadioButton_Filter_Ha.Location = new System.Drawing.Point(79, 22);
+            this.RadioButton_Filter_Ha.Location = new System.Drawing.Point(85, 22);
             this.RadioButton_Filter_Ha.Name = "RadioButton_Filter_Ha";
             this.RadioButton_Filter_Ha.Size = new System.Drawing.Size(39, 17);
             this.RadioButton_Filter_Ha.TabIndex = 2;
@@ -460,7 +462,7 @@
             // RadioButton_Filter_Red
             // 
             this.RadioButton_Filter_Red.AutoSize = true;
-            this.RadioButton_Filter_Red.Location = new System.Drawing.Point(35, 48);
+            this.RadioButton_Filter_Red.Location = new System.Drawing.Point(22, 48);
             this.RadioButton_Filter_Red.Name = "RadioButton_Filter_Red";
             this.RadioButton_Filter_Red.Size = new System.Drawing.Size(45, 17);
             this.RadioButton_Filter_Red.TabIndex = 1;
@@ -491,7 +493,7 @@
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Button_UpdateXisfFiles);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.ComboBox_TargetName);
             this.GroupBox_SubFrameKeywords.Controls.Add(this.Label_TagetName);
-            this.GroupBox_SubFrameKeywords.Location = new System.Drawing.Point(17, 19);
+            this.GroupBox_SubFrameKeywords.Location = new System.Drawing.Point(11, 19);
             this.GroupBox_SubFrameKeywords.Name = "GroupBox_SubFrameKeywords";
             this.GroupBox_SubFrameKeywords.Size = new System.Drawing.Size(658, 105);
             this.GroupBox_SubFrameKeywords.TabIndex = 14;
@@ -2392,6 +2394,17 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
+            // RadioButton_Filter_Shutter
+            // 
+            this.RadioButton_Filter_Shutter.AutoSize = true;
+            this.RadioButton_Filter_Shutter.Location = new System.Drawing.Point(193, 48);
+            this.RadioButton_Filter_Shutter.Name = "RadioButton_Filter_Shutter";
+            this.RadioButton_Filter_Shutter.Size = new System.Drawing.Size(59, 17);
+            this.RadioButton_Filter_Shutter.TabIndex = 8;
+            this.RadioButton_Filter_Shutter.TabStop = true;
+            this.RadioButton_Filter_Shutter.Text = "Shutter";
+            this.RadioButton_Filter_Shutter.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2655,6 +2668,7 @@
         private System.Windows.Forms.Label Label_SnrSigmaValue;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.RadioButton RadioButton_Filter_Shutter;
     }
 }
 
