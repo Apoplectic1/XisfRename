@@ -14,6 +14,7 @@ using System.Drawing;
 using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
+using XisfFileManager.Forms;
 
 namespace XisfFileManager
 {
@@ -164,9 +165,26 @@ namespace XisfFileManager
             Properties.Settings.Default.Save();
         }
 
-        // ##########################################################################################################################
-        // ##########################################################################################################################
-        private void Button_Browse_Click(object sender, EventArgs e)
+        
+        public void UserInputForm_DataAvailable(object sender, EventArgs e)
+        {
+            UserInputForm UIForm = sender as UserInputForm;
+            if (UIForm != null)
+            {
+                string FormName = UIForm.Name;
+                string FormText = UIForm.TextBox_Text.Text;
+            }
+        }
+        
+        public void UserInputForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Close();
+        }
+        
+
+    // ##########################################################################################################################
+    // ##########################################################################################################################
+    private void Button_Browse_Click(object sender, EventArgs e)
         {
             DirectoryInfo d;
 

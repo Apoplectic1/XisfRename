@@ -134,16 +134,22 @@ namespace XisfFileManager.FileOperations
             }
 
 
-            if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "F"))
+            if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "F") || (mFile.KeywordData.FrameType() == "B"))
             {
                 if (mFile.KeywordData.FrameType() == "D")
                 {
                     newName += " Dark  ";
                 }
-                else
+
+                if (mFile.KeywordData.FrameType() == "F")
                 {
-                    newName += " Flat-" + mFile.KeywordData.FilterName() + "  ";
+                    newName += " F-" + mFile.KeywordData.FilterName() + "  ";
                     newName += mFile.KeywordData.FocalLength() + "  ";
+                }
+
+                if (mFile.KeywordData.FrameType() == "B")
+                {
+                    newName += " Bias  ";
                 }
             }
             else
@@ -158,7 +164,7 @@ namespace XisfFileManager.FileOperations
             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
             newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
 
-            if (mFile.KeywordData.FrameType() == "D")
+            if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "B"))
             {
                 newName += "@" + mFile.KeywordData.SensorTemperature() + "C ";
             }

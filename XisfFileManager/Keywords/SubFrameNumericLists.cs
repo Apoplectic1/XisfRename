@@ -400,8 +400,6 @@ namespace XisfFileManager.Calculations
 
         public void BuildNumericSubFrameDataKeywordLists(SubFrameLists KeywordLists)
         {
-            int index = 0;
-
             Clear();
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Approved)
@@ -419,91 +417,78 @@ namespace XisfFileManager.Calculations
                 FileName.Add((string)Convert.ChangeType(keyword.GetValue(), typeof(string)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Eccentricity)
             {
                 //if (Approved[index++] == true)
                 Eccentricity.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.EccentricityMeanDeviation)
             {
                 //if (Approved[index++] == true) 
                 EccentricityMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Fwhm)
             {
                 //if (Approved[index++] == true) 
                 Fwhm.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.FwhmMeanDeviation)
             {
                 //if (Approved[index++] == true) 
                 FwhmMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Median)
             {
                 //if (Approved[index++] == true) 
                 Median.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.MedianMeanDeviation)
             {
                 //if (Approved[index++] == true) 
                 MedianMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Noise)
             {
                 //if (Approved[index++] == true) 
                 Noise.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.NoiseRatio)
             {
                 //if (Approved[index++] == true) 
                 NoiseRatio.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.SnrWeight)
             {
                 //if (Approved[index++] == true) 
                 Snr.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidual)
             {
                 //if (Approved[index++] == true) 
                 StarResidual.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidualMeanDeviation)
             {
                 //if (Approved[index++] == true) 
                 StarResidualMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
-
-            index = 0;
+;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Stars)
             {
                 //if (Approved[index++] == true) 
                 Stars.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
             }
 
-            index = 0;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Weight)
             {
                 //if (Approved[index++] == true) 

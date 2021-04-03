@@ -144,6 +144,12 @@
     <Compile Include="FileOperations\XisfFileRename.cs" />
     <Compile Include="FileOperations\XisfFileUpdate.cs" />
     <Compile Include="Forms\MainForm\Methods\Filter.cs" />
+    <Compile Include="Forms\UserInputForm\UserInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UserInputForm\UserInputForm.Designer.cs">
+      <DependentUpon>UserInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Keywords\SubFrameNumericLists.cs" />
     <Compile Include="Keywords\SubFrame.cs" />
     <Compile Include="Keywords\SubFrameLists.cs" />
@@ -162,6 +168,9 @@
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\MainForm\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UserInputForm\UserInputForm.resx">
+      <DependentUpon>UserInputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

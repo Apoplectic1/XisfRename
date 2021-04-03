@@ -4,17 +4,120 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
+using XisfFileManager.Forms;
 
 namespace XisfFileManager.Keywords
 {
     public class KeywordLists
     {
         public List<Keyword> KeywordList;
+        private UserInputForm UIForm;
+
 
         public KeywordLists()
         {
             KeywordList = new List<Keyword>();
+            UIForm = new Forms.UserInputForm();
+            UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            UIForm.StartPosition = FormStartPosition.CenterScreen;
+            UIForm.TextBox_Text.Focus();
+            UIForm.FormClosed += new FormClosedEventHandler(UserInputForm_FormClosed);
+            UIForm.DataAvailable += new EventHandler(UserInputForm_DataAvailable);
+        }
+
+
+        public void UserInputForm_DataAvailable(object sender, EventArgs e)
+        {
+            UserInputForm UIForm = sender as UserInputForm;
+            if (UIForm != null)
+            {
+                string KeywordName = UIForm.Name;
+                string KeywordValue = UIForm.TextBox_Text.Text;
+
+                if (KeywordName == "Camera")
+                {
+                    AddKeyword("Camera", KeywordValue);
+
+                    AddKeyword("NAXIS", 2);
+                    AddKeyword("BITPIX", 16);
+
+                    if (KeywordValue == "Z533")
+                    {
+                        AddKeyword("NAXIS1", 3008);
+                        AddKeyword("NAXIS2", 3008);
+                    }
+
+                    if (KeywordValue == "Z183")
+                    {
+                        AddKeyword("NAXIS1", 5496);
+                        AddKeyword("NAXIS2", 3672);
+                    }
+
+                    if (KeywordValue == "Q178")
+                    {
+                        AddKeyword("NAXIS1", 3072);
+                        AddKeyword("NAXIS2", 2048);
+                    }
+
+                    if (KeywordValue == "A144")
+                    {
+                        AddKeyword("NAXIS1", 1392);
+                        AddKeyword("NAXIS2", 1040);
+                    }
+                }
+
+                if (KeywordName == "Gain")
+                {
+                    AddKeyword("GAIN", Convert.ToInt32(KeywordValue));
+                }
+
+                if (KeywordName == "Offset")
+                {
+                    AddKeyword("OFFSET", Convert.ToInt32(KeywordValue));
+                }
+
+                if (KeywordName == "Exposure")
+                {
+                    AddKeyword("EXPTIME", Convert.ToDouble(KeywordValue));
+                }
+
+
+                if (KeywordName == "SensorTemp")
+                {
+                    AddKeyword("CCD-TEMP", Convert.ToDouble(KeywordValue));
+                }
+
+                if (KeywordName == "Software")
+                {
+                    if (KeywordValue == "SGP")
+                    {
+                        AddKeyword("CREATOR", "Sequence Generator Pro");
+                    }
+
+                    if (KeywordValue == "VGR")
+                    {
+                        AddKeyword("CREATOR", "VOYAGER");
+                    }
+
+                    if (KeywordValue == "TSX")
+                    {
+                        AddKeyword("CREATOR", "TheSkyX");
+                    }
+
+                    if (KeywordValue == "SCP")
+                    {
+                        AddKeyword("CREATOR", "SharpCap Pro");
+                    }
+                }
+
+                UIForm.TextBox_Text.Text = string.Empty;
+                UIForm.TextBox_Text.Focus();
+            }
+        }
+
+        public void UserInputForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            UIForm.Close();
         }
 
         // #########################################################################################################
@@ -357,24 +460,24 @@ namespace XisfFileManager.Keywords
             naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
             naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
 
-            /*
-            if ((naxis1 == null) || (naxis2 == null)
+
+            if ((naxis1 == null) || (naxis2 == null))
             {
-                Form2 testDialog = new Form2();
+                UIForm.Name = "Camera";
+                UIForm.Text = "Unknown Camera";
+                UIForm.Label_Text.Text = "Enter Camera: Z183, Z533, Q178 or A144";
+
+                UIForm.ShowDialog();
 
                 // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (testDialog.ShowDialog(this) == DialogResult.OK)
+                if (UIForm.DialogResult != DialogResult.OK)
                 {
-                    // Read the contents of testDialog's TextBox.
-                    this.txtResult.Text = testDialog.TextBox1.Text;
+                    Environment.Exit(0);
                 }
-                else
-                {
-                    this.txtResult.Text = "Cancelled";
-                }
-                testDialog.Dispose();
             }
-            */
+
+            naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
+            naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
 
             if (naxis1.Value.Equals("5496") && naxis2.Value.Equals("3672")) return "Z183";
             if (naxis1.Value.Equals("3008") && naxis2.Value.Equals("3008")) return "Z533";
@@ -396,54 +499,25 @@ namespace XisfFileManager.Keywords
 
             DateTime parsedDateTime;
 
-            node = KeywordList.Find(i => i.Name == "DATE-LOC");
 
+            node = KeywordList.Find(i => i.Name == "LOCALTIM");
 
             if (node == null)
-                // DATE-OBS may be in UTC vs local time
+                node = KeywordList.Find(i => i.Name == "DATE-LOC");
+
+            if (node == null)
+                // DATE-OBS may is in UTC vs local time
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
-
-
-            /*
-            if (node == null)
-            {
-                
-                // DATE-OBS may be in UTC vs local time
-                node = KeywordList.Find(i => i.Name == "DATE-OBS");
-
-                
-                if (node != null)
-                {
-                    utc = node.Comment.Contains("UTC");
-
-                    if (utc == true)
-                    {
-                        var client = new RestClient("https://maps.googleapis.com");
-                        var request = new RestRequest("maps/api/timezone/json", Method.GET);
-                        request.AddParameter("location", latitude + "," + longitude);
-                        request.AddParameter("timestamp", utcDate.ToTimestamp());
-                        request.AddParameter("sensor", "false");
-                        var response = client.Execute<GoogleTimeZone>(request);
-
-                        return utcDate.AddSeconds(response.Data.rawOffset + response.Data.dstOffset);
-                    }
-                }
-            }
-            */
-
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "LOCALTIM");
-
 
             value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;
 
             if (value.Contains("AM"))
             {
-                value = value.Remove(value.IndexOf('.')) + " AM";
+                value = value.Remove(value.IndexOf('.') + 4) + " AM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.f tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
@@ -451,10 +525,10 @@ namespace XisfFileManager.Keywords
 
             if (value.Contains("PM"))
             {
-                value = value.Remove(value.IndexOf('.')) + " PM";
+                value = value.Remove(value.IndexOf('.') + 4) + " PM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.f tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
@@ -486,10 +560,6 @@ namespace XisfFileManager.Keywords
             string value = string.Empty;
             Keyword node = new Keyword();
 
-            if (FrameType() == "D")
-            {
-                return "";
-            }
 
             node = KeywordList.Find(i => i.Name == "CREATOR");
 
@@ -503,12 +573,26 @@ namespace XisfFileManager.Keywords
                 node = KeywordList.Find(i => i.Name == "TELESCOP");
 
             if (node == null)
-                return "";
+            {
+                UIForm.Name = "Software";
+                UIForm.Text = "Unknown Capture Software";
+                UIForm.Label_Text.Text = "Enter Capture Software: SGP, TSX, VGR or SCP";
+
+                UIForm.ShowDialog();
+
+                // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                if (UIForm.DialogResult != DialogResult.OK)
+                {
+                    Environment.Exit(0);
+                }
+
+                node = KeywordList.Find(i => i.Name == "CREATOR");
+            }
 
             value = node.Value;
             node.Type = Keyword.EType.STRING;
 
-            if (value.Contains("Sequence") || value.Contains("Riccardi"))
+            if (value.Contains("Sequence"))
             {
                 return "SGP";
             }
@@ -521,6 +605,11 @@ namespace XisfFileManager.Keywords
             if (value.Contains("SkyX") || value.Contains("TheSky"))
             {
                 return "TSX";
+            }
+
+            if (value.Contains("SharpCap"))
+            {
+                return "SCP";
             }
 
             return string.Empty;
@@ -544,13 +633,19 @@ namespace XisfFileManager.Keywords
 
             if (node == null)
             {
-                var result = MessageBox.Show(
-                        "No Exposure Specified.\n\n",
-                        "\nMainForm.cs Button_Update_Click()",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                UIForm.Name = "Exposure";
+                UIForm.Text = "Exposure Time Not Set";
+                UIForm.Label_Text.Text = "Enter Exposure Time";
 
-                return "0000";
+                UIForm.ShowDialog();
+
+                // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                if (UIForm.DialogResult != DialogResult.OK)
+                {
+                    Environment.Exit(0);
+                }
+
+                node = KeywordList.Find(i => i.Name == "EXPTIME");
             }
 
             value = node.Value.Replace("'", "").Replace(" ", "");
@@ -560,14 +655,7 @@ namespace XisfFileManager.Keywords
 
             if (exposureSeconds < 10.0)
             {
-                if (exposureSeconds < 1.0)
-                {
-                    return exposureSeconds.ToString("E3");
-                }
-                else
-                {
-                    return exposureSeconds.ToString("0000.0");
-                }
+                return exposureSeconds.ToString("0.0000");
             }
             else
             {
@@ -596,7 +684,6 @@ namespace XisfFileManager.Keywords
             node.Type = Keyword.EType.STRING;
             value = node.Value.Replace("'", "").Replace(" ", "");
 
-
             if (value.ToLower().Contains("ha")) value = "Ha";
             if (value.ToLower().Contains("oiii")) value = "O3";
             if (value.ToLower().Contains("o3")) value = "O3";
@@ -605,8 +692,7 @@ namespace XisfFileManager.Keywords
             if (value.ToLower().Contains("red")) value = "Red";
             if (value.ToLower().Contains("green")) value = "Green";
             if (value.ToLower().Contains("blue")) value = "Blue";
-
-
+            if (value.ToLower().Contains("shutter")) value = "Shutter";
 
             return value;
         }
@@ -731,18 +817,31 @@ namespace XisfFileManager.Keywords
             if (node == null)
             {
                 node = KeywordList.Find(i => i.Name == "GAINRAW");
+
+                if (node != null)
+                {
+                    RemoveKeyword("GAINRAW");
+                    AddKeyword("GAIN", node.Value);
+                }
             }
 
             if (node == null)
             {
-                var result = MessageBox.Show(
-                        "No GAIN Specified.\n\n",
-                        "\nMainForm.cs Button_Update_Click()",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                UIForm.Name = "Gain";
+                UIForm.Text = "Camera Gain Not Set";
+                UIForm.Label_Text.Text = "Enter Gain";
 
-                return 53;
+                UIForm.ShowDialog();
+
+                // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                if (UIForm.DialogResult != DialogResult.OK)
+                {
+                    Environment.Exit(0);
+                }
+
+                node = KeywordList.Find(i => i.Name == "GAIN");
             }
+
             value = node.Value.Replace("'", "").Replace(".", "");
             node.Type = Keyword.EType.INTEGER;
 
@@ -877,6 +976,20 @@ namespace XisfFileManager.Keywords
 
                 }
 
+                if (Camera() == "A144")
+                {
+                    if (Binning() == 1)
+                    {
+                        AddKeyword("NAXIS2", 1040);
+                    }
+
+                    if (Binning() == 2)
+                    {
+                        AddKeyword("NAXIS2", 1040 / 2);
+                    }
+
+                }
+
                 node = KeywordList.Find(i => i.Name == "NAXIS2");
 
                 if (node == null)
@@ -916,13 +1029,19 @@ namespace XisfFileManager.Keywords
 
             if (node == null)
             {
-                var result = MessageBox.Show(
-                        "No CCD-TEMP Specified.\n\n",
-                        "\nMainForm.cs Button_Update_Click()",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                UIForm.Name = "SensorTemp";
+                UIForm.Text = "CCD Temperature Not Set";
+                UIForm.Label_Text.Text = "Enter Sensor Temperature";
 
-                return "-273";
+                UIForm.ShowDialog();
+
+                // Show testDialog as a modal dialog and determine if DialogResult = OK.
+                if (UIForm.DialogResult != DialogResult.OK)
+                {
+                    Environment.Exit(0);
+                }
+
+                node = KeywordList.Find(i => i.Name == "CCD-TEMP");
             }
 
             node.Type = Keyword.EType.FLOAT;
@@ -955,6 +1074,11 @@ namespace XisfFileManager.Keywords
                 if (Camera() == "Q178")
                 {
                     AddKeyword("NAXIS1", 3072);
+                }
+
+                if (Camera() == "A144")
+                {
+                    AddKeyword("NAXIS1", 1392);
                 }
 
                 node = KeywordList.Find(i => i.Name == "NAXIS1");
