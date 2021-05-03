@@ -5,6 +5,8 @@ namespace XisfFileManager.Forms
 {
     public partial class UserInputForm : Form
     {
+        public string FormReturnValue { get; set; }
+
         public UserInputForm()
         {
             InitializeComponent();
@@ -17,20 +19,11 @@ namespace XisfFileManager.Forms
             Label_Text.Text = "Uninitialized";
         }
 
-        public event EventHandler DataAvailable;
-
-        protected virtual void OnDataAvailable(EventArgs e)
-        {
-            EventHandler eh = DataAvailable;
-            if (eh != null)
-            {
-                eh(this, e);
-            }
-        }
-
         private void Button_OK_Click(object sender, EventArgs e)
         {
-            OnDataAvailable(null);
+            this.FormReturnValue = this.TextBox_Text.Text;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

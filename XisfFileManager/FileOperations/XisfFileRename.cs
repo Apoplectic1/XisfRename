@@ -143,8 +143,10 @@ namespace XisfFileManager.FileOperations
 
                 if (mFile.KeywordData.FrameType() == "F")
                 {
-                    newName += " F-" + mFile.KeywordData.FilterName() + "  ";
+                    newName += " Flat F-" + mFile.KeywordData.FilterName() + "  ";
+                    newName += mFile.KeywordData.Telescope() + "@";
                     newName += mFile.KeywordData.FocalLength() + "  ";
+                    newName += mFile.KeywordData.AmbientTemperature() + "C  ";
                 }
 
                 if (mFile.KeywordData.FrameType() == "B")
@@ -155,6 +157,7 @@ namespace XisfFileManager.FileOperations
             else
             {
                 newName += " " + mFile.KeywordData.TargetName() + "  ";
+                newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
                 newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 

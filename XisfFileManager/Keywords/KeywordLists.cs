@@ -11,114 +11,12 @@ namespace XisfFileManager.Keywords
     public class KeywordLists
     {
         public List<Keyword> KeywordList;
-        private UserInputForm UIForm;
-
 
         public KeywordLists()
         {
             KeywordList = new List<Keyword>();
-            UIForm = new Forms.UserInputForm();
-            UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-            UIForm.StartPosition = FormStartPosition.CenterScreen;
-            UIForm.TextBox_Text.Focus();
-            UIForm.FormClosed += new FormClosedEventHandler(UserInputForm_FormClosed);
-            UIForm.DataAvailable += new EventHandler(UserInputForm_DataAvailable);
         }
 
-
-        public void UserInputForm_DataAvailable(object sender, EventArgs e)
-        {
-            UserInputForm UIForm = sender as UserInputForm;
-            if (UIForm != null)
-            {
-                string KeywordName = UIForm.Name;
-                string KeywordValue = UIForm.TextBox_Text.Text;
-
-                if (KeywordName == "Camera")
-                {
-                    AddKeyword("Camera", KeywordValue);
-
-                    AddKeyword("NAXIS", 2);
-                    AddKeyword("BITPIX", 16);
-
-                    if (KeywordValue == "Z533")
-                    {
-                        AddKeyword("NAXIS1", 3008);
-                        AddKeyword("NAXIS2", 3008);
-                    }
-
-                    if (KeywordValue == "Z183")
-                    {
-                        AddKeyword("NAXIS1", 5496);
-                        AddKeyword("NAXIS2", 3672);
-                    }
-
-                    if (KeywordValue == "Q178")
-                    {
-                        AddKeyword("NAXIS1", 3072);
-                        AddKeyword("NAXIS2", 2048);
-                    }
-
-                    if (KeywordValue == "A144")
-                    {
-                        AddKeyword("NAXIS1", 1392);
-                        AddKeyword("NAXIS2", 1040);
-                    }
-                }
-
-                if (KeywordName == "Gain")
-                {
-                    AddKeyword("GAIN", Convert.ToInt32(KeywordValue));
-                }
-
-                if (KeywordName == "Offset")
-                {
-                    AddKeyword("OFFSET", Convert.ToInt32(KeywordValue));
-                }
-
-                if (KeywordName == "Exposure")
-                {
-                    AddKeyword("EXPTIME", Convert.ToDouble(KeywordValue));
-                }
-
-
-                if (KeywordName == "SensorTemp")
-                {
-                    AddKeyword("CCD-TEMP", Convert.ToDouble(KeywordValue));
-                }
-
-                if (KeywordName == "Software")
-                {
-                    if (KeywordValue == "SGP")
-                    {
-                        AddKeyword("CREATOR", "Sequence Generator Pro");
-                    }
-
-                    if (KeywordValue == "VGR")
-                    {
-                        AddKeyword("CREATOR", "VOYAGER");
-                    }
-
-                    if (KeywordValue == "TSX")
-                    {
-                        AddKeyword("CREATOR", "TheSkyX");
-                    }
-
-                    if (KeywordValue == "SCP")
-                    {
-                        AddKeyword("CREATOR", "SharpCap Pro");
-                    }
-                }
-
-                UIForm.TextBox_Text.Text = string.Empty;
-                UIForm.TextBox_Text.Focus();
-            }
-        }
-
-        public void UserInputForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            UIForm.Close();
-        }
 
         // #########################################################################################################
         // #########################################################################################################
@@ -194,86 +92,41 @@ namespace XisfFileManager.Keywords
         // Various programs appear to screw this up - fix it
         public void RepairCamera()
         {
-            if (Camera().Equals("Z183")) return;
-            if (Camera().Equals("Z533")) return;
-            if (Camera().Equals("Q178")) return;
-            if (Camera().Equals("A144")) return;
-
-            string camera = string.Empty;
-
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "INSTRUME");
-            value = node.Value;
-
-
-            double? gain = Gain();
-            if (!gain.HasValue) return;
-
-            if (camera == string.Empty) return;
-
             double egain = -1.0;
+            double gain;
 
-            if (camera == "Z183")
+            gain = Gain();
+
+            if (Camera() == "Z183")
             {
-                egain = 3.6059 * Math.Exp(-0.011 * gain.Value);
+                egain = 3.6059 * Math.Exp(-0.011 * gain);
             }
-            else
+
+            if (Camera() == "Z533")
             {
-                if (Camera() == "Q178")
+                egain = (-7e-13 * Math.Pow(gain, 5)) + (1e-9 * Math.Pow(gain, 4)) - (6e-7 * Math.Pow(gain, 3)) + (0.0002 * Math.Pow(gain,2)) - (0.0356 * gain) + 3.1338;  
+            }
+
+            if (Camera() == "Q178")
+            {
+                if (gain < 4.0)
                 {
-                    if (gain < 4.0)
-                    {
-                        egain = 2.6;
-                    }
-                    else
-                    {
-                        egain = 3.8018 * Math.Exp(-0.0117 * gain.Value);
-                    }
+                    egain = 2.6;
+                }
+                else
+                {
+                    egain = 3.8018 * Math.Exp(-0.0117 * gain);
                 }
             }
 
-            if (egain == -1.0) return;
-
-            AddKeyword("EGAIN", egain, "XSIF File Manager - Calculated electrons per ADU");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // Various programs appear to screw this up - fix it
-        public void RepairEGain()
-        {
-            double? gain = Gain();
-            if (!gain.HasValue) return;
-
-            string camera = Camera();
-            if (camera == string.Empty) return;
-
-            double egain = -1.0;
-
-            if (camera == "Z183")
+            if (Camera() == "A144")
             {
-                egain = 3.6059 * Math.Exp(-0.011 * gain.Value);
-            }
-            else
-            {
-                if (Camera() == "Q178")
-                {
-                    if (gain < 4.0)
-                    {
-                        egain = 2.6;
-                    }
-                    else
-                    {
-                        egain = 3.8018 * Math.Exp(-0.0117 * gain.Value);
-                    }
-                }
+                egain = 0.37;
             }
 
-            if (egain == -1.0) return;
+            if (egain < 0.0) return;
 
-            AddKeyword("EGAIN", egain, "XSIF File Manager - Calculated electrons per ADU");
+            AddKeyword("EGAIN", egain, "Calculated electrons per ADU");
         }
 
         // *********************************************************************************************************
@@ -367,6 +220,14 @@ namespace XisfFileManager.Keywords
             node.Value = targetName;
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public void RepairTelescope()
+        {
+            FocalLength();
+            Telescope();
+        }
+
         // #########################################################################################################
         // #########################################################################################################
         public double AirMass()
@@ -437,52 +298,129 @@ namespace XisfFileManager.Keywords
         // *********************************************************************************************************
         public int Binning()
         {
-            string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "XBINNING");
-            value = node.Value;
-            node.Type = Keyword.EType.INTEGER;
+            if (node != null)
+            {
+                return Convert.ToInt32(node.Value);
+            }
 
-            return Convert.ToInt32(value);
+            string FormValue = OpenUIForm("Camera Binning", "Camera Binning Not Set", "Enter Bins: 1, 2, 3 or 4");
+
+            int bin = Convert.ToInt32(FormValue);
+
+            AddKeyword("XBINNING", bin);
+            AddKeyword("YBINNING", bin);
+
+            return bin;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string Camera()
         {
-            Keyword naxis1 = new Keyword();
-            Keyword naxis2 = new Keyword();
+            RemoveKeyword("Camera");
 
-            naxis1.Type = Keyword.EType.INTEGER;
-            naxis2.Type = Keyword.EType.INTEGER;
+            Keyword instrume = new Keyword();
 
-            naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
-            naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
+            instrume = KeywordList.Find(i => i.Name == "INSTRUME");
 
-
-            if ((naxis1 == null) || (naxis2 == null))
+            if (instrume != null)
             {
-                UIForm.Name = "Camera";
-                UIForm.Text = "Unknown Camera";
-                UIForm.Label_Text.Text = "Enter Camera: Z183, Z533, Q178 or A144";
+                if (instrume.Value.Contains("Z183")) return "Z183";
+                if (instrume.Value.Contains("Z533")) return "Z533";
+                if (instrume.Value.Contains("Q178")) return "Q178";
+                if (instrume.Value.Contains("A144")) return "A144";
 
-                UIForm.ShowDialog();
+                instrume.Value = instrume.Value.Replace("'", "");
 
-                // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (UIForm.DialogResult != DialogResult.OK)
+                Keyword naxis1 = new Keyword();
+                naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
+                naxis1.Value = naxis1.Value.Replace("'", "").Replace(" ", "");
+
+                if (naxis1.Value.Equals("5496"))
                 {
-                    Environment.Exit(0);
+                    AddKeyword("INSTRUME", "Z183", instrume.Value);
+                    return "Z183";
+                }
+
+                if (naxis1.Value.Equals("3008"))
+                {
+                    AddKeyword("INSTRUME", "Z533", instrume.Value);
+                    return "Z533";
+                }
+
+                if (naxis1.Value.Equals("3072"))
+                {
+                    AddKeyword("INSTRUME", "Q178", instrume.Value);
+                    return "Q178";
+                }
+
+                if (naxis1.Value.Equals("1392"))
+                {
+                    AddKeyword("INSTRUME", "A144", instrume.Value);
+                    return "A144";
                 }
             }
 
-            naxis1 = KeywordList.Find(i => i.Name == "NAXIS1");
-            naxis2 = KeywordList.Find(i => i.Name == "NAXIS2");
+            // Did not find any of my cameras
+            string NewComment = "XISF File Manager";
 
-            if (naxis1.Value.Equals("5496") && naxis2.Value.Equals("3672")) return "Z183";
-            if (naxis1.Value.Equals("3008") && naxis2.Value.Equals("3008")) return "Z533";
-            if (naxis1.Value.Equals("3072") && naxis2.Value.Equals("2048")) return "Q178";
-            if (naxis1.Value.Equals("1392") && naxis2.Value.Equals("1040")) return "A144";
+            if (instrume != null)
+            {
+                NewComment = instrume.Value.Replace("'","");
+            }
+
+            string FormValue = OpenUIForm("Camera", "Camera Not Set", "Enter Camera: Z183, Z533, Q178 or A144");
+
+            if (FormValue.Contains("Z183"))
+            {
+                AddKeyword("INSTRUME", "Z183", NewComment);
+                AddKeyword("NAXIS", 2);
+                AddKeyword("NAXIS1", 5496);
+                AddKeyword("NAXIS2", 3672);
+                AddKeyword("XPIXSZ", 2.4);
+                AddKeyword("YPIXSZ", 2.4);
+                RemoveKeyword("NAXIS3");
+                return "Z183";
+            }
+
+            if (FormValue.Contains("Z533"))
+            {
+                AddKeyword("INSTRUME", "Z533", NewComment);
+                AddKeyword("NAXIS", 2);
+                AddKeyword("NAXIS1", 3008);
+                AddKeyword("NAXIS2", 3008);
+                AddKeyword("XPIXSZ", 3.76);
+                AddKeyword("YPIXSZ", 3.76);
+                RemoveKeyword("NAXIS3");
+                return "Z533";
+            }
+
+            if (FormValue.Contains("Q178"))
+            {
+                AddKeyword("INSTRUME", "Q178", NewComment);
+                AddKeyword("NAXIS", 2);
+                AddKeyword("NAXIS1", 3072);
+                AddKeyword("NAXIS2", 2048);
+                AddKeyword("XPIXSZ", 2.4);
+                AddKeyword("YPIXSZ", 2.4);
+                RemoveKeyword("NAXIS3");
+                return "Q178";
+            }
+
+            if (FormValue.Contains("A144"))
+            {
+                AddKeyword("INSTRUME", "A144", NewComment);
+                AddKeyword("NAXIS", 2);
+                AddKeyword("NAXIS1", 1392);
+                AddKeyword("NAXIS2", 1040);
+                AddKeyword("XPIXSZ", 6.45);
+                AddKeyword("YPIXSZ", 6.45);
+                RemoveKeyword("NAXIS3");
+                return "A144";
+            }
 
             return string.Empty;
         }
@@ -557,110 +495,136 @@ namespace XisfFileManager.Keywords
         // *********************************************************************************************************
         public string CaptureSoftware()
         {
-            string value = string.Empty;
             Keyword node = new Keyword();
-
 
             node = KeywordList.Find(i => i.Name == "CREATOR");
 
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "NOTES");
-
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "SWCREATE");
-
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "TELESCOP");
-
-            if (node == null)
+            if (node != null)
             {
-                UIForm.Name = "Software";
-                UIForm.Text = "Unknown Capture Software";
-                UIForm.Label_Text.Text = "Enter Capture Software: SGP, TSX, VGR or SCP";
+                RemoveKeyword("NOTES");
+                RemoveKeyword("SWCREATE");
 
-                UIForm.ShowDialog();
-
-                // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (UIForm.DialogResult != DialogResult.OK)
+                if (node.Value.Contains("Sequence") || node.Value.Contains("SGP"))
                 {
-                    Environment.Exit(0);
+                    return "SGP";
                 }
 
-                node = KeywordList.Find(i => i.Name == "CREATOR");
+                if (node.Value.Contains("VOYAGER") || node.Value.Contains("VOY"))
+                {
+                    return "VOY";
+                }
+
+                if (node.Value.Contains("SkyX") || node.Value.Contains("TheSky") || node.Value.Contains("TSX"))
+                {
+                    return "TSX";
+                }
+
+                if (node.Value.Contains("SharpCap") || node.Value.Contains("SCP"))
+                {
+                    return "SCP";
+                }
             }
 
-            value = node.Value;
-            node.Type = Keyword.EType.STRING;
-
-            if (value.Contains("Sequence"))
+            if (node == null)
             {
-                return "SGP";
+                node = KeywordList.Find(i => i.Name == "NOTES");
+                if (node != null)
+                {
+                    RemoveKeyword("NOTES");
+                    RemoveKeyword("SWCREATE");
+                    AddKeyword("CREATOR", node.Value);
+
+
+                    if (node.Value.Contains("Sequence") || node.Value.Contains("SGP"))
+                    {
+                        return "SGP";
+                    }
+
+                    if (node.Value.Contains("VOYAGER") || node.Value.Contains("VOY"))
+                    {
+                        return "VOY";
+                    }
+
+                    if (node.Value.Contains("SkyX") || node.Value.Contains("TheSky") || node.Value.Contains("TSX"))
+                    {
+                        return "TSX";
+                    }
+
+                    if (node.Value.Contains("SharpCap") || node.Value.Contains("SCP"))
+                    {
+                        return "SCP";
+                    }
+                }
             }
 
-            if (value.Contains("VOYAGER"))
+            if (node == null)
             {
-                return "VGR";
+                node = KeywordList.Find(i => i.Name == "SWCREATE");
+                if (node != null)
+                {
+                    RemoveKeyword("NOTES");
+                    RemoveKeyword("SWCREATE");
+                    AddKeyword("CREATOR", node.Value);
+
+                    if (node.Value.Contains("Sequence") || node.Value.Contains("SGP"))
+                    {
+                        return "SGP";
+                    }
+
+                    if (node.Value.Contains("VOYAGER") || node.Value.Contains("VOY"))
+                    {
+                        return "VOY";
+                    }
+
+                    if (node.Value.Contains("SkyX") || node.Value.Contains("TheSky") || node.Value.Contains("TSX"))
+                    {
+                        return "TSX";
+                    }
+
+                    if (node.Value.Contains("SharpCap") || node.Value.Contains("SCP"))
+                    {
+                        return "SCP";
+                    }
+                }
             }
 
-            if (value.Contains("SkyX") || value.Contains("TheSky"))
-            {
-                return "TSX";
-            }
+            string FormValue = OpenUIForm("Capture Software", "Capture Software Not Set", "Enter Capture Software: SGP, VOY, SCP or TSX");
+            AddKeyword("CREATOR", FormValue);
 
-            if (value.Contains("SharpCap"))
-            {
-                return "SCP";
-            }
+            return FormValue;
 
-            return string.Empty;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string ExposureSeconds()
         {
-            double exposureSeconds;
-
-            string value = string.Empty;
+            double Seconds;
             Keyword node = new Keyword();
 
+            node = KeywordList.Find(i => i.Name == "EXPTIME");
+            if (node != null)
+            {
+                RemoveKeyword("EXPOSURE");
+                Seconds = Convert.ToDouble(node.Value);
+                return FormatExposureSeconds(Seconds);
+            }
+
             node = KeywordList.Find(i => i.Name == "EXPOSURE");
-
-            if (node == null)
+            if (node != null)
             {
-                node = KeywordList.Find(i => i.Name == "EXPTIME");
+                RemoveKeyword("EXPOSURE");
+                Seconds = Convert.ToDouble(node.Value);
+                AddKeyword("EXPTIME", Seconds);
+                return FormatExposureSeconds(Seconds);
             }
 
-            if (node == null)
-            {
-                UIForm.Name = "Exposure";
-                UIForm.Text = "Exposure Time Not Set";
-                UIForm.Label_Text.Text = "Enter Exposure Time";
+            string FormValue = OpenUIForm("Exposure Time", "Exposure Time Not Set", "Enter Exposure Time (double): ");
+            Seconds = Convert.ToDouble(FormValue);
 
-                UIForm.ShowDialog();
+            AddKeyword("EXPTIME", Seconds);
 
-                // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (UIForm.DialogResult != DialogResult.OK)
-                {
-                    Environment.Exit(0);
-                }
-
-                node = KeywordList.Find(i => i.Name == "EXPTIME");
-            }
-
-            value = node.Value.Replace("'", "").Replace(" ", "");
-            node.Type = Keyword.EType.FLOAT;
-
-            exposureSeconds = (double)Convert.ChangeType(node.GetValue(), typeof(double));
-
-            if (exposureSeconds < 10.0)
-            {
-                return exposureSeconds.ToString("0.0000");
-            }
-            else
-            {
-                return exposureSeconds.ToString("0000");
-            }
+            return FormatExposureSeconds(Seconds);
         }
 
         // *********************************************************************************************************
@@ -699,33 +663,30 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FocalLength()
+        public int FocalLength()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "FOCALLEN");
+            if (node != null)
+            {
+                return (Convert.ToInt32(node.Value));
+            }
 
-            if (node == null)
+            double focalLength = (PixelSize() * 206.265) / Scale();
+
+            double error = focalLength / 525;
+            if ((error < 1.1) && (error > 0.9))
             {
                 AddKeyword("FOCALLEN", 525);
-                node = KeywordList.Find(i => i.Name == "FOCALLEN");
-                node.Type = Keyword.EType.INTEGER;
+                return 525;
             }
-
-            value = node.Value;
-
-            if (value == "525")
+            else
             {
-                return "A107R@525";
+                AddKeyword("FOCALLEN", 700);
+                return 700;
             }
-
-            if (value == "700")
-            {
-                return "A107@700";
-            }
-
-            return value;
         }
 
         // *********************************************************************************************************
@@ -774,32 +735,107 @@ namespace XisfFileManager.Keywords
         // *********************************************************************************************************
         public string FrameType()
         {
-            string value = string.Empty;
+            string value;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "IMAGETYP");
-            node.Type = Keyword.EType.STRING;
-            value = node.Value;
 
+            value = node.Value.Replace("'", "").Replace(" ", "");
 
-            if (value.IndexOf("Light", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (node != null)
             {
+                if (value.ToUpper().Equals("LIGHT"))
+                {
+                    AddKeyword("IMAGETYP", "Light");
+                    return "L";
+                }
+
+                if (value.ToUpper().Equals("DARK"))
+                {
+                    AddKeyword("IMAGETYP", "Dark");
+                    return "D";
+                }
+
+                if (value.ToUpper().Equals("FLAT"))
+                {
+                    AddKeyword("IMAGETYP", "Flat");
+                    return "F";
+                }
+
+                if (value.ToUpper().Equals("BIAS"))
+                {
+                    AddKeyword("IMAGETYP", "Bias");
+                    return "B";
+                }
+
+                if (value.ToUpper().Contains("MASTER"))
+                {
+                    if (value.ToUpper().Contains("DARK"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterDark");
+                        return "MD";
+                    }
+
+                    if (value.ToUpper().Contains("FLAT"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterFlat");
+                        return "MF";
+                    }
+
+                    if (value.ToUpper().Contains("BIAS"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterBias");
+                        return "MB";
+                    }
+                }
+            }
+
+            string FormValue = OpenUIForm("Frame Type", "Frame Type Not Set", "Enter Frame Type (Light, Dark, Flat, Bias, MasterDark, MasterFlat, MasterBias): ");
+
+            if (FormValue.ToUpper().Equals("LIGHT"))
+            {
+                AddKeyword("IMAGETYP", "Light");
                 return "L";
             }
 
-            if (value.IndexOf("Flat", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (FormValue.ToUpper().Equals("DARK"))
             {
-                return "F";
-            }
-
-            if (value.IndexOf("Dark", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
+                AddKeyword("IMAGETYP", "Dark");
                 return "D";
             }
 
-            if (value.IndexOf("Bias", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (FormValue.ToUpper().Equals("FLAT"))
             {
+                AddKeyword("IMAGETYP", "Flat");
+                return "F";
+            }
+
+            if (FormValue.ToUpper().Equals("BIAS"))
+            {
+                AddKeyword("IMAGETYP", "Bias");
                 return "B";
+            }
+
+            if (FormValue.ToUpper().Contains("MASTER"))
+            {
+                if (FormValue.ToUpper().Contains("DARK"))
+                {
+                    AddKeyword("IMAGETYP", "MasterDark");
+                    return "MD";
+                }
+
+
+                if (FormValue.ToUpper().Contains("FLAT"))
+                {
+                    AddKeyword("IMAGETYP", "MasterFlat");
+                    return "MF";
+                }
+
+                if (FormValue.ToUpper().Contains("BIAS"))
+                {
+                    AddKeyword("IMAGETYP", "MasterBias");
+                    return "MB";
+                }
             }
 
             return string.Empty;
@@ -807,43 +843,32 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int? Gain()
+        public int Gain()
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "GAIN");
-
-            if (node == null)
+            if (node != null)
             {
-                node = KeywordList.Find(i => i.Name == "GAINRAW");
-
-                if (node != null)
-                {
-                    RemoveKeyword("GAINRAW");
-                    AddKeyword("GAIN", node.Value);
-                }
+                value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
+                return Convert.ToInt32(value);
             }
 
-            if (node == null)
+            node = KeywordList.Find(i => i.Name == "GAINRAW");
+
+            if (node != null)
             {
-                UIForm.Name = "Gain";
-                UIForm.Text = "Camera Gain Not Set";
-                UIForm.Label_Text.Text = "Enter Gain";
-
-                UIForm.ShowDialog();
-
-                // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (UIForm.DialogResult != DialogResult.OK)
-                {
-                    Environment.Exit(0);
-                }
-
-                node = KeywordList.Find(i => i.Name == "GAIN");
+                RemoveKeyword("GAINRAW");
+                value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
+                AddKeyword("GAIN", Convert.ToInt32(value));
+                return Convert.ToInt32(value);
             }
 
-            value = node.Value.Replace("'", "").Replace(".", "");
-            node.Type = Keyword.EType.INTEGER;
+            string FormValue = OpenUIForm("Camera Gain", "Camera Gain Not Set", "Enter Camera Gain: ");
+            AddKeyword("GAIN", Convert.ToInt32(FormValue));
+
+            Offset();
 
             return Convert.ToInt32(value);
         }
@@ -876,7 +901,7 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "INDEX");
-            value = node.Value.Replace("'", "").Replace(".", "");
+            value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
             node.Type = Keyword.EType.INTEGER;
 
             return Convert.ToInt32(value);
@@ -890,17 +915,36 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OFFSET");
-            if (node == null)
+            if (node != null)
             {
-                AddKeyword("OFFSET", 10);
+                value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
+                return Convert.ToInt32(value);
             }
 
-            node = KeywordList.Find(i => i.Name == "OFFSET");
-
-            value = node.Value.Replace("'", "").Replace(".", "");
-            node.Type = Keyword.EType.INTEGER;
+            string FormValue = OpenUIForm("Camera Offset", "Camera Offset Not Set", "Enter Camera Offset: ");
+            AddKeyword("OFFSET", Convert.ToInt32(FormValue));
 
             return Convert.ToInt32(value);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double PixelSize()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "XPIXSZ");
+            if (node != null)
+            {
+                return Convert.ToDouble(node.Value);
+            }
+
+            string FormValue = OpenUIForm("Camera Pixel Size", "Camera Pixel Size Not Set (Assumes Square Pixels)", "Enter Camera Pixel Size (2.4, 3.76, 6.45): ");
+            AddKeyword("XPIXSZ", Convert.ToDouble(FormValue));
+            AddKeyword("YPIXSZ", Convert.ToDouble(FormValue));
+
+            return Convert.ToDouble(value);
         }
 
         // *********************************************************************************************************
@@ -925,6 +969,25 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        public double Scale()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "SCALE");
+            if (node != null)
+            {
+                return Convert.ToDouble(node.Value);
+            }
+
+            double scale = (PixelSize() * 206.265) / FocalLength();
+
+            AddKeyword("SCALE", scale);
+
+            return scale;
+        }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public int SensorHeight()
         {
             string value = string.Empty;
@@ -945,7 +1008,6 @@ namespace XisfFileManager.Keywords
                     {
                         AddKeyword("NAXIS2", 3672 / 2);
                     }
-
                 }
 
                 if (Camera() == "Z533")
@@ -959,7 +1021,6 @@ namespace XisfFileManager.Keywords
                     {
                         AddKeyword("NAXIS2", 3008 / 2);
                     }
-
                 }
 
                 if (Camera() == "Q178")
@@ -973,7 +1034,6 @@ namespace XisfFileManager.Keywords
                     {
                         AddKeyword("NAXIS2", 2048 / 2);
                     }
-
                 }
 
                 if (Camera() == "A144")
@@ -987,7 +1047,6 @@ namespace XisfFileManager.Keywords
                     {
                         AddKeyword("NAXIS2", 1040 / 2);
                     }
-
                 }
 
                 node = KeywordList.Find(i => i.Name == "NAXIS2");
@@ -1011,8 +1070,13 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "SET-TEMP");
-            value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.STRING;
+            if (node != null)
+            {
+                return FormatTemperatureString(value);
+            }
+
+            string FormValue = OpenUIForm("Camera Temperature", "Camera Temperature Setpoint Not Set", "Enter Camera Temperature Setpoint: ");
+            AddKeyword("SET-TEMP", FormValue);
 
             return FormatTemperatureString(value);
         }
@@ -1025,29 +1089,15 @@ namespace XisfFileManager.Keywords
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "CCD-TEMP");
-
-
-            if (node == null)
+            if (node != null)
             {
-                UIForm.Name = "SensorTemp";
-                UIForm.Text = "CCD Temperature Not Set";
-                UIForm.Label_Text.Text = "Enter Sensor Temperature";
-
-                UIForm.ShowDialog();
-
-                // Show testDialog as a modal dialog and determine if DialogResult = OK.
-                if (UIForm.DialogResult != DialogResult.OK)
-                {
-                    Environment.Exit(0);
-                }
-
-                node = KeywordList.Find(i => i.Name == "CCD-TEMP");
+                return FormatTemperatureString(node.Value);
             }
 
-            node.Type = Keyword.EType.FLOAT;
-            value = node.Value;
+            string FormValue = OpenUIForm("Camera Temperature", "Camera Temperature Not Set", "Enter Actual Camera Temperature: ");
+            AddKeyword("CCD-TEMP", FormValue);
 
-            return FormatTemperatureString(value);
+            return FormatTemperatureString(FormValue);
         }
 
         // *********************************************************************************************************
@@ -1145,6 +1195,41 @@ namespace XisfFileManager.Keywords
             node.Type = Keyword.EType.STRING;
 
             return value;
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public string Telescope()
+        {
+            string value = string.Empty;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "TELESCOP");
+            if (node != null)
+            {
+                node.Value = node.Value.Replace(".", "").Replace("'", "");
+
+                if (node.Value.Contains("APM107"))
+                {
+                    return node.Value;
+                }
+
+                if (FocalLength() < 700)
+                {
+                    AddKeyword("TELESCOP", "APM107R", node.Value);
+                    return "APM107R";
+                }
+                else
+                {
+                    AddKeyword("TELESCOP", "APM107", node.Value);
+                    return "APM107";
+                }
+               
+            }
+
+            AddKeyword("TELESCOP", "APM107R");
+
+            return "APM107R";
         }
 
         // *********************************************************************************************************
@@ -1246,7 +1331,7 @@ namespace XisfFileManager.Keywords
             if (temperatureString == "") return "";
 
             double temperature;
-            temperature = Convert.ToDouble(temperatureString);
+            temperature = Convert.ToDouble(temperatureString.Replace("'", ""));
             temperature = Math.Round(temperature, 1);
 
             string fmt = "{00:+00.0;-00.0;+00.0}";
@@ -1255,7 +1340,68 @@ namespace XisfFileManager.Keywords
             return value;
         }
 
+        // #########################################################################################################
+        // #########################################################################################################
+        private string FormatExposureSeconds(double seconds)
+        {
+            if (seconds < 10.0)
+            {
+                if (seconds < 0.0001)
+                {
+                    return "0.0000";
+                }
 
+                return seconds.ToString("0.0000");
+            }
+            else
+            {
+                return seconds.ToString("0000");
+            }
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public void SetRequiredKeywords()
+        {
+            // SIMPLE T
+            // BITPIX 16
+            // NAXIS 2 for GrayScale 3 for RGB
+            // NAXIS1
+            // NAXIS2
+            // NASIX3 3 for NAXIS 3 (RGB - planes in R,G,B order)
+            // EXTEND
+            // BZERO  0 is 16-bit signed data 32768 of 16-bit unsigned data (BITPIX)
+            // BSCALE - 1
+            // COLORSPACE Grayscale or RGB
+
+
+        }
+
+
+        private string OpenUIForm(string FormName, string FormText, string LabelText)
+        {
+            using (var UIForm = new UserInputForm())
+            {
+                UIForm.Name = FormName;
+                UIForm.Text = FormText;
+                UIForm.Label_Text.Text = LabelText;
+                UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                UIForm.StartPosition = FormStartPosition.CenterScreen;
+                UIForm.TextBox_Text.Focus();
+
+                var result = UIForm.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    return UIForm.FormReturnValue;
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+
+            return string.Empty;
+        }
     }
 
     public class GoogleTimeZone

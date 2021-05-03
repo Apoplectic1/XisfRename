@@ -573,10 +573,10 @@
             this.RadioButton_SubFrameKeywords_Alphabetize.Checked = true;
             this.RadioButton_SubFrameKeywords_Alphabetize.Location = new System.Drawing.Point(211, 22);
             this.RadioButton_SubFrameKeywords_Alphabetize.Name = "RadioButton_SubFrameKeywords_Alphabetize";
-            this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(168, 17);
+            this.RadioButton_SubFrameKeywords_Alphabetize.Size = new System.Drawing.Size(129, 17);
             this.RadioButton_SubFrameKeywords_Alphabetize.TabIndex = 14;
             this.RadioButton_SubFrameKeywords_Alphabetize.TabStop = true;
-            this.RadioButton_SubFrameKeywords_Alphabetize.Text = "Alphabetize Existing Keywords";
+            this.RadioButton_SubFrameKeywords_Alphabetize.Text = "Alphabetize Keywords";
             this.RadioButton_SubFrameKeywords_Alphabetize.UseVisualStyleBackColor = true;
             this.RadioButton_SubFrameKeywords_Alphabetize.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged);
             // 
@@ -2079,7 +2079,7 @@
             131072});
             this.NumericUpDown_Rejection_Noise.Location = new System.Drawing.Point(485, 28);
             this.NumericUpDown_Rejection_Noise.Maximum = new decimal(new int[] {
-            200,
+            300,
             0,
             0,
             0});
