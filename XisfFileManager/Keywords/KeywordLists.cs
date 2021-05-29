@@ -11,7 +11,7 @@ namespace XisfFileManager.Keywords
     public class KeywordLists
     {
         public List<Keyword> KeywordList;
-        enum rejectionType {NULL, LINEAR, STUDENT, WINDSOR, SIGMA }
+        enum rejectionType {NULL, LINEAR, STUDENT, WINSOR, SIGMA }
 
         public KeywordLists()
         {
@@ -272,14 +272,14 @@ namespace XisfFileManager.Keywords
                     if (node.Comment.Contains("linear"))
                         rejectionValue = rejectionType.LINEAR;
                         
-                    if (node.Comment.Contains("student"))
+                    if (node.Comment.Contains("Student"))
                         rejectionValue = rejectionType.STUDENT;
 
                     if (node.Comment.Contains("sigma"))
                         rejectionValue = rejectionType.SIGMA;
 
-                    if (node.Comment.Contains("windsor"))
-                        rejectionValue = rejectionType.WINDSOR;
+                    if (node.Comment.Contains("winsor"))
+                        rejectionValue = rejectionType.WINSOR;
                 }
 
                 if (node.Comment.Contains("numberOfImages"))
@@ -300,7 +300,7 @@ namespace XisfFileManager.Keywords
                 case rejectionType.SIGMA:
                     AddKeyword("Rejection", "SC", "XISF File Manager");
                     break;
-                case rejectionType.WINDSOR:
+                case rejectionType.WINSOR:
                     AddKeyword("Rejection", "WSC", "XISF File Manager");
                     break;
                 default:
@@ -407,6 +407,13 @@ namespace XisfFileManager.Keywords
 
             RemoveKeyword("Camera"); // Legacy - not used
 
+            AddKeyword("BITPIX", 16, "XISF File Manager");
+            AddKeyword("BZERO", 32768, "XISF File Manager");
+            AddKeyword("BSCALE", 1, "XISF File Manager");
+            AddKeyword("COLORSPC", "Grayscale", "XISF File Manager");
+            AddKeyword("RESOLUTN", 72, "XISF File Manager");
+            AddKeyword("RESOUNIT", "inch", "XISF File Manager");
+
             Keyword instrument = new Keyword();
             instrument = KeywordList.Find(i => i.Name == "INSTRUME");
 
@@ -436,6 +443,7 @@ namespace XisfFileManager.Keywords
                     if (naxis1.Value.Equals("3008"))
                     {
                         AddKeyword("INSTRUME", "Z533", instrument.Value);
+                        AddKeyword("BAYERPAT", "RGGB");
                         return "Z533";
                     }
 
@@ -460,6 +468,13 @@ namespace XisfFileManager.Keywords
                 FormValue = OpenUIForm("Camera", "Camera Not Set", "Enter Z183, Z533, Q178 or A144");
                 AddKeyword("INSTRUME", FormValue, "XISF File Manager");
 
+                AddKeyword("BITPIX", 16, "XISF File Manager");
+                AddKeyword("BZERO", 32768, "XISF File Manager");
+                AddKeyword("BSCALE", 1, "XISF File Manager");
+                
+                AddKeyword("RESOLUTN", 72, "XISF File Manager");
+                AddKeyword("RESOUNIT", "inch", "XISF File Manager");
+
                 if (FormValue.Equals("Z183"))
                 {
                     AddKeyword("INSTRUME", "Z183", "XISF File Manager");
@@ -469,6 +484,7 @@ namespace XisfFileManager.Keywords
                     AddKeyword("XPIXSZ", 2.4, "XISF File Manager");
                     AddKeyword("YPIXSZ", 2.4, "XISF File Manager");
                     RemoveKeyword("NAXIS3");
+                    AddKeyword("COLORSPC", "Grayscale", "XISF File Manager");
                     return "Z183";
                 }
 
@@ -481,6 +497,7 @@ namespace XisfFileManager.Keywords
                     AddKeyword("XPIXSZ", 3.76, "XISF File Manager");
                     AddKeyword("YPIXSZ", 3.76, "XISF File Manager");
                     RemoveKeyword("NAXIS3");
+                    AddKeyword("BAYERPAT", "RGGB");
                     return "Z533";
                 }
 
@@ -493,6 +510,7 @@ namespace XisfFileManager.Keywords
                     AddKeyword("XPIXSZ", 2.4, "XISF File Manager");
                     AddKeyword("YPIXSZ", 2.4, "XISF File Manager");
                     RemoveKeyword("NAXIS3");
+                    AddKeyword("COLORSPC", "Grayscale", "XISF File Manager");
                     return "Q178";
                 }
 
@@ -1364,7 +1382,7 @@ namespace XisfFileManager.Keywords
             {
                 if (seconds < 0.0001)
                 {
-                    return "0.0000";
+                    return "0000";
                 }
 
                 return seconds.ToString("0.000");

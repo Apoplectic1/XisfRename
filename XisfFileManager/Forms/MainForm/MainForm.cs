@@ -133,6 +133,8 @@ namespace XisfFileManager
             TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
             TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
+
+            this.Size = new Size(989, 655);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -396,8 +398,6 @@ namespace XisfFileManager
             {
                 ComboBox_TargetName.SelectedIndex = 0;
             }
-            
-            GroupBox_XisfFileUpdate.Enabled = true;
         }
 
 
@@ -438,8 +438,6 @@ namespace XisfFileManager
             mFileList.Clear();
 
             ProgressBar_OverAll.Value = 0;
-
-            GroupBox_XisfFileUpdate.Enabled = false;
         }
 
         private void Button_Update_Click(object sender, EventArgs e)
@@ -869,6 +867,15 @@ namespace XisfFileManager
             {
                 SetUISubFrameGroupBoxState();
             }
+
+            if (RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Checked == true)
+            {
+                this.Size = new Size(989, 1147);
+            }
+            else
+            {
+                this.Size = new Size(989, 655);
+            }
         }
 
         private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
@@ -990,34 +997,34 @@ namespace XisfFileManager
 
         private void CheckBox_Filter_SetFilter_CheckedChanged(object sender, EventArgs e)
         {
-            mUpdateFilter = CheckBox_Filter_SetFilter.Checked;
+            mUpdateFilter = CheckBox_FilterUpdate.Checked;
 
             if (mUpdateFilter)
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    if (RadioButton_Filter_Luma.Checked)
+                    if (RadioButton_FilterLuma.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Luma");
 
-                    if (RadioButton_Filter_Red.Checked)
+                    if (RadioButton_FilterRed.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Red");
 
-                    if (RadioButton_Filter_Green.Checked)
+                    if (RadioButton_FilterGreen.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Green");
 
-                    if (RadioButton_Filter_Blue.Checked)
+                    if (RadioButton_FilterBlue.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Blue");
 
-                    if (RadioButton_Filter_Ha.Checked)
+                    if (RadioButton_FilterHa.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Ha");
 
-                    if (RadioButton_Filter_O3.Checked)
+                    if (RadioButton_FilterO3.Checked)
                         file.KeywordData.AddKeyword("FILTER", "O3");
 
-                    if (RadioButton_Filter_S2.Checked)
+                    if (RadioButton_FilterS2.Checked)
                         file.KeywordData.AddKeyword("FILTER", "S2");
 
-                    if (RadioButton_Filter_Shutter.Checked)
+                    if (RadioButton_FilterShutter.Checked)
                         file.KeywordData.AddKeyword("FILTER", "Shutter");
                 }
             }
@@ -1043,49 +1050,49 @@ namespace XisfFileManager
                 {
                     if (filter == "Luma")
                     {
-                        RadioButton_Filter_Luma.ForeColor = Color.Red;
+                        RadioButton_FilterLuma.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "Red")
                     {
-                        RadioButton_Filter_Red.ForeColor = Color.Red;
+                        RadioButton_FilterRed.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "Green")
                     {
-                        RadioButton_Filter_Green.ForeColor = Color.Red;
+                        RadioButton_FilterGreen.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "Blue")
                     {
-                        RadioButton_Filter_Blue.ForeColor = Color.Red;
+                        RadioButton_FilterBlue.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "Ha")
                     {
-                        RadioButton_Filter_Ha.ForeColor = Color.Red;
+                        RadioButton_FilterHa.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "O3")
                     {
-                        RadioButton_Filter_O3.ForeColor = Color.Red;
+                        RadioButton_FilterO3.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "S2")
                     {
-                        RadioButton_Filter_S2.ForeColor = Color.Red;
+                        RadioButton_FilterS2.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
 
                     if (filter == "Shutter")
                     {
-                        RadioButton_Filter_Shutter.ForeColor = Color.Red;
+                        RadioButton_FilterShutter.ForeColor = Color.Red;
                         multipleFilters = true;
                     }
                 }
@@ -1094,96 +1101,97 @@ namespace XisfFileManager
                 {
                     if (firstFilter == "Luma")
                     {
-                        RadioButton_Filter_Luma.ForeColor = Color.Red;
+                        RadioButton_FilterLuma.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "Red")
                     {
-                        RadioButton_Filter_Red.ForeColor = Color.Red;
+                        RadioButton_FilterRed.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "Green")
                     {
-                        RadioButton_Filter_Green.ForeColor = Color.Red;
+                        RadioButton_FilterGreen.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "Blue")
                     {
-                        RadioButton_Filter_Blue.ForeColor = Color.Red;
+                        RadioButton_FilterBlue.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "Ha")
                     {
-                        RadioButton_Filter_Ha.ForeColor = Color.Red;
+                        RadioButton_FilterHa.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "O3")
                     {
-                        RadioButton_Filter_O3.ForeColor = Color.Red;
+                        RadioButton_FilterO3.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "S2")
                     {
-                        RadioButton_Filter_S2.ForeColor = Color.Red;
+                        RadioButton_FilterS2.ForeColor = Color.Red;
                     }
 
                     if (firstFilter == "Shutter")
                     {
-                        RadioButton_Filter_Shutter.ForeColor = Color.Red;
+                        RadioButton_FilterShutter.ForeColor = Color.Red;
                     }
                 }
                 else
                 {
                     if (firstFilter == "Luma")
                     {
-                        RadioButton_Filter_Luma.Checked = true;
+                        RadioButton_FilterLuma.Checked = true;
                     }
 
                     if (firstFilter == "Red")
                     {
-                        RadioButton_Filter_Red.Checked = true;
+                        RadioButton_FilterRed.Checked = true;
                     }
 
                     if (firstFilter == "Green")
                     {
-                        RadioButton_Filter_Green.Checked = true;
+                        RadioButton_FilterGreen.Checked = true;
                     }
 
                     if (firstFilter == "Blue")
                     {
-                        RadioButton_Filter_Blue.Checked = true;
+                        RadioButton_FilterBlue.Checked = true;
                     }
 
                     if (firstFilter == "Ha")
                     {
-                        RadioButton_Filter_Ha.Checked = true;
+                        RadioButton_FilterHa.Checked = true;
                     }
 
                     if (firstFilter == "O3")
                     {
-                        RadioButton_Filter_O3.Checked = true;
+                        RadioButton_FilterO3.Checked = true;
                     }
 
                     if (firstFilter == "S2")
                     {
-                        RadioButton_Filter_S2.Checked = true;
+                        RadioButton_FilterS2.Checked = true;
                     }
 
                     if (firstFilter == "Shutter")
                     {
-                        RadioButton_Filter_Shutter.Checked = true;
+                        RadioButton_FilterShutter.Checked = true;
                     }
 
-                    RadioButton_Filter_Luma.ForeColor = Color.Black;
-                    RadioButton_Filter_Red.ForeColor = Color.Black;
-                    RadioButton_Filter_Green.ForeColor = Color.Black;
-                    RadioButton_Filter_Blue.ForeColor = Color.Black;
-                    RadioButton_Filter_Ha.ForeColor = Color.Black;
-                    RadioButton_Filter_O3.ForeColor = Color.Black;
-                    RadioButton_Filter_S2.ForeColor = Color.Black;
-                    RadioButton_Filter_Shutter.ForeColor = Color.Black;
+                    RadioButton_FilterLuma.ForeColor = Color.Black;
+                    RadioButton_FilterRed.ForeColor = Color.Black;
+                    RadioButton_FilterGreen.ForeColor = Color.Black;
+                    RadioButton_FilterBlue.ForeColor = Color.Black;
+                    RadioButton_FilterHa.ForeColor = Color.Black;
+                    RadioButton_FilterO3.ForeColor = Color.Black;
+                    RadioButton_FilterS2.ForeColor = Color.Black;
+                    RadioButton_FilterShutter.ForeColor = Color.Black;
                 }
             }
         }
+
     }
 }
