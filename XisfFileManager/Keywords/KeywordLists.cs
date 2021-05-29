@@ -319,7 +319,7 @@ namespace XisfFileManager.Keywords
             if (node == null)
                 return string.Empty;
 
-            return node.Value;
+            return Int32.Parse(node.Value).ToString("D3");
         }
 
         public string Rejection()
@@ -330,7 +330,7 @@ namespace XisfFileManager.Keywords
             if (node == null)
                 return string.Empty;
 
-            return node.Value;
+            return node.Value.Replace("'","");
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -1232,7 +1232,7 @@ namespace XisfFileManager.Keywords
 
                 if (FocalLength() < 700)
                 {
-                    AddKeyword("TELESCOP", "APM107R", node.Value);
+                    AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
                     return "APM107R";
                 }
                 else
@@ -1243,7 +1243,7 @@ namespace XisfFileManager.Keywords
 
             }
 
-            AddKeyword("TELESCOP", "APM107R");
+            AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
 
             return "APM107R";
         }
@@ -1360,14 +1360,14 @@ namespace XisfFileManager.Keywords
         // #########################################################################################################
         private string FormatExposureSeconds(double seconds)
         {
-            if (seconds < 10.0)
+            if (seconds < 5.0)
             {
                 if (seconds < 0.0001)
                 {
                     return "0.0000";
                 }
 
-                return seconds.ToString("0.0000");
+                return seconds.ToString("0.000");
             }
             else
             {

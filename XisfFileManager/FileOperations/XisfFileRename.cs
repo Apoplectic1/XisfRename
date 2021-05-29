@@ -111,6 +111,7 @@ namespace XisfFileManager.FileOperations
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
+                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
                     }
 
                     if (mFile.KeywordData.FrameType() == "B")
@@ -123,6 +124,7 @@ namespace XisfFileManager.FileOperations
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
+                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
                     }
 
                     if (mFile.KeywordData.FrameType() == "F")
