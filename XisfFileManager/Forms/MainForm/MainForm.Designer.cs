@@ -63,6 +63,7 @@
             this.Label_TagetName = new System.Windows.Forms.Label();
             this.ProgressBar_XisfFile = new System.Windows.Forms.ProgressBar();
             this.GroupBox_DirectorySelection = new System.Windows.Forms.GroupBox();
+            this.CheckBox_Master = new System.Windows.Forms.CheckBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -256,7 +257,7 @@
             // 
             // Button_Browse
             // 
-            this.Button_Browse.Location = new System.Drawing.Point(12, 46);
+            this.Button_Browse.Location = new System.Drawing.Point(12, 42);
             this.Button_Browse.Name = "Button_Browse";
             this.Button_Browse.Size = new System.Drawing.Size(75, 23);
             this.Button_Browse.TabIndex = 0;
@@ -275,7 +276,7 @@
             // CheckBox_Recurse
             // 
             this.CheckBox_Recurse.AutoSize = true;
-            this.CheckBox_Recurse.Location = new System.Drawing.Point(100, 49);
+            this.CheckBox_Recurse.Location = new System.Drawing.Point(100, 25);
             this.CheckBox_Recurse.Name = "CheckBox_Recurse";
             this.CheckBox_Recurse.Size = new System.Drawing.Size(119, 17);
             this.CheckBox_Recurse.TabIndex = 2;
@@ -621,6 +622,7 @@
             // 
             // GroupBox_DirectorySelection
             // 
+            this.GroupBox_DirectorySelection.Controls.Add(this.CheckBox_Master);
             this.GroupBox_DirectorySelection.Controls.Add(this.Button_Browse);
             this.GroupBox_DirectorySelection.Controls.Add(this.CheckBox_Recurse);
             this.GroupBox_DirectorySelection.Location = new System.Drawing.Point(17, 20);
@@ -629,6 +631,16 @@
             this.GroupBox_DirectorySelection.TabIndex = 7;
             this.GroupBox_DirectorySelection.TabStop = false;
             this.GroupBox_DirectorySelection.Text = "Directory Selection";
+            // 
+            // CheckBox_Master
+            // 
+            this.CheckBox_Master.AutoSize = true;
+            this.CheckBox_Master.Location = new System.Drawing.Point(100, 65);
+            this.CheckBox_Master.Name = "CheckBox_Master";
+            this.CheckBox_Master.Size = new System.Drawing.Size(63, 17);
+            this.CheckBox_Master.TabIndex = 3;
+            this.CheckBox_Master.Text = "Masters";
+            this.CheckBox_Master.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
             // 
@@ -2669,5 +2681,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RadioButton RadioButton_Filter_Shutter;
+        private System.Windows.Forms.CheckBox CheckBox_Master;
     }
 }

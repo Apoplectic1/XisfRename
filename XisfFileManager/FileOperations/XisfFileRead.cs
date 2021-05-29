@@ -23,7 +23,7 @@ namespace XisfFileManager.FileOperations
                 // Skip first sixteen bytes that contain XISF0100xxxxxxxx 
                 mXmlString = mXmlString.Substring(mXmlString.IndexOf("<?xml"));
                 // find closing </xisf>. set mXmlString to the entire xml text. Note that the size of mBuffer can be too small and cause this to fail
-                mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf("</xisf>") + 7);
+                mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf("</xisf>") + "</xisf>".Length);
 
                 try
                 {
@@ -64,19 +64,14 @@ namespace XisfFileManager.FileOperations
                     xFile.KeywordData.AddKeyword(element);
                 }
 
-                xFile.KeywordData.SetRequiredKeywords();
-
                 xFile.KeywordData.RepairCamera();
+                xFile.KeywordData.CaptureSoftware();
                 xFile.KeywordData.RepairSiteLatitude();
                 xFile.KeywordData.RepairSiteLongitude();
                 xFile.KeywordData.RepairTelescope();
 
-
                 return true;
             }
-        }
-    
-
-        
+        }        
     }
 }

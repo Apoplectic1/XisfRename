@@ -66,17 +66,26 @@ namespace XisfFileManager.FileOperations
                     mFile.KeywordData.RepairTargetName(TargetName);
                     mFile.KeywordData.RepairOffset();
 
-                    mFile.KeywordData.RemoveKeyword("HISTORY");
-                    mFile.KeywordData.RemoveKeyword("ALIGNH");
-                    mFile.KeywordData.RemoveKeyword("COMMENT");
+                    if (mFile.Master == false)
+                    {
+                        mFile.KeywordData.RemoveKeyword("COMMENT");
+                        mFile.KeywordData.RemoveKeyword("HISTORY");
+                    }
+                    else
+                    {
+                        mFile.KeywordData.IntegrationParamaters();
+                        mFile.KeywordData.RemoveKeyword("HISTORY");
+                    }
+
+                    mFile.KeywordData.RemoveKeyword("ALIGNH");    
                     mFile.KeywordData.RemoveKeyword("NOISE");
                     mFile.KeywordData.RemoveKeyword("Bandwidth setting");
-                    //mFile.KeywordData.RemoveKeyword("BTP");
+                    mFile.KeywordData.RemoveKeyword("BTP");
                     mFile.KeywordData.RemoveKeyword("SBUUID");
                     mFile.KeywordData.RemoveKeyword("READOUTM");
                     mFile.KeywordData.RemoveKeyword("CDS");
-                    //mFile.KeywordData.RemoveKeyword("DISPINCR");
-                   // mFile.KeywordData.RemoveKeyword("EXTEND");
+                    mFile.KeywordData.RemoveKeyword("DISPINCR");
+                    mFile.KeywordData.RemoveKeyword("EXTEND");
                     mFile.KeywordData.RemoveKeyword("FOCTMPSC");
                     mFile.KeywordData.RemoveKeyword("PICTTYPE");
 

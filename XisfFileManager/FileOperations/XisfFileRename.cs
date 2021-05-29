@@ -8,7 +8,7 @@ namespace XisfFileManager.FileOperations
     public class XisfFileRename
     {
         private int mDupIndex;
-       
+
         public List<XisfFile> mFileList;
         public enum OrderType { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }
         public OrderType RenameOrder;
@@ -61,7 +61,7 @@ namespace XisfFileManager.FileOperations
                     dupFileName = RecurseDupFileName(sourceFilePath + "\\Duplicates\\" + dupFileName);
 
                     File.Move(file.SourceFileName, dupFileName);
-                
+
                     return new Tuple<int, string>(0, dupFileName);
                 }
             }
@@ -94,6 +94,74 @@ namespace XisfFileManager.FileOperations
         private string BuildFileName(int index, XisfFile mFile)
         {
             string newName = string.Empty;
+
+            if (mFile.Master)
+            {
+                newName = "Master ";
+
+                if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "F") || (mFile.KeywordData.FrameType() == "B"))
+                {
+                    if (mFile.KeywordData.FrameType() == "D")
+                    {
+                        newName += "Dark  ";
+       
+                        if (mFile.KeywordData.TotalImages() != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        else
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
+
+                        newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
+                    }
+
+                    if (mFile.KeywordData.FrameType() == "B")
+                    {
+                        newName += "Bias  ";
+
+                        if (mFile.KeywordData.TotalImages() != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        else
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
+
+                        newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
+                    }
+
+                    if (mFile.KeywordData.FrameType() == "F")
+                    {
+                        newName += "Flat " + mFile.KeywordData.FilterName() + "  ";
+
+                        if (mFile.KeywordData.TotalImages() != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        else
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
+
+                        newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain() + "O" + mFile.KeywordData.Offset();
+                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C  ";
+
+                        newName += mFile.KeywordData.Telescope() + "@";
+                        newName += mFile.KeywordData.FocalLength();
+
+                        if (mFile.KeywordData.FocuserPosition() != string.Empty)
+                        {
+                            newName += "  F" + mFile.KeywordData.FocuserPosition();
+                        }
+
+                        if (mFile.KeywordData.ImageAngle() != string.Empty)
+                        {
+                            newName += "  R" + mFile.KeywordData.ImageAngle();
+                        }
+                    }
+                }
+
+                if (mFile.KeywordData.Rejection() != string.Empty)
+                    newName += "  (" + mFile.KeywordData.Rejection() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
+                else
+                    newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
+
+                newName += mFile.KeywordData.CaptureSoftware();
+                newName += ")";
+
+                return newName;
+            }
 
             switch (RenameOrder)
             {

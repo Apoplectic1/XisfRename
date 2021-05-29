@@ -13,6 +13,7 @@ namespace XisfFileManager.FileOperations
         public string SourceFileName { get; set; }
         public KeywordLists KeywordData { get; set; }
         public bool Unique;
+        public bool Master = false;
 
         public XisfFile()
         {

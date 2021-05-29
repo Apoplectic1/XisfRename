@@ -415,6 +415,8 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
+                file.Master = CheckBox_Master.Checked;
+
                 Tuple<int, string> renameTuple;
                 ProgressBar_XisfFile.Value += 1;
                 Label_BrowseFileName.Text = file.SourceFileName;
@@ -484,8 +486,11 @@ namespace XisfFileManager
 
             XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'", "").Replace("\"", "");
 
+
             foreach (XisfFile file in mFileList)
             {
+                file.Master = CheckBox_Master.Checked;
+
                 ProgressBar_XisfFile.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
                 Label_UpdateFileName.Text = Label_UpdateFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
