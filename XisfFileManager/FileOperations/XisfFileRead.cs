@@ -64,7 +64,7 @@ namespace XisfFileManager.FileOperations
                     xFile.KeywordData.AddKeyword(element);
                 }
 
-                xFile.KeywordData.RepairCamera();
+                xFile.KeywordData.SetEGain();
                 xFile.KeywordData.CaptureSoftware();
                 xFile.KeywordData.RepairSiteLatitude();
                 xFile.KeywordData.RepairSiteLongitude();

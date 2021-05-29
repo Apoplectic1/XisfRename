@@ -35,8 +35,8 @@ namespace XisfFileManager.Forms
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Label_Text = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.TextBox_Text = new System.Windows.Forms.TextBox();
+            this.CheckBox_Global = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Button_OK
@@ -67,16 +67,6 @@ namespace XisfFileManager.Forms
             this.Label_Text.Text = "Enter Missing Data";
             this.Label_Text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label2
-            // 
-            this.label2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label2.Location = new System.Drawing.Point(0, 184);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(459, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Values entered will be used for all subsequent image files";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
             // TextBox_Text
             // 
             this.TextBox_Text.Location = new System.Drawing.Point(138, 67);
@@ -85,13 +75,23 @@ namespace XisfFileManager.Forms
             this.TextBox_Text.TabIndex = 4;
             this.TextBox_Text.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // CheckBox_Global
+            // 
+            this.CheckBox_Global.AutoSize = true;
+            this.CheckBox_Global.Location = new System.Drawing.Point(166, 100);
+            this.CheckBox_Global.Name = "CheckBox_Global";
+            this.CheckBox_Global.Size = new System.Drawing.Size(127, 17);
+            this.CheckBox_Global.TabIndex = 5;
+            this.CheckBox_Global.Text = "Use Global UI Values";
+            this.CheckBox_Global.UseVisualStyleBackColor = true;
+            // 
             // UserInputForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 197);
+            this.Controls.Add(this.CheckBox_Global);
             this.Controls.Add(this.TextBox_Text);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.Label_Text);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
@@ -107,7 +107,7 @@ namespace XisfFileManager.Forms
         private System.Windows.Forms.Button Button_OK;
         private System.Windows.Forms.Button Button_Cancel;
         public System.Windows.Forms.Label Label_Text;
-        private System.Windows.Forms.Label label2;
         public TextBox TextBox_Text;
+        private CheckBox CheckBox_Global;
     }
 }

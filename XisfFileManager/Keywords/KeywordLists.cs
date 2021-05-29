@@ -91,17 +91,11 @@ namespace XisfFileManager.Keywords
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
-        public void RepairCamera()
+        public void SetEGain()
         {
             double egain = -1.0;
-            double gain;
-            string camera;
-
-            camera = Camera();
-            SensorTemperature();
-            ExposureSeconds();
-            gain = Gain();
-            Offset();
+            double gain = Gain(); ;
+            string camera = Camera();
 
             if (camera == "Z183")
             {

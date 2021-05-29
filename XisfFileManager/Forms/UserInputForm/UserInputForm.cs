@@ -15,7 +15,7 @@ namespace XisfFileManager.Forms
             Button_Cancel.DialogResult = DialogResult.Cancel;
             AcceptButton = Button_OK;
             CancelButton = Button_Cancel;
-
+ 
             Label_Text.Text = "Uninitialized";
         }
 
