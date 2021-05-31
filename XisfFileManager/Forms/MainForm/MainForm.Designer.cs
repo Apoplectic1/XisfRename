@@ -39,12 +39,11 @@
             this.RadioButton_RenameOrder_WeightIndex = new System.Windows.Forms.RadioButton();
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_KeywordUpdate = new System.Windows.Forms.GroupBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.CheckBox_CaptureUpdate = new System.Windows.Forms.CheckBox();
-            this.RadioButton_CaptureVoyager = new System.Windows.Forms.RadioButton();
-            this.RadioButton_CaptureSCP = new System.Windows.Forms.RadioButton();
-            this.RadioButton_CaptureSGP = new System.Windows.Forms.RadioButton();
-            this.RadioButton_CaptureTSX = new System.Windows.Forms.RadioButton();
+            this.GroupBox_CaptureSoftware = new System.Windows.Forms.GroupBox();
+            this.RadioButton_CaptureSoftwareVOY = new System.Windows.Forms.RadioButton();
+            this.RadioButton_CaptureSoftwareSCP = new System.Windows.Forms.RadioButton();
+            this.RadioButton_CaptureSoftwareSGP = new System.Windows.Forms.RadioButton();
+            this.RadioButton_CaptureSoftwareTSX = new System.Windows.Forms.RadioButton();
             this.GroupBox_Telescope = new System.Windows.Forms.GroupBox();
             this.CheckBox_TelescopeUpdate = new System.Windows.Forms.CheckBox();
             this.CheckBox_TelescopeRiccardi = new System.Windows.Forms.CheckBox();
@@ -265,9 +264,11 @@
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.Label_BrowseFileName = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Button_CaptureSoftware_SetAll = new System.Windows.Forms.Button();
+            this.Button_CaptureSoftware_SetByFile = new System.Windows.Forms.Button();
             this.GroupBox_RenameOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.GroupBox_CaptureSoftware.SuspendLayout();
             this.GroupBox_Telescope.SuspendLayout();
             this.GroupBox_Camera.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_CameraBinning)).BeginInit();
@@ -401,7 +402,7 @@
             // 
             // GroupBox_KeywordUpdate
             // 
-            this.GroupBox_KeywordUpdate.Controls.Add(this.groupBox1);
+            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_CaptureSoftware);
             this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_Telescope);
             this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_Camera);
             this.GroupBox_KeywordUpdate.Controls.Add(this.Label_UpdateFileName);
@@ -415,71 +416,62 @@
             this.GroupBox_KeywordUpdate.TabStop = false;
             this.GroupBox_KeywordUpdate.Text = "Keyword Update";
             // 
-            // groupBox1
+            // GroupBox_CaptureSoftware
             // 
-            this.groupBox1.Controls.Add(this.CheckBox_CaptureUpdate);
-            this.groupBox1.Controls.Add(this.RadioButton_CaptureVoyager);
-            this.groupBox1.Controls.Add(this.RadioButton_CaptureSCP);
-            this.groupBox1.Controls.Add(this.RadioButton_CaptureSGP);
-            this.groupBox1.Controls.Add(this.RadioButton_CaptureTSX);
-            this.groupBox1.Location = new System.Drawing.Point(20, 130);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(137, 187);
-            this.groupBox1.TabIndex = 22;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Capture Software";
+            this.GroupBox_CaptureSoftware.Controls.Add(this.Button_CaptureSoftware_SetByFile);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.Button_CaptureSoftware_SetAll);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_CaptureSoftwareVOY);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_CaptureSoftwareSCP);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_CaptureSoftwareSGP);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_CaptureSoftwareTSX);
+            this.GroupBox_CaptureSoftware.Location = new System.Drawing.Point(20, 130);
+            this.GroupBox_CaptureSoftware.Name = "GroupBox_CaptureSoftware";
+            this.GroupBox_CaptureSoftware.Size = new System.Drawing.Size(137, 187);
+            this.GroupBox_CaptureSoftware.TabIndex = 22;
+            this.GroupBox_CaptureSoftware.TabStop = false;
+            this.GroupBox_CaptureSoftware.Text = "Capture Software";
             // 
-            // CheckBox_CaptureUpdate
+            // RadioButton_CaptureSoftwareVOY
             // 
-            this.CheckBox_CaptureUpdate.AutoSize = true;
-            this.CheckBox_CaptureUpdate.Location = new System.Drawing.Point(40, 161);
-            this.CheckBox_CaptureUpdate.Name = "CheckBox_CaptureUpdate";
-            this.CheckBox_CaptureUpdate.Size = new System.Drawing.Size(61, 17);
-            this.CheckBox_CaptureUpdate.TabIndex = 14;
-            this.CheckBox_CaptureUpdate.Text = "Update";
-            this.CheckBox_CaptureUpdate.UseVisualStyleBackColor = true;
+            this.RadioButton_CaptureSoftwareVOY.AutoSize = true;
+            this.RadioButton_CaptureSoftwareVOY.Location = new System.Drawing.Point(20, 73);
+            this.RadioButton_CaptureSoftwareVOY.Name = "RadioButton_CaptureSoftwareVOY";
+            this.RadioButton_CaptureSoftwareVOY.Size = new System.Drawing.Size(64, 17);
+            this.RadioButton_CaptureSoftwareVOY.TabIndex = 3;
+            this.RadioButton_CaptureSoftwareVOY.Text = "Voyager";
+            this.RadioButton_CaptureSoftwareVOY.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_CaptureVoyager
+            // RadioButton_CaptureSoftwareSCP
             // 
-            this.RadioButton_CaptureVoyager.AutoSize = true;
-            this.RadioButton_CaptureVoyager.Location = new System.Drawing.Point(20, 96);
-            this.RadioButton_CaptureVoyager.Name = "RadioButton_CaptureVoyager";
-            this.RadioButton_CaptureVoyager.Size = new System.Drawing.Size(64, 17);
-            this.RadioButton_CaptureVoyager.TabIndex = 3;
-            this.RadioButton_CaptureVoyager.Text = "Voyager";
-            this.RadioButton_CaptureVoyager.UseVisualStyleBackColor = true;
+            this.RadioButton_CaptureSoftwareSCP.AutoSize = true;
+            this.RadioButton_CaptureSoftwareSCP.Location = new System.Drawing.Point(20, 99);
+            this.RadioButton_CaptureSoftwareSCP.Name = "RadioButton_CaptureSoftwareSCP";
+            this.RadioButton_CaptureSoftwareSCP.Size = new System.Drawing.Size(72, 17);
+            this.RadioButton_CaptureSoftwareSCP.TabIndex = 2;
+            this.RadioButton_CaptureSoftwareSCP.Text = "SharpCap";
+            this.RadioButton_CaptureSoftwareSCP.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_CaptureSCP
+            // RadioButton_CaptureSoftwareSGP
             // 
-            this.RadioButton_CaptureSCP.AutoSize = true;
-            this.RadioButton_CaptureSCP.Location = new System.Drawing.Point(20, 122);
-            this.RadioButton_CaptureSCP.Name = "RadioButton_CaptureSCP";
-            this.RadioButton_CaptureSCP.Size = new System.Drawing.Size(72, 17);
-            this.RadioButton_CaptureSCP.TabIndex = 2;
-            this.RadioButton_CaptureSCP.Text = "SharpCap";
-            this.RadioButton_CaptureSCP.UseVisualStyleBackColor = true;
+            this.RadioButton_CaptureSoftwareSGP.AutoSize = true;
+            this.RadioButton_CaptureSoftwareSGP.Checked = true;
+            this.RadioButton_CaptureSoftwareSGP.Location = new System.Drawing.Point(20, 47);
+            this.RadioButton_CaptureSoftwareSGP.Name = "RadioButton_CaptureSoftwareSGP";
+            this.RadioButton_CaptureSoftwareSGP.Size = new System.Drawing.Size(56, 17);
+            this.RadioButton_CaptureSoftwareSGP.TabIndex = 1;
+            this.RadioButton_CaptureSoftwareSGP.TabStop = true;
+            this.RadioButton_CaptureSoftwareSGP.Text = "SGPro";
+            this.RadioButton_CaptureSoftwareSGP.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_CaptureSGP
+            // RadioButton_CaptureSoftwareTSX
             // 
-            this.RadioButton_CaptureSGP.AutoSize = true;
-            this.RadioButton_CaptureSGP.Checked = true;
-            this.RadioButton_CaptureSGP.Location = new System.Drawing.Point(20, 70);
-            this.RadioButton_CaptureSGP.Name = "RadioButton_CaptureSGP";
-            this.RadioButton_CaptureSGP.Size = new System.Drawing.Size(56, 17);
-            this.RadioButton_CaptureSGP.TabIndex = 1;
-            this.RadioButton_CaptureSGP.TabStop = true;
-            this.RadioButton_CaptureSGP.Text = "SGPro";
-            this.RadioButton_CaptureSGP.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_CaptureTSX
-            // 
-            this.RadioButton_CaptureTSX.AutoSize = true;
-            this.RadioButton_CaptureTSX.Location = new System.Drawing.Point(20, 44);
-            this.RadioButton_CaptureTSX.Name = "RadioButton_CaptureTSX";
-            this.RadioButton_CaptureTSX.Size = new System.Drawing.Size(72, 17);
-            this.RadioButton_CaptureTSX.TabIndex = 0;
-            this.RadioButton_CaptureTSX.Text = "The SkyX";
-            this.RadioButton_CaptureTSX.UseVisualStyleBackColor = true;
+            this.RadioButton_CaptureSoftwareTSX.AutoSize = true;
+            this.RadioButton_CaptureSoftwareTSX.Location = new System.Drawing.Point(20, 21);
+            this.RadioButton_CaptureSoftwareTSX.Name = "RadioButton_CaptureSoftwareTSX";
+            this.RadioButton_CaptureSoftwareTSX.Size = new System.Drawing.Size(72, 17);
+            this.RadioButton_CaptureSoftwareTSX.TabIndex = 0;
+            this.RadioButton_CaptureSoftwareTSX.Text = "The SkyX";
+            this.RadioButton_CaptureSoftwareTSX.UseVisualStyleBackColor = true;
             // 
             // GroupBox_Telescope
             // 
@@ -2912,6 +2904,26 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
+            // Button_CaptureSoftware_SetAll
+            // 
+            this.Button_CaptureSoftware_SetAll.Location = new System.Drawing.Point(29, 124);
+            this.Button_CaptureSoftware_SetAll.Name = "Button_CaptureSoftware_SetAll";
+            this.Button_CaptureSoftware_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_CaptureSoftware_SetAll.TabIndex = 4;
+            this.Button_CaptureSoftware_SetAll.Text = "Set All";
+            this.Button_CaptureSoftware_SetAll.UseVisualStyleBackColor = true;
+            this.Button_CaptureSoftware_SetAll.Click += new System.EventHandler(this.Button_CaptureSoftware_SetAll_Click);
+            // 
+            // Button_CaptureSoftware_SetByFile
+            // 
+            this.Button_CaptureSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
+            this.Button_CaptureSoftware_SetByFile.Name = "Button_CaptureSoftware_SetByFile";
+            this.Button_CaptureSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_CaptureSoftware_SetByFile.TabIndex = 5;
+            this.Button_CaptureSoftware_SetByFile.Text = "Set By File";
+            this.Button_CaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_CaptureSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2932,8 +2944,8 @@
             this.GroupBox_RenameOrder.PerformLayout();
             this.GroupBox_KeywordUpdate.ResumeLayout(false);
             this.GroupBox_KeywordUpdate.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.GroupBox_CaptureSoftware.ResumeLayout(false);
+            this.GroupBox_CaptureSoftware.PerformLayout();
             this.GroupBox_Telescope.ResumeLayout(false);
             this.GroupBox_Telescope.PerformLayout();
             this.GroupBox_Camera.ResumeLayout(false);
@@ -3203,12 +3215,11 @@
         private System.Windows.Forms.TextBox TextBox_CameraZ183Gain;
         private System.Windows.Forms.TextBox TextBox_CameraZ533Offset;
         private System.Windows.Forms.TextBox TextBox_CameraZ533Gain;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox CheckBox_CaptureUpdate;
-        private System.Windows.Forms.RadioButton RadioButton_CaptureVoyager;
-        private System.Windows.Forms.RadioButton RadioButton_CaptureSCP;
-        private System.Windows.Forms.RadioButton RadioButton_CaptureSGP;
-        private System.Windows.Forms.RadioButton RadioButton_CaptureTSX;
+        private System.Windows.Forms.GroupBox GroupBox_CaptureSoftware;
+        private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareVOY;
+        private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareSCP;
+        private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareSGP;
+        private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareTSX;
         private System.Windows.Forms.GroupBox GroupBox_Telescope;
         private System.Windows.Forms.CheckBox CheckBox_TelescopeUpdate;
         private System.Windows.Forms.CheckBox CheckBox_TelescopeRiccardi;
@@ -3228,5 +3239,7 @@
         private System.Windows.Forms.RadioButton RadioButton_ImageTypeFrameFlat;
         private System.Windows.Forms.RadioButton RadioButton_ImageTypeFrameDark;
         private System.Windows.Forms.RadioButton RadioButton_ImageTypeFrameLight;
+        private System.Windows.Forms.Button Button_CaptureSoftware_SetByFile;
+        private System.Windows.Forms.Button Button_CaptureSoftware_SetAll;
     }
 }

@@ -104,7 +104,7 @@ namespace XisfFileManager.FileOperations
                     if (mFile.KeywordData.FrameType() == "D")
                     {
                         newName += "Dark  ";
-       
+
                         if (mFile.KeywordData.TotalImages() != string.Empty)
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
                         else
@@ -155,11 +155,15 @@ namespace XisfFileManager.FileOperations
                 }
 
                 if (mFile.KeywordData.Rejection() != string.Empty)
-                    newName += "  (" + mFile.KeywordData.Rejection() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
+                    newName += "  (" + mFile.KeywordData.Rejection() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
                 else
-                    newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
+                    newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
 
-                newName += mFile.KeywordData.CaptureSoftware();
+                if (mFile.KeywordData.CaptureSoftware() != string.Empty)
+                {
+                    newName += "  " + mFile.KeywordData.CaptureSoftware();
+                }
+
                 newName += ")";
 
                 return newName;

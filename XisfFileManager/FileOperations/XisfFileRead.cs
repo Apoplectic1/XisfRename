@@ -64,11 +64,13 @@ namespace XisfFileManager.FileOperations
                     xFile.KeywordData.AddKeyword(element);
                 }
 
+                /*
                 xFile.KeywordData.SetEGain();
                 xFile.KeywordData.CaptureSoftware();
                 xFile.KeywordData.RepairSiteLatitude();
                 xFile.KeywordData.RepairSiteLongitude();
                 xFile.KeywordData.RepairTelescope();
+                */
 
                 return true;
             }

@@ -37,6 +37,7 @@ namespace XisfFileManager.Forms
             this.Label_Text = new System.Windows.Forms.Label();
             this.TextBox_Text = new System.Windows.Forms.TextBox();
             this.CheckBox_Global = new System.Windows.Forms.CheckBox();
+            this.Label_FileName = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Button_OK
@@ -85,11 +86,22 @@ namespace XisfFileManager.Forms
             this.CheckBox_Global.Text = "Use Global UI Values";
             this.CheckBox_Global.UseVisualStyleBackColor = true;
             // 
+            // Label_FileName
+            // 
+            this.Label_FileName.AutoSize = true;
+            this.Label_FileName.Location = new System.Drawing.Point(0, 9);
+            this.Label_FileName.Name = "Label_FileName";
+            this.Label_FileName.Size = new System.Drawing.Size(83, 13);
+            this.Label_FileName.TabIndex = 6;
+            this.Label_FileName.Text = "Label_FileName";
+            this.Label_FileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // UserInputForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 197);
+            this.Controls.Add(this.Label_FileName);
             this.Controls.Add(this.CheckBox_Global);
             this.Controls.Add(this.TextBox_Text);
             this.Controls.Add(this.Label_Text);
@@ -109,5 +121,6 @@ namespace XisfFileManager.Forms
         public System.Windows.Forms.Label Label_Text;
         public TextBox TextBox_Text;
         private CheckBox CheckBox_Global;
+        private Label Label_FileName;
     }
 }

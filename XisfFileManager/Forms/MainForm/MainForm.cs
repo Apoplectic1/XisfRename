@@ -224,6 +224,7 @@ namespace XisfFileManager
             ComboBox_TargetName.Text = "";
             ComboBox_TargetName.Items.Clear();
             mGlobalFilter = false;
+            mGlobalCaptureSoftware = false;
 
             try
             {
@@ -354,6 +355,10 @@ namespace XisfFileManager
                 NumericUpDown_Rejection_StarResidual.Value = Convert.ToDecimal(SubFrameNumericLists.StarResidual.Max());
                 NumericUpDown_Rejection_Snr.Value = Convert.ToDecimal(SubFrameNumericLists.Snr.Max());
             }
+
+
+
+
             // **********************************************************************
             // Get TargetName and populate ComboBox
             List<string> TargetNames = new List<string>();
@@ -381,6 +386,10 @@ namespace XisfFileManager
             }
             // **********************************************************************
 
+
+
+
+
             // **********************************************************************
             // Calculate Image paramters for UI
             foreach (XisfFile file in mFileList)
@@ -391,12 +400,18 @@ namespace XisfFileManager
             Label_File_Selection_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
             Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+            // **********************************************************************
+
 
             // Need to add calculations for average capture duration/overhead
             // **********************************************************************
 
             SetUISubFrameGroupBoxState();
+
+            // **********************************************************************
+            FindCaptureSoftware();
             FindMultipleFilters();
+            // **********************************************************************
 
             if (ComboBox_TargetName.Items.Count != 0)
             {
@@ -1035,6 +1050,8 @@ namespace XisfFileManager
 
             FindMultipleFilters();
         }
+
+
         private void FindMultipleFilters()
         {
             string filter;
@@ -1195,6 +1212,205 @@ namespace XisfFileManager
                     RadioButton_ImageTypeFilterShutter.ForeColor = Color.Black;
                 }
             }
+        }
+
+        private void FindCaptureSoftware()
+        {
+            string program;
+            string firstProgram;
+            bool multiplePrograms = false;
+
+            if (mFileList.Count == 0)
+                return;
+
+            firstProgram = mFileList[0].KeywordData.CaptureSoftware();
+            if (firstProgram == "TSX")
+            {
+                RadioButton_CaptureSoftwareTSX.Checked = true;
+            }
+
+            if (firstProgram == "SGP")
+            {
+                RadioButton_CaptureSoftwareSGP.Checked = true;
+            }
+
+            if (firstProgram == "VOY")
+            {
+                RadioButton_CaptureSoftwareVOY.Checked = true;
+            }
+
+            if (firstProgram == "SCP")
+            {
+                RadioButton_CaptureSoftwareSCP.Checked = true;
+            }
+
+            RadioButton_CaptureSoftwareTSX.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareSGP.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareVOY.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareSCP.ForeColor = Color.Black;
+
+            int count = 0;
+            foreach (XisfFile file in mFileList)
+            {
+
+                program = file.KeywordData.CaptureSoftware();
+                if (program != firstProgram)
+                {
+                    if (program == "TSX")
+                    {
+                        count++;
+                        RadioButton_CaptureSoftwareTSX.ForeColor = Color.Red;
+                        multiplePrograms = true;
+                    }
+
+                    if (program == "SGP")
+                    {
+                        count++;
+                        RadioButton_CaptureSoftwareSGP.ForeColor = Color.Red;
+                        multiplePrograms = true;
+                    }
+
+                    if (program == "VOY")
+                    {
+                        count++;
+                        RadioButton_CaptureSoftwareVOY.ForeColor = Color.Red;
+                        multiplePrograms = true;
+                    }
+
+                    if (program == "SCP")
+                    {
+                        count++;
+                        RadioButton_CaptureSoftwareSCP.ForeColor = Color.Red;
+                        multiplePrograms = true;
+                    }
+                }
+
+                if (count == 0)
+                {
+                    Button_CaptureSoftware_SetByFile.ForeColor = Color.Black;
+                }
+                else
+                {
+                    if (count != mFileList.Count)
+                    {
+                        Button_CaptureSoftware_SetByFile.ForeColor = Color.Red;
+                    }
+                }
+
+
+                if (multiplePrograms)
+                {
+                    RadioButton_CaptureSoftwareTSX.Checked = false;
+                    RadioButton_CaptureSoftwareSGP.Checked = false;
+                    RadioButton_CaptureSoftwareVOY.Checked = false;
+                    RadioButton_CaptureSoftwareSCP.Checked = false;
+
+                    if (firstProgram == "TSX")
+                    {
+                        RadioButton_CaptureSoftwareTSX.ForeColor = Color.Red;
+                    }
+
+                    if (firstProgram == "SGP")
+                    {
+                        RadioButton_CaptureSoftwareSGP.ForeColor = Color.Red;
+                    }
+
+                    if (firstProgram == "VOY")
+                    {
+                        RadioButton_CaptureSoftwareVOY.ForeColor = Color.Red;
+                    }
+
+                    if (firstProgram == "SCP")
+                    {
+                        RadioButton_CaptureSoftwareSCP.ForeColor = Color.Red;
+                    }
+                }
+                else
+                {
+                    if (firstProgram == "TSX")
+                    {
+                        RadioButton_CaptureSoftwareTSX.Checked = true;
+                    }
+
+                    if (firstProgram == "SGP")
+                    {
+                        RadioButton_CaptureSoftwareSGP.Checked = true;
+                    }
+
+                    if (firstProgram == "VOY")
+                    {
+                        RadioButton_CaptureSoftwareVOY.Checked = true;
+                    }
+
+                    if (firstProgram == "SCP")
+                    {
+                        RadioButton_CaptureSoftwareSCP.Checked = true;
+                    }
+
+                    RadioButton_CaptureSoftwareTSX.ForeColor = Color.Black;
+                    RadioButton_CaptureSoftwareSGP.ForeColor = Color.Black;
+                    RadioButton_CaptureSoftwareVOY.ForeColor = Color.Black;
+                    RadioButton_CaptureSoftwareSCP.ForeColor = Color.Black;
+                }
+            }
+        }
+
+        private void Button_CaptureSoftware_SetAll_Click(object sender, EventArgs e)
+        {
+            int count = 0;
+            foreach (XisfFile file in mFileList)
+            {
+                if (RadioButton_CaptureSoftwareTSX.Checked)
+                {
+                    count++;
+                    file.KeywordData.AddKeyword("CREATOR", "TSX");
+                }
+
+                if (RadioButton_CaptureSoftwareSGP.Checked)
+                {
+                    count++;
+                    file.KeywordData.AddKeyword("CREATOR", "SGP");
+                }
+
+                if (RadioButton_CaptureSoftwareVOY.Checked)
+                {
+                    count++;
+                    file.KeywordData.AddKeyword("CREATOR", "VOY");
+                }
+
+                if (RadioButton_CaptureSoftwareSCP.Checked)
+                {
+                    count++;
+                    file.KeywordData.AddKeyword("CREATOR", "SCP");
+                }
+            }
+
+            if (count == 0)
+            {
+                return;
+            }
+
+            RadioButton_CaptureSoftwareTSX.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareSGP.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareVOY.ForeColor = Color.Black;
+            RadioButton_CaptureSoftwareSCP.ForeColor = Color.Black;
+
+            Button_CaptureSoftware_SetByFile.ForeColor = Color.Black;
+
+            FindCaptureSoftware();
+        }
+
+
+        private void Button_CaptureSoftware_SetByFile_Click(object sender, EventArgs e)
+        {
+            foreach (XisfFile file in mFileList)
+            {
+                file.KeywordData.CaptureSoftware(true);
+            }
+
+            FindCaptureSoftware();
+
+            Button_CaptureSoftware_SetByFile.ForeColor = Color.Black;
         }
 
         private void CheckBox_TelescopeUpdate_CheckedChanged(object sender, EventArgs e)
@@ -1360,5 +1576,6 @@ namespace XisfFileManager
                 TextBox_CameraQ178Offset.Text = "15";
             }
         }
+
     }
 }
