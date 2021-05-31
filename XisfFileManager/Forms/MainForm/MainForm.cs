@@ -53,10 +53,6 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-        private bool mGlobalTelescope = false;
-        private bool mGlobalCamera = false;
-        private bool mGlobalFilter = false;
-        private bool mGlobalCaptureSoftware = false;
 
 
         public MainForm()
@@ -223,8 +219,6 @@ namespace XisfFileManager
             ImageParameterLists.Clear();
             ComboBox_TargetName.Text = "";
             ComboBox_TargetName.Items.Clear();
-            mGlobalFilter = false;
-            mGlobalCaptureSoftware = false;
 
             try
             {
@@ -410,7 +404,8 @@ namespace XisfFileManager
 
             // **********************************************************************
             FindCaptureSoftware();
-            FindMultipleFilters();
+            FindTelescope();
+            FindFilters();
             // **********************************************************************
 
             if (ComboBox_TargetName.Items.Count != 0)
@@ -1016,9 +1011,7 @@ namespace XisfFileManager
 
         private void CheckBox_Filter_SetFilter_CheckedChanged(object sender, EventArgs e)
         {
-            mGlobalFilter = CheckBox_FilterUpdate.Checked;
-
-            if (mGlobalFilter)
+            if (CheckBox_FilterUpdate.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
@@ -1048,11 +1041,11 @@ namespace XisfFileManager
                 }
             }
 
-            FindMultipleFilters();
+            FindFilters();
         }
 
 
-        private void FindMultipleFilters()
+        private void FindFilters()
         {
             string filter;
             string firstFilter;
@@ -1217,29 +1210,29 @@ namespace XisfFileManager
         private void FindCaptureSoftware()
         {
             string program;
-            string firstProgram;
+            string firstProgam;
             bool multiplePrograms = false;
 
             if (mFileList.Count == 0)
                 return;
 
-            firstProgram = mFileList[0].KeywordData.CaptureSoftware();
-            if (firstProgram == "TSX")
+            firstProgam = mFileList[0].KeywordData.CaptureSoftware(false);
+            if (firstProgam == "TSX")
             {
                 RadioButton_CaptureSoftwareTSX.Checked = true;
             }
 
-            if (firstProgram == "SGP")
+            if (firstProgam == "SGP")
             {
                 RadioButton_CaptureSoftwareSGP.Checked = true;
             }
 
-            if (firstProgram == "VOY")
+            if (firstProgam == "VOY")
             {
                 RadioButton_CaptureSoftwareVOY.Checked = true;
             }
 
-            if (firstProgram == "SCP")
+            if (firstProgam == "SCP")
             {
                 RadioButton_CaptureSoftwareSCP.Checked = true;
             }
@@ -1254,7 +1247,7 @@ namespace XisfFileManager
             {
 
                 program = file.KeywordData.CaptureSoftware();
-                if (program != firstProgram)
+                if (program != firstProgam)
                 {
                     if (program == "TSX")
                     {
@@ -1305,44 +1298,44 @@ namespace XisfFileManager
                     RadioButton_CaptureSoftwareVOY.Checked = false;
                     RadioButton_CaptureSoftwareSCP.Checked = false;
 
-                    if (firstProgram == "TSX")
+                    if (firstProgam == "TSX")
                     {
                         RadioButton_CaptureSoftwareTSX.ForeColor = Color.Red;
                     }
 
-                    if (firstProgram == "SGP")
+                    if (firstProgam == "SGP")
                     {
                         RadioButton_CaptureSoftwareSGP.ForeColor = Color.Red;
                     }
 
-                    if (firstProgram == "VOY")
+                    if (firstProgam == "VOY")
                     {
                         RadioButton_CaptureSoftwareVOY.ForeColor = Color.Red;
                     }
 
-                    if (firstProgram == "SCP")
+                    if (firstProgam == "SCP")
                     {
                         RadioButton_CaptureSoftwareSCP.ForeColor = Color.Red;
                     }
                 }
                 else
                 {
-                    if (firstProgram == "TSX")
+                    if (firstProgam == "TSX")
                     {
                         RadioButton_CaptureSoftwareTSX.Checked = true;
                     }
 
-                    if (firstProgram == "SGP")
+                    if (firstProgam == "SGP")
                     {
                         RadioButton_CaptureSoftwareSGP.Checked = true;
                     }
 
-                    if (firstProgram == "VOY")
+                    if (firstProgam == "VOY")
                     {
                         RadioButton_CaptureSoftwareVOY.Checked = true;
                     }
 
-                    if (firstProgram == "SCP")
+                    if (firstProgam == "SCP")
                     {
                         RadioButton_CaptureSoftwareSCP.Checked = true;
                     }
@@ -1409,69 +1402,241 @@ namespace XisfFileManager
             }
 
             FindCaptureSoftware();
-
-            Button_CaptureSoftware_SetByFile.ForeColor = Color.Black;
         }
 
-        private void CheckBox_TelescopeUpdate_CheckedChanged(object sender, EventArgs e)
+
+        private void FindTelescope()
         {
+            string telescope;
+            string firstTelescope;
+            bool multipleTelescopes = false;
+            bool multipleReducers = false;
+
             if (mFileList.Count == 0)
-            {
-                CheckBox_TelescopeUpdate.Checked = false;
                 return;
+
+            firstTelescope = mFileList[0].KeywordData.Telescope(false);
+
+            if (firstTelescope.EndsWith("R"))
+            {
+                CheckBox_TelescopeRiccardi.Checked = true;
+                multipleReducers = true;
+            }
+            else
+            {
+                CheckBox_TelescopeRiccardi.Checked = false;
+                multipleReducers = false;
             }
 
-            mGlobalTelescope = CheckBox_TelescopeUpdate.Checked;
-
-            if (mGlobalTelescope)
+            if (firstTelescope.Contains("APM107"))
             {
-                foreach (XisfFile file in mFileList)
+                RadioButton_TelescopeAPM107.Checked = true;
+            }
+
+            if (firstTelescope.Contains("EVO150"))
+            {
+                RadioButton_TelescopeEVO150.Checked = true;
+            }
+
+            if (firstTelescope.Contains("NWT254"))
+            {
+                RadioButton_TelescopeNWT254.Checked = true;
+            }
+
+            RadioButton_TelescopeAPM107.ForeColor = Color.Black;
+            RadioButton_TelescopeEVO150.ForeColor = Color.Black;
+            RadioButton_TelescopeNWT254.ForeColor = Color.Black;
+            CheckBox_TelescopeRiccardi.ForeColor = Color.Black;
+
+
+            int count = 0;
+            foreach (XisfFile file in mFileList)
+            {
+                telescope = file.KeywordData.Telescope(false);
+                if (telescope != firstTelescope)
                 {
-                    if (CheckBox_TelescopeRiccardi.Checked)
+                    if (telescope.EndsWith("R"))
                     {
-                        if (RadioButton_TelescopeAPM107.Checked)
+                        if (multipleReducers == false)
                         {
-                            file.KeywordData.AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
-                            file.KeywordData.AddKeyword("FOCALLEN", 525, "XISF File Manager");
-                        }
-
-                        if (RadioButton_TelescopeEvoStar150.Checked)
-                        {
-                            file.KeywordData.AddKeyword("TELESCOP", "EVO150R", "w/Riccardi 0.75 Reducer");
-                            file.KeywordData.AddKeyword("FOCALLEN", 750, "XISF File Manager");
-                        }
-
-                        if (RadioButton_TelescopeNewt254.Checked)
-                        {
-                            file.KeywordData.AddKeyword("TELESCOP", "NWT254R", "w/Riccardi 0.75 Reducer");
-                            file.KeywordData.AddKeyword("FOCALLEN", 825, "XISF File Manager");
+                            multipleReducers = true;
+                            CheckBox_TelescopeRiccardi.ForeColor = Color.Red;
                         }
                     }
                     else
                     {
-                        if (RadioButton_TelescopeAPM107.Checked)
+                        if (multipleReducers == true)
                         {
-                            file.KeywordData.AddKeyword("TELESCOP", "APM107", "XISF File Manager");
-                            file.KeywordData.AddKeyword("FOCALLEN", 700, "XISF File Manager");
-                        }
-
-                        if (RadioButton_TelescopeEvoStar150.Checked)
-                        {
-                            file.KeywordData.AddKeyword("TELESCOP", "EVO150", "XISF File Manager");
-                            file.KeywordData.AddKeyword("FOCALLEN", 1000, "XISF File Manager");
-                        }
-
-                        if (RadioButton_TelescopeNewt254.Checked)
-                        {
-                            file.KeywordData.AddKeyword("TELESCOP", "NWT254", "XISF File Manager");
-                            file.KeywordData.AddKeyword("FOCALLEN", 1100, "XISF File Manager");
+                            multipleReducers = true;
+                            CheckBox_TelescopeRiccardi.ForeColor = Color.Red;
                         }
                     }
 
+                    if (telescope.Contains("APM107"))
+                    {
+                        count++;
+                        RadioButton_TelescopeAPM107.ForeColor = Color.Red;
+                        multipleTelescopes = true;
+                    }
+
+                    if (telescope.Contains("EVO150"))
+                    {
+                        count++;
+                        RadioButton_TelescopeEVO150.ForeColor = Color.Red;
+                        multipleTelescopes = true;
+                    }
+
+                    if (telescope.Contains("NWT254"))
+                    {
+                        count++;
+                        RadioButton_TelescopeNWT254.ForeColor = Color.Red;
+                        multipleTelescopes = true;
+                    }
+                }
+
+                if (count == 0)
+                {
+                    Button_Telescope_SetByFile.ForeColor = Color.Black;
+                }
+                else
+                {
+                    if (count != mFileList.Count)
+                    {
+                        Button_Telescope_SetByFile.ForeColor = Color.Red;
+                    }
+                }
+
+                if (multipleReducers)
+                {
+
+                }
+                else
+                {
+                    CheckBox_TelescopeRiccardi.ForeColor = Color.Black;
+                }
+
+                if (multipleTelescopes)
+                {
+                    RadioButton_TelescopeAPM107.Checked = false;
+                    RadioButton_TelescopeEVO150.Checked = false;
+                    RadioButton_TelescopeNWT254.Checked = false;
+                    CheckBox_TelescopeRiccardi.Checked = false;
+
+                    if (firstTelescope.Contains("APM107"))
+                    {
+                        RadioButton_TelescopeAPM107.ForeColor = Color.Red;
+                    }
+
+                    if (firstTelescope.Contains("EVO150"))
+                    {
+                        RadioButton_TelescopeEVO150.ForeColor = Color.Red;
+                    }
+
+                    if (firstTelescope.Contains("NWT254"))
+                    {
+                        RadioButton_TelescopeNWT254.ForeColor = Color.Red;
+                    }
+                }
+                else
+                {
+                    if (firstTelescope.Contains("APM107"))
+                    {
+                        RadioButton_TelescopeAPM107.Checked = true;
+                    }
+
+                    if (firstTelescope.Contains("EVO150"))
+                    {
+                        RadioButton_TelescopeEVO150.Checked = true;
+                    }
+
+                    if (firstTelescope.Contains("NWT254"))
+                    {
+                        RadioButton_TelescopeNWT254.Checked = true;
+                    }
+
+                    RadioButton_TelescopeAPM107.ForeColor = Color.Black;
+                    RadioButton_TelescopeEVO150.ForeColor = Color.Black;
+                    RadioButton_TelescopeNWT254.ForeColor = Color.Black;
                 }
             }
         }
 
+        private void Button_Telescope_SetAll_Click(object sender, EventArgs e)
+        {
+            int count = 0;
+            foreach (XisfFile file in mFileList)
+            {
+                if (RadioButton_TelescopeAPM107.Checked)
+                {
+                    count++;
+                    if (CheckBox_TelescopeRiccardi.Checked)
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "APM107R", "w/Riccardi 0.75 Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 525, "w/Riccardi 0.75 Reducer");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "APM107", "No Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 700, "No Reducer");
+                    }
+                }
+
+                if (RadioButton_TelescopeEVO150.Checked)
+                {
+                    count++;
+                    if(CheckBox_TelescopeRiccardi.Checked)
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "EVO150R", "w/Riccardi 0.75 Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 750, "w/Riccardi 0.75 Reducer");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "EVO150", "No Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 1000, "No Reducer");
+                    }
+                }
+
+                if (RadioButton_TelescopeNWT254.Checked)
+                {
+                    count++;
+                    if (CheckBox_TelescopeRiccardi.Checked)
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "NWT254R", "w/Riccardi 0.75 Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 825, "w/Riccardi 0.75 Reducer");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("TELESCOPE", "NWT254", "No Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 1100, "No Reducer");
+                    }
+                }
+            }
+
+            if (count == 0)
+            {
+                return;
+            }
+
+            RadioButton_TelescopeAPM107.ForeColor = Color.Black;
+            RadioButton_TelescopeEVO150.ForeColor = Color.Black;
+            RadioButton_TelescopeNWT254.ForeColor = Color.Black;
+            CheckBox_TelescopeRiccardi.ForeColor = Color.Black;
+
+            Button_Telescope_SetByFile.ForeColor = Color.Black;
+
+            FindTelescope();
+        }
+
+        private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
+        {
+            foreach (XisfFile file in mFileList)
+            {
+                file.KeywordData.Telescope(true);
+            }
+
+            FindTelescope();
+        }
+        
         private void CheckBox_CameraUpdate_CheckedChanged(object sender, EventArgs e)
         {
             if (mFileList.Count == 0)
@@ -1480,9 +1645,7 @@ namespace XisfFileManager
                 return;
             }
 
-            mGlobalCamera = CheckBox_CameraUpdate.Checked;
-
-            if (mGlobalCamera)
+            if (CheckBox_CameraUpdate.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
@@ -1576,6 +1739,5 @@ namespace XisfFileManager
                 TextBox_CameraQ178Offset.Text = "15";
             }
         }
-
     }
 }

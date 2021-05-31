@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace XisfFileManager.Forms
+namespace XisfFileManager
 {
     public partial class UserInputForm : Form
     {
-        public UserInputFormData mData = new UserInputFormData();
+        public Forms.UserInputForm.UserInputFormData mData; 
 
         public UserInputForm()
         {
             InitializeComponent();
+
+            mData = new Forms.UserInputForm.UserInputFormData();
 
             Button_OK.DialogResult = DialogResult.OK;
             Button_Cancel.DialogResult = DialogResult.Cancel;
@@ -26,12 +28,5 @@ namespace XisfFileManager.Forms
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-    }
-
-    public class UserInputFormData
-    {
-        public string mTextBox;
-        public bool mGlobalCheckBox;
-        public string mFileName;
     }
 }

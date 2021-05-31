@@ -4,9 +4,11 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using XisfFileManager.Forms;
+using XisfFileManager.Forms.UserInputForm;
+using XisfFileManager.Keywords;
 
-namespace XisfFileManager.Keywords
+
+namespace XisfFileManager
 {
     public class KeywordLists
     {
@@ -595,7 +597,7 @@ namespace XisfFileManager.Keywords
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string CaptureSoftware(bool setMissing = false)
+        public string CaptureSoftware(bool findMissingSoftware = false)
         {
             Keyword node = new Keyword();
             node = KeywordList.Find(i => i.Name == "CREATOR");
@@ -623,7 +625,7 @@ namespace XisfFileManager.Keywords
                 }
             }
 
-            while (setMissing)
+            while (findMissingSoftware)
             {
                 UserInputFormData FormValue = OpenUIForm("Capture Software", "Capture Software Not Set", "Enter SGP, TSX, VOY or SCP");
 
@@ -1234,7 +1236,7 @@ namespace XisfFileManager.Keywords
 
         // #########################################################################################################
         // #########################################################################################################
-        public string Telescope()
+        public string Telescope(bool findMissingTelescope = false)
         {
             string value = string.Empty;
             Keyword node = new Keyword();
@@ -1243,24 +1245,37 @@ namespace XisfFileManager.Keywords
             if (node != null)
             {
                 node.Value = node.Value.Replace(".", "").Replace("'", "");
-
-                if (node.Value.Contains("APM107"))
-                {
-                    return node.Value;
-                }
-
-                if (FocalLength() < 700)
-                {
-                    AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
-                    return "APM107R";
-                }
-                else
-                {
-                    AddKeyword("TELESCOP", "APM107", node.Value);
-                    return "APM107";
-                }
-
+                return node.Value;
             }
+
+            while (findMissingTelescope)
+            {
+                Forms.UserInputForm.UserInputFormData FormValue = OpenUIForm("Telescope", "Telescope Not Set", "Enter APM(R), EVO(R) or NWT(R)");
+
+                if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT"))
+                {
+                        if (FormValue.mTextBox == "APM")
+                        {
+                            AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
+                        }
+
+                        if (FormValue.mTextBox == "EVO")
+                        {
+                            AddKeyword("TELESCOP", "EVO150R", "w/Riccardi 0.75 Reducer");
+                        }
+
+                        if (FormValue.mTextBox == "NWT")
+                        {
+                            AddKeyword("TELESCOP", "EVO150R", "w/Riccardi 0.75 Reducer");
+                        }
+                    }
+                    else
+                    {
+                        AddKeyword("TELESCOP", FormValue.mTextBox, "XISF File Manager");
+                    }
+                    return FormValue.mTextBox;
+                }
+            
 
             AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
 
@@ -1396,7 +1411,7 @@ namespace XisfFileManager.Keywords
 
         // #########################################################################################################
         // #########################################################################################################
-        private UserInputFormData OpenUIForm(string FormName, string FormText, string LabelText)
+        private Forms.UserInputForm.UserInputFormData OpenUIForm(string FormName, string FormText, string LabelText)
         {
             UserInputFormData nullFormData = new UserInputFormData();
 

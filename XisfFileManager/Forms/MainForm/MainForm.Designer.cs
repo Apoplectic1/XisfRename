@@ -40,15 +40,16 @@
             this.Button_Rename = new System.Windows.Forms.Button();
             this.GroupBox_KeywordUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_CaptureSoftware = new System.Windows.Forms.GroupBox();
+            this.Button_CaptureSoftware_SetByFile = new System.Windows.Forms.Button();
+            this.Button_CaptureSoftware_SetAll = new System.Windows.Forms.Button();
             this.RadioButton_CaptureSoftwareVOY = new System.Windows.Forms.RadioButton();
             this.RadioButton_CaptureSoftwareSCP = new System.Windows.Forms.RadioButton();
             this.RadioButton_CaptureSoftwareSGP = new System.Windows.Forms.RadioButton();
             this.RadioButton_CaptureSoftwareTSX = new System.Windows.Forms.RadioButton();
             this.GroupBox_Telescope = new System.Windows.Forms.GroupBox();
-            this.CheckBox_TelescopeUpdate = new System.Windows.Forms.CheckBox();
             this.CheckBox_TelescopeRiccardi = new System.Windows.Forms.CheckBox();
-            this.RadioButton_TelescopeNewt254 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_TelescopeEvoStar150 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_TelescopeNWT254 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_TelescopeEVO150 = new System.Windows.Forms.RadioButton();
             this.RadioButton_TelescopeAPM107 = new System.Windows.Forms.RadioButton();
             this.GroupBox_Camera = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -264,8 +265,8 @@
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.Label_BrowseFileName = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Button_CaptureSoftware_SetAll = new System.Windows.Forms.Button();
-            this.Button_CaptureSoftware_SetByFile = new System.Windows.Forms.Button();
+            this.Button_Telescope_SetSAll = new System.Windows.Forms.Button();
+            this.Button_Telescope_SetByFile = new System.Windows.Forms.Button();
             this.GroupBox_RenameOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate.SuspendLayout();
             this.GroupBox_CaptureSoftware.SuspendLayout();
@@ -431,6 +432,26 @@
             this.GroupBox_CaptureSoftware.TabStop = false;
             this.GroupBox_CaptureSoftware.Text = "Capture Software";
             // 
+            // Button_CaptureSoftware_SetByFile
+            // 
+            this.Button_CaptureSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
+            this.Button_CaptureSoftware_SetByFile.Name = "Button_CaptureSoftware_SetByFile";
+            this.Button_CaptureSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_CaptureSoftware_SetByFile.TabIndex = 5;
+            this.Button_CaptureSoftware_SetByFile.Text = "Set By File";
+            this.Button_CaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_CaptureSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
+            // 
+            // Button_CaptureSoftware_SetAll
+            // 
+            this.Button_CaptureSoftware_SetAll.Location = new System.Drawing.Point(29, 124);
+            this.Button_CaptureSoftware_SetAll.Name = "Button_CaptureSoftware_SetAll";
+            this.Button_CaptureSoftware_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_CaptureSoftware_SetAll.TabIndex = 4;
+            this.Button_CaptureSoftware_SetAll.Text = "Set All";
+            this.Button_CaptureSoftware_SetAll.UseVisualStyleBackColor = true;
+            this.Button_CaptureSoftware_SetAll.Click += new System.EventHandler(this.Button_CaptureSoftware_SetAll_Click);
+            // 
             // RadioButton_CaptureSoftwareVOY
             // 
             this.RadioButton_CaptureSoftwareVOY.AutoSize = true;
@@ -475,10 +496,11 @@
             // 
             // GroupBox_Telescope
             // 
-            this.GroupBox_Telescope.Controls.Add(this.CheckBox_TelescopeUpdate);
+            this.GroupBox_Telescope.Controls.Add(this.Button_Telescope_SetByFile);
+            this.GroupBox_Telescope.Controls.Add(this.Button_Telescope_SetSAll);
             this.GroupBox_Telescope.Controls.Add(this.CheckBox_TelescopeRiccardi);
-            this.GroupBox_Telescope.Controls.Add(this.RadioButton_TelescopeNewt254);
-            this.GroupBox_Telescope.Controls.Add(this.RadioButton_TelescopeEvoStar150);
+            this.GroupBox_Telescope.Controls.Add(this.RadioButton_TelescopeNWT254);
+            this.GroupBox_Telescope.Controls.Add(this.RadioButton_TelescopeEVO150);
             this.GroupBox_Telescope.Controls.Add(this.RadioButton_TelescopeAPM107);
             this.GroupBox_Telescope.Location = new System.Drawing.Point(163, 130);
             this.GroupBox_Telescope.Name = "GroupBox_Telescope";
@@ -487,54 +509,43 @@
             this.GroupBox_Telescope.TabStop = false;
             this.GroupBox_Telescope.Text = "Telescope";
             // 
-            // CheckBox_TelescopeUpdate
-            // 
-            this.CheckBox_TelescopeUpdate.AutoSize = true;
-            this.CheckBox_TelescopeUpdate.Location = new System.Drawing.Point(53, 161);
-            this.CheckBox_TelescopeUpdate.Name = "CheckBox_TelescopeUpdate";
-            this.CheckBox_TelescopeUpdate.Size = new System.Drawing.Size(61, 17);
-            this.CheckBox_TelescopeUpdate.TabIndex = 15;
-            this.CheckBox_TelescopeUpdate.Text = "Update";
-            this.CheckBox_TelescopeUpdate.UseVisualStyleBackColor = true;
-            this.CheckBox_TelescopeUpdate.CheckedChanged += new System.EventHandler(this.CheckBox_TelescopeUpdate_CheckedChanged);
-            // 
             // CheckBox_TelescopeRiccardi
             // 
             this.CheckBox_TelescopeRiccardi.AutoSize = true;
             this.CheckBox_TelescopeRiccardi.Checked = true;
             this.CheckBox_TelescopeRiccardi.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckBox_TelescopeRiccardi.Location = new System.Drawing.Point(17, 122);
+            this.CheckBox_TelescopeRiccardi.Location = new System.Drawing.Point(17, 99);
             this.CheckBox_TelescopeRiccardi.Name = "CheckBox_TelescopeRiccardi";
             this.CheckBox_TelescopeRiccardi.Size = new System.Drawing.Size(133, 17);
             this.CheckBox_TelescopeRiccardi.TabIndex = 3;
             this.CheckBox_TelescopeRiccardi.Text = "Riccardi 0.75 Reducer";
             this.CheckBox_TelescopeRiccardi.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_TelescopeNewt254
+            // RadioButton_TelescopeNWT254
             // 
-            this.RadioButton_TelescopeNewt254.AutoSize = true;
-            this.RadioButton_TelescopeNewt254.Location = new System.Drawing.Point(17, 96);
-            this.RadioButton_TelescopeNewt254.Name = "RadioButton_TelescopeNewt254";
-            this.RadioButton_TelescopeNewt254.Size = new System.Drawing.Size(97, 17);
-            this.RadioButton_TelescopeNewt254.TabIndex = 2;
-            this.RadioButton_TelescopeNewt254.Text = "Newtonian 254";
-            this.RadioButton_TelescopeNewt254.UseVisualStyleBackColor = true;
+            this.RadioButton_TelescopeNWT254.AutoSize = true;
+            this.RadioButton_TelescopeNWT254.Location = new System.Drawing.Point(17, 73);
+            this.RadioButton_TelescopeNWT254.Name = "RadioButton_TelescopeNWT254";
+            this.RadioButton_TelescopeNWT254.Size = new System.Drawing.Size(97, 17);
+            this.RadioButton_TelescopeNWT254.TabIndex = 2;
+            this.RadioButton_TelescopeNWT254.Text = "Newtonian 254";
+            this.RadioButton_TelescopeNWT254.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_TelescopeEvoStar150
+            // RadioButton_TelescopeEVO150
             // 
-            this.RadioButton_TelescopeEvoStar150.AutoSize = true;
-            this.RadioButton_TelescopeEvoStar150.Location = new System.Drawing.Point(17, 70);
-            this.RadioButton_TelescopeEvoStar150.Name = "RadioButton_TelescopeEvoStar150";
-            this.RadioButton_TelescopeEvoStar150.Size = new System.Drawing.Size(84, 17);
-            this.RadioButton_TelescopeEvoStar150.TabIndex = 1;
-            this.RadioButton_TelescopeEvoStar150.Text = "EvoStar 150";
-            this.RadioButton_TelescopeEvoStar150.UseVisualStyleBackColor = true;
+            this.RadioButton_TelescopeEVO150.AutoSize = true;
+            this.RadioButton_TelescopeEVO150.Location = new System.Drawing.Point(17, 47);
+            this.RadioButton_TelescopeEVO150.Name = "RadioButton_TelescopeEVO150";
+            this.RadioButton_TelescopeEVO150.Size = new System.Drawing.Size(84, 17);
+            this.RadioButton_TelescopeEVO150.TabIndex = 1;
+            this.RadioButton_TelescopeEVO150.Text = "EvoStar 150";
+            this.RadioButton_TelescopeEVO150.UseVisualStyleBackColor = true;
             // 
             // RadioButton_TelescopeAPM107
             // 
             this.RadioButton_TelescopeAPM107.AutoSize = true;
             this.RadioButton_TelescopeAPM107.Checked = true;
-            this.RadioButton_TelescopeAPM107.Location = new System.Drawing.Point(17, 44);
+            this.RadioButton_TelescopeAPM107.Location = new System.Drawing.Point(17, 21);
             this.RadioButton_TelescopeAPM107.Name = "RadioButton_TelescopeAPM107";
             this.RadioButton_TelescopeAPM107.Size = new System.Drawing.Size(69, 17);
             this.RadioButton_TelescopeAPM107.TabIndex = 0;
@@ -2904,25 +2915,25 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
-            // Button_CaptureSoftware_SetAll
+            // Button_Telescope_SetSAll
             // 
-            this.Button_CaptureSoftware_SetAll.Location = new System.Drawing.Point(29, 124);
-            this.Button_CaptureSoftware_SetAll.Name = "Button_CaptureSoftware_SetAll";
-            this.Button_CaptureSoftware_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_CaptureSoftware_SetAll.TabIndex = 4;
-            this.Button_CaptureSoftware_SetAll.Text = "Set All";
-            this.Button_CaptureSoftware_SetAll.UseVisualStyleBackColor = true;
-            this.Button_CaptureSoftware_SetAll.Click += new System.EventHandler(this.Button_CaptureSoftware_SetAll_Click);
+            this.Button_Telescope_SetSAll.Location = new System.Drawing.Point(47, 124);
+            this.Button_Telescope_SetSAll.Name = "Button_Telescope_SetSAll";
+            this.Button_Telescope_SetSAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_Telescope_SetSAll.TabIndex = 16;
+            this.Button_Telescope_SetSAll.Text = "Set All";
+            this.Button_Telescope_SetSAll.UseVisualStyleBackColor = true;
+            this.Button_Telescope_SetSAll.Click += new System.EventHandler(this.Button_Telescope_SetAll_Click);
             // 
-            // Button_CaptureSoftware_SetByFile
+            // Button_Telescope_SetByFile
             // 
-            this.Button_CaptureSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
-            this.Button_CaptureSoftware_SetByFile.Name = "Button_CaptureSoftware_SetByFile";
-            this.Button_CaptureSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_CaptureSoftware_SetByFile.TabIndex = 5;
-            this.Button_CaptureSoftware_SetByFile.Text = "Set By File";
-            this.Button_CaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_CaptureSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
+            this.Button_Telescope_SetByFile.Location = new System.Drawing.Point(47, 157);
+            this.Button_Telescope_SetByFile.Name = "Button_Telescope_SetByFile";
+            this.Button_Telescope_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_Telescope_SetByFile.TabIndex = 17;
+            this.Button_Telescope_SetByFile.Text = "Set By File";
+            this.Button_Telescope_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_Telescope_SetByFile.Click += new System.EventHandler(this.Button_Telescope_SetByFile_Click);
             // 
             // MainForm
             // 
@@ -3221,10 +3232,9 @@
         private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareSGP;
         private System.Windows.Forms.RadioButton RadioButton_CaptureSoftwareTSX;
         private System.Windows.Forms.GroupBox GroupBox_Telescope;
-        private System.Windows.Forms.CheckBox CheckBox_TelescopeUpdate;
         private System.Windows.Forms.CheckBox CheckBox_TelescopeRiccardi;
-        private System.Windows.Forms.RadioButton RadioButton_TelescopeNewt254;
-        private System.Windows.Forms.RadioButton RadioButton_TelescopeEvoStar150;
+        private System.Windows.Forms.RadioButton RadioButton_TelescopeNWT254;
+        private System.Windows.Forms.RadioButton RadioButton_TelescopeEVO150;
         private System.Windows.Forms.RadioButton RadioButton_TelescopeAPM107;
         private System.Windows.Forms.CheckBox CheckBox_CameraNarrowBand;
         private System.Windows.Forms.TextBox TextBox_CameraSensorTemperature;
@@ -3241,5 +3251,7 @@
         private System.Windows.Forms.RadioButton RadioButton_ImageTypeFrameLight;
         private System.Windows.Forms.Button Button_CaptureSoftware_SetByFile;
         private System.Windows.Forms.Button Button_CaptureSoftware_SetAll;
+        private System.Windows.Forms.Button Button_Telescope_SetByFile;
+        private System.Windows.Forms.Button Button_Telescope_SetSAll;
     }
 }
