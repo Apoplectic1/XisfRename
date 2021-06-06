@@ -771,56 +771,53 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FrameType()
+        public string FrameType(bool findMissingFrameType = false)
         {
-            string value;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "IMAGETYP");
 
-            value = node.Value.Replace("'", "").Replace(" ", "");
-
             if (node != null)
-            {
-                if (value.ToUpper().Equals("LIGHT"))
+            { 
+                if (node.Value.ToUpper().Contains("LIGHT"))
                 {
                     AddKeyword("IMAGETYP", "Light");
                     return "L";
                 }
 
-                if (value.ToUpper().Equals("DARK"))
+                if (node.Value.ToUpper().Contains("DARK"))
                 {
                     AddKeyword("IMAGETYP", "Dark");
                     return "D";
                 }
 
-                if (value.ToUpper().Equals("FLAT"))
+                if (node.Value.ToUpper().Contains("FLAT"))
                 {
                     AddKeyword("IMAGETYP", "Flat");
                     return "F";
                 }
 
-                if (value.ToUpper().Equals("BIAS"))
+                if (node.Value.ToUpper().Contains("BIAS"))
                 {
                     AddKeyword("IMAGETYP", "Bias");
                     return "B";
                 }
 
-                if (value.ToUpper().Contains("MASTER"))
+                if (node.Value.ToUpper().Contains("MASTER"))
                 {
-                    if (value.ToUpper().Contains("DARK"))
+                    if (node.Value.ToUpper().Contains("DARK"))
                     {
                         AddKeyword("IMAGETYP", "MasterDark");
                         return "MD";
                     }
 
-                    if (value.ToUpper().Contains("FLAT"))
+                    if (node.Value.ToUpper().Contains("FLAT"))
                     {
                         AddKeyword("IMAGETYP", "MasterFlat");
                         return "MF";
                     }
 
-                    if (value.ToUpper().Contains("BIAS"))
+                    if (node.Value.ToUpper().Contains("BIAS"))
                     {
                         AddKeyword("IMAGETYP", "MasterBias");
                         return "MB";
@@ -828,51 +825,53 @@ namespace XisfFileManager
                 }
             }
 
-            UserInputFormData FormValue = OpenUIForm("Frame Type", "Frame Type Not Set", "Enter Frame Type (Light, Dark, Flat, Bias, MasterDark, MasterFlat, MasterBias): ");
-
-            if (FormValue.mTextBox.ToUpper().Equals("LIGHT"))
+            while (findMissingFrameType)
             {
-                AddKeyword("IMAGETYP", "Light");
-                return "L";
-            }
+                UserInputFormData FormValue = OpenUIForm("Frame Type", "Frame Type Not Set", "Enter Frame Type (Light, Dark, Flat, Bias, MasterDark, MasterFlat, MasterBias): ");
 
-            if (FormValue.mTextBox.ToUpper().Equals("DARK"))
-            {
-                AddKeyword("IMAGETYP", "Dark");
-                return "D";
-            }
-
-            if (FormValue.mTextBox.ToUpper().Equals("FLAT"))
-            {
-                AddKeyword("IMAGETYP", "Flat");
-                return "F";
-            }
-
-            if (FormValue.mTextBox.ToUpper().Equals("BIAS"))
-            {
-                AddKeyword("IMAGETYP", "Bias");
-                return "B";
-            }
-
-            if (FormValue.mTextBox.ToUpper().Contains("MASTER"))
-            {
-                if (FormValue.mTextBox.ToUpper().Contains("DARK"))
+                if (FormValue.mTextBox.ToUpper().Contains("LIGHT"))
                 {
-                    AddKeyword("IMAGETYP", "MasterDark");
-                    return "MD";
+                    AddKeyword("IMAGETYP", "Light");
+                    return "L";
                 }
 
+                if (FormValue.mTextBox.ToUpper().Contains("DARK"))
+                {
+                    AddKeyword("IMAGETYP", "Dark");
+                    return "D";
+                }
 
                 if (FormValue.mTextBox.ToUpper().Contains("FLAT"))
                 {
-                    AddKeyword("IMAGETYP", "MasterFlat");
-                    return "MF";
+                    AddKeyword("IMAGETYP", "Flat");
+                    return "F";
                 }
 
                 if (FormValue.mTextBox.ToUpper().Contains("BIAS"))
                 {
-                    AddKeyword("IMAGETYP", "MasterBias");
-                    return "MB";
+                    AddKeyword("IMAGETYP", "Bias");
+                    return "B";
+                }
+
+                if (FormValue.mTextBox.ToUpper().Contains("MASTER"))
+                {
+                    if (FormValue.mTextBox.ToUpper().Contains("DARK"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterDark");
+                        return "MD";
+                    }
+
+                    if (FormValue.mTextBox.ToUpper().Contains("FLAT"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterFlat");
+                        return "MF";
+                    }
+
+                    if (FormValue.mTextBox.ToUpper().Contains("BIAS"))
+                    {
+                        AddKeyword("IMAGETYP", "MasterBias");
+                        return "MB";
+                    }
                 }
             }
 
