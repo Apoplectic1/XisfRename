@@ -18,7 +18,7 @@ namespace XisfFileManager
             AcceptButton = Button_OK;
             CancelButton = Button_Cancel;
  
-            Label_Text.Text = "Uninitialized";
+            Label_EntryText.Text = "Uninitialized";
         }
 
         private void Button_OK_Click(object sender, EventArgs e)

@@ -40,7 +40,7 @@
             this.Button_Rename_Rename = new System.Windows.Forms.Button();
             this.GroupBox_KeywordUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_CaptureSoftware = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordCaptureSoftware_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordSoftware_SetByFile = new System.Windows.Forms.Button();
             this.Button_KeywordSoftware_SetAll = new System.Windows.Forms.Button();
             this.RadioButton_KeywordSoftware_VOY = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordSoftware_SCP = new System.Windows.Forms.RadioButton();
@@ -54,6 +54,8 @@
             this.RadioButton_KeywordTelescope_EVO150 = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordTelescope_APM107 = new System.Windows.Forms.RadioButton();
             this.GroupBox_Camera = new System.Windows.Forms.GroupBox();
+            this.Button_KeywordCamera_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordCamera_SetAll = new System.Windows.Forms.Button();
             this.Label_CameraSeconds = new System.Windows.Forms.Label();
             this.TextBox_CameraExposureTime = new System.Windows.Forms.TextBox();
             this.Label_CameraDivider = new System.Windows.Forms.Label();
@@ -63,7 +65,7 @@
             this.Label_CameraSensorTemp = new System.Windows.Forms.Label();
             this.CheckBox_CameraNarrowBand = new System.Windows.Forms.CheckBox();
             this.Label_CameraA144Gain = new System.Windows.Forms.Label();
-            this.Label_CaleraOffset = new System.Windows.Forms.Label();
+            this.Label_CameraOffset = new System.Windows.Forms.Label();
             this.Label_CameraGain = new System.Windows.Forms.Label();
             this.TextBox_CameraQ178Offset = new System.Windows.Forms.TextBox();
             this.TextBox_CameraQ178Gain = new System.Windows.Forms.TextBox();
@@ -77,8 +79,8 @@
             this.RadioButton_KeywordCamera_Z533 = new System.Windows.Forms.RadioButton();
             this.Label_Keyword_UpdateFileName = new System.Windows.Forms.Label();
             this.GroupBox_ImageType = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordImageTypeFrame_SetByFile = new System.Windows.Forms.Button();
-            this.Button_KeywordImageTypeFrame_SetAll = new System.Windows.Forms.Button();
+            this.Button_KeywordImage_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordImage_SetAll = new System.Windows.Forms.Button();
             this.GroupBox_ImageTypeFrame = new System.Windows.Forms.GroupBox();
             this.CheckBox_KeywordImageFrame_Master = new System.Windows.Forms.CheckBox();
             this.RadioButton_KeywordImageFrame_Bias = new System.Windows.Forms.RadioButton();
@@ -269,8 +271,6 @@
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.Label_BrowseFileName = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordCamera_SetAll = new System.Windows.Forms.Button();
-            this.Button_KeywordCamera_SetByFile = new System.Windows.Forms.Button();
             this.GroupBox_RenameOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate.SuspendLayout();
             this.GroupBox_CaptureSoftware.SuspendLayout();
@@ -423,7 +423,7 @@
             // 
             // GroupBox_CaptureSoftware
             // 
-            this.GroupBox_CaptureSoftware.Controls.Add(this.Button_KeywordCaptureSoftware_SetByFile);
+            this.GroupBox_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetByFile);
             this.GroupBox_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetAll);
             this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_VOY);
             this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_SCP);
@@ -436,15 +436,15 @@
             this.GroupBox_CaptureSoftware.TabStop = false;
             this.GroupBox_CaptureSoftware.Text = "Capture Software";
             // 
-            // Button_KeywordCaptureSoftware_SetByFile
+            // Button_KeywordSoftware_SetByFile
             // 
-            this.Button_KeywordCaptureSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
-            this.Button_KeywordCaptureSoftware_SetByFile.Name = "Button_KeywordCaptureSoftware_SetByFile";
-            this.Button_KeywordCaptureSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordCaptureSoftware_SetByFile.TabIndex = 5;
-            this.Button_KeywordCaptureSoftware_SetByFile.Text = "Set By File";
-            this.Button_KeywordCaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordCaptureSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
+            this.Button_KeywordSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
+            this.Button_KeywordSoftware_SetByFile.Name = "Button_KeywordSoftware_SetByFile";
+            this.Button_KeywordSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordSoftware_SetByFile.TabIndex = 5;
+            this.Button_KeywordSoftware_SetByFile.Text = "Set By File";
+            this.Button_KeywordSoftware_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
             // 
             // Button_KeywordSoftware_SetAll
             // 
@@ -590,7 +590,7 @@
             this.GroupBox_Camera.Controls.Add(this.Label_CameraSensorTemp);
             this.GroupBox_Camera.Controls.Add(this.CheckBox_CameraNarrowBand);
             this.GroupBox_Camera.Controls.Add(this.Label_CameraA144Gain);
-            this.GroupBox_Camera.Controls.Add(this.Label_CaleraOffset);
+            this.GroupBox_Camera.Controls.Add(this.Label_CameraOffset);
             this.GroupBox_Camera.Controls.Add(this.Label_CameraGain);
             this.GroupBox_Camera.Controls.Add(this.TextBox_CameraQ178Offset);
             this.GroupBox_Camera.Controls.Add(this.TextBox_CameraQ178Gain);
@@ -608,6 +608,26 @@
             this.GroupBox_Camera.TabIndex = 20;
             this.GroupBox_Camera.TabStop = false;
             this.GroupBox_Camera.Text = "Camera";
+            // 
+            // Button_KeywordCamera_SetByFile
+            // 
+            this.Button_KeywordCamera_SetByFile.Location = new System.Drawing.Point(168, 158);
+            this.Button_KeywordCamera_SetByFile.Name = "Button_KeywordCamera_SetByFile";
+            this.Button_KeywordCamera_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordCamera_SetByFile.TabIndex = 19;
+            this.Button_KeywordCamera_SetByFile.Text = "Set By File";
+            this.Button_KeywordCamera_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordCamera_SetByFile.Click += new System.EventHandler(this.Button_KeywordCamera_SetByFile_Click);
+            // 
+            // Button_KeywordCamera_SetAll
+            // 
+            this.Button_KeywordCamera_SetAll.Location = new System.Drawing.Point(70, 158);
+            this.Button_KeywordCamera_SetAll.Name = "Button_KeywordCamera_SetAll";
+            this.Button_KeywordCamera_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordCamera_SetAll.TabIndex = 19;
+            this.Button_KeywordCamera_SetAll.Text = "Set All";
+            this.Button_KeywordCamera_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordCamera_SetAll.Click += new System.EventHandler(this.Button_KeywordCamera_SetAll_Click);
             // 
             // Label_CameraSeconds
             // 
@@ -705,14 +725,14 @@
             this.Label_CameraA144Gain.TabIndex = 12;
             this.Label_CameraA144Gain.Text = "0.37";
             // 
-            // Label_CaleraOffset
+            // Label_CameraOffset
             // 
-            this.Label_CaleraOffset.AutoSize = true;
-            this.Label_CaleraOffset.Location = new System.Drawing.Point(134, 20);
-            this.Label_CaleraOffset.Name = "Label_CaleraOffset";
-            this.Label_CaleraOffset.Size = new System.Drawing.Size(35, 13);
-            this.Label_CaleraOffset.TabIndex = 11;
-            this.Label_CaleraOffset.Text = "Offset";
+            this.Label_CameraOffset.AutoSize = true;
+            this.Label_CameraOffset.Location = new System.Drawing.Point(134, 20);
+            this.Label_CameraOffset.Name = "Label_CameraOffset";
+            this.Label_CameraOffset.Size = new System.Drawing.Size(35, 13);
+            this.Label_CameraOffset.TabIndex = 11;
+            this.Label_CameraOffset.Text = "Offset";
             // 
             // Label_CameraGain
             // 
@@ -830,8 +850,8 @@
             // 
             // GroupBox_ImageType
             // 
-            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImageTypeFrame_SetByFile);
-            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImageTypeFrame_SetAll);
+            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImage_SetByFile);
+            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImage_SetAll);
             this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFrame);
             this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFilter);
             this.GroupBox_ImageType.Location = new System.Drawing.Point(642, 130);
@@ -841,25 +861,25 @@
             this.GroupBox_ImageType.TabStop = false;
             this.GroupBox_ImageType.Text = "Image Type";
             // 
-            // Button_KeywordImageTypeFrame_SetByFile
+            // Button_KeywordImage_SetByFile
             // 
-            this.Button_KeywordImageTypeFrame_SetByFile.Location = new System.Drawing.Point(156, 158);
-            this.Button_KeywordImageTypeFrame_SetByFile.Name = "Button_KeywordImageTypeFrame_SetByFile";
-            this.Button_KeywordImageTypeFrame_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordImageTypeFrame_SetByFile.TabIndex = 18;
-            this.Button_KeywordImageTypeFrame_SetByFile.Text = "Set By File";
-            this.Button_KeywordImageTypeFrame_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordImageTypeFrame_SetByFile.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetByFile_Click);
+            this.Button_KeywordImage_SetByFile.Location = new System.Drawing.Point(156, 158);
+            this.Button_KeywordImage_SetByFile.Name = "Button_KeywordImage_SetByFile";
+            this.Button_KeywordImage_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordImage_SetByFile.TabIndex = 18;
+            this.Button_KeywordImage_SetByFile.Text = "Set By File";
+            this.Button_KeywordImage_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordImage_SetByFile.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetByFile_Click);
             // 
-            // Button_KeywordImageTypeFrame_SetAll
+            // Button_KeywordImage_SetAll
             // 
-            this.Button_KeywordImageTypeFrame_SetAll.Location = new System.Drawing.Point(58, 158);
-            this.Button_KeywordImageTypeFrame_SetAll.Name = "Button_KeywordImageTypeFrame_SetAll";
-            this.Button_KeywordImageTypeFrame_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordImageTypeFrame_SetAll.TabIndex = 18;
-            this.Button_KeywordImageTypeFrame_SetAll.Text = "Set All";
-            this.Button_KeywordImageTypeFrame_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordImageTypeFrame_SetAll.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetAll_Click);
+            this.Button_KeywordImage_SetAll.Location = new System.Drawing.Point(58, 158);
+            this.Button_KeywordImage_SetAll.Name = "Button_KeywordImage_SetAll";
+            this.Button_KeywordImage_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordImage_SetAll.TabIndex = 18;
+            this.Button_KeywordImage_SetAll.Text = "Set All";
+            this.Button_KeywordImage_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordImage_SetAll.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetAll_Click);
             // 
             // GroupBox_ImageTypeFrame
             // 
@@ -884,6 +904,7 @@
             this.CheckBox_KeywordImageFrame_Master.TabIndex = 9;
             this.CheckBox_KeywordImageFrame_Master.Text = "Master";
             this.CheckBox_KeywordImageFrame_Master.UseVisualStyleBackColor = true;
+            this.CheckBox_KeywordImageFrame_Master.CheckedChanged += new System.EventHandler(this.CheckBox_KeywordImageFrame_Master_CheckedChanged);
             // 
             // RadioButton_KeywordImageFrame_Bias
             // 
@@ -2958,26 +2979,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statistics";
             // 
-            // Button_KeywordCamera_SetAll
-            // 
-            this.Button_KeywordCamera_SetAll.Location = new System.Drawing.Point(70, 158);
-            this.Button_KeywordCamera_SetAll.Name = "Button_KeywordCamera_SetAll";
-            this.Button_KeywordCamera_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordCamera_SetAll.TabIndex = 19;
-            this.Button_KeywordCamera_SetAll.Text = "Set All";
-            this.Button_KeywordCamera_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordCamera_SetAll.Click += new System.EventHandler(this.Button_KeywordCamera_SetAll_Click);
-            // 
-            // Button_KeywordCamera_SetByFile
-            // 
-            this.Button_KeywordCamera_SetByFile.Location = new System.Drawing.Point(168, 158);
-            this.Button_KeywordCamera_SetByFile.Name = "Button_KeywordCamera_SetByFile";
-            this.Button_KeywordCamera_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordCamera_SetByFile.TabIndex = 19;
-            this.Button_KeywordCamera_SetByFile.Text = "Set By File";
-            this.Button_KeywordCamera_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordCamera_SetByFile.Click += new System.EventHandler(this.Button_KeywordCamera_SetByFile_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3258,7 +3259,7 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_Z183;
         private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_Z533;
         private System.Windows.Forms.Label Label_CameraA144Gain;
-        private System.Windows.Forms.Label Label_CaleraOffset;
+        private System.Windows.Forms.Label Label_CameraOffset;
         private System.Windows.Forms.Label Label_CameraGain;
         private System.Windows.Forms.TextBox TextBox_CameraQ178Offset;
         private System.Windows.Forms.TextBox TextBox_CameraQ178Gain;
@@ -3289,14 +3290,14 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordImageFrame_Flat;
         private System.Windows.Forms.RadioButton RadioButton_KeywordImageFrame_Dark;
         private System.Windows.Forms.RadioButton RadioButton_KeywordImageFrame_Light;
-        private System.Windows.Forms.Button Button_KeywordCaptureSoftware_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordSoftware_SetByFile;
         private System.Windows.Forms.Button Button_KeywordSoftware_SetAll;
         private System.Windows.Forms.Button Button_KeywordTelescope_SetByFile;
         private System.Windows.Forms.Button Button_KeywordTelescope_SetAll;
         private System.Windows.Forms.Label Label_CameraSeconds;
         private System.Windows.Forms.TextBox TextBox_CameraExposureTime;
-        private System.Windows.Forms.Button Button_KeywordImageTypeFrame_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordImageTypeFrame_SetAll;
+        private System.Windows.Forms.Button Button_KeywordImage_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordImage_SetAll;
         private System.Windows.Forms.Button Button_KeywordCamera_SetByFile;
         private System.Windows.Forms.Button Button_KeywordCamera_SetAll;
     }

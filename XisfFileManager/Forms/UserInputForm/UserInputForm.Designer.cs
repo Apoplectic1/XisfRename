@@ -34,7 +34,7 @@ namespace XisfFileManager
         {
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
-            this.Label_Text = new System.Windows.Forms.Label();
+            this.Label_EntryText = new System.Windows.Forms.Label();
             this.TextBox_Text = new System.Windows.Forms.TextBox();
             this.CheckBox_Global = new System.Windows.Forms.CheckBox();
             this.Label_FileName = new System.Windows.Forms.Label();
@@ -59,14 +59,14 @@ namespace XisfFileManager
             this.Button_Cancel.Text = "Cancel";
             this.Button_Cancel.UseVisualStyleBackColor = true;
             // 
-            // Label_Text
+            // Label_EntryText
             // 
-            this.Label_Text.Location = new System.Drawing.Point(0, 0);
-            this.Label_Text.Name = "Label_Text";
-            this.Label_Text.Size = new System.Drawing.Size(459, 92);
-            this.Label_Text.TabIndex = 2;
-            this.Label_Text.Text = "Enter Missing Data";
-            this.Label_Text.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Label_EntryText.Location = new System.Drawing.Point(0, 0);
+            this.Label_EntryText.Name = "Label_EntryText";
+            this.Label_EntryText.Size = new System.Drawing.Size(459, 97);
+            this.Label_EntryText.TabIndex = 2;
+            this.Label_EntryText.Text = "Enter Missing Data";
+            this.Label_EntryText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // TextBox_Text
             // 
@@ -104,7 +104,7 @@ namespace XisfFileManager
             this.Controls.Add(this.Label_FileName);
             this.Controls.Add(this.CheckBox_Global);
             this.Controls.Add(this.TextBox_Text);
-            this.Controls.Add(this.Label_Text);
+            this.Controls.Add(this.Label_EntryText);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
             this.Name = "UserInputForm";
@@ -118,9 +118,9 @@ namespace XisfFileManager
 
         private System.Windows.Forms.Button Button_OK;
         private System.Windows.Forms.Button Button_Cancel;
-        public System.Windows.Forms.Label Label_Text;
+        public System.Windows.Forms.Label Label_EntryText;
         public TextBox TextBox_Text;
-        private CheckBox CheckBox_Global;
-        private Label Label_FileName;
+        public CheckBox CheckBox_Global;
+        public Label Label_FileName;
     }
 }
