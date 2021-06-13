@@ -94,14 +94,18 @@ namespace XisfFileManager.FileOperations
         private string BuildFileName(int index, XisfFile mFile)
         {
             string newName = string.Empty;
+            string targetName;
+            string frameType;
 
             if (mFile.Master)
             {
                 newName = "Master ";
+                targetName = mFile.KeywordData.TargetName();
+                frameType = mFile.KeywordData.FrameType();
 
-                if ((mFile.KeywordData.FrameType() == "D") || (mFile.KeywordData.FrameType() == "F") || (mFile.KeywordData.FrameType() == "B"))
+                if (targetName.Contains("Master"))
                 {
-                    if (mFile.KeywordData.FrameType() == "D")
+                    if (frameType.Contains("Dark"))
                     {
                         newName += "Dark  ";
 
@@ -114,7 +118,7 @@ namespace XisfFileManager.FileOperations
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
                     }
 
-                    if (mFile.KeywordData.FrameType() == "B")
+                    if (frameType.Contains("Bias"))
                     {
                         newName += "Bias  ";
 
@@ -127,7 +131,7 @@ namespace XisfFileManager.FileOperations
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
                     }
 
-                    if (mFile.KeywordData.FrameType() == "F")
+                    if (frameType.Contains("Flat"))
                     {
                         newName += "Flat " + mFile.KeywordData.FilterName() + "  ";
 

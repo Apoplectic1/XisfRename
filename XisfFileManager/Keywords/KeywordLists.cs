@@ -381,7 +381,7 @@ namespace XisfFileManager
         {
             Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "File");
+            node = KeywordList.Find(i => i.Name == "FILE");
             if (node != null)
             {
                 return node.Comment;
@@ -574,7 +574,10 @@ namespace XisfFileManager
         public string ExposureSeconds(bool FindMissingKeywords = false)
         {
             double Seconds;
+            bool status;
+            double seconds;
             Keyword node = new Keyword();
+
 
             node = KeywordList.Find(i => i.Name == "EXPTIME");
             if (node != null)
@@ -603,11 +606,12 @@ namespace XisfFileManager
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
-                Seconds = Convert.ToDouble(FormValue.mTextBox);
-
-                AddKeyword("EXPTIME", Seconds, "Camera Exposure Time in Seconds");
-
-                return FormatExposureSeconds(Seconds);
+                status = double.TryParse(formData.mTextBox, out seconds);
+                if (status)
+                {
+                    AddKeyword("EXPTIME", seconds, "Camera Exposure Time in Seconds");
+                    return FormatExposureSeconds(seconds);
+                }
             }
 
             return string.Empty;
@@ -710,8 +714,10 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int FocalLength()
+        public int FocalLength(bool findMissingKeywords = false)
         {
+            int focalLength;
+            bool status;
             string value = string.Empty;
             Keyword node = new Keyword();
 
@@ -721,17 +727,25 @@ namespace XisfFileManager
                 return (Convert.ToInt32(node.Value));
             }
 
-            UserInputFormData formData = new UserInputFormData();
-            formData.mFormName = "Focal Length";
-            formData.mFormText = "Focal Length Not Set";
-            formData.mFormEntryText = "Enter Focal Length in millimeters:";
-            formData.mFileName = FileName();
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Focal Length";
+                formData.mFormText = "Focal Length Not Set";
+                formData.mFormEntryText = "Enter Focal Length in millimeters:";
+                formData.mFileName = FileName();
 
-            UserInputFormData FormValue = OpenUIForm(formData);
-            int focalLength = Convert.ToInt32(FormValue.mTextBox);
+                UserInputFormData formValue = OpenUIForm(formData);
 
-            AddKeyword("FOCALLEN", focalLength, "XISF File Manager");
-            return focalLength;
+                status = int.TryParse(formValue.mTextBox, out focalLength);
+                if (status)
+                {
+                    AddKeyword("FOCALLEN", focalLength, "Focal Length");
+                    return focalLength;
+                }
+            }
+
+            return -1;
         }
 
         // *********************************************************************************************************
@@ -1061,10 +1075,12 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string SensorTemperature()
+        public string SensorTemperature(bool findMissingKeywords = false)
         {
             string value = string.Empty;
+            bool status;
             Keyword node = new Keyword();
+            double temperature;
 
             node = KeywordList.Find(i => i.Name == "CCD-TEMP");
             if (node != null)
@@ -1072,16 +1088,25 @@ namespace XisfFileManager
                 return FormatTemperatureString(node.Value);
             }
 
-            UserInputFormData formData = new UserInputFormData();
-            formData.mFormName = "Camera Sensor Temperature";
-            formData.mFormText = "Camera Sensor Temperature Not Set";
-            formData.mFormEntryText = "Enter Actual Sensor Temperature:";
-            formData.mFileName = FileName();
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Camera Sensor Temperature";
+                formData.mFormText = "Camera Sensor Temperature Not Set";
+                formData.mFormEntryText = "Enter Actual Sensor Temperature:";
+                formData.mFileName = FileName();
 
-            UserInputFormData FormValue = OpenUIForm(formData);
-            AddKeyword("CCD-TEMP", double.Parse(FormValue.mTextBox));
+                UserInputFormData FormValue = OpenUIForm(formData);
 
-            return FormatTemperatureString(FormValue.mTextBox);
+                status = double.TryParse(value, out temperature);
+                if (status)
+                {
+                    AddKeyword("CCD-TEMP", double.Parse(FormValue.mTextBox));
+                    return temperature.ToString();
+                }
+            }
+
+            return string.Empty;
         }
 
         // *********************************************************************************************************
@@ -1162,28 +1187,38 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string TargetName()
+        public string TargetName(bool findMissingKeywords = false)
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "OBJECT");
-            if (node == null)
+            if (node != null)
             {
-                AddKeyword("OBJECT", "NoObject");
-                node = KeywordList.Find(i => i.Name == "OBJECT");
-                return "NoObject";
+                value = node.Value.Replace("'", "").Replace(" ", "").Replace("/", "");
+                return value;
             }
 
-            value = node.Value.Replace("'", "").Replace(" ", "").Replace("/", "");
-            node.Type = Keyword.EType.STRING;
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Target Name";
+                formData.mFormText = "Target Name Not Set";
+                formData.mFormEntryText = "Enter Target Name (ID or Master):";
+                formData.mFileName = FileName();
 
-            return value;
+                UserInputFormData FormValue = OpenUIForm(formData);
+
+                AddKeyword("OBJECT", formData.mTextBox, "XISF File Manager");
+                return formData.mTextBox;
+            }
+
+            return string.Empty;
         }
 
         // #########################################################################################################
         // #########################################################################################################
-        public string Telescope(bool findMissingTelescope = false)
+        public string Telescope(bool findMissingKeywords = false)
         {
             string value = string.Empty;
             Keyword node = new Keyword();
@@ -1195,12 +1230,12 @@ namespace XisfFileManager
                 return node.Value;
             }
 
-            while (findMissingTelescope)
+            while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData();
                 formData.mFormName = "Telescope";
                 formData.mFormText = "Telescope Not Set";
-                formData.mFormEntryText = "Enter APM(R), EVO(R) or NWT(R)";
+                formData.mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):";
                 formData.mFileName = FileName();
 
                 UserInputFormData FormValue = OpenUIForm(formData);
@@ -1250,6 +1285,43 @@ namespace XisfFileManager
             if (Double.IsNaN(SSWeight)) return Double.NaN;
 
             return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 0, MidpointRounding.AwayFromZero));
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public int IntegrationCount(bool findMissingKeywords = false)
+        {
+            bool status;
+            int integrationNumber;
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "INTCOUNT");
+            if (node != null)
+            {
+                node.Value = node.Value.Replace(".", "").Replace("'", "");
+                return Convert.ToInt32(node.Value);
+            }
+
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Master Frame Integration Count";
+                formData.mFormText = "Integration Count Not Set";
+                formData.mFormEntryText = "Enter Number of frames used during Intgration:";
+                formData.mFileName = FileName();
+
+                UserInputFormData FormValue = OpenUIForm(formData);
+
+                status = int.TryParse(FormValue.mTextBox, out integrationNumber);
+
+                if (status)
+                {
+                    AddKeyword("INTCOUNT", integrationNumber, "Number of SubFrames used during Integrartion");
+                    return integrationNumber;
+                }
+            }
+
+            return -1;
         }
 
         // #########################################################################################################
@@ -1345,7 +1417,7 @@ namespace XisfFileManager
 
         // #########################################################################################################
         // #########################################################################################################
-        private string FormatExposureSeconds(double seconds)
+        public string FormatExposureSeconds(double seconds)
         {
             if (seconds < 1.0)
             {
