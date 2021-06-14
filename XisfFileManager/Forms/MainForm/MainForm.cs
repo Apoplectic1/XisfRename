@@ -248,8 +248,6 @@ namespace XisfFileManager
 
                         // Create a new xisf file instance
                         mFile = new XisfFile();
-                        if (mFile.KeywordData.FileName() == string.Empty)
-                            mFile.KeywordData.AddKeyword("FILE", "Name", Path.GetFileName(file.FullName));
 
                         mFile.SourceFileName = file.FullName;
                         Label_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
@@ -390,6 +388,9 @@ namespace XisfFileManager
             // Calculate Image paramters for UI
             foreach (XisfFile file in mFileList)
             {
+                if (mFile.KeywordData.FileName() == string.Empty)
+                    file.KeywordData.AddKeyword("FILENAME", "Name", Path.GetFileName(file.SourceFileName));
+
                 ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
             }
 
@@ -1370,13 +1371,13 @@ namespace XisfFileManager
                 {
                     if (CheckBox_KeywordTelescope_Riccardi.Checked)
                     {
-                        file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 with Riccardi 0.75 Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 with Riccardi 0.75 Reducer");
+                        file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 Super ED with Riccardi 0.75 Reducer");
                     }
                     else
                     {
-                        file.KeywordData.AddKeyword("TELESCOP", "APM107", "APM107 without Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 700, "APM107 without Reducer");
+                        file.KeywordData.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
+                        file.KeywordData.AddKeyword("FOCALLEN", 700, "APM107 Super ED without Reducer");
                     }
                 }
 
@@ -1468,44 +1469,14 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("IMAGETYP", "Light");
 
                 if (RadioButton_KeywordImageTypeFrame_Dark.Checked)
-                {
-                    if (CheckBox_Master.Checked)
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Master Dark");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Dark");
-                    }
-                }
+                    file.KeywordData.AddKeyword("IMAGETYP", "Dark");
 
                 if (RadioButton_KeywordImageTypeFrame_Flat.Checked)
-                {
-                    if (CheckBox_Master.Checked)
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Master Flat");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Flat");
-                    }
-                }
+                    file.KeywordData.AddKeyword("IMAGETYP", "Flat");
 
                 if (RadioButton_KeywordImageTypeFrame_Bias.Checked)
-                {
-                    if (CheckBox_Master.Checked)
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Master Bias");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Bias");
-                    }
-                }
-            }
+                    file.KeywordData.AddKeyword("IMAGETYP", "Bias");
 
-            foreach (XisfFile file in mFileList)
-            {
                 if (RadioButton_KeywordImageTypeFilter_Luma.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Luma");
 
@@ -1529,6 +1500,9 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordImageTypeFilter_Shutter.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Shutter");
+
+                if (CheckBox_Master.Checked)
+                    file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Image");
             }
 
             FindFrameType();
@@ -1538,7 +1512,7 @@ namespace XisfFileManager
         {
             string filter;
             int filterCount;
-            int masterCount = 0;
+            int masterCount;
 
             bool foundLuma = false;
             bool foundRed = false;
@@ -1780,9 +1754,10 @@ namespace XisfFileManager
                     frameTypeCount++;
                 }
 
-                if (frameType.Contains("Master"))
+                if (file.KeywordData.TargetName().Contains("Master"))
                 {
                     masterCount++;
+                    foundMaster = true;
                 }
             }
 
@@ -1845,6 +1820,11 @@ namespace XisfFileManager
                     CheckBox_Master.ForeColor = Color.Red;
                     Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Red;
                 }
+                else
+                {
+                    CheckBox_Master.Checked = true;
+                    CheckBox_Master.ForeColor = Color.Black;
+                }
             }
 
 
@@ -1862,7 +1842,7 @@ namespace XisfFileManager
                 Button_KeywordImageType_SetAll.ForeColor = Color.Red;
             }
 
-            if (masterCount != mFileList.Count)
+            if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
                 CheckBox_Master.ForeColor = Color.Red;
                 Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
@@ -2147,11 +2127,11 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordCamera_Z533.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z533", "ASIZ533MC Pro");
-                    file.KeywordData.AddKeyword("NAXIS1", 3008, "XISF File Manager");
-                    file.KeywordData.AddKeyword("NAXIS2", 3008, "XISF File Manager");
-                    file.KeywordData.AddKeyword("XPIXSZ", 3.76, "XISF File Manager");
-                    file.KeywordData.AddKeyword("YPIXSZ", 3.76, "XISF File Manager");
+                    file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
+                    file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraZ533Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraZ533Offset.Text), "Camera Offset");
@@ -2160,11 +2140,11 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordCamera_Z183.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z183", "ASIZ183M Pro");
-                    file.KeywordData.AddKeyword("NAXIS1", 5496, "XISF File Manager");
-                    file.KeywordData.AddKeyword("NAXIS2", 3672, "XISF File Manager");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "XISF File Manager");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "XISF File Manager");
+                    file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
+                    file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraZ183Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraZ183Offset.Text), "Camera Offset");
@@ -2173,11 +2153,11 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordCamera_Q178.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Q178", "ASIZ183M Pro");
-                    file.KeywordData.AddKeyword("NAXIS1", 3072, "XISF File Manager");
-                    file.KeywordData.AddKeyword("NAXIS2", 2048, "XISF File Manager");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "XISF File Manager");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "XISF File Manager");
+                    file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
+                    file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraQ178Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraQ178Offset.Text), "Camera Offset");
@@ -2186,11 +2166,11 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordCamera_A144.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity");
-                    file.KeywordData.AddKeyword("NAXIS1", 1392, "XISF File Manager");
-                    file.KeywordData.AddKeyword("NAXIS2", 1040, "XISF File Manager");
-                    file.KeywordData.AddKeyword("XPIXSZ", 6.45, "XISF File Manager");
-                    file.KeywordData.AddKeyword("YPIXSZ", 6.45, "XISF File Manager");
+                    file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
+                    file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
                     file.KeywordData.RemoveKeyword("GAIN");
                     file.KeywordData.RemoveKeyword("OFFSET");
@@ -2298,5 +2278,82 @@ namespace XisfFileManager
             CheckBox_Master.Checked = true;
         }
 
+        private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
+        {
+            bool foundNumberOfImages = false;
+            bool foundRejection = false;
+
+            int numberOfImages = 0;
+            string rejection = string.Empty;
+            string comment = string.Empty;
+
+            if (CheckBox_Master.Checked)
+            {
+                foreach (XisfFile file in mFileList)
+                {
+                    foreach (Keyword node in file.KeywordData.KeywordList)
+                    {
+                        if (node.Comment.ToLower().Contains("numberofimages"))
+                        {
+                            numberOfImages = Convert.ToInt32(Regex.Match(node.Comment, @"\d+").Value);
+                            foundNumberOfImages = true;
+
+                            if (foundRejection)
+                                break;
+                        }
+
+                        if (node.Comment.ToLower().Contains("pixelrejection"))
+                        {
+                            if (node.Comment.ToLower().Contains("linear"))
+                            {
+                                rejection = "LFC";
+                                comment = "PixInsight Linear Fit Clipping";
+                                foundRejection = true;
+
+                                if (foundNumberOfImages)
+                                    break;
+                            }
+                      
+                            if (node.Comment.ToLower().Contains("student"))
+                            {
+                                rejection = "ESD";
+                                comment = "PixInsight Extreme Studentized Deviation Clipping";
+                                foundRejection = true;
+
+                                if (foundNumberOfImages)
+                                    break;
+                            }
+
+                            if (node.Comment.ToLower().Contains("sigma"))
+                            {
+                                rejection = "SC";
+                                comment = "PixInsight Sigma Clipping";
+                                foundRejection = true;
+
+                                if (foundNumberOfImages)
+                                    break;
+                            }
+
+                            if (node.Comment.ToLower().Contains("winsor"))
+                            {
+                                rejection = "WSC";
+                                comment = "PixInsight Winsorized Sigma Clipping";
+                                foundRejection = true;
+
+                                if (foundNumberOfImages)
+                                    break;
+                            }
+                        }
+                    }
+
+                    if (foundNumberOfImages)
+                        file.KeywordData.AddKeyword("TOTALFRAMES", numberOfImages, "Number of Integrated SubFrames");
+
+                    if (foundRejection)
+                        file.KeywordData.AddKeyword("REJECTION", rejection, comment);
+
+                }
+            }
+        }
     }
 }

@@ -100,65 +100,23 @@ namespace XisfFileManager
             string camera = Camera();
 
             if (camera == "Z183")
-            {
                 egain = 3.6059 * Math.Exp(-0.011 * gain);
-            }
 
             if (camera == "Z533")
-            {
                 egain = (-7e-13 * Math.Pow(gain, 5)) + (1e-9 * Math.Pow(gain, 4)) - (6e-7 * Math.Pow(gain, 3)) + (0.0002 * Math.Pow(gain, 2)) - (0.0356 * gain) + 3.1338;
-            }
 
             if (camera == "Q178")
             {
                 if (gain < 4.0)
-                {
                     egain = 2.6;
-                }
                 else
-                {
                     egain = 3.8018 * Math.Exp(-0.0117 * gain);
-                }
             }
 
             if (camera == "A144")
-            {
                 egain = 0.37;
-            }
-
+          
             AddKeyword("EGAIN", egain, "Calculated electrons per ADU");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // An older version of TSX did not write OFFSET
-        public void RepairOffset()
-        {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "OFFSET");
-            if (node != null)
-            {
-                return;
-            }
-
-            if (Camera() == "Z183")
-            {
-                AddKeyword("OFFSET", 10);
-                return;
-            }
-
-            if (Camera() == "Z533")
-            {
-                AddKeyword("OFFSET", 50);
-                return;
-            }
-
-            if (Camera() == "Q178")
-            {
-                AddKeyword("OFFSET", 10);
-                return;
-            }
         }
 
         // *********************************************************************************************************
@@ -211,122 +169,91 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public void RepairTargetName(string targetName)
-        {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "OBJECT");
-            node.Type = Keyword.EType.STRING;
-            node.Value = targetName;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public void RepairTelescope()
-        {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "IMAGETYP");
-            if (node.Value.Contains("Master")) return;
-
-            Telescope();
-            FocalLength();
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public double AirMass()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "AIRMASS");
-            if (node == null)
-            {
-                AddKeyword("AIRMASS", 0.0);
-            }
-
-            node = KeywordList.Find(i => i.Name == "AIRMASS");
-
-            value = node.Value;
-            node.Type = Keyword.EType.FLOAT;
-
-            return Convert.ToDouble(value);
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public void IntegrationParamaters()
         {
-            rejectionType rejectionValue = rejectionType.NULL;
-            string value = string.Empty;
-
             foreach (Keyword node in KeywordList)
             {
-                if (node.Comment.Contains("pixelRejection"))
+                if (node.Comment.ToLower().Contains("numberofimages"))
+                    AddKeyword("TOTALFRAMES", node.Value, "Number of Integrated SubFrames");
+    
+                if (node.Comment.ToLower().Contains("pixelrejection"))
                 {
-                    if (node.Comment.Contains("linear"))
-                        rejectionValue = rejectionType.LINEAR;
+                    if (node.Comment.ToLower().Contains("linear"))
+                        AddKeyword("REJECTION", "LFC", "PixInsight Linear Fit Clipping");
 
-                    if (node.Comment.Contains("Student"))
-                        rejectionValue = rejectionType.STUDENT;
+                    if (node.Comment.ToLower().Contains("student"))
+                        AddKeyword("REJECTION", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
 
-                    if (node.Comment.Contains("sigma"))
-                        rejectionValue = rejectionType.SIGMA;
+                    if (node.Comment.ToLower().Contains("sigma"))
+                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
 
-                    if (node.Comment.Contains("winsor"))
-                        rejectionValue = rejectionType.WINSOR;
-                }
-
-                if (node.Comment.Contains("numberOfImages"))
-                {
-                    value = Regex.Match(node.Comment, @"\d+").Value;
-                    break;
+                    if (node.Comment.ToLower().Contains("winsor"))
+                        AddKeyword("REJECTION", "WSC", "PixInsight Winsorized Sigma Clipping");
                 }
             }
+        }
 
-            switch (rejectionValue)
+        public int TotalImages(bool findMissingKeywords = false)
+        {
+            bool status;
+            int frames;
+
+            Keyword node = new Keyword();
+            node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
+
+            if (node != null)
+                return Int32.Parse(node.Value);
+
+            while (findMissingKeywords)
             {
-                case rejectionType.LINEAR:
-                    AddKeyword("Rejection", "LFC", "XISF File Manager");
-                    break;
-                case rejectionType.STUDENT:
-                    AddKeyword("Rejection", "ESD", "XISF File Manager");
-                    break;
-                case rejectionType.SIGMA:
-                    AddKeyword("Rejection", "SC", "XISF File Manager");
-                    break;
-                case rejectionType.WINSOR:
-                    AddKeyword("Rejection", "WSC", "XISF File Manager");
-                    break;
-                default:
-                    break;
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Master Frame Integration";
+                formData.mFormText = "Integrated SubFrames Not Set";
+                formData.mFormEntryText = "Enter Total Integration Frames:";
+                formData.mFileName = FileName();
+
+                UserInputFormData FormValue = OpenUIForm(formData);
+
+                status = int.TryParse(FormValue.mTextBox, out frames);
+                if (status)
+                {
+                    AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
+                    return frames;
+                }
             }
 
-            if (value != string.Empty)
-                AddKeyword("Images", value, "XISF File Manager");
+            return -1;
         }
 
-        public string TotalImages()
+        public string Rejection(bool findMissingKeywords = false)
         {
             Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "Images");
+            node = KeywordList.Find(i => i.Name == "REJECTION");
 
-            if (node == null)
-                return string.Empty;
+            if (node != null)
+            {
+                return node.Value;
+            }
 
-            return Int32.Parse(node.Value).ToString("D3");
-        }
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Master Frame Rejection Method";
+                formData.mFormText = "Master Frame Rejection Method Not Set";
+                formData.mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):";
+                formData.mFileName = FileName();
 
-        public string Rejection()
-        {
-            Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "Rejection");
+                UserInputFormData FormValue = OpenUIForm(formData);
 
-            if (node == null)
-                return string.Empty;
+                if (FormValue.mTextBox.Equals("SC") || FormValue.mTextBox.Equals("WSC") || FormValue.mTextBox.Equals("LFC") || FormValue.mTextBox.Equals("ESD"))
+                {
+                    AddKeyword("REJECTION", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
+                    return FormValue.mTextBox;
+                }
 
-            return node.Value.Replace("'", "");
+            }
+
+            return string.Empty;
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -381,7 +308,7 @@ namespace XisfFileManager
         {
             Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "FILE");
+            node = KeywordList.Find(i => i.Name == "FILENAME");
             if (node != null)
             {
                 return node.Comment;
@@ -857,20 +784,6 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int Index()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "INDEX");
-            value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
-            node.Type = Keyword.EType.INTEGER;
-
-            return Convert.ToInt32(value);
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public int Offset(bool findMissingKeywords = false)
         {
             bool status;
@@ -935,121 +848,6 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string Profile()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "Profile");
-            if (node == null)
-            {
-                AddKeyword("Profile", "No Profile");
-            }
-
-            node = KeywordList.Find(i => i.Name == "Profile");
-
-            node.Type = Keyword.EType.STRING;
-
-            return node.Value;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double Scale()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "SCALE");
-            if (node != null)
-            {
-                return Convert.ToDouble(node.Value);
-            }
-
-            double scale = (PixelSize() * 206.265) / FocalLength();
-
-            AddKeyword("SCALE", scale);
-
-            return scale;
-        }
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int SensorHeight()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "NAXIS2");
-
-            if (node == null)
-            {
-                if (Camera() == "Z183")
-                {
-                    if (Binning() == 1)
-                    {
-                        AddKeyword("NAXIS2", 3672);
-                    }
-
-                    if (Binning() == 2)
-                    {
-                        AddKeyword("NAXIS2", 3672 / 2);
-                    }
-                }
-
-                if (Camera() == "Z533")
-                {
-                    if (Binning() == 1)
-                    {
-                        AddKeyword("NAXIS2", 3008);
-                    }
-
-                    if (Binning() == 2)
-                    {
-                        AddKeyword("NAXIS2", 3008 / 2);
-                    }
-                }
-
-                if (Camera() == "Q178")
-                {
-                    if (Binning() == 1)
-                    {
-                        AddKeyword("NAXIS2", 2048);
-                    }
-
-                    if (Binning() == 2)
-                    {
-                        AddKeyword("NAXIS2", 2048 / 2);
-                    }
-                }
-
-                if (Camera() == "A144")
-                {
-                    if (Binning() == 1)
-                    {
-                        AddKeyword("NAXIS2", 1040);
-                    }
-
-                    if (Binning() == 2)
-                    {
-                        AddKeyword("NAXIS2", 1040 / 2);
-                    }
-                }
-
-                node = KeywordList.Find(i => i.Name == "NAXIS2");
-
-                if (node == null)
-                {
-                    return 0;
-                }
-            }
-            value = node.Value.Replace("'", "").Replace(".", "");
-            node.Type = Keyword.EType.INTEGER;
-
-            return Convert.ToInt32(value);
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public string SensorSetPointTemperature()
         {
             string value = string.Empty;
@@ -1107,51 +905,6 @@ namespace XisfFileManager
             }
 
             return string.Empty;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int SensorWidth()
-        {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "NAXIS1");
-
-            if (node == null)
-            {
-                if (Camera() == "Z183")
-                {
-                    AddKeyword("NAXIS1", 5496);
-                }
-
-                if (Camera() == "Z533")
-                {
-                    AddKeyword("NAXIS1", 3008);
-                }
-
-                if (Camera() == "Q178")
-                {
-                    AddKeyword("NAXIS1", 3072);
-                }
-
-                if (Camera() == "A144")
-                {
-                    AddKeyword("NAXIS1", 1392);
-                }
-
-                node = KeywordList.Find(i => i.Name == "NAXIS1");
-
-                if (node == null)
-                {
-                    return 0;
-                }
-            }
-
-            value = node.Value.Replace("'", "").Replace(".", "");
-            node.Type = Keyword.EType.INTEGER;
-
-            return Convert.ToInt32(value);
         }
 
         // *********************************************************************************************************
@@ -1287,43 +1040,6 @@ namespace XisfFileManager
             return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 0, MidpointRounding.AwayFromZero));
         }
 
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int IntegrationCount(bool findMissingKeywords = false)
-        {
-            bool status;
-            int integrationNumber;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "INTCOUNT");
-            if (node != null)
-            {
-                node.Value = node.Value.Replace(".", "").Replace("'", "");
-                return Convert.ToInt32(node.Value);
-            }
-
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Master Frame Integration Count";
-                formData.mFormText = "Integration Count Not Set";
-                formData.mFormEntryText = "Enter Number of frames used during Intgration:";
-                formData.mFileName = FileName();
-
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                status = int.TryParse(FormValue.mTextBox, out integrationNumber);
-
-                if (status)
-                {
-                    AddKeyword("INTCOUNT", integrationNumber, "Number of SubFrames used during Integrartion");
-                    return integrationNumber;
-                }
-            }
-
-            return -1;
-        }
-
         // #########################################################################################################
         // #########################################################################################################
         public void AddKeyword(string name, string value, string comment = "XISF File Manager")
@@ -1421,12 +1137,12 @@ namespace XisfFileManager
         {
             if (seconds < 1.0)
             {
-                if (seconds < 0.0001)
+                if (seconds <= 0.0001)
                 {
                     return "0000";
                 }
 
-                return seconds.ToString("0.0000");
+                return seconds.ToString("0.000");
             }
             else
             {
@@ -1471,12 +1187,12 @@ namespace XisfFileManager
         }
     }
 
-    public class GoogleTimeZone
-    {
-        public double dstOffset { get; set; }
-        public double rawOffset { get; set; }
-        public string status { get; set; }
-        public string timeZoneId { get; set; }
-        public string timeZoneName { get; set; }
-    }
+    //public class GoogleTimeZone
+    //{
+    //    public double dstOffset { get; set; }
+    //    public double rawOffset { get; set; }
+    //    public string status { get; set; }
+    //    public string timeZoneId { get; set; }
+    //    public string timeZoneName { get; set; }
+    //}
 }

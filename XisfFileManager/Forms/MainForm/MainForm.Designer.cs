@@ -1240,6 +1240,7 @@
             this.CheckBox_Master.TabIndex = 3;
             this.CheckBox_Master.Text = "Masters";
             this.CheckBox_Master.UseVisualStyleBackColor = true;
+            this.CheckBox_Master.CheckedChanged += new System.EventHandler(this.CheckBox_Master_CheckedChanged);
             // 
             // menuStrip1
             // 
