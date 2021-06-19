@@ -58,19 +58,13 @@ namespace XisfFileManager.FileOperations
 
                 IEnumerable<XElement> elements = from c in mXDoc.Descendants(ns + "FITSKeyword") select c;
 
-                // Find each relevent keyword and add it to mFile
+                // Find each keyword and add it to xFile
                 foreach (XElement element in elements)
                 {
                     xFile.KeywordData.AddKeyword(element);
                 }
 
-                /*
-                xFile.KeywordData.SetEGain();
-                xFile.KeywordData.CaptureSoftware();
-                xFile.KeywordData.RepairSiteLatitude();
-                xFile.KeywordData.RepairSiteLongitude();
-                xFile.KeywordData.RepairTelescope();
-                */
+                xFile.ParseRequiredKeywords();
 
                 return true;
             }

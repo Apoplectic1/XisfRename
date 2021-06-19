@@ -58,7 +58,7 @@ namespace XisfFileManager
         public MainForm()
         {
             InitializeComponent();
-            Label_Task.Text = "";
+            Label_FileSelectionStatistics_Task.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename();
             mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
@@ -73,8 +73,8 @@ namespace XisfFileManager
             // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
 
-            Label_Task.Text = "No Images Selected";
-            Label_TempratureCompensation.Text = "Temerature Coefficient: N/A";
+            Label_FileSelectionStatistics_Task.Text = "No Images Selected";
+            Label_FileSelectionStatistics_TempratureCompensation.Text = "Temerature Coefficient: N/A";
 
 
             // Version Number
@@ -190,7 +190,7 @@ namespace XisfFileManager
         {
             DirectoryInfo d;
 
-            ProgressBar_OverAll.Value = 0;
+            ProgressBar_FileSelection_OverAll.Value = 0;
             ProgressBar_Keyword_XisfFile.Value = 0;
 
             mFolder = new OpenFolderDialog()
@@ -217,12 +217,12 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
-            ComboBox_TargetName.Text = "";
-            ComboBox_TargetName.Items.Clear();
+            ComboBox_KeywordSubFrame_TargetName.Text = "";
+            ComboBox_KeywordSubFrame_TargetName.Items.Clear();
 
             try
             {
-                Label_Task.Text = "Reading Image File Data";
+                Label_FileSelectionStatistics_Task.Text = "Reading Image File Data";
 
                 foreach (string folder in mFolder.SelectedPaths)
                 {
@@ -238,19 +238,19 @@ namespace XisfFileManager
                         return;
                     }
 
-                    ProgressBar_OverAll.Maximum = Files.Count();
+                    ProgressBar_FileSelection_OverAll.Maximum = Files.Count();
 
                     foreach (FileInfo file in Files)
                     {
                         bStatus = false;
-                        ProgressBar_OverAll.Value += 1;
+                        ProgressBar_FileSelection_OverAll.Value += 1;
                         Application.DoEvents();
 
                         // Create a new xisf file instance
                         mFile = new XisfFile();
 
                         mFile.SourceFileName = file.FullName;
-                        Label_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
+                        Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
 
                         // Get the keyword data contained found within the current file
                         // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
@@ -285,7 +285,7 @@ namespace XisfFileManager
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Error);
 
-                Label_Task.Text = "Browse Aborted";
+                Label_FileSelectionStatistics_Task.Text = "Browse Aborted";
                 return;
             }
 
@@ -325,11 +325,11 @@ namespace XisfFileManager
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Error);
 
-                Label_Task.Text = "Browse Aborted";
+                Label_FileSelectionStatistics_Task.Text = "Browse Aborted";
                 return;
             }
 
-            Label_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+            Label_FileSelectionStatistics_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
             // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
             // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
@@ -367,16 +367,16 @@ namespace XisfFileManager
 
             if (TargetNames.Count > 1)
             {
-                Label_TagetName.ForeColor = Color.Red;
+                Label_KeywordSubFrame_TagetName.ForeColor = Color.Red;
             }
             else
             {
-                Label_TagetName.ForeColor = Color.Black;
+                Label_KeywordSubFrame_TagetName.ForeColor = Color.Black;
             }
 
             foreach (string item in TargetNames)
             {
-                ComboBox_TargetName.Items.Add(item);
+                ComboBox_KeywordSubFrame_TargetName.Items.Add(item);
             }
             // **********************************************************************
 
@@ -394,9 +394,9 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
             }
 
-            Label_File_Selection_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
+            Label_File_electionStatistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
-            Label_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+            Label_FileSelectionStatistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
             // **********************************************************************
 
 
@@ -412,9 +412,9 @@ namespace XisfFileManager
             FindCamera();
             // **********************************************************************
 
-            if (ComboBox_TargetName.Items.Count != 0)
+            if (ComboBox_KeywordSubFrame_TargetName.Items.Count != 0)
             {
-                ComboBox_TargetName.SelectedIndex = 0;
+                ComboBox_KeywordSubFrame_TargetName.SelectedIndex = 0;
             }
         }
 
@@ -423,7 +423,7 @@ namespace XisfFileManager
         {
             int index = 1;
             int indexIncrement;
-            Label_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
+            Label_FileSelectionStatistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
 
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
             ProgressBar_Keyword_XisfFile.Value = 0;
@@ -433,11 +433,11 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                file.Master = CheckBox_Master.Checked;
+                file.Master = CheckBox__FileSelectionDirectorySelection_Master.Checked;
 
                 Tuple<int, string> renameTuple;
                 ProgressBar_Keyword_XisfFile.Value += 1;
-                Label_BrowseFileName.Text = file.SourceFileName;
+                Label_FileSelection_BrowseFileName.Text = file.SourceFileName;
 
                 renameTuple = mRenameFile.RenameFiles(index, file);
                 indexIncrement = renameTuple.Item1;
@@ -451,20 +451,20 @@ namespace XisfFileManager
             }
             ProgressBar_Keyword_XisfFile.Value = ProgressBar_Keyword_XisfFile.Maximum;
 
-            Label_Task.Text = mFileList.Count().ToString() + " Images Renamed";
+            Label_FileSelectionStatistics_Task.Text = mFileList.Count().ToString() + " Images Renamed";
 
             mFileList.Clear();
 
-            ProgressBar_OverAll.Value = 0;
+            ProgressBar_FileSelection_OverAll.Value = 0;
         }
 
         private void Button_Update_Click(object sender, EventArgs e)
         {
             bool bStatus;
-            GroupBox_DirectorySelection.Enabled = false;
-            GroupBox_RenameOrder.Enabled = false;
+            GroupBox_FileSelection_DirectorySelection.Enabled = false;
+            GroupBox_FileSelection_RenameOrder.Enabled = false;
 
-            Label_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
+            Label_FileSelectionStatistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
             ProgressBar_Keyword_XisfFile.Value = 0;
 
@@ -483,9 +483,9 @@ namespace XisfFileManager
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
-                    Label_Task.Text = "Update Aborted";
-                    GroupBox_DirectorySelection.Enabled = true;
-                    GroupBox_RenameOrder.Enabled = true;
+                    Label_FileSelectionStatistics_Task.Text = "Update Aborted";
+                    GroupBox_FileSelection_DirectorySelection.Enabled = true;
+                    GroupBox_FileSelection_RenameOrder.Enabled = true;
                     return;
                 }
 
@@ -500,12 +500,12 @@ namespace XisfFileManager
                 }
             }
 
-            XisfFileUpdate.TargetName = ComboBox_TargetName.Text.Replace("'", "").Replace("\"", "");
+            XisfFileUpdate.TargetName = ComboBox_KeywordSubFrame_TargetName.Text.Replace("'", "").Replace("\"", "");
 
 
             foreach (XisfFile file in mFileList)
             {
-                file.Master = CheckBox_Master.Checked;
+                file.Master = CheckBox__FileSelectionDirectorySelection_Master.Checked;
 
                 ProgressBar_Keyword_XisfFile.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
@@ -514,7 +514,7 @@ namespace XisfFileManager
 
                 if (bStatus == false)
                 {
-                    Label_Task.Text = "File Write Error";
+                    Label_FileSelectionStatistics_Task.Text = "File Write Error";
 
                     var result = MessageBox.Show(
                         "File Update Failed.\n\n" + Label_Keyword_UpdateFileName.Text,
@@ -522,15 +522,15 @@ namespace XisfFileManager
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
-                    GroupBox_DirectorySelection.Enabled = true;
-                    GroupBox_RenameOrder.Enabled = true;
+                    GroupBox_FileSelection_DirectorySelection.Enabled = true;
+                    GroupBox_FileSelection_RenameOrder.Enabled = true;
                     return;
                 }
             }
 
-            Label_Task.Text = mFileList.Count().ToString() + " Images Updated";
-            GroupBox_DirectorySelection.Enabled = true;
-            GroupBox_RenameOrder.Enabled = true;
+            Label_FileSelectionStatistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
+            GroupBox_FileSelection_DirectorySelection.Enabled = true;
+            GroupBox_FileSelection_RenameOrder.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -726,7 +726,7 @@ namespace XisfFileManager
 
         private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_RenameOrder_WeightIndex.Checked)
+            if (RadioButton_FileSelectionRenameOrder_WeightIndex.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHTINDEX;
             }
@@ -734,7 +734,7 @@ namespace XisfFileManager
 
         private void RadioButton_Index_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_RenameOrder_Index.Checked)
+            if (RadioButton_FileSelectionRenameOrder_Index.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEX;
             }
@@ -742,7 +742,7 @@ namespace XisfFileManager
 
         private void RadioButton_Weight_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_RenameOrder_Weight.Checked)
+            if (RadioButton_FileSelectionRenameOrder_Weight.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHT;
             }
@@ -750,7 +750,7 @@ namespace XisfFileManager
 
         private void RadioButton_IndexWeight_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_RenameOrder_IndexWeight.Checked)
+            if (RadioButton_FileSelectionRenameOrder_IndexWeight.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
             }
@@ -796,7 +796,7 @@ namespace XisfFileManager
             }
 
 
-            GroupBox_WeightsAndStatistics.Enabled = RadioButton_SubFrameKeywords_Alphabetize.Checked ? false : true;
+            GroupBox_WeightsAndStatistics.Enabled = !RadioButton_KeywordSubFrame_Alphabetize.Checked;
 
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
             {
@@ -873,7 +873,7 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_SubFrameKeywords_Alphabetize.Checked)
+            if (RadioButton_KeywordSubFrame_Alphabetize.Checked)
             {
                 SetUISubFrameGroupBoxState();
             }
@@ -881,12 +881,12 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeyWords_SubFrameWeightCalculations_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Checked)
+            if (RadioButton_KeywordSubFrame_SubFrameWeightCalculations.Checked)
             {
                 SetUISubFrameGroupBoxState();
             }
 
-            if (RadioButton_SubFrameKeyWords_SubFrameWeightCalculations.Checked == true)
+            if (RadioButton_KeywordSubFrame_SubFrameWeightCalculations.Checked == true)
             {
                 this.Size = new Size(989, 1147);
             }
@@ -1041,7 +1041,7 @@ namespace XisfFileManager
             {
                 string program;
 
-                program = file.KeywordData.CaptureSoftware();
+                program = file.CaptureSoftware;
 
                 if (program == "TSX")
                 {
@@ -1171,6 +1171,8 @@ namespace XisfFileManager
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "SCP");
                 }
+
+                file.ParseRequiredKeywords();
             }
 
             if (count == 0)
@@ -1408,6 +1410,8 @@ namespace XisfFileManager
                         file.KeywordData.AddKeyword("FOCALLEN", 1100, "10 Inch Newtonian without Reducer");
                     }
                 }
+
+                file.ParseRequiredKeywords();
             }
 
             FindTelescope();
@@ -1428,25 +1432,25 @@ namespace XisfFileManager
         {
             if (CheckBox_KeywordCamera_NarrowBand.Checked)
             {
-                TextBox_CameraZ533Gain.Text = "100";
-                TextBox_CameraZ533Offset.Text = "50";
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
 
-                TextBox_CameraZ183Gain.Text = "111";
-                TextBox_CameraZ183Offset.Text = "10";
+                TextBox_KeywordCamera_Z183Gain.Text = "111";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
 
-                TextBox_CameraQ178Gain.Text = "40";
-                TextBox_CameraQ178Offset.Text = "15";
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
             }
             else
             {
-                TextBox_CameraZ533Gain.Text = "100";
-                TextBox_CameraZ533Offset.Text = "50";
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
 
-                TextBox_CameraZ183Gain.Text = "53";
-                TextBox_CameraZ183Offset.Text = "10";
+                TextBox_KeywordCamera_Z183Gain.Text = "53";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
 
-                TextBox_CameraQ178Gain.Text = "40";
-                TextBox_CameraQ178Offset.Text = "15";
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
             }
         }
 
@@ -1501,8 +1505,10 @@ namespace XisfFileManager
                 if (RadioButton_KeywordImageTypeFilter_Shutter.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Shutter");
 
-                if (CheckBox_Master.Checked)
+                if (CheckBox__FileSelectionDirectorySelection_Master.Checked)
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Image");
+
+                file.ParseRequiredKeywords();
             }
 
             FindFrameType();
@@ -1542,8 +1548,8 @@ namespace XisfFileManager
             RadioButton_KeywordImageTypeFilter_S2.Checked = false;
             RadioButton_KeywordImageTypeFilter_Shutter.Checked = false;
 
-            CheckBox_Master.ForeColor = Color.Black;
-            CheckBox_Master.Checked = false;
+            CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
+            CheckBox__FileSelectionDirectorySelection_Master.Checked = false;
 
             Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Black;
             Button_KeywordImageType_SetAll.ForeColor = Color.Black;
@@ -1560,7 +1566,8 @@ namespace XisfFileManager
             filterCount = 0;
             foreach (XisfFile file in mFileList)
             {
-                filter = file.KeywordData.FilterName();
+                filter = file.Filter;
+
                 if (filter == "Luma")
                 {
                     foundLuma = true;
@@ -1728,7 +1735,7 @@ namespace XisfFileManager
             {
                 string frameType;
 
-                frameType = file.KeywordData.FrameType();
+                frameType = file.FrameType;
 
                 if (frameType.Contains("Light"))
                 {
@@ -1817,13 +1824,13 @@ namespace XisfFileManager
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
-                    CheckBox_Master.ForeColor = Color.Red;
+                    CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
                     Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
-                    CheckBox_Master.Checked = true;
-                    CheckBox_Master.ForeColor = Color.Black;
+                    CheckBox__FileSelectionDirectorySelection_Master.Checked = true;
+                    CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
                 }
             }
 
@@ -1844,7 +1851,7 @@ namespace XisfFileManager
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
-                CheckBox_Master.ForeColor = Color.Red;
+                CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
                 Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
             }
 
@@ -1858,6 +1865,8 @@ namespace XisfFileManager
 
         public void FindCamera()
         {
+            Label_KeywordCamera_Camera.ForeColor = Color.Black;
+
             RadioButton_KeywordCamera_Z533.Checked = false;
             RadioButton_KeywordCamera_Z533.ForeColor = Color.Black;
 
@@ -1873,53 +1882,19 @@ namespace XisfFileManager
             Label_KeywordCamera_SensorTemperature.ForeColor = Color.Black;
             Label_KeywordCamera_Gain.ForeColor = Color.Black;
             Label_KeywordCamera_Offset.ForeColor = Color.Black;
-            Label_CameraBinning.ForeColor = Color.Black;
+            Label_KeywordCamera_Binning.ForeColor = Color.Black;
             Label_KeywordCamera_Seconds.ForeColor = Color.Black;
 
             Button_KeywordCamera_SetAll.ForeColor = Color.Black;
             Button_KeywordCamera_SetByFile.ForeColor = Color.Black;
 
 
-            if (mFileList.Count == 0)
-            {
-                return;
-            }
+            if (mFileList.Count == 0) return;
 
-            int cameraCount = 0;
-            bool foundZ533 = false;
-            bool foundZ183 = false;
-            bool foundQ178 = false;
-            bool foundA144 = false;
-            string camera;
-
-            foreach (XisfFile file in mFileList)
-            {
-                camera = file.KeywordData.Camera();
-
-                if (camera.Equals("Z533"))
-                {
-                    cameraCount++;
-                    foundZ533 = true;
-                }
-
-                if (camera.Equals("Z183"))
-                {
-                    cameraCount++;
-                    foundZ183 = true;
-                }
-
-                if (camera.Equals("Q178"))
-                {
-                    cameraCount++;
-                    foundQ178 = true;
-                }
-
-                if (camera.Equals("A144"))
-                {
-                    cameraCount++;
-                    foundA144 = true;
-                }
-            }
+            bool foundZ533 = mFileList.Where(i => i.Camera.Equals("Z533")).Count() > 0;
+            bool foundZ183 = mFileList.Where(i => i.Camera.Equals("Z183")).Count() > 0;
+            bool foundQ178 = mFileList.Where(i => i.Camera.Equals("Q178")).Count() > 0;
+            bool foundA144 = mFileList.Where(i => i.Camera.Equals("A144")).Count() > 0;
 
             if (foundZ533)
             {
@@ -1931,7 +1906,6 @@ namespace XisfFileManager
                 else
                 {
                     RadioButton_KeywordCamera_Z533.Checked = true;
-                    RadioButton_KeywordCamera_Z533.ForeColor = Color.Black;
                 }
             }
 
@@ -1945,7 +1919,6 @@ namespace XisfFileManager
                 else
                 {
                     RadioButton_KeywordCamera_Z183.Checked = true;
-                    RadioButton_KeywordCamera_Z183.ForeColor = Color.Black;
                 }
             }
 
@@ -1959,7 +1932,6 @@ namespace XisfFileManager
                 else
                 {
                     RadioButton_KeywordCamera_Q178.Checked = true;
-                    RadioButton_KeywordCamera_Q178.ForeColor = Color.Black;
                 }
             }
 
@@ -1973,136 +1945,165 @@ namespace XisfFileManager
                 else
                 {
                     RadioButton_KeywordCamera_A144.Checked = true;
-                    RadioButton_KeywordCamera_A144.ForeColor = Color.Black;
                 }
             }
 
-            // ************************************************************************************************
-
-            int gain;
-            int offset;
-            int gainCount = 0;
-            int offsetCount = 0;
-            int temperatureCount = 0;
-            int exposureCount = 0;
-            bool foundGain = false;
-            bool foundOffset = false;
-            bool foundTemperature = false;
-            bool foundExposure = false;
-
-            foreach (XisfFile file in mFileList)
+            if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
             {
-                gain = file.KeywordData.Gain();
-
-                if (gain != -1)
-                {
-                    gainCount++;
-                    foundGain = true;
-
-
-                    if (file.KeywordData.Camera().Equals("Z533"))
-                    {
-                        TextBox_CameraZ533Gain.Text = gain.ToString();
-                    }
-
-                    if (file.KeywordData.Camera().Equals("Z183"))
-                    {
-                        TextBox_CameraZ183Gain.Text = gain.ToString();
-                    }
-
-                    if (file.KeywordData.Camera().Equals("Q178"))
-                    {
-                        TextBox_CameraQ178Gain.Text = gain.ToString();
-                    }
-                }
-
-                if (gainCount != mFileList.Count)
-                {
-                    Label_KeywordCamera_Gain.ForeColor = Color.Red;
-                }
-
-                // ****************************************************************
-
-                offset = file.KeywordData.Offset();
-
-                if (offset != -1)
-                {
-                    offsetCount++;
-                    foundOffset = true;
-
-
-                    if (file.KeywordData.Camera().Equals("Z533"))
-                    {
-                        TextBox_CameraZ533Offset.Text = offset.ToString();
-                    }
-
-                    if (file.KeywordData.Camera().Equals("Z183"))
-                    {
-                        TextBox_CameraZ183Offset.Text = offset.ToString();
-                    }
-
-                    if (file.KeywordData.Camera().Equals("Q178"))
-                    {
-                        TextBox_CameraQ178Offset.Text = offset.ToString();
-                    }
-                }
-
-                if (offsetCount != mFileList.Count)
-                {
-                    Label_KeywordCamera_Offset.ForeColor = Color.Red;
-                }
-
-                // ****************************************************************
-                string temperature;
-                temperature = file.KeywordData.SensorTemperature();
-
-                if (temperature != string.Empty)
-                {
-                    temperatureCount++;
-                    foundTemperature = true;
-                    TextBox_KeywordCamera_SensorTemperature.Text = Math.Round(Convert.ToDouble(temperature), 1).ToString("F1");
-                }
-
-                if (temperatureCount != mFileList.Count)
-                {
-                    Label_KeywordCamera_SensorTemperature.ForeColor = Color.Red;
-                }
-
-                // ****************************************************************
-                string exposure;
-                exposure = file.KeywordData.ExposureSeconds();
-
-                if (exposure != string.Empty)
-                {
-                    exposureCount++;
-                    foundExposure = true;
-                    TextBox_KeywordCamera_ExposureTime.Text = Convert.ToDouble(exposure).ToString();
-                }
-
-                if (exposureCount != mFileList.Count)
-                {
-                    Label_KeywordCamera_Seconds.ForeColor = Color.Red;
-                }
+                RadioButton_KeywordCamera_A144.ForeColor = Color.Red;
+                RadioButton_KeywordCamera_Q178.ForeColor = Color.Red;
+                RadioButton_KeywordCamera_Z183.ForeColor = Color.Red;
+                RadioButton_KeywordCamera_Z533.ForeColor = Color.Red;
             }
 
+            // ****************************************************************
 
-            // ************************************************************************************************
-            // ************************************************************************************************
+            bool missingGain = mFileList.Exists(i => i.Gain == -1);
+            bool uniqueGain = mFileList.Select(i => i.Gain).Distinct().Count() == 1;
 
-            if ((foundZ533 ^ foundZ183 ^ foundQ178 ^ foundA144) & foundGain & foundOffset & foundTemperature & foundExposure)
+            if (missingGain)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Black;
+                Label_KeywordCamera_Gain.ForeColor = Color.Red;
             }
             else
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                if (!uniqueGain)
+                {
+                    Label_KeywordCamera_Gain.ForeColor = Color.Red;
+                }
             }
 
-            if ((cameraCount != mFileList.Count) || (gainCount != mFileList.Count) || (offsetCount != mFileList.Count) ||
-                (temperatureCount != mFileList.Count) || (exposureCount != mFileList.Count))
+            if (missingGain && !uniqueGain)
             {
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
                 Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
             }
+
+            foreach(XisfFile file in mFileList)
+            {
+                if (file.Camera.Equals("Z533"))
+                    TextBox_KeywordCamera_Z533Gain.Text = file.Gain.ToString();
+                if (file.Camera.Equals("Z183"))
+                    TextBox_KeywordCamera_Z183Gain.Text = file.Gain.ToString();
+                if (file.Camera.Equals("Z533"))
+                    TextBox_KeywordCamera_Q178Gain.Text = file.Gain.ToString();
+            }
+            
+
+            // ****************************************************************
+
+            bool missingOffset = mFileList.Exists(i => i.Offset == -1);
+            bool uniqueOffset = mFileList.Select(i => i.Offset).Distinct().Count() == 1;
+
+            if (missingOffset)
+            {
+                Label_KeywordCamera_Offset.ForeColor = Color.Red;
+            }
+            else
+            {
+                if (!uniqueOffset)
+                {
+                    Label_KeywordCamera_Offset.ForeColor = Color.Red;
+                }
+            }
+
+            if (missingOffset && !missingOffset)
+            {
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+            }
+
+            foreach (XisfFile file in mFileList)
+            {
+                if (file.Camera.Equals("Z533"))
+                    TextBox_KeywordCamera_Z533Offset.Text = file.Offset.ToString();
+                if (file.Camera.Equals("Z183"))
+                    TextBox_KeywordCamera_Z183Offset.Text = file.Offset.ToString();
+                if (file.Camera.Equals("Z533"))
+                    TextBox_KeywordCamera_Q178Offset.Text = file.Offset.ToString();
+            }
+            // ****************************************************************
+
+            bool missingTemperature = mFileList.Exists(i => i.Temperature == string.Empty);
+            bool uniqueTemperature = mFileList.Select(i => i.Temperature).Distinct().Count() == 1;
+
+            if (missingTemperature)
+            {
+                Label_KeywordCamera_SensorTemperature.ForeColor = Color.Red;
+            }
+            else
+            {
+                if (!uniqueTemperature)
+                {
+                    Label_KeywordCamera_SensorTemperature.ForeColor = Color.Red;
+                }
+                else
+                {
+                    TextBox_KeywordCamera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
+                }
+            }
+
+            if (missingTemperature && !uniqueTemperature)
+            {
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+            }
+
+            // ***************************************************************
+
+            bool missingBinning = mFileList.Exists(i => i.Binning == -1);
+            bool uniqueBinning = mFileList.Select(i => i.Binning).Distinct().Count() == 1;
+
+            if (missingBinning)
+            {
+                Label_KeywordCamera_Binning.ForeColor = Color.Red;
+            }
+            else
+            {
+                if (!uniqueBinning)
+                {
+                    Label_KeywordCamera_Binning.ForeColor = Color.Red;
+                }
+                else
+                {
+                    NumericUpDown_KeywordCamera_Binning.Value = mFileList[0].Binning;
+                }
+            }
+
+            if (missingBinning && !uniqueBinning)
+            {
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+            }
+
+            // ****************************************************************
+
+            bool missingExposure = mFileList.Exists(i => i.Exposure == string.Empty);
+            bool uniqueExposure = mFileList.Select(i => i.Exposure).Distinct().Count() == 1;
+
+            if (missingExposure)
+            {
+                Label_KeywordCamera_Seconds.ForeColor = Color.Red;
+            }
+            else
+            {
+                if (!uniqueExposure)
+                {
+                    Label_KeywordCamera_Seconds.ForeColor = Color.Red;
+                }
+                else
+                {
+                    TextBox_KeywordCamera_ExposureTime.Text = mFileList[0].Exposure;
+                }
+            }
+
+            if (missingExposure && !uniqueExposure)
+            {
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+            }
+
+            // ****************************************************************
         }
 
         private void Button_KeywordCamera_SetAll_Click(object sender, EventArgs e)
@@ -2133,8 +2134,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraZ533Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraZ533Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Z533Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Z533Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2146,8 +2147,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraZ183Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraZ183Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Z183Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Z183Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2159,8 +2160,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_CameraQ178Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_CameraQ178Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Q178Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Q178Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2176,6 +2177,8 @@ namespace XisfFileManager
                     file.KeywordData.RemoveKeyword("OFFSET");
                     file.KeywordData.SetEGain();
                 }
+
+                file.ParseRequiredKeywords();
             }
 
             FindCamera();
@@ -2187,13 +2190,13 @@ namespace XisfFileManager
 
             if (CheckBox_KeywordCamera_NarrowBand.Checked)
             {
-                TextBox_CameraZ533Gain.Text = "100";
-                TextBox_CameraZ533Offset.Text = "50";
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
             }
             else
             {
-                TextBox_CameraZ533Gain.Text = "100";
-                TextBox_CameraZ533Offset.Text = "50";
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
             }
         }
 
@@ -2203,13 +2206,13 @@ namespace XisfFileManager
 
             if (CheckBox_KeywordCamera_NarrowBand.Checked)
             {
-                TextBox_CameraZ183Gain.Text = "111";
-                TextBox_CameraZ183Offset.Text = "10";
+                TextBox_KeywordCamera_Z183Gain.Text = "111";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
             }
             else
             {
-                TextBox_CameraZ183Gain.Text = "53";
-                TextBox_CameraZ183Offset.Text = "10";
+                TextBox_KeywordCamera_Z183Gain.Text = "53";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
             }
         }
 
@@ -2219,13 +2222,13 @@ namespace XisfFileManager
 
             if (CheckBox_KeywordCamera_NarrowBand.Checked)
             {
-                TextBox_CameraQ178Gain.Text = "40";
-                TextBox_CameraQ178Offset.Text = "15";
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
             }
             else
             {
-                TextBox_CameraQ178Gain.Text = "40";
-                TextBox_CameraQ178Offset.Text = "15";
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
             }
         }
 
@@ -2273,9 +2276,9 @@ namespace XisfFileManager
 
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
-            ComboBox_TargetName.Text = "Master";
-            CheckBox_SubFrameKeywords_UpdateTargetName.Checked = true;
-            CheckBox_Master.Checked = true;
+            ComboBox_KeywordSubFrame_TargetName.Text = "Master";
+            CheckBox_KeywordSubFrame_UpdateTargetName.Checked = true;
+            CheckBox__FileSelectionDirectorySelection_Master.Checked = true;
         }
 
         private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
@@ -2287,7 +2290,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            if (CheckBox_Master.Checked)
+            if (CheckBox__FileSelectionDirectorySelection_Master.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
@@ -2313,7 +2316,7 @@ namespace XisfFileManager
                                 if (foundNumberOfImages)
                                     break;
                             }
-                      
+
                             if (node.Comment.ToLower().Contains("student"))
                             {
                                 rejection = "ESD";
@@ -2354,6 +2357,11 @@ namespace XisfFileManager
 
                 }
             }
+        }
+
+        private void Button_KeywordCamera_SetByFile_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

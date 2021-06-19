@@ -12,8 +12,27 @@ namespace XisfFileManager.FileOperations
         public int ThumbnailAttachmentStart { get; set; } = 0;
         public string SourceFileName { get; set; }
         public KeywordLists KeywordData { get; set; }
-        public bool Unique;
-        public bool Master = false;
+        public bool Unique { get; set; } = false;
+        
+
+        // List of required keywords for EVERY frame
+        // Some of these Keywords will add subsets of additional keywords
+        public string Target { get; set; }
+        public string CaptureSoftware { get; set; }
+        public string Telescope { get; set; }
+        public bool RiccardiReducer { get; set; }
+        public int FocalLength { get; set; }
+        public string Camera { get; set; }
+        public string Exposure { get; set; }
+        public bool NarrowBand { get; set; }
+        public int Gain { get; set; }
+        public int Offset { get; set; }
+        public string Temperature { get; set; }
+        public int Binning { get; set; }
+        public string Filter { get; set; }
+        public string FrameType { get; set; }
+        public bool Master { get; set; } = false;
+
 
         public XisfFile()
         {
@@ -61,6 +80,25 @@ namespace XisfFileManager.FileOperations
             if (object1.KeywordData.CaptureDateTime() < object2.KeywordData.CaptureDateTime()) return -1;
             return 0;
         };
+
+        public void ParseRequiredKeywords()
+        {
+            Target = KeywordData.TargetName();
+            CaptureSoftware = KeywordData.CaptureSoftware();
+            Telescope = KeywordData.Telescope();
+            RiccardiReducer = Telescope.EndsWith("R");
+            FocalLength = KeywordData.FocalLength();
+            Camera = KeywordData.Camera();
+            Exposure = KeywordData.ExposureSeconds();
+            Filter = KeywordData.FilterName();
+            NarrowBand = Filter.Contains("Ha") || Filter.Contains("O3") || Filter.Contains("S2");
+            Gain = KeywordData.Gain();
+            Offset = KeywordData.Offset();
+            Temperature = KeywordData.SensorTemperature();
+            Binning = KeywordData.Binning();
+            FrameType = KeywordData.FrameType();
+            Master = Target.Contains("Master");
+        }
     }
 }
 
