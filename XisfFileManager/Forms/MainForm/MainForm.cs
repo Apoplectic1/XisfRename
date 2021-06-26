@@ -1043,25 +1043,25 @@ namespace XisfFileManager
 
                 program = file.CaptureSoftware;
 
-                if (program == "TSX")
+                if (program.Contains("TSX"))
                 {
                     foundTSX = true;
                     count++;
                 }
 
-                if (program == "SGP")
+                if (program.Contains("SGP"))
                 {
                     foundSGP = true;
                     count++;
                 }
 
-                if (program == "VOY")
+                if (program.Contains("VOY"))
                 {
                     foundVOY = true;
                     count++;
                 }
 
-                if (program == "SCP")
+                if (program.Contains("SCP"))
                 {
                     foundSCP = true;
                     count++;
@@ -1077,7 +1077,6 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_TSX.ForeColor = Color.Black;
                     RadioButton_KeywordSoftware_TSX.Checked = true;
                 }
             }
@@ -1091,7 +1090,6 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_SGP.ForeColor = Color.Black;
                     RadioButton_KeywordSoftware_SGP.Checked = true;
                 }
             }
@@ -1105,7 +1103,6 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_VOY.ForeColor = Color.Black;
                     RadioButton_KeywordSoftware_VOY.Checked = true;
                 }
             }
@@ -1119,9 +1116,16 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_SCP.ForeColor = Color.Black;
                     RadioButton_KeywordSoftware_SCP.Checked = true;
                 }
+            }
+
+            if (!foundSCP && !foundSGP && !foundTSX && !foundVOY)
+            {
+                RadioButton_KeywordSoftware_TSX.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordSoftware_SGP.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordSoftware_VOY.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordSoftware_SCP.ForeColor = Color.DarkViolet;
             }
 
             if (foundTSX ^ foundSGP ^ foundVOY ^ foundSCP)
@@ -1180,28 +1184,102 @@ namespace XisfFileManager
                 return;
             }
 
-            RadioButton_KeywordSoftware_TSX.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_SGP.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_VOY.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_SCP.ForeColor = Color.Black;
-
-            Button_KeywordSoftware_SetAll.ForeColor = Color.Black;
-            Button_KeywordSoftware_SetByFile.ForeColor = Color.Black;
 
             FindCaptureSoftware();
         }
 
-
         private void Button_CaptureSoftware_SetByFile_Click(object sender, EventArgs e)
         {
+            bool global = false;
+            string captureSoftware = string.Empty;
+
             foreach (XisfFile file in mFileList)
             {
-                file.KeywordData.CaptureSoftware(true);
+                if (global)
+                {
+                    if (file.KeywordData.CaptureSoftware() == string.Empty)
+                        file.KeywordData.AddKeyword("CREATOR", captureSoftware, "XISF File Manager");
+                }
+                else
+                {
+                    captureSoftware = file.KeywordData.CaptureSoftware(true);
+                    if (captureSoftware.Contains("Global_"))
+                    {
+                        global = true;
+                        captureSoftware = captureSoftware.Replace("Global_", "");
+                    }
+                }
+
+                file.CaptureSoftware = captureSoftware;
+
             }
 
             FindCaptureSoftware();
         }
 
+
+        private void RadioButton_KeywordTelescope_APM107_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "525";
+            }
+            else
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "700";
+            }
+        }
+
+        private void RadioButton_KeywordTelescope_EVO150_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "750";
+            }
+            else
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "1000";
+            }
+        }
+
+        private void RadioButton_KeywordTelescope_NWT254_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "825";
+            }
+            else
+            {
+                TextBox_KeywordTelescope_FocalLength.Text = "1100";
+            }
+        }
+
+        private void CheckBox_KeywordTelescope_Riccardi_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RadioButton_KeywordTelescope_APM107.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                    TextBox_KeywordTelescope_FocalLength.Text = "525";
+                else
+                    TextBox_KeywordTelescope_FocalLength.Text = "700";
+            }
+
+            if (RadioButton_KeywordTelescope_EVO150.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                    TextBox_KeywordTelescope_FocalLength.Text = "750";
+                else
+                    TextBox_KeywordTelescope_FocalLength.Text = "1000";
+            }
+
+            if (RadioButton_KeywordTelescope_NWT254.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                    TextBox_KeywordTelescope_FocalLength.Text = "825";
+                else
+                    TextBox_KeywordTelescope_FocalLength.Text = "1100";
+            }
+        }
 
         private void FindTelescope()
         {
@@ -1228,6 +1306,8 @@ namespace XisfFileManager
 
             CheckBox_KeywordTelescope_Riccardi.ForeColor = Color.Black;
             CheckBox_KeywordTelescope_Riccardi.Checked = false;
+
+            TextBox_KeywordTelescope_FocalLength.Text = "";
             Label_KeywordTelescope_FocalLength.ForeColor = Color.Black;
 
             Button_KeywordTelescope_SetAll.ForeColor = Color.Black;
@@ -1236,11 +1316,11 @@ namespace XisfFileManager
             if (mFileList.Count == 0)
                 return;
 
-            focalLength = mFileList[0].KeywordData.FocalLength(false);
+            focalLength = mFileList[0].KeywordData.FocalLength();
 
             foreach (XisfFile file in mFileList)
             {
-                telescope = file.KeywordData.Telescope(false);
+                telescope = file.KeywordData.Telescope();
                 if (telescope == string.Empty)
                     continue;
 
@@ -1268,12 +1348,12 @@ namespace XisfFileManager
                     foundNWT = true;
                 }
 
-                if (focalLength != file.KeywordData.FocalLength(false))
+                if (focalLength != file.KeywordData.FocalLength())
                 {
                     multipleFocalLengths = true;
                 }
 
-                focalLength = file.KeywordData.FocalLength(false);
+                focalLength = file.KeywordData.FocalLength();
                 if (focalLength != -1)
                 {
                     focalCount++;
@@ -1347,6 +1427,19 @@ namespace XisfFileManager
                 }
             }
 
+            if (!foundAPM && !foundEVO & !foundNWT)
+            {
+                RadioButton_KeywordTelescope_APM107.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordTelescope_EVO150.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordTelescope_NWT254.ForeColor = Color.DarkViolet;
+                Label_KeywordTelescope_FocalLength.ForeColor = Color.DarkViolet;
+                CheckBox_KeywordTelescope_Riccardi.Checked = false;
+                CheckBox_KeywordTelescope_Riccardi.ForeColor = Color.DarkViolet;
+                Button_KeywordTelescope_SetAll.ForeColor = Color.Red;
+                Button_KeywordTelescope_SetByFile.ForeColor = Color.Red;
+                return;
+            }
+
             // Set SetAll button to black if only a single telescope has been found or a signle focal lenght has been found
             if ((foundAPM ^ foundEVO ^ foundNWT) && (focalCount == mFileList.Count))
             {
@@ -1365,49 +1458,97 @@ namespace XisfFileManager
             }
         }
 
+        private void SetTelescopeUI(XisfFile file)
+        {
+            if (RadioButton_KeywordTelescope_APM107.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 Super ED with Riccardi 0.75 Reducer");
+                }
+                else
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 700, "APM107 Super ED without Reducer");
+                }
+            }
+
+            if (RadioButton_KeywordTelescope_EVO150.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 750, "EvoStar 150 with Riccardi 0.75 Reducer");
+                }
+                else
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "EVO150", "EvoStar 150 without Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 1000, "EvoStar 150 without Reducer");
+                }
+            }
+
+            if (RadioButton_KeywordTelescope_NWT254.Checked)
+            {
+                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 825, "10 inch Newtonian with Riccardi 0.75 Reducer");
+                }
+                else
+                {
+                    file.KeywordData.AddKeyword("TELESCOP", "NWT254", "10 Inch Newtonian without Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 1100, "10 Inch Newtonian without Reducer");
+                }
+            }
+        }
+
         private void Button_Telescope_SetAll_Click(object sender, EventArgs e)
         {
             foreach (XisfFile file in mFileList)
             {
-                if (RadioButton_KeywordTelescope_APM107.Checked)
+                SetTelescopeUI(file);
+
+                file.ParseRequiredKeywords();
+            }
+
+            FindTelescope();
+        }
+
+
+        private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
+        {
+            bool globalTelescope = false;
+            string telescope = string.Empty;
+
+            foreach (XisfFile file in mFileList)
+            {
+                if (globalTelescope)
                 {
-                    if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                    if (file.KeywordData.Telescope() == string.Empty)
                     {
-                        file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 Super ED with Riccardi 0.75 Reducer");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 700, "APM107 Super ED without Reducer");
+                        SetTelescopeUI(file);
                     }
                 }
-
-                if (RadioButton_KeywordTelescope_EVO150.Checked)
+                else
                 {
-                    if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                    telescope = file.KeywordData.Telescope(true);
+                    if (telescope.Contains("Global_"))
                     {
-                        file.KeywordData.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 750, "EvoStar 150 with Riccardi 0.75 Reducer");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("TELESCOP", "EVO150", "EvoStar 150 without Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 1000, "EvoStar 150 without Reducer");
-                    }
-                }
+                        globalTelescope = true;
+                        telescope = telescope.Replace("Global_", "");
 
-                if (RadioButton_KeywordTelescope_NWT254.Checked)
-                {
-                    if (CheckBox_KeywordTelescope_Riccardi.Checked)
-                    {
-                        file.KeywordData.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 825, "10 inch Newtonian with Riccardi 0.75 Reducer");
-                    }
-                    else
-                    {
-                        file.KeywordData.AddKeyword("TELESCOP", "NWT254", "10 Inch Newtonian without Reducer");
-                        file.KeywordData.AddKeyword("FOCALLEN", 1100, "10 Inch Newtonian without Reducer");
+                        if (telescope.EndsWith("R"))
+                            CheckBox_KeywordTelescope_Riccardi.Checked = true;
+                        else
+                            CheckBox_KeywordTelescope_Riccardi.Checked = false;
+
+                        // Checking the radio button for the found telescope with also set focal length and Riccardi checkbox
+                        RadioButton_KeywordTelescope_APM107.Checked = telescope.Contains("APM") ? true : false;
+                        RadioButton_KeywordTelescope_EVO150.Checked = telescope.Contains("EVO") ? true : false;
+                        RadioButton_KeywordTelescope_NWT254.Checked = telescope.Contains("NWT") ? true : false;
+
+                        SetTelescopeUI(file);
                     }
                 }
 
@@ -1417,42 +1558,6 @@ namespace XisfFileManager
             FindTelescope();
         }
 
-        private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
-        {
-            foreach (XisfFile file in mFileList)
-            {
-                file.KeywordData.Telescope(true);
-                file.KeywordData.FocalLength(true);
-            }
-
-            FindTelescope();
-        }
-
-        private void CheckBox_CameraNarrowBand_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CheckBox_KeywordCamera_NarrowBand.Checked)
-            {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
-
-                TextBox_KeywordCamera_Z183Gain.Text = "111";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
-
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
-            }
-            else
-            {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
-
-                TextBox_KeywordCamera_Z183Gain.Text = "53";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
-
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
-            }
-        }
 
         private void Button_KeywordImageTypeFrame_SetByFile_Click(object sender, EventArgs e)
         {
@@ -1506,7 +1611,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("FILTER", "Shutter");
 
                 if (CheckBox__FileSelectionDirectorySelection_Master.Checked)
-                    file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Image");
+                    file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
                 file.ParseRequiredKeywords();
             }
@@ -1820,6 +1925,16 @@ namespace XisfFileManager
                 }
             }
 
+            if (!foundLight && !foundDark && !foundFlat && !foundBias)
+            {
+                RadioButton_KeywordImageTypeFrame_Light.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordImageTypeFrame_Dark.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordImageTypeFrame_Flat.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordImageTypeFrame_Bias.ForeColor = Color.DarkViolet;
+
+                return;
+            }
+
             if (foundMaster)
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
@@ -1830,7 +1945,6 @@ namespace XisfFileManager
                 else
                 {
                     CheckBox__FileSelectionDirectorySelection_Master.Checked = true;
-                    CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
                 }
             }
 
@@ -1950,10 +2064,21 @@ namespace XisfFileManager
 
             if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
             {
-                RadioButton_KeywordCamera_A144.ForeColor = Color.Red;
-                RadioButton_KeywordCamera_Q178.ForeColor = Color.Red;
-                RadioButton_KeywordCamera_Z183.ForeColor = Color.Red;
-                RadioButton_KeywordCamera_Z533.ForeColor = Color.Red;
+                RadioButton_KeywordCamera_A144.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordCamera_Q178.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordCamera_Z183.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordCamera_Z533.ForeColor = Color.DarkViolet;
+                Label_KeywordCamera_Gain.ForeColor = Color.DarkViolet;
+                Label_KeywordCamera_Offset.ForeColor = Color.DarkViolet;
+                Label_KeywordCamera_SensorTemperature.ForeColor = Color.DarkViolet;
+                Label_KeywordCamera_Binning.ForeColor = Color.DarkViolet;
+                Label_KeywordCamera_Seconds.ForeColor = Color.DarkViolet;
+                TextBox_KeywordCamera_ExposureTime.Text = "";
+
+                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
+                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+
+                return;
             }
 
             // ****************************************************************
@@ -1979,7 +2104,7 @@ namespace XisfFileManager
                 Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
             }
 
-            foreach(XisfFile file in mFileList)
+            foreach (XisfFile file in mFileList)
             {
                 if (file.Camera.Equals("Z533"))
                     TextBox_KeywordCamera_Z533Gain.Text = file.Gain.ToString();
@@ -1988,7 +2113,7 @@ namespace XisfFileManager
                 if (file.Camera.Equals("Z533"))
                     TextBox_KeywordCamera_Q178Gain.Text = file.Gain.ToString();
             }
-            
+
 
             // ****************************************************************
 
@@ -2106,6 +2231,32 @@ namespace XisfFileManager
             // ****************************************************************
         }
 
+        private void CheckBox_CameraNarrowBand_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_KeywordCamera_NarrowBand.Checked)
+            {
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
+
+                TextBox_KeywordCamera_Z183Gain.Text = "111";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
+
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
+            }
+            else
+            {
+                TextBox_KeywordCamera_Z533Gain.Text = "100";
+                TextBox_KeywordCamera_Z533Offset.Text = "50";
+
+                TextBox_KeywordCamera_Z183Gain.Text = "53";
+                TextBox_KeywordCamera_Z183Offset.Text = "10";
+
+                TextBox_KeywordCamera_Q178Gain.Text = "40";
+                TextBox_KeywordCamera_Q178Offset.Text = "15";
+            }
+        }
+
         private void Button_KeywordCamera_SetAll_Click(object sender, EventArgs e)
         {
             if (mFileList.Count == 0)
@@ -2184,6 +2335,312 @@ namespace XisfFileManager
             FindCamera();
         }
 
+
+        private void Button_KeywordCamera_SetByFile_Click(object sender, EventArgs e)
+        {
+            bool status;
+            bool globalSeconds = false;
+            string secondsText = string.Empty;
+            string globalSecondsText = string.Empty;
+            double seconds = -1;
+
+            bool globalTemperature = false;
+            string temperatureText = string.Empty;
+            string globalTemperatureText = string.Empty;
+            double temperature = -1;
+
+            bool globalGain = false;
+            int gainValue = -1;
+            int globalGainValue = -1;
+  
+            bool globalOffset = false;
+            int offsetValue = -1;
+            int globalOffsetValue = -1;
+  
+
+            if (mFileList.Count == 0)
+            {
+                return;
+            }
+
+            foreach (XisfFile file in mFileList)
+            {
+                file.KeywordData.RemoveKeyword("NAXIS3");
+                file.KeywordData.RemoveKeyword("EXPOSURE");
+
+                file.KeywordData.AddKeyword("BITPIX", 16, "Bits Per Pixel");
+                file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
+                file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
+
+                temperatureText = TextBox_KeywordCamera_SensorTemperature.Text;
+
+                if (globalTemperature)
+                {
+                    temperatureText = file.KeywordData.SensorTemperature();
+                    if (temperatureText == string.Empty)
+                    {
+                        temperatureText = globalTemperatureText;
+                    }
+                }
+                else
+                {
+                    if (TextBox_KeywordCamera_ExposureTime.Text == string.Empty)
+                    {
+                        temperatureText = file.KeywordData.SensorTemperature(true);
+                        if (temperatureText.Contains("Global_"))
+                        {
+                            globalTemperature = true;
+                            globalTemperatureText = temperatureText.Replace("Global_", "");
+                            temperatureText = globalTemperatureText;
+                        }
+                    }
+                }
+
+                status = double.TryParse(temperatureText, out temperature);
+                file.KeywordData.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
+
+                file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
+                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Horizontal Binning");
+                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Vertical Bining");
+
+                secondsText = TextBox_KeywordCamera_ExposureTime.Text;
+
+                if (globalSeconds)
+                {
+                    secondsText = file.KeywordData.ExposureSeconds();
+                    if (secondsText == string.Empty)
+                    {
+                        secondsText = globalSecondsText;
+                    }
+                }
+                else
+                {
+                    if (TextBox_KeywordCamera_ExposureTime.Text == string.Empty)
+                    {
+                        secondsText = file.KeywordData.ExposureSeconds(true);
+                        if (secondsText.Contains("Global_"))
+                        {
+                            globalSeconds = true;
+                            globalSecondsText = secondsText.Replace("Global_", "");
+                            secondsText = globalSecondsText;
+                        }
+                    }
+                }
+
+                status = double.TryParse(secondsText, out seconds);
+                file.KeywordData.AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
+
+
+
+
+                if (RadioButton_KeywordCamera_Z533.Checked)
+                {
+                    file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
+                    file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
+
+                    status = int.TryParse(TextBox_KeywordCamera_Z533Gain.Text, out gainValue);
+                    if (globalGain)
+                    {
+                        gainValue = file.KeywordData.Gain();
+                        if (gainValue < 0)
+                        {
+                            gainValue = globalGainValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Z533Gain.Text == string.Empty)
+                        {
+                            gainValue = file.KeywordData.Gain(true);
+                            if (gainValue < 0)
+                            {
+                                globalGain = true;
+                                globalGainValue = -gainValue;
+                                gainValue = globalGainValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
+                    file.KeywordData.SetEGain();
+
+
+                    status = int.TryParse(TextBox_KeywordCamera_Z533Offset.Text, out offsetValue);
+                    if (globalOffset)
+                    {
+                        offsetValue = file.KeywordData.Offset();
+                        if (offsetValue < 0)
+                        {
+                            offsetValue = globalOffsetValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Z533Offset.Text == string.Empty)
+                        {
+                            offsetValue = file.KeywordData.Offset(true);
+                            if (offsetValue < 0)
+                            {
+                                globalOffset = true;
+                                globalOffsetValue = -offsetValue;
+                                offsetValue = globalOffsetValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                }
+
+                if (RadioButton_KeywordCamera_Z183.Checked)
+                {
+                    file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
+                    file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+
+                    status = int.TryParse(TextBox_KeywordCamera_Z183Gain.Text, out gainValue);
+                    if (globalGain)
+                    {
+                        gainValue = file.KeywordData.Gain();
+                        if (gainValue < 0)
+                        {
+                            gainValue = globalGainValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Z183Gain.Text == string.Empty)
+                        {
+                            gainValue = file.KeywordData.Gain(true);
+                            if (gainValue < 0)
+                            {
+                                globalGain = true;
+                                globalGainValue = -gainValue;
+                                gainValue = globalGainValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
+                    file.KeywordData.SetEGain();
+
+
+                    status = int.TryParse(TextBox_KeywordCamera_Z183Offset.Text, out offsetValue);
+                    if (globalOffset)
+                    {
+                        offsetValue = file.KeywordData.Offset();
+                        if (offsetValue < 0)
+                        {
+                            offsetValue = globalOffsetValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Z183Offset.Text == string.Empty)
+                        {
+                            offsetValue = file.KeywordData.Offset(true);
+                            if (offsetValue < 0)
+                            {
+                                globalOffset = true;
+                                globalOffsetValue = -offsetValue;
+                                offsetValue = globalOffsetValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                }
+
+
+
+
+                if (RadioButton_KeywordCamera_Q178.Checked)
+                {
+                    file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
+                    file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+
+                    status = int.TryParse(TextBox_KeywordCamera_Q178Gain.Text, out gainValue);
+                    if (globalGain)
+                    {
+                        gainValue = file.KeywordData.Gain();
+                        if (gainValue < 0)
+                        {
+                            gainValue = globalGainValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Q178Gain.Text == string.Empty)
+                        {
+                            gainValue = file.KeywordData.Gain(true);
+                            if (gainValue < 0)
+                            {
+                                globalGain = true;
+                                globalGainValue = -gainValue;
+                                gainValue = globalGainValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
+                    file.KeywordData.SetEGain();
+
+
+                    status = int.TryParse(TextBox_KeywordCamera_Q178Offset.Text, out offsetValue);
+                    if (globalOffset)
+                    {
+                        offsetValue = file.KeywordData.Offset();
+                        if (offsetValue < 0)
+                        {
+                            offsetValue = globalOffsetValue;
+                        }
+                    }
+                    else
+                    {
+                        if (TextBox_KeywordCamera_Q178Offset.Text == string.Empty)
+                        {
+                            offsetValue = file.KeywordData.Offset(true);
+                            if (offsetValue < 0)
+                            {
+                                globalOffset = true;
+                                globalOffsetValue = -offsetValue;
+                                offsetValue = globalOffsetValue;
+                            }
+                        }
+                    }
+
+                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                }
+
+                if (RadioButton_KeywordCamera_A144.Checked)
+                {
+                    file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
+                    file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
+                    file.KeywordData.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
+                    file.KeywordData.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
+                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
+                    file.KeywordData.RemoveKeyword("GAIN");
+                    file.KeywordData.RemoveKeyword("OFFSET");
+                    file.KeywordData.SetEGain();
+                }
+
+                file.ParseRequiredKeywords();
+            }
+
+            FindCamera();
+        }
+
         private void RadioButton_KeywordCamera_Z533_CheckedChanged(object sender, EventArgs e)
         {
             TextBox_KeywordCamera_SensorTemperature.Text = "-10";
@@ -2235,42 +2692,6 @@ namespace XisfFileManager
         private void RadioButton_KeywordCamera_A144_CheckedChanged(object sender, EventArgs e)
         {
             TextBox_KeywordCamera_SensorTemperature.Text = "";
-        }
-
-        private void RadioButton_KeywordTelescope_APM107_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "525";
-            }
-            else
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "525";
-            }
-        }
-
-        private void RadioButton_KeywordTelescope_EVO150_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "750";
-            }
-            else
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "1000";
-            }
-        }
-
-        private void RadioButton_KeywordTelescope_NWT254_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "825";
-            }
-            else
-            {
-                TextBox_KeywordTelescope_FocalLength.Text = "1100";
-            }
         }
 
 
@@ -2357,11 +2778,6 @@ namespace XisfFileManager
 
                 }
             }
-        }
-
-        private void Button_KeywordCamera_SetByFile_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -18,9 +18,9 @@ namespace XisfFileManager.FileOperations
         // List of required keywords for EVERY frame
         // Some of these Keywords will add subsets of additional keywords
         public string Target { get; set; }
-        public string CaptureSoftware { get; set; }
         public string Telescope { get; set; }
         public bool RiccardiReducer { get; set; }
+        public string CaptureSoftware { get; set; }
         public int FocalLength { get; set; }
         public string Camera { get; set; }
         public string Exposure { get; set; }

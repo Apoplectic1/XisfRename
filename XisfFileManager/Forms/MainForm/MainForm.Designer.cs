@@ -483,12 +483,10 @@
             // RadioButton_KeywordSoftware_SGP
             // 
             this.RadioButton_KeywordSoftware_SGP.AutoSize = true;
-            this.RadioButton_KeywordSoftware_SGP.Checked = true;
             this.RadioButton_KeywordSoftware_SGP.Location = new System.Drawing.Point(20, 47);
             this.RadioButton_KeywordSoftware_SGP.Name = "RadioButton_KeywordSoftware_SGP";
             this.RadioButton_KeywordSoftware_SGP.Size = new System.Drawing.Size(56, 17);
             this.RadioButton_KeywordSoftware_SGP.TabIndex = 1;
-            this.RadioButton_KeywordSoftware_SGP.TabStop = true;
             this.RadioButton_KeywordSoftware_SGP.Text = "SGPro";
             this.RadioButton_KeywordSoftware_SGP.UseVisualStyleBackColor = true;
             // 
@@ -559,14 +557,13 @@
             // CheckBox_KeywordTelescope_Riccardi
             // 
             this.CheckBox_KeywordTelescope_Riccardi.AutoSize = true;
-            this.CheckBox_KeywordTelescope_Riccardi.Checked = true;
-            this.CheckBox_KeywordTelescope_Riccardi.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CheckBox_KeywordTelescope_Riccardi.Location = new System.Drawing.Point(17, 99);
             this.CheckBox_KeywordTelescope_Riccardi.Name = "CheckBox_KeywordTelescope_Riccardi";
             this.CheckBox_KeywordTelescope_Riccardi.Size = new System.Drawing.Size(133, 17);
             this.CheckBox_KeywordTelescope_Riccardi.TabIndex = 3;
             this.CheckBox_KeywordTelescope_Riccardi.Text = "Riccardi 0.75 Reducer";
             this.CheckBox_KeywordTelescope_Riccardi.UseVisualStyleBackColor = true;
+            this.CheckBox_KeywordTelescope_Riccardi.CheckedChanged += new System.EventHandler(this.CheckBox_KeywordTelescope_Riccardi_CheckedChanged);
             // 
             // RadioButton_KeywordTelescope_NWT254
             // 
@@ -593,12 +590,10 @@
             // RadioButton_KeywordTelescope_APM107
             // 
             this.RadioButton_KeywordTelescope_APM107.AutoSize = true;
-            this.RadioButton_KeywordTelescope_APM107.Checked = true;
             this.RadioButton_KeywordTelescope_APM107.Location = new System.Drawing.Point(17, 21);
             this.RadioButton_KeywordTelescope_APM107.Name = "RadioButton_KeywordTelescope_APM107";
             this.RadioButton_KeywordTelescope_APM107.Size = new System.Drawing.Size(69, 17);
             this.RadioButton_KeywordTelescope_APM107.TabIndex = 0;
-            this.RadioButton_KeywordTelescope_APM107.TabStop = true;
             this.RadioButton_KeywordTelescope_APM107.Text = "APM 107";
             this.RadioButton_KeywordTelescope_APM107.UseVisualStyleBackColor = true;
             this.RadioButton_KeywordTelescope_APM107.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_APM107_CheckedChanged);
@@ -879,12 +874,10 @@
             // RadioButton_KeywordCamera_Z533
             // 
             this.RadioButton_KeywordCamera_Z533.AutoSize = true;
-            this.RadioButton_KeywordCamera_Z533.Checked = true;
             this.RadioButton_KeywordCamera_Z533.Location = new System.Drawing.Point(23, 44);
             this.RadioButton_KeywordCamera_Z533.Name = "RadioButton_KeywordCamera_Z533";
             this.RadioButton_KeywordCamera_Z533.Size = new System.Drawing.Size(50, 17);
             this.RadioButton_KeywordCamera_Z533.TabIndex = 0;
-            this.RadioButton_KeywordCamera_Z533.TabStop = true;
             this.RadioButton_KeywordCamera_Z533.Text = "Z533";
             this.RadioButton_KeywordCamera_Z533.UseVisualStyleBackColor = true;
             this.RadioButton_KeywordCamera_Z533.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Z533_CheckedChanged);
@@ -2979,7 +2972,7 @@
             // Label_FileSelectionStatistics_TempratureCompensation
             // 
             this.Label_FileSelectionStatistics_TempratureCompensation.AutoSize = true;
-            this.Label_FileSelectionStatistics_TempratureCompensation.Location = new System.Drawing.Point(10, 46);
+            this.Label_FileSelectionStatistics_TempratureCompensation.Location = new System.Drawing.Point(207, 134);
             this.Label_FileSelectionStatistics_TempratureCompensation.Name = "Label_FileSelectionStatistics_TempratureCompensation";
             this.Label_FileSelectionStatistics_TempratureCompensation.Size = new System.Drawing.Size(161, 13);
             this.Label_FileSelectionStatistics_TempratureCompensation.TabIndex = 13;
@@ -2998,6 +2991,7 @@
             // 
             this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelection_BrowseFileName);
             this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Statistics);
+            this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelectionStatistics_TempratureCompensation);
             this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_DirectorySelection);
             this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_RenameOrder);
             this.GroupBox_FileSlection.Controls.Add(this.ProgressBar_FileSelection_OverAll);
@@ -3021,7 +3015,6 @@
             // 
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelectionStatistics_Task);
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_File_electionStatistics_SubFrameOverhead);
-            this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelectionStatistics_TempratureCompensation);
             this.GroupBox_FileSelection_Statistics.Location = new System.Drawing.Point(263, 20);
             this.GroupBox_FileSelection_Statistics.Name = "GroupBox_FileSelection_Statistics";
             this.GroupBox_FileSelection_Statistics.Size = new System.Drawing.Size(424, 105);

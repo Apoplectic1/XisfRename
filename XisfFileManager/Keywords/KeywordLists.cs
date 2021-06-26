@@ -115,7 +115,7 @@ namespace XisfFileManager
 
             if (camera == "A144")
                 egain = 0.37;
-          
+
             AddKeyword("EGAIN", egain, "Calculated electrons per ADU");
         }
 
@@ -175,7 +175,7 @@ namespace XisfFileManager
             {
                 if (node.Comment.ToLower().Contains("numberofimages"))
                     AddKeyword("TOTALFRAMES", node.Value, "Number of Integrated SubFrames");
-    
+
                 if (node.Comment.ToLower().Contains("pixelrejection"))
                 {
                     if (node.Comment.ToLower().Contains("linear"))
@@ -319,7 +319,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int Binning()
+        public int Binning(bool findMissingKeywords = false)
         {
             Keyword node = new Keyword();
 
@@ -329,19 +329,27 @@ namespace XisfFileManager
                 return Convert.ToInt32(node.Value);
             }
 
-            UserInputFormData formData = new UserInputFormData();
-            formData.mFormName = "Cammera Binning";
-            formData.mFormText = "Camera Binning Not Set";
-            formData.mFormEntryText = "Enter Bins: 1, 2, 3 or 4";
-            formData.mFileName = FileName();
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData();
+                formData.mFormName = "Cammera Binning";
+                formData.mFormText = "Camera Binning Not Set";
+                formData.mFormEntryText = "Enter Binning: 1, 2, 3 or 4";
+                formData.mFileName = FileName();
 
-            UserInputFormData FormValue = OpenUIForm(formData);
-            int bin = Convert.ToInt32(FormValue.mTextBox);
+                UserInputFormData FormValue = OpenUIForm(formData);
 
-            AddKeyword("XBINNING", bin);
-            AddKeyword("YBINNING", bin);
+                if (FormValue.mTextBox.Equals("1") || FormValue.mTextBox.Equals("2") || FormValue.mTextBox.Equals("3") || FormValue.mTextBox.Equals("4"))
+                {
+                    int bin = Convert.ToInt32(FormValue.mTextBox);
 
-            return bin;
+                    AddKeyword("XBINNING", bin);
+                    AddKeyword("YBINNING", bin);
+                    return bin;
+                }
+            }
+
+            return -1;
         }
 
         // *********************************************************************************************************
@@ -384,7 +392,6 @@ namespace XisfFileManager
             Keyword node = new Keyword();
             int index;
             bool status;
-            //bool utc = false;
 
             DateTime parsedDateTime;
 
@@ -451,29 +458,32 @@ namespace XisfFileManager
 
             if (node != null)
             {
-                if (node.Value.Contains("Sequence") || node.Value.Contains("SGP"))
+                if (node.Value.Contains("Sequence"))
                 {
                     AddKeyword("CREATOR", "SGP", node.Value);
                     return "SGP";
                 }
 
-                if (node.Value.Contains("VOYAGER") || node.Value.Contains("VOY"))
+                if (node.Value.Contains("VOYAGER"))
                 {
                     AddKeyword("CREATOR", "VOY", node.Value);
                     return "VOY";
                 }
 
-                if (node.Value.Contains("Sky") || node.Value.Contains("TSX"))
+                if (node.Value.Contains("Sky"))
                 {
                     AddKeyword("CREATOR", "TSX", node.Value);
                     return "TSX";
                 }
 
-                if (node.Value.Contains("Sharp") || node.Value.Contains("SCP"))
+                if (node.Value.Contains("Sharp"))
                 {
                     AddKeyword("CREATOR", "SCP", node.Value);
                     return "SCP";
                 }
+
+                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP"))
+                    return (node.Value);
             }
 
             while (FindMissingKeywords)
@@ -484,12 +494,16 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter SGP, TSX, VOY or SCP:";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                OpenUIForm(formData);
 
-                if (FormValue.mTextBox.Equals("SGP") || FormValue.mTextBox.Equals("TSX") || FormValue.mTextBox.Equals("VOY") || FormValue.mTextBox.Equals("SCP"))
+                if (formData.mTextBox.Equals("SGP") || formData.mTextBox.Equals("TSX") || formData.mTextBox.Equals("VOY") || formData.mTextBox.Equals("SCP"))
                 {
-                    AddKeyword("CREATOR", FormValue.mTextBox, "XISF File Manager");
-                    return FormValue.mTextBox;
+                    AddKeyword("CREATOR", formData.mTextBox, "XISF File Manager");
+
+                    if (formData.mGlobalCheckBox)
+                        return "Global_" + formData.mTextBox;
+                    else
+                        return formData.mTextBox;
                 }
             }
 
@@ -531,13 +545,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Exposure Time in Seconds (double):";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(formData.mTextBox, out seconds);
+                status = double.TryParse(returnData.mTextBox, out seconds);
                 if (status)
                 {
                     AddKeyword("EXPTIME", seconds, "Camera Exposure Time in Seconds");
-                    return FormatExposureSeconds(seconds);
+
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + FormatExposureSeconds(seconds);
+                    else
+                        return FormatExposureSeconds(seconds);
                 }
             }
 
@@ -668,7 +686,11 @@ namespace XisfFileManager
                 if (status)
                 {
                     AddKeyword("FOCALLEN", focalLength, "Focal Length");
-                    return focalLength;
+
+                    if (formValue.mGlobalCheckBox)
+                        return -focalLength;
+                    else
+                        return focalLength;
                 }
             }
 
@@ -749,13 +771,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Camera Gain: ";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = Int32.TryParse(value, out gain);
+                status = Int32.TryParse(returnValue.mTextBox, out gain);
                 if (status)
                 {
                     AddKeyword("GAIN", gain, "XISF File Manager");
-                    return gain;
+
+                    if (returnValue.mGlobalCheckBox)
+                        return -gain;
+                    else
+                        return gain;
                 }
             }
 
@@ -806,13 +832,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Camera Offset:";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = Int32.TryParse(value, out offset);
+                status = Int32.TryParse(returnValue.mTextBox, out offset);
                 if (status)
                 {
-                    AddKeyword("OFFSET", offset);
-                    return offset;
+                    AddKeyword("OFFSET", offset, "XISF File Manager");
+
+                    if (returnValue.mGlobalCheckBox)
+                        return -offset;
+                    else
+                        return offset;
                 }
             }
 
@@ -894,13 +924,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Actual Sensor Temperature:";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(value, out temperature);
+                status = double.TryParse(returnData.mTextBox, out temperature);
                 if (status)
                 {
-                    AddKeyword("CCD-TEMP", double.Parse(FormValue.mTextBox));
-                    return temperature.ToString();
+                    AddKeyword("CCD-TEMP", temperature);
+
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + FormatTemperatureString(temperature.ToString());
+                    else
+                        return FormatTemperatureString(temperature.ToString());
                 }
             }
 
@@ -993,34 +1027,35 @@ namespace XisfFileManager
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
-                if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT"))
+                if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT") ||
+                    FormValue.mTextBox.Equals("APMR") || FormValue.mTextBox.Equals("EVOR") || FormValue.mTextBox.Equals("NWTR"))
                 {
-                    if (FormValue.mTextBox == "APM")
-                    {
-                        AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
-                    }
+                    if (FormValue.mTextBox.Contains("APM"))
+                        if (FormValue.mTextBox.EndsWith("R"))
+                            AddKeyword("TELESCOP", "APM107R", "APM107 Super ED w/Riccardi 0.75 Reducer");
+                        else
+                            AddKeyword("TELESCOP", "APM107", "APM107 Super ED wo/Reducer");
 
-                    if (FormValue.mTextBox == "EVO")
-                    {
-                        AddKeyword("TELESCOP", "EVO150R", "w/Riccardi 0.75 Reducer");
-                    }
+                    if (FormValue.mTextBox.Contains("EVO"))
+                        if (FormValue.mTextBox.EndsWith("R"))
+                            AddKeyword("TELESCOP", "EVO150R", "Skyhawtcher EvoStar w/Riccardi 0.75 Reducer");
+                        else
+                            AddKeyword("TELESCOP", "EVO150", "SkyWatcher EvoStar wo/Reducer");
 
-                    if (FormValue.mTextBox == "NWT")
-                    {
-                        AddKeyword("TELESCOP", "EVO150R", "w/Riccardi 0.75 Reducer");
-                    }
+                    if (FormValue.mTextBox.Contains("NWT"))
+                        if (FormValue.mTextBox.EndsWith("R"))
+                            AddKeyword("TELESCOP", "NWT254R", "10 Inch Custom w/Riccardi 0.75 Reducer");
+                        else
+                            AddKeyword("TELESCOP", "NWT254", "10 Inch Custom Newtonian wo/Reducer");
+
+                    if (FormValue.mGlobalCheckBox)
+                        return "Global_" + FormValue.mTextBox;
+                    else
+                        return FormValue.mTextBox;
                 }
-                else
-                {
-                    AddKeyword("TELESCOP", FormValue.mTextBox, "XISF File Manager");
-                }
-                return FormValue.mTextBox;
             }
 
-
-            AddKeyword("TELESCOP", "APM107R", "w/Riccardi 0.75 Reducer");
-
-            return "APM107R";
+            return string.Empty;
         }
 
         // *********************************************************************************************************
@@ -1172,6 +1207,7 @@ namespace XisfFileManager
 
                 if (result == DialogResult.OK)
                 {
+                    formData.mGlobalCheckBox = UIForm.CheckBox_Global.Checked;
                     return UIForm.mData;
                 }
                 else
