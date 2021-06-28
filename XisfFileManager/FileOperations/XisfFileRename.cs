@@ -248,7 +248,7 @@ namespace XisfFileManager.FileOperations
                         }
                         else
                         {
-                            newName = index.ToString("D3") + " " + Convert.ToInt32(mFile.KeywordData.SSWeight() * 10.0).ToString("D4") + " ";
+                            newName = index.ToString("D3") + " " + Convert.ToInt32(mFile.KeywordData.SSWeight() * 1000.0).ToString("D4") + " ";
                         }
                         break;
                     case OrderType.WEIGHT:
@@ -258,7 +258,7 @@ namespace XisfFileManager.FileOperations
                         }
                         else
                         {
-                            newName = Convert.ToInt32(mFile.KeywordData.SSWeight() * 10.0).ToString("D4") + " ";
+                            newName = Convert.ToInt32(mFile.KeywordData.SSWeight() * 1000.0).ToString("D4") + " ";
                         }
                         break;
                     case OrderType.WEIGHTINDEX:
@@ -268,7 +268,7 @@ namespace XisfFileManager.FileOperations
                         }
                         else
                         {
-                            newName = Convert.ToInt32(mFile.KeywordData.SSWeight() * 10.0).ToString("D4") + " " + index.ToString("D3") + " ";
+                            newName = Convert.ToInt32(mFile.KeywordData.SSWeight() * 1000.0).ToString("D4") + " " + index.ToString("D3") + " ";
                         }
                         break;
                 }

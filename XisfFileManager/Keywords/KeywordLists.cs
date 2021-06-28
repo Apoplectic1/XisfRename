@@ -212,13 +212,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Total Integration Frames:";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = int.TryParse(FormValue.mTextBox, out frames);
+                status = int.TryParse(returnValue.mTextBox, out frames);
                 if (status)
                 {
                     AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
-                    return frames;
+
+                    if (returnValue.mGlobalCheckBox)
+                        return -frames;
+                    else
+                        return frames;
                 }
             }
 
@@ -326,6 +330,7 @@ namespace XisfFileManager
             node = KeywordList.Find(i => i.Name == "XBINNING");
             if (node != null)
             {
+                node.Value = node.Value.Replace(".", "");
                 return Convert.ToInt32(node.Value);
             }
 
@@ -361,7 +366,7 @@ namespace XisfFileManager
 
             if (node != null)
             {
-                return node.Value;
+                return node.Value.Replace("'","");
             }
 
             while (findMissingKeywords)
@@ -404,6 +409,13 @@ namespace XisfFileManager
             if (node == null)
                 // DATE-OBS may is in UTC vs local time
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
+
+            if (node == null)
+            { 
+                AddKeyword("DATE-OBS", "2019-01-01T12:00:00.000", "Missing DateTime XISF File Manager");
+
+                node = KeywordList.Find(i => i.Name == "DATE-OBS");
+            }
 
             value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;
@@ -494,16 +506,16 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter SGP, TSX, VOY or SCP:";
                 formData.mFileName = FileName();
 
-                OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                if (formData.mTextBox.Equals("SGP") || formData.mTextBox.Equals("TSX") || formData.mTextBox.Equals("VOY") || formData.mTextBox.Equals("SCP"))
+                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
                 {
-                    AddKeyword("CREATOR", formData.mTextBox, "XISF File Manager");
+                    AddKeyword("CREATOR", returnData.mTextBox, "XISF File Manager");
 
-                    if (formData.mGlobalCheckBox)
-                        return "Global_" + formData.mTextBox;
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + returnData.mTextBox;
                     else
-                        return formData.mTextBox;
+                        return returnData.mTextBox;
                 }
             }
 
@@ -575,6 +587,7 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
+                if (value.ToLower().Contains("lum")) value = "Luma";
                 if (value.ToLower().Contains("ha")) value = "Ha";
                 if (value.ToLower().Contains("oiii")) value = "O3";
                 if (value.ToLower().Contains("o3")) value = "O3";
@@ -585,14 +598,30 @@ namespace XisfFileManager
                 if (value.ToLower().Contains("blue")) value = "Blue";
                 if (value.ToLower().Contains("shutter")) value = "Shutter";
 
+                if (value == "Luma")
+                    AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "Red")
+                    AddKeyword("FILTER", "Red", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "Green")
+                    AddKeyword("FILTER", "Green", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "Blue")
+                    AddKeyword("FILTER", "Blue", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "Ha")
+                    AddKeyword("FILTER", "Ha", "Astrodon E-Series -Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "O3")
+                    AddKeyword("FILTER", "O3", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+
+                if (value == "S2")
+                    AddKeyword("FILTER", "S2", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+
                 if (value == "Shutter")
-                {
-                    AddKeyword("FILTER", value, "Dark");
-                }
-                else
-                {
-                    AddKeyword("FILTER", value, "Astrodon E-Series");
-                }
+                    AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
+
                 return value;
             }
 
@@ -604,13 +633,17 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                if (FormValue.mTextBox.Equals("L") || FormValue.mTextBox.Equals("R") || FormValue.mTextBox.Equals("G") || FormValue.mTextBox.Equals("B") ||
-                    FormValue.mTextBox.Equals("Ha") || FormValue.mTextBox.Equals("O3") || FormValue.mTextBox.Equals("S2") || FormValue.mTextBox.Equals("S"))
+                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("R") || returnData.mTextBox.Equals("G") || returnData.mTextBox.Equals("B") ||
+                    returnData.mTextBox.Equals("Ha") || returnData.mTextBox.Equals("O3") || returnData.mTextBox.Equals("S2") || returnData.mTextBox.Equals("S"))
                 {
-                    AddKeyword("FILTER", FormValue.mTextBox, "XISF File Manager");
-                    return FormValue.mTextBox;
+                    AddKeyword("FILTER", returnData.mTextBox, "XISF File Manager");
+
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + returnData.mTextBox;
+                    else
+                        return returnData.mTextBox;
                 }
             }
 
@@ -629,6 +662,14 @@ namespace XisfFileManager
             if (node != null)
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
+
+                if (value.StartsWith("L")) value = "Light";
+                if (value.StartsWith("D")) value = "Dark";
+                if (value.StartsWith("F")) value = "Flat";
+                if (value.StartsWith("B")) value = "Bias";
+
+                AddKeyword("IMAGETYP", value, node.Comment);
+
                 return value;
             }
 
@@ -640,17 +681,21 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Frame Type (L, D, F or B):";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                if (FormValue.mTextBox.Equals("L") || FormValue.mTextBox.Equals("D") || FormValue.mTextBox.Equals("F") || FormValue.mTextBox.Equals("B"))
+                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("D") || returnData.mTextBox.Equals("F") || returnData.mTextBox.Equals("B"))
                 {
-                    if (FormValue.Equals("L")) value = "Light";
-                    if (FormValue.Equals("D")) value = "Dark";
-                    if (FormValue.Equals("F")) value = "Flat";
-                    if (FormValue.Equals("B")) value = "Bias";
+                    if (returnData.mTextBox.Equals("L")) value = "Light";
+                    if (returnData.mTextBox.Equals("D")) value = "Dark";
+                    if (returnData.mTextBox.Equals("F")) value = "Flat";
+                    if (returnData.mTextBox.Equals("B")) value = "Bias";
 
-                    AddKeyword("IMAGETYP", FormValue.mTextBox, "XISF File Manager");
-                    return FormValue.mTextBox;
+                    AddKeyword("IMAGETYP", returnData.mTextBox, "XISF File Manager");
+
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + returnData.mTextBox;
+                    else
+                        return returnData.mTextBox;
                 }
             }
 
@@ -669,6 +714,7 @@ namespace XisfFileManager
             node = KeywordList.Find(i => i.Name == "FOCALLEN");
             if (node != null)
             {
+                node.Value = node.Value.Replace(".", "");
                 return (Convert.ToInt32(node.Value));
             }
 
@@ -962,14 +1008,14 @@ namespace XisfFileManager
             string value = string.Empty;
             Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "SSWEIGHT");
+            node = KeywordList.Find(i => i.Name == "NWEIGHT");
 
             if (node == null) return Double.NaN;
             double SSWeight = Convert.ToDouble(node.GetValue());
 
             if (Double.IsNaN(SSWeight)) return Double.NaN;
 
-            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 1, MidpointRounding.AwayFromZero));
+            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 3, MidpointRounding.AwayFromZero));
         }
 
         // *********************************************************************************************************
@@ -994,10 +1040,14 @@ namespace XisfFileManager
                 formData.mFormEntryText = "Enter Target Name (ID or Master):";
                 formData.mFileName = FileName();
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnData = OpenUIForm(formData);
 
-                AddKeyword("OBJECT", formData.mTextBox, "XISF File Manager");
-                return formData.mTextBox;
+                AddKeyword("OBJECT", returnData.mTextBox, "XISF File Manager");
+
+                if (returnData.mGlobalCheckBox)
+                    return "Global_" + returnData.mTextBox;
+                else
+                    return returnData.mTextBox;
             }
 
             return string.Empty;

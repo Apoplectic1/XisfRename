@@ -27,7 +27,7 @@ namespace XisfFileManager.FileOperations
         public bool NarrowBand { get; set; }
         public int Gain { get; set; }
         public int Offset { get; set; }
-        public string Temperature { get; set; }
+        public string Temperature { get; set; } = string.Empty;
         public int Binning { get; set; }
         public string Filter { get; set; }
         public string FrameType { get; set; }
