@@ -235,6 +235,9 @@ namespace XisfFileManager.FileOperations
 
             if (mFile.KeywordData.FrameType() == "Light")
             {
+                string weight = string.Empty;
+
+
                 switch (RenameOrder)
                 {
                     case OrderType.INDEX:

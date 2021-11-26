@@ -217,8 +217,8 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
-            ComboBox_KeywordSubFrame_TargetName.Text = "";
-            ComboBox_KeywordSubFrame_TargetName.Items.Clear();
+            ComboBox_KeywordSubFrame_TargetNames.Text = "";
+            ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
 
             try
             {
@@ -354,29 +354,77 @@ namespace XisfFileManager
 
 
             // **********************************************************************
-            // Get TargetName and populate ComboBox
+            // Get TargetName and and Weights to populate ComboBoxes
+
+            // First get a list of all the target names found in the source files, then find unique names ans sort.
+            // Place culled list in the target name combobox
             List<string> TargetNames = new List<string>();
+            List<string> WeightKeywords = new List<string>();
 
             foreach (XisfFile file in mFileList)
             {
                 TargetNames.Add(file.KeywordData.TargetName());
             }
 
-            TargetNames = TargetNames.Distinct().ToList();
-            TargetNames = TargetNames.OrderBy(q => q).ToList();
-
-            if (TargetNames.Count > 1)
+            if (TargetNames.Count > 0)
             {
-                Label_KeywordSubFrame_TagetName.ForeColor = Color.Red;
+                TargetNames = TargetNames.Distinct().ToList();
+                TargetNames = TargetNames.OrderBy(q => q).ToList();
+
+                if (TargetNames.Count > 1)
+                {
+                    Label_KeywordSubFrame_TagetName.ForeColor = Color.Red;
+                }
+                else
+                {
+                    Label_KeywordSubFrame_TagetName.ForeColor = Color.Black;
+                }
+
+                foreach (string item in TargetNames)
+                {
+                    ComboBox_KeywordSubFrame_TargetNames.Items.Add(item);
+                }
+
+                ComboBox_KeywordSubFrame_TargetNames.SelectedIndex = 0;
             }
             else
             {
-                Label_KeywordSubFrame_TagetName.ForeColor = Color.Black;
+                ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
+                Label_KeywordSubFrame_TagetName.ForeColor = Color.DarkViolet;
             }
 
-            foreach (string item in TargetNames)
+
+            // Now find a list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
+            foreach (XisfFile file in mFileList)
             {
-                ComboBox_KeywordSubFrame_TargetName.Items.Add(item);
+                WeightKeywords.Add(file.KeywordData.WeightKeyword());
+            }
+
+            if (WeightKeywords.Count > 0)
+            {
+                WeightKeywords = WeightKeywords.Distinct().ToList();
+                WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
+
+                foreach (string item in WeightKeywords)
+                {
+                    ComboBox_KeywordSubFrameWeight_Keywords.Items.Add(item);
+                }
+
+                if (WeightKeywords.Count > 1)
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                }
+                else
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                }
+
+                ComboBox_KeywordSubFrameWeight_Keywords.SelectedIndex = 0;
+            }
+            else
+            {
+                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
+                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
             }
             // **********************************************************************
 
@@ -412,11 +460,6 @@ namespace XisfFileManager
             FindCamera();
             FindFrameType();
             // **********************************************************************
-
-            if (ComboBox_KeywordSubFrame_TargetName.Items.Count != 0)
-            {
-                ComboBox_KeywordSubFrame_TargetName.SelectedIndex = 0;
-            }
         }
 
 
@@ -434,7 +477,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                file.Master = CheckBox__FileSelectionDirectorySelection_Master.Checked;
+                file.Master = CheckBox_FileSelectionDirectorySelection_Master.Checked;
 
                 Tuple<int, string> renameTuple;
                 ProgressBar_Keyword_XisfFile.Value += 1;
@@ -501,14 +544,14 @@ namespace XisfFileManager
                 }
             }
 
-            XisfFileUpdate.TargetName = ComboBox_KeywordSubFrame_TargetName.Text.Replace("'", "").Replace("\"", "");
+            XisfFileUpdate.TargetName = ComboBox_KeywordSubFrame_TargetNames.Text.Replace("'", "").Replace("\"", "");
 
             foreach (XisfFile file in mFileList)
             {
                 if (CheckBox_KeywordSubFrame_UpdateTargetName.Checked)
-                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordSubFrame_TargetName.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
+                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordSubFrame_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
 
-                file.Master = CheckBox__FileSelectionDirectorySelection_Master.Checked;
+                file.Master = CheckBox_FileSelectionDirectorySelection_Master.Checked;
 
                 if (file.Master)
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
@@ -1635,7 +1678,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 if (RadioButton_KeywordImageTypeFrame_Light.Checked)
-                    file.KeywordData.AddKeyword("IMAGETYP", "Light", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("IMAGETYP", "Light", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFrame_Dark.Checked)
                     file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -1644,28 +1687,45 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFrame_Bias.Checked)
-                    file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                {
+                   if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
+                    {
+                        file.KeywordData.RemoveKeyword("ALT-OBS");
+                        file.KeywordData.RemoveKeyword("DATE-END");
+                        file.KeywordData.RemoveKeyword("LAT-OBS");
+                        file.KeywordData.RemoveKeyword("LONG-OBS");
+                        file.KeywordData.RemoveKeyword("OBSGEO-B");
+                        file.KeywordData.RemoveKeyword("OBSGEO-H");
+                        file.KeywordData.RemoveKeyword("OBSGEO-L");
+                        file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Integration Master");
+                    }
+                   else
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Sub Frame");
+                    }
+                    
+                }
 
                 if (RadioButton_KeywordImageTypeFilter_Luma.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Luma", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_Red.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Red", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_Green.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Green", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_Blue.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Blue", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Blue", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_Ha.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Ha", "Astrodon E-Series -Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Ha", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_O3.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "O3", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "O3", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_S2.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "S2", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordImageTypeFilter_Shutter.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -1710,8 +1770,8 @@ namespace XisfFileManager
             RadioButton_KeywordImageTypeFilter_S2.Checked = false;
             RadioButton_KeywordImageTypeFilter_Shutter.Checked = false;
 
-            CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
-            CheckBox__FileSelectionDirectorySelection_Master.Checked = false;
+            CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
+            CheckBox_FileSelectionDirectorySelection_Master.Checked = false;
 
             Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Black;
             Button_KeywordImageType_SetAll.ForeColor = Color.Black;
@@ -2010,12 +2070,12 @@ namespace XisfFileManager
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
-                    CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
+                    CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
                     Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
-                    CheckBox__FileSelectionDirectorySelection_Master.Checked = true;
+                    CheckBox_FileSelectionDirectorySelection_Master.Checked = true;
                 }
             }
 
@@ -2036,7 +2096,7 @@ namespace XisfFileManager
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
-                CheckBox__FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
+                CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
                 Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
             }
 
@@ -2185,9 +2245,9 @@ namespace XisfFileManager
                     TextBox_KeywordCamera_Q178Gain.Text = file.Gain.ToString();
             }
 
-
             // ****************************************************************
 
+            bool hasOffset = mFileList.Exists(i => i.Offset != -1);
             bool missingOffset = mFileList.Exists(i => i.Offset == -1);
             bool uniqueOffset = mFileList.Select(i => i.Offset).Distinct().Count() == 1;
 
@@ -2203,7 +2263,7 @@ namespace XisfFileManager
                 }
             }
 
-            if (missingOffset && !missingOffset)
+            if ((missingOffset && !uniqueOffset) || !hasOffset)
             {
                 Button_KeywordCamera_SetAll.ForeColor = Color.Red;
                 Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
@@ -2218,6 +2278,7 @@ namespace XisfFileManager
                 if (file.Camera.Equals("Z533"))
                     TextBox_KeywordCamera_Q178Offset.Text = file.Offset.ToString();
             }
+
             // ****************************************************************
 
             bool hasTemperature = mFileList.Exists(i => i.Temperature != string.Empty);
@@ -2922,9 +2983,9 @@ namespace XisfFileManager
 
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
-            ComboBox_KeywordSubFrame_TargetName.Text = "Master";
+            ComboBox_KeywordSubFrame_TargetNames.Text = "Master";
             CheckBox_KeywordSubFrame_UpdateTargetName.Checked = true;
-            CheckBox__FileSelectionDirectorySelection_Master.Checked = true;
+            CheckBox_FileSelectionDirectorySelection_Master.Checked = true;
 
             bool globalTotalFrames = false;
             int frames = -1;
@@ -2966,7 +3027,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            if (CheckBox__FileSelectionDirectorySelection_Master.Checked)
+            if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
@@ -3030,9 +3091,94 @@ namespace XisfFileManager
 
                     if (foundRejection)
                         file.KeywordData.AddKeyword("REJECTION", rejection, comment);
-
                 }
             }
+        }
+
+        private void Button_KeywordSubFrameWeight_Remove_Click(object sender, EventArgs e)
+        {
+            List<string> WeightKeywords = new List<string>();
+
+            ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
+
+            // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
+            foreach (XisfFile file in mFileList)
+            {
+                WeightKeywords.Add(file.KeywordData.WeightKeyword());
+            }
+
+            if (WeightKeywords.Count > 0)
+            {
+                WeightKeywords = WeightKeywords.Distinct().ToList();
+                WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
+
+                foreach (string item in WeightKeywords)
+                {
+                    ComboBox_KeywordSubFrameWeight_Keywords.Items.Add(item);
+                }
+
+                if (WeightKeywords.Count > 1)
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                }
+                else
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                }
+            }
+            else
+            {
+                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
+                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                return;
+            }
+
+            // Remove ALL WEIGHT items
+            if (RadioButton_KeywordSubFrameWeight_RemoveAll.Checked)
+            {
+                foreach (string item in ComboBox_KeywordSubFrameWeight_Keywords.Items)
+                {
+                    foreach (XisfFile file in mFileList)
+                    {
+                        file.KeywordData.RemoveKeyword(item);
+                    }
+                }
+
+                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
+                ComboBox_KeywordSubFrameWeight_Keywords.Text = "";
+                return;
+            }
+
+            // Only Remove selected item
+            if (RadioButton_KeywordSubFrameWeight_RemoveSelected.Checked)
+            {
+                foreach (XisfFile file in mFileList)
+                {
+                    file.KeywordData.RemoveKeyword(ComboBox_KeywordSubFrameWeight_Keywords.Text);
+                }
+
+                WeightKeywords.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text); 
+                ComboBox_KeywordSubFrameWeight_Keywords.Items.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text);
+                ComboBox_KeywordSubFrameWeight_Keywords.Text = "";
+
+                if (WeightKeywords.Count > 1)
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                }
+                else
+                {
+                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                }
+
+                if (WeightKeywords.Count > 0)
+                {
+                    ComboBox_KeywordSubFrameWeight_Keywords.SelectedIndex = 0;
+                }
+                return;
+            }
+
+            return;
         }
     }
 }

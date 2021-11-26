@@ -412,7 +412,7 @@ namespace XisfFileManager
 
             if (node == null)
             { 
-                AddKeyword("DATE-OBS", "2019-01-01T12:00:00.000", "Missing DateTime XISF File Manager");
+                AddKeyword("DATE-OBS", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
 
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
             }
@@ -425,7 +425,7 @@ namespace XisfFileManager
                 value = value.Remove(value.IndexOf('.') + 4) + " AM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
@@ -436,19 +436,13 @@ namespace XisfFileManager
                 value = value.Remove(value.IndexOf('.') + 4) + " PM";
 
                 DateTime dt;
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
+                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
             }
 
-
-            if ((index = value.IndexOf(".")) > 0)
-                value = value.Replace("T", "  ").Replace("'", "").Remove(value.IndexOf('.')).Replace(".", "");
-            else
-                value = value.Replace("T", "  ").Replace("'", "");
-
-            //value = value.Replace("/", "-");
+            value = value.Replace("T", "  ").Replace("'", "");
 
             status = DateTime.TryParse(value, out parsedDateTime);
 
@@ -458,7 +452,7 @@ namespace XisfFileManager
             }
 
 
-            return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss.f", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
         }
 
         // *********************************************************************************************************
@@ -611,7 +605,7 @@ namespace XisfFileManager
                     AddKeyword("FILTER", "Blue", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (value == "Ha")
-                    AddKeyword("FILTER", "Ha", "Astrodon E-Series -Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    AddKeyword("FILTER", "Ha", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (value == "O3")
                     AddKeyword("FILTER", "O3", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -1008,7 +1002,7 @@ namespace XisfFileManager
             string value = string.Empty;
             Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "NWEIGHT");
+            node = KeywordList.Find(i => i.Name == "SSWEIGHT");
 
             if (node == null) return Double.NaN;
             double SSWeight = Convert.ToDouble(node.GetValue());
@@ -1110,19 +1104,24 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double Weight()
+        public string WeightKeyword(bool findMissingKeywords = false)
         {
             string value = string.Empty;
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "SSWEIGHT");
+            if (node != null)
+            {
+                return node.Name;
+            }
 
-            if (node == null) return Double.NaN;
-            double SSWeight = Convert.ToDouble(node.GetValue());
+            node = KeywordList.Find(i => i.Name == "NWEIGHT");
+            if (node != null)
+            {
+                return node.Name;
+            }
 
-            if (Double.IsNaN(SSWeight)) return Double.NaN;
-
-            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 0, MidpointRounding.AwayFromZero));
+            return string.Empty;
         }
 
         // #########################################################################################################
