@@ -193,7 +193,7 @@ namespace XisfFileManager
             }
         }
 
-        public int TotalImages(bool findMissingKeywords = false)
+        public int TotalFrames(bool findMissingKeywords = false)
         {
             bool status;
             int frames;

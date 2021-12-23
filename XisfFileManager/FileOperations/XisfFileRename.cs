@@ -105,14 +105,27 @@ namespace XisfFileManager.FileOperations
 
                 if (targetName.Contains("Master"))
                 {
-                    mFile.KeywordData.TotalImages(true);
+                    mFile.KeywordData.TotalFrames(true);
+                    
+                    if (frameType.Contains("Light"))
+                    {
+                        newName = targetName + "  Integration  L-" + mFile.KeywordData.FilterName() + "  ";
+
+                        if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
+                        else
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
+
+                        newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
+                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
+                    }
 
                     if (frameType.Contains("Dark"))
                     {
                         newName += "Dark  ";
 
-                        if (mFile.KeywordData.TotalImages().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
@@ -124,8 +137,8 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Bias  ";
 
-                        if (mFile.KeywordData.TotalImages().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
@@ -137,8 +150,8 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Flat " + mFile.KeywordData.FilterName() + "  ";
 
-                        if (mFile.KeywordData.TotalImages().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalImages() + "  ";
+                        if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 

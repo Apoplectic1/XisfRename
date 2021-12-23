@@ -2997,7 +2997,7 @@ namespace XisfFileManager
                 if (globalTotalFrames)
                 {
 
-                    frames = file.KeywordData.TotalImages();
+                    frames = file.KeywordData.TotalFrames();
                     if (frames < 0)
                     {
                         frames = globalFrames;
@@ -3006,7 +3006,7 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    frames = file.KeywordData.TotalImages(true);
+                    frames = file.KeywordData.TotalFrames(true);
                     if (frames < 0)
                     {
                         globalTotalFrames = true;
