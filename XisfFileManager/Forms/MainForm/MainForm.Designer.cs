@@ -281,6 +281,7 @@
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.Label_FileSelection_BrowseFileName = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_Statistics = new System.Windows.Forms.GroupBox();
+            this.RadioButton_KeywordSoftware_NNA = new System.Windows.Forms.RadioButton();
             this.GroupBox_FileSelection_RenameOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate.SuspendLayout();
             this.GroupBox_CaptureSoftware.SuspendLayout();
@@ -434,6 +435,7 @@
             // 
             // GroupBox_CaptureSoftware
             // 
+            this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_NNA);
             this.GroupBox_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetByFile);
             this.GroupBox_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetAll);
             this.GroupBox_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_VOY);
@@ -470,7 +472,7 @@
             // RadioButton_KeywordSoftware_VOY
             // 
             this.RadioButton_KeywordSoftware_VOY.AutoSize = true;
-            this.RadioButton_KeywordSoftware_VOY.Location = new System.Drawing.Point(20, 73);
+            this.RadioButton_KeywordSoftware_VOY.Location = new System.Drawing.Point(20, 81);
             this.RadioButton_KeywordSoftware_VOY.Name = "RadioButton_KeywordSoftware_VOY";
             this.RadioButton_KeywordSoftware_VOY.Size = new System.Drawing.Size(64, 17);
             this.RadioButton_KeywordSoftware_VOY.TabIndex = 3;
@@ -480,7 +482,7 @@
             // RadioButton_KeywordSoftware_SCP
             // 
             this.RadioButton_KeywordSoftware_SCP.AutoSize = true;
-            this.RadioButton_KeywordSoftware_SCP.Location = new System.Drawing.Point(20, 99);
+            this.RadioButton_KeywordSoftware_SCP.Location = new System.Drawing.Point(20, 101);
             this.RadioButton_KeywordSoftware_SCP.Name = "RadioButton_KeywordSoftware_SCP";
             this.RadioButton_KeywordSoftware_SCP.Size = new System.Drawing.Size(72, 17);
             this.RadioButton_KeywordSoftware_SCP.TabIndex = 2;
@@ -490,7 +492,7 @@
             // RadioButton_KeywordSoftware_SGP
             // 
             this.RadioButton_KeywordSoftware_SGP.AutoSize = true;
-            this.RadioButton_KeywordSoftware_SGP.Location = new System.Drawing.Point(20, 47);
+            this.RadioButton_KeywordSoftware_SGP.Location = new System.Drawing.Point(20, 61);
             this.RadioButton_KeywordSoftware_SGP.Name = "RadioButton_KeywordSoftware_SGP";
             this.RadioButton_KeywordSoftware_SGP.Size = new System.Drawing.Size(56, 17);
             this.RadioButton_KeywordSoftware_SGP.TabIndex = 1;
@@ -3094,6 +3096,16 @@
             this.GroupBox_FileSelection_Statistics.TabStop = false;
             this.GroupBox_FileSelection_Statistics.Text = "Statistics";
             // 
+            // RadioButton_KeywordSoftware_NINA
+            // 
+            this.RadioButton_KeywordSoftware_NNA.AutoSize = true;
+            this.RadioButton_KeywordSoftware_NNA.Location = new System.Drawing.Point(20, 41);
+            this.RadioButton_KeywordSoftware_NNA.Name = "RadioButton_KeywordSoftware_NINA";
+            this.RadioButton_KeywordSoftware_NNA.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_KeywordSoftware_NNA.TabIndex = 6;
+            this.RadioButton_KeywordSoftware_NNA.Text = "NINA";
+            this.RadioButton_KeywordSoftware_NNA.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3427,5 +3439,6 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordSubFrameWeight_RemoveAll;
         private System.Windows.Forms.RadioButton RadioButton_KeywordSubFrameWeight_RemoveSelected;
         private System.Windows.Forms.Button Button_KeywordSubFrameWeight_Remove;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_NNA;
     }
 }

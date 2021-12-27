@@ -1066,11 +1066,13 @@ namespace XisfFileManager
         private void FindCaptureSoftware()
         {
             RadioButton_KeywordSoftware_TSX.ForeColor = Color.Black;
+            RadioButton_KeywordSoftware_NNA.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_SGP.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_VOY.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_SCP.ForeColor = Color.Black;
 
             RadioButton_KeywordSoftware_TSX.Checked = false;
+            RadioButton_KeywordSoftware_NNA.Checked = false;
             RadioButton_KeywordSoftware_SGP.Checked = false;
             RadioButton_KeywordSoftware_VOY.Checked = false;
             RadioButton_KeywordSoftware_SCP.Checked = false;
@@ -1082,6 +1084,7 @@ namespace XisfFileManager
             // If identical, do nothing. If different, make all found UI software labels red 
             bool foundTSX = false;
             bool foundSGP = false;
+            bool foundNNA = false;
             bool foundVOY = false;
             bool foundSCP = false;
 
@@ -1095,6 +1098,12 @@ namespace XisfFileManager
                 if (program.Contains("TSX"))
                 {
                     foundTSX = true;
+                    count++;
+                }
+
+                if (program.Contains("NNA"))
+                {
+                    foundNNA= true;
                     count++;
                 }
 
@@ -1119,7 +1128,7 @@ namespace XisfFileManager
 
             if (foundTSX)
             {
-                if (foundSGP | foundVOY | foundSCP)
+                if (foundNNA | foundSGP | foundVOY | foundSCP)
                 {
                     RadioButton_KeywordSoftware_TSX.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_TSX.Checked = false;
@@ -1130,9 +1139,22 @@ namespace XisfFileManager
                 }
             }
 
+            if (foundNNA)
+            {
+                if (foundTSX |foundSGP | foundVOY | foundSCP)
+                {
+                    RadioButton_KeywordSoftware_NNA.ForeColor = Color.Red;
+                    RadioButton_KeywordSoftware_NNA.Checked = false;
+                }
+                else
+                {
+                    RadioButton_KeywordSoftware_NNA.Checked = true;
+                }
+            }
+
             if (foundSGP)
             {
-                if (foundTSX | foundVOY | foundSCP)
+                if (foundTSX | foundNNA | foundVOY | foundSCP)
                 {
                     RadioButton_KeywordSoftware_SGP.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_SGP.Checked = false;
@@ -1145,7 +1167,7 @@ namespace XisfFileManager
 
             if (foundVOY)
             {
-                if (foundTSX | foundSGP | foundSCP)
+                if (foundTSX | foundNNA | foundSGP | foundSCP)
                 {
                     RadioButton_KeywordSoftware_VOY.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_VOY.Checked = false;
@@ -1158,7 +1180,7 @@ namespace XisfFileManager
 
             if (foundSCP)
             {
-                if (foundTSX | foundSGP | foundVOY)
+                if (foundTSX | foundNNA | foundSGP | foundVOY)
                 {
                     RadioButton_KeywordSoftware_SCP.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_SCP.Checked = false;
@@ -1169,15 +1191,16 @@ namespace XisfFileManager
                 }
             }
 
-            if (!foundSCP && !foundSGP && !foundTSX && !foundVOY)
+            if (!foundTSX && !foundNNA && !foundSGP && !foundVOY && !foundSCP)
             {
                 RadioButton_KeywordSoftware_TSX.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordSoftware_NNA.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_SGP.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_VOY.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_SCP.ForeColor = Color.DarkViolet;
             }
 
-            if (foundTSX ^ foundSGP ^ foundVOY ^ foundSCP)
+            if (foundTSX ^ foundNNA ^ foundSGP ^ foundVOY ^ foundSCP)
             {
                 // Set "SetAll" to black if only a single software program was found
                 Button_KeywordSoftware_SetAll.ForeColor = Color.Black;
@@ -1205,6 +1228,12 @@ namespace XisfFileManager
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "TSX");
+                }
+
+                if (RadioButton_KeywordSoftware_NNA.Checked)
+                {
+                    count++;
+                    file.KeywordData.AddKeyword("CREATOR", "NNA");
                 }
 
                 if (RadioButton_KeywordSoftware_SGP.Checked)

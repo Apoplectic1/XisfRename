@@ -274,6 +274,8 @@ namespace XisfFileManager
             if (node == null)
                 node = KeywordList.Find(i => i.Name == "AMB-TEMP");
 
+            if (node == null)
+                node = KeywordList.Find(i => i.Name == "AMBTEMP");
 
             if (node == null)
             {
@@ -482,13 +484,19 @@ namespace XisfFileManager
                     return "TSX";
                 }
 
+                if (node.Value.Contains("N.I.N.A."))
+                {
+                    AddKeyword("CREATOR", "NNA", node.Value);
+                    return "NNA";
+                }
+
                 if (node.Value.Contains("Sharp"))
                 {
                     AddKeyword("CREATOR", "SCP", node.Value);
                     return "SCP";
                 }
 
-                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP"))
+                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP") || node.Value.Equals("NNA"))
                     return (node.Value);
             }
 
@@ -497,12 +505,12 @@ namespace XisfFileManager
                 UserInputFormData formData = new UserInputFormData();
                 formData.mFormName = "Capture Software";
                 formData.mFormText = "Capture Software Not Set";
-                formData.mFormEntryText = "Enter SGP, TSX, VOY or SCP:";
+                formData.mFormEntryText = "Enter NNA, SGP, TSX, VOY or SCP:";
                 formData.mFileName = FileName();
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
+                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("NNA") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
                 {
                     AddKeyword("CREATOR", returnData.mTextBox, "XISF File Manager");
 
