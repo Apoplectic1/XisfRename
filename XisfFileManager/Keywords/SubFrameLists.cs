@@ -207,10 +207,12 @@
         }
         public void AddKeywordFileName(string fileName)
         {
-            Keyword node = new Keyword();
-            node.Name = "FileName";
-            node.Value = fileName;
-            node.Comment = "XISF File Manager";
+            Keyword node = new Keyword
+            {
+                Name = "FileName",
+                Value = fileName,
+                Comment = "XISF File Manager"
+            };
 
             node.Value = node.Value.Replace("'", "");
             node.Type = Keyword.EType.STRING;

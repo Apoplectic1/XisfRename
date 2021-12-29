@@ -206,11 +206,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Master Frame Integration";
-                formData.mFormText = "Integrated SubFrames Not Set";
-                formData.mFormEntryText = "Enter Total Integration Frames:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Master Frame Integration",
+                    mFormText = "Integrated SubFrames Not Set",
+                    mFormEntryText = "Enter Total Integration Frames:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
@@ -241,11 +243,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Master Frame Rejection Method";
-                formData.mFormText = "Master Frame Rejection Method Not Set";
-                formData.mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Master Frame Rejection Method",
+                    mFormText = "Master Frame Rejection Method Not Set",
+                    mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
@@ -338,11 +342,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Cammera Binning";
-                formData.mFormText = "Camera Binning Not Set";
-                formData.mFormEntryText = "Enter Binning: 1, 2, 3 or 4";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Cammera Binning",
+                    mFormText = "Camera Binning Not Set",
+                    mFormEntryText = "Enter Binning: 1, 2, 3 or 4",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
@@ -373,11 +379,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Capture Camera";
-                formData.mFormText = "Capture Camera Not Set";
-                formData.mFormEntryText = "Enter Z533, Z183, Q178 or A144:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Capture Camera",
+                    mFormText = "Capture Camera Not Set",
+                    mFormEntryText = "Enter Z533, Z183, Q178 or A144:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
@@ -397,7 +405,6 @@ namespace XisfFileManager
         {
             string value = string.Empty;
             Keyword node = new Keyword();
-            int index;
             bool status;
 
             DateTime parsedDateTime;
@@ -502,11 +509,13 @@ namespace XisfFileManager
 
             while (FindMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Capture Software";
-                formData.mFormText = "Capture Software Not Set";
-                formData.mFormEntryText = "Enter NNA, SGP, TSX, VOY or SCP:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Capture Software",
+                    mFormText = "Capture Software Not Set",
+                    mFormEntryText = "Enter NNA, SGP, TSX, VOY or SCP:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -553,11 +562,13 @@ namespace XisfFileManager
 
             while (FindMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Exposure Time";
-                formData.mFormText = "Exposure Time Not Set";
-                formData.mFormEntryText = "Enter Exposure Time in Seconds (double):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Exposure Time",
+                    mFormText = "Exposure Time Not Set",
+                    mFormEntryText = "Enter Exposure Time in Seconds (double):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -629,11 +640,13 @@ namespace XisfFileManager
 
             while (FindMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Filter Type";
-                formData.mFormText = "Filter Type Not Set";
-                formData.mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Filter Type",
+                    mFormText = "Filter Type Not Set",
+                    mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -677,11 +690,13 @@ namespace XisfFileManager
 
             while (FindMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Frame Type";
-                formData.mFormText = "Frame Type Not Set";
-                formData.mFormEntryText = "Enter Frame Type (L, D, F or B):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Frame Type",
+                    mFormText = "Frame Type Not Set",
+                    mFormEntryText = "Enter Frame Type (L, D, F or B):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -722,11 +737,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Focal Length";
-                formData.mFormText = "Focal Length Not Set";
-                formData.mFormEntryText = "Enter Focal Length in millimeters:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Focal Length",
+                    mFormText = "Focal Length Not Set",
+                    mFormEntryText = "Enter Focal Length in millimeters:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData formValue = OpenUIForm(formData);
 
@@ -813,11 +830,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Cammera Gain";
-                formData.mFormText = "Camera Gain Not Set";
-                formData.mFormEntryText = "Enter Camera Gain: ";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Cammera Gain",
+                    mFormText = "Camera Gain Not Set",
+                    mFormEntryText = "Enter Camera Gain: ",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
@@ -874,11 +893,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Camera Offset";
-                formData.mFormText = "Camera Offset Not Set";
-                formData.mFormEntryText = "Enter Camera Offset:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Camera Offset",
+                    mFormText = "Camera Offset Not Set",
+                    mFormEntryText = "Enter Camera Offset:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
@@ -910,11 +931,13 @@ namespace XisfFileManager
             }
 
 
-            UserInputFormData formData = new UserInputFormData();
-            formData.mFormName = "Cammera Pixel Size";
-            formData.mFormText = "Camera Pixel Size Not Set (Assumes Square Pixels)";
-            formData.mFormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):";
-            formData.mFileName = FileName();
+            UserInputFormData formData = new UserInputFormData
+            {
+                mFormName = "Cammera Pixel Size",
+                mFormText = "Camera Pixel Size Not Set (Assumes Square Pixels)",
+                mFormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):",
+                mFileName = FileName()
+            };
 
 
             UserInputFormData FormValue = OpenUIForm(formData);
@@ -937,11 +960,13 @@ namespace XisfFileManager
                 return FormatTemperatureString(value);
             }
 
-            UserInputFormData formData = new UserInputFormData();
-            formData.mFormName = "Cammera Temperature";
-            formData.mFormText = "Camera Temperature Not Set";
-            formData.mFormEntryText = "Enter Camera Temperature Setpoint:";
-            formData.mFileName = FileName();
+            UserInputFormData formData = new UserInputFormData
+            {
+                mFormName = "Cammera Temperature",
+                mFormText = "Camera Temperature Not Set",
+                mFormEntryText = "Enter Camera Temperature Setpoint:",
+                mFileName = FileName()
+            };
 
             UserInputFormData FormValue = OpenUIForm(formData);
             AddKeyword("SET-TEMP", FormValue.mTextBox);
@@ -966,11 +991,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Camera Sensor Temperature";
-                formData.mFormText = "Camera Sensor Temperature Not Set";
-                formData.mFormEntryText = "Enter Actual Sensor Temperature:";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Camera Sensor Temperature",
+                    mFormText = "Camera Sensor Temperature Not Set",
+                    mFormEntryText = "Enter Actual Sensor Temperature:",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -1036,11 +1063,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Target Name";
-                formData.mFormText = "Target Name Not Set";
-                formData.mFormEntryText = "Enter Target Name (ID or Master):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Target Name",
+                    mFormText = "Target Name Not Set",
+                    mFormEntryText = "Enter Target Name (ID or Master):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
@@ -1071,11 +1100,13 @@ namespace XisfFileManager
 
             while (findMissingKeywords)
             {
-                UserInputFormData formData = new UserInputFormData();
-                formData.mFormName = "Telescope";
-                formData.mFormText = "Telescope Not Set";
-                formData.mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):";
-                formData.mFileName = FileName();
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Telescope",
+                    mFormText = "Telescope Not Set",
+                    mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):",
+                    mFileName = FileName()
+                };
 
                 UserInputFormData FormValue = OpenUIForm(formData);
 
@@ -1138,11 +1169,13 @@ namespace XisfFileManager
         {
             KeywordList.RemoveAll(i => i.Name == name);
 
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value;
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.STRING;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value,
+                Comment = comment,
+                Type = Keyword.EType.STRING
+            };
             KeywordList.Add(keyword);
         }
 
@@ -1152,11 +1185,13 @@ namespace XisfFileManager
         {
             KeywordList.RemoveAll(i => i.Name == name);
 
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString("F6");
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.FLOAT;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString("F6"),
+                Comment = comment,
+                Type = Keyword.EType.FLOAT
+            };
             KeywordList.Add(keyword);
         }
 
@@ -1166,11 +1201,13 @@ namespace XisfFileManager
         {
             KeywordList.RemoveAll(i => i.Name == name);
 
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString();
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.INTEGER;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString(),
+                Comment = comment,
+                Type = Keyword.EType.INTEGER
+            };
             KeywordList.Add(keyword);
         }
 
@@ -1180,11 +1217,13 @@ namespace XisfFileManager
         {
             KeywordList.RemoveAll(i => i.Name == name);
 
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString();
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.BOOL;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString(),
+                Comment = comment,
+                Type = Keyword.EType.BOOL
+            };
             KeywordList.Add(keyword);
         }
 
@@ -1192,11 +1231,13 @@ namespace XisfFileManager
         // #########################################################################################################
         public void AddKeyword(XElement element)
         {
-            Keyword keyword = new Keyword();
-            keyword.Name = element.Attribute("name").Value;
-            keyword.Value = element.Attribute("value").Value;
-            keyword.Comment = element.Attribute("comment").Value;
-            keyword.Type = Keyword.EType.COPY;
+            Keyword keyword = new Keyword
+            {
+                Name = element.Attribute("name").Value,
+                Value = element.Attribute("value").Value,
+                Comment = element.Attribute("comment").Value,
+                Type = Keyword.EType.COPY
+            };
             KeywordList.Add(keyword);
         }
 

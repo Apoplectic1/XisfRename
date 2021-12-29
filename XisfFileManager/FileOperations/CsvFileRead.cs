@@ -123,11 +123,13 @@ namespace XisfFileManager.FileOperations
         // #########################################################################################################
         public static Keyword BuildKeyword(string name, string value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value;
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.STRING;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value,
+                Comment = comment,
+                Type = Keyword.EType.STRING
+            };
             return keyword;
         }
 
@@ -135,11 +137,13 @@ namespace XisfFileManager.FileOperations
         // #########################################################################################################
         public static Keyword BuildKeyword(string name, double value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString("F6");
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.FLOAT;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString("F6"),
+                Comment = comment,
+                Type = Keyword.EType.FLOAT
+            };
             return keyword;
         }
 
@@ -147,11 +151,13 @@ namespace XisfFileManager.FileOperations
         // #########################################################################################################
         public static Keyword BuildKeyword(string name, int value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString();
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.INTEGER;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString(),
+                Comment = comment,
+                Type = Keyword.EType.INTEGER
+            };
             return keyword;
         }
 
@@ -159,11 +165,13 @@ namespace XisfFileManager.FileOperations
         // #########################################################################################################
         public static Keyword BuildKeyword(string name, bool value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword();
-            keyword.Name = name;
-            keyword.Value = value.ToString();
-            keyword.Comment = comment;
-            keyword.Type = Keyword.EType.BOOL;
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value.ToString(),
+                Comment = comment,
+                Type = Keyword.EType.BOOL
+            };
             return keyword;
         }
         // **************************************************************************************************************

@@ -108,46 +108,58 @@ namespace XisfFileManager.FileOperations
                     xisfString = xmlDoc.OuterXml;
 
                     // Add header (includes binary and string portions) up the start of "<xisf version"
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ASCII;
-                    mBuffer.AsciiData = "XISF0100";
+                    mBuffer = new Buffer
+                    {
+                        Type = Buffer.TypeEnum.ASCII,
+                        AsciiData = "XISF0100"
+                    };
                     mBufferList.Add(mBuffer);
 
                     // Write length (filled out later) and reserved bytes as 0's
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ZEROS;
-                    mBuffer.BinaryByteLength = 8;
+                    mBuffer = new Buffer
+                    {
+                        Type = Buffer.TypeEnum.ZEROS,
+                        BinaryByteLength = 8
+                    };
                     mBufferList.Add(mBuffer);
 
                     // Add the newly replaced XML ascii potortion to the buffer list 
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.ASCII;
-                    mBuffer.AsciiData = xisfString;
+                    mBuffer = new Buffer
+                    {
+                        Type = Buffer.TypeEnum.ASCII,
+                        AsciiData = xisfString
+                    };
                     mBufferList.Add(mBuffer);
 
                     // Pad from current position (which is the end of xisfString xml) to the start of image data
                     // This is here because it is difficult to determine where the end position is of xisfString. 
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.POSITION;
-                    mBuffer.ToPosition = imageStart;
+                    mBuffer = new Buffer
+                    {
+                        Type = Buffer.TypeEnum.POSITION,
+                        ToPosition = imageStart
+                    };
                     mBufferList.Add(mBuffer);
 
                     // Add the binary image data from rawFileData after padding
-                    mBuffer = new Buffer();
-                    mBuffer.Type = Buffer.TypeEnum.BINARY;
-                    mBuffer.BinaryDataStart = mFile.ImageAttachmentStart;
-                    mBuffer.BinaryByteLength = mFile.ImageAttachmentLength;
-                    mBuffer.BinaryData = rawFileData;
+                    mBuffer = new Buffer
+                    {
+                        Type = Buffer.TypeEnum.BINARY,
+                        BinaryDataStart = mFile.ImageAttachmentStart,
+                        BinaryByteLength = mFile.ImageAttachmentLength,
+                        BinaryData = rawFileData
+                    };
                     mBufferList.Add(mBuffer);
 
                     if (mFile.ThumbnailAttachmentLength > 0)
                     {
                         // Add the binary thumbnail image data from rawFileData after image data and padding
-                        mBuffer = new Buffer();
-                        mBuffer.Type = Buffer.TypeEnum.BINARY;
-                        mBuffer.BinaryDataStart = mFile.ThumbnailAttachmentStart;
-                        mBuffer.BinaryByteLength = mFile.ThumbnailAttachmentLength;
-                        mBuffer.BinaryData = rawFileData;
+                        mBuffer = new Buffer
+                        {
+                            Type = Buffer.TypeEnum.BINARY,
+                            BinaryDataStart = mFile.ThumbnailAttachmentStart,
+                            BinaryByteLength = mFile.ThumbnailAttachmentLength,
+                            BinaryData = rawFileData
+                        };
                         mBufferList.Add(mBuffer);
                     }
 

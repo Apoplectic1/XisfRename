@@ -15,6 +15,7 @@ using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
 using XisfFileManager.Forms;
+using DirectoryOperations;
 
 namespace XisfFileManager
 {
@@ -60,8 +61,10 @@ namespace XisfFileManager
             InitializeComponent();
             Label_FileSelectionStatistics_Task.Text = "";
             mFileList = new List<XisfFile>();
-            mRenameFile = new XisfFileRename();
-            mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
+            mRenameFile = new XisfFileRename
+            {
+                RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT
+            };
 
             // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
             // Data is stored as Keyword XML nodes - strings
@@ -188,7 +191,13 @@ namespace XisfFileManager
         // ##########################################################################################################################
         private void Button_Browse_Click(object sender, EventArgs e)
         {
-            DirectoryInfo d;
+            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
+            mFileList.Clear();
+            SubFrameLists.Clear();
+            SubFrameNumericLists.Clear();
+            ImageParameterLists.Clear();
+            ComboBox_KeywordSubFrame_TargetNames.Text = "";
+            ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
 
             ProgressBar_FileSelection_OverAll.Value = 0;
             ProgressBar_Keyword_XisfFile.Value = 0;
@@ -203,77 +212,65 @@ namespace XisfFileManager
                 RestoreDirectory = true
             };
 
-            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
-
-            if (result.Equals(DialogResult.OK) == false)
+            if (mFolder.ShowDialog(IntPtr.Zero).Equals(DialogResult.OK) == false)
             {
                 return;
             }
 
             mFolderBrowseState = mFolder.SelectedPaths[0];
 
-            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
-            mFileList.Clear();
-            SubFrameLists.Clear();
-            SubFrameNumericLists.Clear();
-            ImageParameterLists.Clear();
-            ComboBox_KeywordSubFrame_TargetNames.Text = "";
-            ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
-
             try
             {
-                Label_FileSelectionStatistics_Task.Text = "Reading Image File Data";
+                DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
+                DirectoryOps.CreateFileInfoDirectoryTree(diDirectoryTree, CheckBox_FileSelectionDirectorySelection_Recurse.Checked);
 
-                foreach (string folder in mFolder.SelectedPaths)
+                Label_FileSelectionStatistics_Task.Text = "Reading " + DirectoryOps.fiFileList.Count.ToString() + " Image Files";
+
+                ProgressBar_FileSelection_OverAll.Value = 0;
+
+                if (DirectoryOps.fiFileList.Count == 0)
                 {
-                    bool bStatus;
+                    MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
+                    return;
+                }
 
-                    d = new DirectoryInfo(folder);
+                ProgressBar_FileSelection_OverAll.Maximum = DirectoryOps.fiFileList.Count;
 
-                    FileInfo[] Files = d.GetFiles("*.xisf");
+                foreach (FileInfo file in DirectoryOps.fiFileList)
+                {
+                    bool bStatus = false;
+                    ProgressBar_FileSelection_OverAll.Value += 1;
+                    Application.DoEvents();
 
-                    if (Files.Count() < 1)
+                    // Create a new xisf file instance
+                    mFile = new XisfFile
                     {
-                        MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
-                        return;
-                    }
+                        SourceFileName = file.FullName
+                    };
 
-                    ProgressBar_FileSelection_OverAll.Maximum = Files.Count();
+                    Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
 
-                    foreach (FileInfo file in Files)
+                    // Get the keyword data contained found within the current file
+                    // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
+                    //
+                    // FileSubFrameKeywordLists
+                    // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
+                    // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
+                    // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
+                    // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
+                    // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
+                    // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
+                    //
+                    // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
+                    // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
+
+
+                    bStatus = XisfFileRead.ReadXisfFile(mFile);
+
+                    // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
+                    if (bStatus)
                     {
-                        bStatus = false;
-                        ProgressBar_FileSelection_OverAll.Value += 1;
-                        Application.DoEvents();
-
-                        // Create a new xisf file instance
-                        mFile = new XisfFile();
-
-                        mFile.SourceFileName = file.FullName;
-                        Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
-
-                        // Get the keyword data contained found within the current file
-                        // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
-                        //
-                        // FileSubFrameKeywordLists
-                        // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
-                        // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
-                        // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
-                        // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
-                        // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
-                        // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
-                        //
-                        // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
-                        // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
-
-
-                        bStatus = XisfFileRead.ReadXisfFile(mFile);
-
-                        // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
-                        if (bStatus)
-                        {
-                            mFileList.Add(mFile);
-                        }
+                        mFileList.Add(mFile);
                     }
                 }
             }
@@ -1103,7 +1100,7 @@ namespace XisfFileManager
 
                 if (program.Contains("NNA"))
                 {
-                    foundNNA= true;
+                    foundNNA = true;
                     count++;
                 }
 
@@ -1141,7 +1138,7 @@ namespace XisfFileManager
 
             if (foundNNA)
             {
-                if (foundTSX |foundSGP | foundVOY | foundSCP)
+                if (foundTSX | foundSGP | foundVOY | foundSCP)
                 {
                     RadioButton_KeywordSoftware_NNA.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_NNA.Checked = false;
@@ -1717,7 +1714,7 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordImageTypeFrame_Bias.Checked)
                 {
-                   if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
                     {
                         file.KeywordData.RemoveKeyword("ALT-OBS");
                         file.KeywordData.RemoveKeyword("DATE-END");
@@ -1728,11 +1725,11 @@ namespace XisfFileManager
                         file.KeywordData.RemoveKeyword("OBSGEO-L");
                         file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Integration Master");
                     }
-                   else
+                    else
                     {
                         file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Sub Frame");
                     }
-                    
+
                 }
 
                 if (RadioButton_KeywordImageTypeFilter_Luma.Checked)
@@ -3187,7 +3184,7 @@ namespace XisfFileManager
                     file.KeywordData.RemoveKeyword(ComboBox_KeywordSubFrameWeight_Keywords.Text);
                 }
 
-                WeightKeywords.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text); 
+                WeightKeywords.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text);
                 ComboBox_KeywordSubFrameWeight_Keywords.Items.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text);
                 ComboBox_KeywordSubFrameWeight_Keywords.Text = "";
 

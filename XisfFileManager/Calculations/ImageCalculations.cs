@@ -155,10 +155,11 @@ namespace XisfFileManager.Calculations
 
             for (index = 0; index < FocuserPosition.Count(); index++)
             {
-                pt = new PositionTemperature();
-
-                pt.Position = FocuserPosition[index];
-                pt.Temperature = Math.Round(FocuserTemperature[index], 1);
+                pt = new PositionTemperature
+                {
+                    Position = FocuserPosition[index],
+                    Temperature = Math.Round(FocuserTemperature[index], 1)
+                };
                 ptList.Add(pt);
             }
 
