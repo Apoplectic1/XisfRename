@@ -14,8 +14,6 @@ using System.Drawing;
 using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
-using XisfFileManager.Forms;
-using DirectoryOperations;
 
 namespace XisfFileManager
 {
@@ -59,7 +57,7 @@ namespace XisfFileManager
         public MainForm()
         {
             InitializeComponent();
-            Label_FileSelectionStatistics_Task.Text = "";
+            Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
             {
@@ -76,8 +74,8 @@ namespace XisfFileManager
             // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
 
-            Label_FileSelectionStatistics_Task.Text = "No Images Selected";
-            Label_FileSelectionStatistics_TempratureCompensation.Text = "Temerature Coefficient: N/A";
+            Label_FileSelection_Statistics_Task.Text = "No Images Selected";
+            Label_FileSelection_TempratureCompensation.Text = "Temerature Coefficient: N/A";
 
 
             // Version Number
@@ -91,6 +89,9 @@ namespace XisfFileManager
             {
                 Text = "XISF File Manager - Version: " + File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             }
+
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Count_ByFilter, "Orders Sequence Files by Filter", "\"By Target\" continuously orders each filter consecutively.\r\n\"By Night\" individually orders each filter per night.");
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Count_ByTime, "Orders Sequence Files by Capture Time", "\"By Target\" continuously orders all files consecutively.\r\n\"By Night\" orders each night's files consecutively.");
         }
 
         protected override void OnLoad(EventArgs e)
@@ -137,7 +138,7 @@ namespace XisfFileManager
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
             TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
 
-            this.Size = new Size(989, 655);
+            this.Size = new Size(989, 632);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -196,8 +197,8 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
-            ComboBox_KeywordSubFrame_TargetNames.Text = "";
-            ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
+            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text = "";
+            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Clear();
 
             ProgressBar_FileSelection_OverAll.Value = 0;
             ProgressBar_Keyword_XisfFile.Value = 0;
@@ -222,21 +223,21 @@ namespace XisfFileManager
             try
             {
                 DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
-                DirectoryOps.CreateFileInfoDirectoryTree(diDirectoryTree, CheckBox_FileSelectionDirectorySelection_Recurse.Checked);
+                DirectoryOps.DirectoryOps.CreateFileInfoDirectoryTree(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked);
 
-                Label_FileSelectionStatistics_Task.Text = "Reading " + DirectoryOps.fiFileList.Count.ToString() + " Image Files";
+                Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.DirectoryOps.fiFileList.Count.ToString() + " Image Files";
 
                 ProgressBar_FileSelection_OverAll.Value = 0;
 
-                if (DirectoryOps.fiFileList.Count == 0)
+                if (DirectoryOps.DirectoryOps.fiFileList.Count == 0)
                 {
                     MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
                     return;
                 }
 
-                ProgressBar_FileSelection_OverAll.Maximum = DirectoryOps.fiFileList.Count;
+                ProgressBar_FileSelection_OverAll.Maximum = DirectoryOps.DirectoryOps.fiFileList.Count;
 
-                foreach (FileInfo file in DirectoryOps.fiFileList)
+                foreach (FileInfo file in DirectoryOps.DirectoryOps.fiFileList)
                 {
                     bool bStatus = false;
                     ProgressBar_FileSelection_OverAll.Value += 1;
@@ -282,14 +283,16 @@ namespace XisfFileManager
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Error);
 
-                Label_FileSelectionStatistics_Task.Text = "Browse Aborted";
+                Label_FileSelection_Statistics_Task.Text = "Browse Aborted";
                 return;
             }
 
-            // Sort Image File List by Capture Time
+            // Sort Image File Lists by Capture Time
             // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
             // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
             mFileList.Sort(XisfFile.CaptureTimeComparison);
+
+
 
             // If the following Keywords exist in the source XISF file, add the keyword value to FileSubFrameKeywordLists
             try
@@ -322,11 +325,11 @@ namespace XisfFileManager
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Error);
 
-                Label_FileSelectionStatistics_Task.Text = "Browse Aborted";
+                Label_FileSelection_Statistics_Task.Text = "Browse Aborted";
                 return;
             }
 
-            Label_FileSelectionStatistics_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+            Label_FileSelection_Statistics_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
 
             // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
             // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
@@ -370,24 +373,24 @@ namespace XisfFileManager
 
                 if (TargetNames.Count > 1)
                 {
-                    Label_KeywordSubFrame_TagetName.ForeColor = Color.Red;
+                    Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordSubFrame_TagetName.ForeColor = Color.Black;
+                    Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.Black;
                 }
 
                 foreach (string item in TargetNames)
                 {
-                    ComboBox_KeywordSubFrame_TargetNames.Items.Add(item);
+                    ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Add(item);
                 }
 
-                ComboBox_KeywordSubFrame_TargetNames.SelectedIndex = 0;
+                ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.SelectedIndex = 0;
             }
             else
             {
-                ComboBox_KeywordSubFrame_TargetNames.Items.Clear();
-                Label_KeywordSubFrame_TagetName.ForeColor = Color.DarkViolet;
+                ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Clear();
+                Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.DarkViolet;
             }
 
 
@@ -404,24 +407,24 @@ namespace XisfFileManager
 
                 foreach (string item in WeightKeywords)
                 {
-                    ComboBox_KeywordSubFrameWeight_Keywords.Items.Add(item);
+                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
                 }
 
-                ComboBox_KeywordSubFrameWeight_Keywords.SelectedIndex = 0;
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
             }
             else
             {
-                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
-                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
             }
             // **********************************************************************
 
@@ -439,9 +442,9 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
             }
 
-            Label_File_electionStatistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
+            Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
-            Label_FileSelectionStatistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+            Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
             // **********************************************************************
 
 
@@ -464,7 +467,7 @@ namespace XisfFileManager
         {
             int index = 1;
             int indexIncrement;
-            Label_FileSelectionStatistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
+            Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
 
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
             ProgressBar_Keyword_XisfFile.Value = 0;
@@ -474,7 +477,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                file.Master = CheckBox_FileSelectionDirectorySelection_Master.Checked;
+                file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
                 Tuple<int, string> renameTuple;
                 ProgressBar_Keyword_XisfFile.Value += 1;
@@ -492,7 +495,7 @@ namespace XisfFileManager
             }
             ProgressBar_Keyword_XisfFile.Value = ProgressBar_Keyword_XisfFile.Maximum;
 
-            Label_FileSelectionStatistics_Task.Text = mFileList.Count().ToString() + " Images Renamed";
+            Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Renamed";
 
             mFileList.Clear();
 
@@ -503,9 +506,9 @@ namespace XisfFileManager
         {
             bool bStatus;
             GroupBox_FileSelection_DirectorySelection.Enabled = false;
-            GroupBox_FileSelection_RenameOrder.Enabled = false;
+            GroupBox_FileSelection_SequenceOrder.Enabled = false;
 
-            Label_FileSelectionStatistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
+            Label_FileSelection_Statistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
             ProgressBar_Keyword_XisfFile.Value = 0;
 
@@ -524,9 +527,9 @@ namespace XisfFileManager
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
-                    Label_FileSelectionStatistics_Task.Text = "Update Aborted";
+                    Label_FileSelection_Statistics_Task.Text = "Update Aborted";
                     GroupBox_FileSelection_DirectorySelection.Enabled = true;
-                    GroupBox_FileSelection_RenameOrder.Enabled = true;
+                    GroupBox_FileSelection_SequenceOrder.Enabled = true;
                     return;
                 }
 
@@ -541,14 +544,14 @@ namespace XisfFileManager
                 }
             }
 
-            XisfFileUpdate.TargetName = ComboBox_KeywordSubFrame_TargetNames.Text.Replace("'", "").Replace("\"", "");
+            XisfFileUpdate.TargetName = ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", "");
 
             foreach (XisfFile file in mFileList)
             {
-                if (CheckBox_KeywordSubFrame_UpdateTargetName.Checked)
-                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordSubFrame_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
+                if (CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Checked)
+                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
 
-                file.Master = CheckBox_FileSelectionDirectorySelection_Master.Checked;
+                file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
                 if (file.Master)
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
@@ -560,7 +563,7 @@ namespace XisfFileManager
 
                 if (bStatus == false)
                 {
-                    Label_FileSelectionStatistics_Task.Text = "File Write Error";
+                    Label_FileSelection_Statistics_Task.Text = "File Write Error";
 
                     var result = MessageBox.Show(
                         "File Update Failed.\n\n" + Label_Keyword_UpdateFileName.Text,
@@ -569,14 +572,14 @@ namespace XisfFileManager
                         MessageBoxIcon.Error);
 
                     GroupBox_FileSelection_DirectorySelection.Enabled = true;
-                    GroupBox_FileSelection_RenameOrder.Enabled = true;
+                    GroupBox_FileSelection_SequenceOrder.Enabled = true;
                     return;
                 }
             }
 
-            Label_FileSelectionStatistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
+            Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
             GroupBox_FileSelection_DirectorySelection.Enabled = true;
-            GroupBox_FileSelection_RenameOrder.Enabled = true;
+            GroupBox_FileSelection_SequenceOrder.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -730,26 +733,6 @@ namespace XisfFileManager
             mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
         }
 
-        private void SelectTemplateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            mFolder = new OpenFolderDialog()
-            {
-                Title = "Select Template Folder",
-                AutoUpgradeEnabled = true,
-                CheckPathExists = false,
-                InitialDirectory = @"E:\Photography\Astro Photography\Processing",
-                Multiselect = true,
-                RestoreDirectory = true
-            };
-
-            DialogResult result = mFolder.ShowDialog(IntPtr.Zero);
-
-            if (result.Equals(DialogResult.OK))
-            {
-
-            }
-        }
-
         private double ValidateRangeValue(TextBox textBox)
         {
             bool status;
@@ -772,7 +755,7 @@ namespace XisfFileManager
 
         private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_FileSelectionRenameOrder_WeightIndex.Checked)
+            if (RadioButton_FileSelection_SequenceNumbering_WeightIndex.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHTINDEX;
             }
@@ -780,7 +763,7 @@ namespace XisfFileManager
 
         private void RadioButton_Index_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_FileSelectionRenameOrder_Index.Checked)
+            if (RadioButton_FileSelection_SequenceNumbering_IndexOnly.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEX;
             }
@@ -788,7 +771,7 @@ namespace XisfFileManager
 
         private void RadioButton_Weight_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_FileSelectionRenameOrder_Weight.Checked)
+            if (RadioButton_FileSelection_SequenceNumbering_WeightOnly.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHT;
             }
@@ -796,7 +779,7 @@ namespace XisfFileManager
 
         private void RadioButton_IndexWeight_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_FileSelectionRenameOrder_IndexWeight.Checked)
+            if (RadioButton_FileSelection_SequenceNumbering_IndexWeight.Checked)
             {
                 mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
             }
@@ -842,7 +825,7 @@ namespace XisfFileManager
             }
 
 
-            GroupBox_WeightsAndStatistics.Enabled = !RadioButton_KeywordSubFrame_Alphabetize.Checked;
+            GroupBox_WeightsAndStatistics.Enabled = !RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked;
 
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
             {
@@ -919,7 +902,7 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_KeywordSubFrame_Alphabetize.Checked)
+            if (RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked)
             {
                 SetUISubFrameGroupBoxState();
             }
@@ -927,18 +910,18 @@ namespace XisfFileManager
 
         private void RadioButton_SubFrameKeyWords_SubFrameWeightCalculations_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_KeywordSubFrame_SubFrameWeightCalculations.Checked)
+            if (RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Checked)
             {
                 SetUISubFrameGroupBoxState();
             }
 
-            if (RadioButton_KeywordSubFrame_SubFrameWeightCalculations.Checked == true)
+            if (RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Checked == true)
             {
-                this.Size = new Size(989, 1147);
+                this.Size = new Size(989, 1124);
             }
             else
             {
-                this.Size = new Size(989, 655);
+                this.Size = new Size(989, 632);
             }
         }
 
@@ -1714,7 +1697,7 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordImageTypeFrame_Bias.Checked)
                 {
-                    if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
                         file.KeywordData.RemoveKeyword("ALT-OBS");
                         file.KeywordData.RemoveKeyword("DATE-END");
@@ -1796,8 +1779,8 @@ namespace XisfFileManager
             RadioButton_KeywordImageTypeFilter_S2.Checked = false;
             RadioButton_KeywordImageTypeFilter_Shutter.Checked = false;
 
-            CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Black;
-            CheckBox_FileSelectionDirectorySelection_Master.Checked = false;
+            CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Black;
+            CheckBox_FileSelection_DirectorySelection_Master.Checked = false;
 
             Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Black;
             Button_KeywordImageType_SetAll.ForeColor = Color.Black;
@@ -2096,12 +2079,12 @@ namespace XisfFileManager
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
-                    CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
+                    CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
                     Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
-                    CheckBox_FileSelectionDirectorySelection_Master.Checked = true;
+                    CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
                 }
             }
 
@@ -2122,7 +2105,7 @@ namespace XisfFileManager
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
-                CheckBox_FileSelectionDirectorySelection_Master.ForeColor = Color.Red;
+                CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
                 Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
             }
 
@@ -3009,9 +2992,9 @@ namespace XisfFileManager
 
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
-            ComboBox_KeywordSubFrame_TargetNames.Text = "Master";
-            CheckBox_KeywordSubFrame_UpdateTargetName.Checked = true;
-            CheckBox_FileSelectionDirectorySelection_Master.Checked = true;
+            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text = "Master";
+            CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Checked = true;
+            CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
 
             bool globalTotalFrames = false;
             int frames = -1;
@@ -3053,7 +3036,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            if (CheckBox_FileSelectionDirectorySelection_Master.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
@@ -3125,7 +3108,7 @@ namespace XisfFileManager
         {
             List<string> WeightKeywords = new List<string>();
 
-            ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
+            ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
 
             // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
@@ -3140,29 +3123,29 @@ namespace XisfFileManager
 
                 foreach (string item in WeightKeywords)
                 {
-                    ComboBox_KeywordSubFrameWeight_Keywords.Items.Add(item);
+                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
                 }
             }
             else
             {
-                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
-                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
                 return;
             }
 
             // Remove ALL WEIGHT items
-            if (RadioButton_KeywordSubFrameWeight_RemoveAll.Checked)
+            if (RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Checked)
             {
-                foreach (string item in ComboBox_KeywordSubFrameWeight_Keywords.Items)
+                foreach (string item in ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items)
                 {
                     foreach (XisfFile file in mFileList)
                     {
@@ -3170,36 +3153,36 @@ namespace XisfFileManager
                     }
                 }
 
-                Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
-                ComboBox_KeywordSubFrameWeight_Keywords.Items.Clear();
-                ComboBox_KeywordSubFrameWeight_Keywords.Text = "";
+                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text = "";
                 return;
             }
 
             // Only Remove selected item
-            if (RadioButton_KeywordSubFrameWeight_RemoveSelected.Checked)
+            if (RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    file.KeywordData.RemoveKeyword(ComboBox_KeywordSubFrameWeight_Keywords.Text);
+                    file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
                 }
 
-                WeightKeywords.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text);
-                ComboBox_KeywordSubFrameWeight_Keywords.Items.Remove(ComboBox_KeywordSubFrameWeight_Keywords.Text);
-                ComboBox_KeywordSubFrameWeight_Keywords.Text = "";
+                WeightKeywords.Remove(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
+                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Red;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordSubFrameWeight_Keyword.ForeColor = Color.Black;
+                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
                 }
 
                 if (WeightKeywords.Count > 0)
                 {
-                    ComboBox_KeywordSubFrameWeight_Keywords.SelectedIndex = 0;
+                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
                 }
                 return;
             }

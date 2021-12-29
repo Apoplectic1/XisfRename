@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using XisfFileManager.Keywords;
 using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using XisfFileManager.FileOperations;
-using System.IO;
 
 namespace XisfFileManager.Calculations
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Linq;
-using XisfFileManager.Keywords;
 
 namespace XisfFileManager.FileOperations
 {

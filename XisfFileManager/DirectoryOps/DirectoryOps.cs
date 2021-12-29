@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace DirectoryOperations
+namespace DirectoryOps
 {
     internal class DirectoryOps
     {
