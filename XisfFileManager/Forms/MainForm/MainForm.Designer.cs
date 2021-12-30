@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
             this.ProgressBar_FileSelection_OverAll = new System.Windows.Forms.ProgressBar();
@@ -279,11 +278,11 @@
             this.Label_FileSelection_Statistics_SubFrameOverhead = new System.Windows.Forms.Label();
             this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
             this.GroupBox_FileSelection_Count = new System.Windows.Forms.GroupBox();
-            this.RadioButton_FileSelection_Count_ByFilter = new System.Windows.Forms.RadioButton();
-            this.RadioButton_FileSelection_Count_ByTime = new System.Windows.Forms.RadioButton();
-            this.GroupBox_FileSelection_Index = new System.Windows.Forms.GroupBox();
-            this.RadioButton_FileSelection_Index_ByTarget = new System.Windows.Forms.RadioButton();
-            this.RadioButton_FileSelection_Index_ByNight = new System.Windows.Forms.RadioButton();
+            this.RadioButton_FileSelection_Index_ByFilter = new System.Windows.Forms.RadioButton();
+            this.RadioButton_FileSelection_Index_ByTime = new System.Windows.Forms.RadioButton();
+            this.GroupBox_FileSelection_Order = new System.Windows.Forms.GroupBox();
+            this.RadioButton_FileSelection_Order_ByTarget = new System.Windows.Forms.RadioButton();
+            this.RadioButton_FileSelection_Order_ByNight = new System.Windows.Forms.RadioButton();
             this.Label_FileSelection_BrowseFileName = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_Statistics = new System.Windows.Forms.GroupBox();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
@@ -320,7 +319,7 @@
             this.GroupBox_UpdateStatistics.SuspendLayout();
             this.GroupBox_FileSlection.SuspendLayout();
             this.GroupBox_FileSelection_Count.SuspendLayout();
-            this.GroupBox_FileSelection_Index.SuspendLayout();
+            this.GroupBox_FileSelection_Order.SuspendLayout();
             this.GroupBox_FileSelection_Statistics.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -3055,7 +3054,7 @@
             // GroupBox_FileSlection
             // 
             this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Count);
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Index);
+            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Order);
             this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelection_BrowseFileName);
             this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Statistics);
             this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelection_TempratureCompensation);
@@ -3072,69 +3071,69 @@
             // 
             // GroupBox_FileSelection_Count
             // 
-            this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Count_ByFilter);
-            this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Count_ByTime);
+            this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Index_ByFilter);
+            this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Index_ByTime);
             this.GroupBox_FileSelection_Count.Location = new System.Drawing.Point(845, 66);
             this.GroupBox_FileSelection_Count.Name = "GroupBox_FileSelection_Count";
             this.GroupBox_FileSelection_Count.Size = new System.Drawing.Size(91, 59);
             this.GroupBox_FileSelection_Count.TabIndex = 16;
             this.GroupBox_FileSelection_Count.TabStop = false;
-            this.GroupBox_FileSelection_Count.Text = "Count";
+            this.GroupBox_FileSelection_Count.Text = "Index";
             // 
-            // RadioButton_FileSelection_Count_ByFilter
+            // RadioButton_FileSelection_Index_ByFilter
             // 
-            this.RadioButton_FileSelection_Count_ByFilter.AutoSize = true;
-            this.RadioButton_FileSelection_Count_ByFilter.Checked = true;
-            this.RadioButton_FileSelection_Count_ByFilter.Location = new System.Drawing.Point(14, 14);
-            this.RadioButton_FileSelection_Count_ByFilter.Name = "RadioButton_FileSelection_Count_ByFilter";
-            this.RadioButton_FileSelection_Count_ByFilter.Size = new System.Drawing.Size(62, 17);
-            this.RadioButton_FileSelection_Count_ByFilter.TabIndex = 6;
-            this.RadioButton_FileSelection_Count_ByFilter.TabStop = true;
-            this.RadioButton_FileSelection_Count_ByFilter.Text = "By Filter";
-            this.RadioButton_FileSelection_Count_ByFilter.UseVisualStyleBackColor = true;
+            this.RadioButton_FileSelection_Index_ByFilter.AutoSize = true;
+            this.RadioButton_FileSelection_Index_ByFilter.Checked = true;
+            this.RadioButton_FileSelection_Index_ByFilter.Location = new System.Drawing.Point(14, 14);
+            this.RadioButton_FileSelection_Index_ByFilter.Name = "RadioButton_FileSelection_Index_ByFilter";
+            this.RadioButton_FileSelection_Index_ByFilter.Size = new System.Drawing.Size(62, 17);
+            this.RadioButton_FileSelection_Index_ByFilter.TabIndex = 6;
+            this.RadioButton_FileSelection_Index_ByFilter.TabStop = true;
+            this.RadioButton_FileSelection_Index_ByFilter.Text = "By Filter";
+            this.RadioButton_FileSelection_Index_ByFilter.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_FileSelection_Count_ByTime
+            // RadioButton_FileSelection_Index_ByTime
             // 
-            this.RadioButton_FileSelection_Count_ByTime.AutoSize = true;
-            this.RadioButton_FileSelection_Count_ByTime.Location = new System.Drawing.Point(14, 33);
-            this.RadioButton_FileSelection_Count_ByTime.Name = "RadioButton_FileSelection_Count_ByTime";
-            this.RadioButton_FileSelection_Count_ByTime.Size = new System.Drawing.Size(63, 17);
-            this.RadioButton_FileSelection_Count_ByTime.TabIndex = 5;
-            this.RadioButton_FileSelection_Count_ByTime.Text = "By Time";
-            this.RadioButton_FileSelection_Count_ByTime.UseVisualStyleBackColor = true;
+            this.RadioButton_FileSelection_Index_ByTime.AutoSize = true;
+            this.RadioButton_FileSelection_Index_ByTime.Location = new System.Drawing.Point(14, 33);
+            this.RadioButton_FileSelection_Index_ByTime.Name = "RadioButton_FileSelection_Index_ByTime";
+            this.RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(63, 17);
+            this.RadioButton_FileSelection_Index_ByTime.TabIndex = 5;
+            this.RadioButton_FileSelection_Index_ByTime.Text = "By Time";
+            this.RadioButton_FileSelection_Index_ByTime.UseVisualStyleBackColor = true;
             // 
-            // GroupBox_FileSelection_Index
+            // GroupBox_FileSelection_Order
             // 
-            this.GroupBox_FileSelection_Index.Controls.Add(this.RadioButton_FileSelection_Index_ByTarget);
-            this.GroupBox_FileSelection_Index.Controls.Add(this.RadioButton_FileSelection_Index_ByNight);
-            this.GroupBox_FileSelection_Index.Location = new System.Drawing.Point(737, 66);
-            this.GroupBox_FileSelection_Index.Name = "GroupBox_FileSelection_Index";
-            this.GroupBox_FileSelection_Index.Size = new System.Drawing.Size(102, 59);
-            this.GroupBox_FileSelection_Index.TabIndex = 15;
-            this.GroupBox_FileSelection_Index.TabStop = false;
-            this.GroupBox_FileSelection_Index.Text = "Index";
+            this.GroupBox_FileSelection_Order.Controls.Add(this.RadioButton_FileSelection_Order_ByTarget);
+            this.GroupBox_FileSelection_Order.Controls.Add(this.RadioButton_FileSelection_Order_ByNight);
+            this.GroupBox_FileSelection_Order.Location = new System.Drawing.Point(737, 66);
+            this.GroupBox_FileSelection_Order.Name = "GroupBox_FileSelection_Order";
+            this.GroupBox_FileSelection_Order.Size = new System.Drawing.Size(102, 59);
+            this.GroupBox_FileSelection_Order.TabIndex = 15;
+            this.GroupBox_FileSelection_Order.TabStop = false;
+            this.GroupBox_FileSelection_Order.Text = "Order";
             // 
-            // RadioButton_FileSelection_Index_ByTarget
+            // RadioButton_FileSelection_Order_ByTarget
             // 
-            this.RadioButton_FileSelection_Index_ByTarget.AutoSize = true;
-            this.RadioButton_FileSelection_Index_ByTarget.Checked = true;
-            this.RadioButton_FileSelection_Index_ByTarget.Location = new System.Drawing.Point(14, 14);
-            this.RadioButton_FileSelection_Index_ByTarget.Name = "RadioButton_FileSelection_Index_ByTarget";
-            this.RadioButton_FileSelection_Index_ByTarget.Size = new System.Drawing.Size(71, 17);
-            this.RadioButton_FileSelection_Index_ByTarget.TabIndex = 6;
-            this.RadioButton_FileSelection_Index_ByTarget.TabStop = true;
-            this.RadioButton_FileSelection_Index_ByTarget.Text = "By Target";
-            this.RadioButton_FileSelection_Index_ByTarget.UseVisualStyleBackColor = true;
+            this.RadioButton_FileSelection_Order_ByTarget.AutoSize = true;
+            this.RadioButton_FileSelection_Order_ByTarget.Checked = true;
+            this.RadioButton_FileSelection_Order_ByTarget.Location = new System.Drawing.Point(14, 14);
+            this.RadioButton_FileSelection_Order_ByTarget.Name = "RadioButton_FileSelection_Order_ByTarget";
+            this.RadioButton_FileSelection_Order_ByTarget.Size = new System.Drawing.Size(71, 17);
+            this.RadioButton_FileSelection_Order_ByTarget.TabIndex = 6;
+            this.RadioButton_FileSelection_Order_ByTarget.TabStop = true;
+            this.RadioButton_FileSelection_Order_ByTarget.Text = "By Target";
+            this.RadioButton_FileSelection_Order_ByTarget.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_FileSelection_Index_ByNight
+            // RadioButton_FileSelection_Order_ByNight
             // 
-            this.RadioButton_FileSelection_Index_ByNight.AutoSize = true;
-            this.RadioButton_FileSelection_Index_ByNight.Location = new System.Drawing.Point(14, 33);
-            this.RadioButton_FileSelection_Index_ByNight.Name = "RadioButton_FileSelection_Index_ByNight";
-            this.RadioButton_FileSelection_Index_ByNight.Size = new System.Drawing.Size(65, 17);
-            this.RadioButton_FileSelection_Index_ByNight.TabIndex = 5;
-            this.RadioButton_FileSelection_Index_ByNight.Text = "By Night";
-            this.RadioButton_FileSelection_Index_ByNight.UseVisualStyleBackColor = true;
+            this.RadioButton_FileSelection_Order_ByNight.AutoSize = true;
+            this.RadioButton_FileSelection_Order_ByNight.Location = new System.Drawing.Point(14, 33);
+            this.RadioButton_FileSelection_Order_ByNight.Name = "RadioButton_FileSelection_Order_ByNight";
+            this.RadioButton_FileSelection_Order_ByNight.Size = new System.Drawing.Size(65, 17);
+            this.RadioButton_FileSelection_Order_ByNight.TabIndex = 5;
+            this.RadioButton_FileSelection_Order_ByNight.Text = "By Night";
+            this.RadioButton_FileSelection_Order_ByNight.UseVisualStyleBackColor = true;
             // 
             // Label_FileSelection_BrowseFileName
             // 
@@ -3226,8 +3225,8 @@
             this.GroupBox_FileSlection.PerformLayout();
             this.GroupBox_FileSelection_Count.ResumeLayout(false);
             this.GroupBox_FileSelection_Count.PerformLayout();
-            this.GroupBox_FileSelection_Index.ResumeLayout(false);
-            this.GroupBox_FileSelection_Index.PerformLayout();
+            this.GroupBox_FileSelection_Order.ResumeLayout(false);
+            this.GroupBox_FileSelection_Order.PerformLayout();
             this.GroupBox_FileSelection_Statistics.ResumeLayout(false);
             this.GroupBox_FileSelection_Statistics.PerformLayout();
             this.ResumeLayout(false);
@@ -3486,11 +3485,11 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected;
         private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_Weights_Remove;
         private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_NNA;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTarget;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByNight;
-        private System.Windows.Forms.GroupBox GroupBox_FileSelection_Index;
+        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByTarget;
+        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByNight;
+        private System.Windows.Forms.GroupBox GroupBox_FileSelection_Order;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Count;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Count_ByFilter;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Count_ByTime;
+        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByFilter;
+        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTime;
     }
 }

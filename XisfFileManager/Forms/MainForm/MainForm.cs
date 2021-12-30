@@ -90,8 +90,8 @@ namespace XisfFileManager
                 Text = "XISF File Manager - Version: " + File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             }
 
-            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Count_ByFilter, "Orders Sequence Files by Filter", "\"By Target\" continuously orders each filter consecutively.\r\n\"By Night\" individually orders each filter per night.");
-            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Count_ByTime, "Orders Sequence Files by Capture Time", "\"By Target\" continuously orders all files consecutively.\r\n\"By Night\" orders each night's files consecutively.");
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
         }
 
         protected override void OnLoad(EventArgs e)
@@ -223,7 +223,7 @@ namespace XisfFileManager
             try
             {
                 DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
-                DirectoryOps.DirectoryOps.CreateFileInfoDirectoryTree(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked);
+                DirectoryOps.DirectoryOps.RecuseXisfFiles(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked);
 
                 Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.DirectoryOps.fiFileList.Count.ToString() + " Image Files";
 
@@ -466,6 +466,7 @@ namespace XisfFileManager
         private void Button_Rename_Click(object sender, EventArgs e)
         {
             int index = 1;
+            int duplicates = 0;
             int indexIncrement;
             Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
 
@@ -481,13 +482,14 @@ namespace XisfFileManager
 
                 Tuple<int, string> renameTuple;
                 ProgressBar_Keyword_XisfFile.Value += 1;
-                Label_FileSelection_BrowseFileName.Text = file.SourceFileName;
+                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
 
                 renameTuple = mRenameFile.RenameFiles(index, file);
                 indexIncrement = renameTuple.Item1;
                 Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
                 Application.DoEvents();
 
+                duplicates += (indexIncrement == 0) ? 1 : 0;
 
                 if (indexIncrement < 0)
                     break;
@@ -495,7 +497,10 @@ namespace XisfFileManager
             }
             ProgressBar_Keyword_XisfFile.Value = ProgressBar_Keyword_XisfFile.Maximum;
 
-            Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Renamed";
+            if (duplicates == 1)
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
+            else
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
             mFileList.Clear();
 
@@ -1577,8 +1582,6 @@ namespace XisfFileManager
         private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
         {
             bool globalTelescope = false;
-            string telescope = string.Empty;
-
             foreach (XisfFile file in mFileList)
             {
                 if (globalTelescope)
@@ -1590,7 +1593,7 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    telescope = file.KeywordData.Telescope(true);
+                    string telescope = file.KeywordData.Telescope(true);
                     if (telescope.Contains("Global_"))
                     {
                         globalTelescope = true;
@@ -2450,7 +2453,6 @@ namespace XisfFileManager
 
         private void Button_KeywordCamera_SetAll_Click(object sender, EventArgs e)
         {
-            bool status = false;
             double value;
 
             if (mFileList.Count == 0)
@@ -2466,7 +2468,7 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
 
-                status = double.TryParse(TextBox_KeywordCamera_SensorTemperature.Text, out value);
+                bool status = double.TryParse(TextBox_KeywordCamera_SensorTemperature.Text, out value);
                 if (status)
                 {
                     file.KeywordData.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
@@ -2547,25 +2549,13 @@ namespace XisfFileManager
 
 
             bool globalTemperature = false;
-            string temperatureText = string.Empty;
-            string temperatureTextUI = string.Empty;
             string globalTemperatureText = string.Empty;
-            double temperature = -1;
-
             bool globalSeconds = false;
-            string secondsText = string.Empty;
-            string secondsTextUI = string.Empty;
             string globalSecondsText = string.Empty;
-            double seconds = -1;
-
             bool globalGain = false;
-            int gainValue = -1;
-            int gainValueUI = -1;
             int globalGainValue = -1;
 
             bool globalOffset = false;
-            int offsetValue = -1;
-            int offsetValueUI = -1;
             int globalOffsetValue = -1;
 
 
@@ -2582,9 +2572,9 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("BITPIX", 16, "Bits Per Pixel");
                 file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
+                string temperatureTextUI = TextBox_KeywordCamera_SensorTemperature.Text;
 
-                temperatureTextUI = TextBox_KeywordCamera_SensorTemperature.Text;
-
+                string temperatureText;
                 if (globalTemperature)
                 {
                     temperatureText = file.KeywordData.SensorTemperature();
@@ -2616,15 +2606,16 @@ namespace XisfFileManager
                     }
                 }
 
+                double temperature;
                 status = double.TryParse(temperatureText, out temperature);
                 file.KeywordData.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
 
                 file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
                 file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Horizontal Binning");
                 file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Vertical Bining");
+                string secondsTextUI = TextBox_KeywordCamera_Seconds.Text;
 
-                secondsTextUI = TextBox_KeywordCamera_Seconds.Text;
-
+                string secondsText;
                 if (globalSeconds)
                 {
                     secondsText = file.KeywordData.ExposureSeconds();
@@ -2656,12 +2647,17 @@ namespace XisfFileManager
                     }
                 }
 
+                double seconds;
                 status = double.TryParse(secondsText, out seconds);
                 file.KeywordData.AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
 
 
 
 
+                int gainValue;
+                int gainValueUI;
+                int offsetValue;
+                int offsetValueUI;
                 if (RadioButton_KeywordCamera_Z533.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
@@ -2997,12 +2993,12 @@ namespace XisfFileManager
             CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
 
             bool globalTotalFrames = false;
-            int frames = -1;
             int globalFrames = -1;
 
             foreach (XisfFile file in mFileList)
             {
 
+                int frames;
                 if (globalTotalFrames)
                 {
 

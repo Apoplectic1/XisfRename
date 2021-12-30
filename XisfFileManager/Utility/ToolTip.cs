@@ -12,7 +12,7 @@ namespace Utility
                 IsBalloon = false,
                 ShowAlways = true,
                 ToolTipTitle = title,
-                AutomaticDelay = 1000,
+                AutomaticDelay = 2000,
             };
 
             toolTip.SetToolTip(control, text);
