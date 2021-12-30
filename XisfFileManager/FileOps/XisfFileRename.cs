@@ -25,7 +25,7 @@ namespace XisfFileManager.FileOperations
             return dupFileName;
         }
 
-        public Tuple<int, string> RenameFiles(int index, XisfFile file)
+        public Tuple<int, string> RenameFile(int index, XisfFile file)
         {
             try
             {

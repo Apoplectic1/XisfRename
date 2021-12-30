@@ -462,12 +462,74 @@ namespace XisfFileManager
             // **********************************************************************
         }
 
+        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)
+        {
+            int index = 0;
+            int lumaIndex = 0;
+            int redIndex = 0;
+            int greenIndex = 0;
+            int blueIndex = 0;
+            int haIndex = 0;
+            int o3Index = 0;
+            int s2Index = 0;
+
+            foreach (XisfFile file in fileList)
+            {
+                if (bTarget)
+                {
+                    if (bFilter)
+                    {
+                        if (file.KeywordData.FilterName().Equals("Luma"))
+                            file.Index = (file.Unique) ? ++lumaIndex : lumaIndex + 1;
+
+                        if (file.KeywordData.FilterName().Equals("Red"))
+                            file.Index = (file.Unique) ? ++redIndex : redIndex + 1;
+
+                        if (file.KeywordData.FilterName().Equals("Green"))
+                            file.Index = (file.Unique) ? ++greenIndex : greenIndex + 1;
+
+                        if (file.KeywordData.FilterName().Equals("Blue"))
+                            file.Index = (file.Unique) ? ++blueIndex : blueIndex + 1;
+
+                        if (file.KeywordData.FilterName().Equals("Ha"))
+                            file.Index = (file.Unique) ? ++haIndex : haIndex + 1;
+
+                        if (file.KeywordData.FilterName().Equals("O3"))
+                            file.Index = (file.Unique) ? ++o3Index : o3Index + 1;
+
+                        if (file.KeywordData.FilterName().Equals("S2"))
+                            file.Index = (file.Unique) ? ++s2Index : s2Index + 1;
+                    }
+
+                    if (bTime)
+                    {
+                        file.Index = (file.Unique) ? ++index : index + 1;
+                    }
+                }
+
+                if (bNight)
+                {
+                    if (bFilter)
+                    {
+
+                    }
+
+                    if (bTime)
+                    {
+
+                    }
+                }
+            }
+        }
 
         private void Button_Rename_Click(object sender, EventArgs e)
         {
-            int index = 1;
             int duplicates = 0;
-            int indexIncrement;
+            bool byTarget = RadioButton_FileSelection_Order_ByTarget.Checked;
+            bool byNight = RadioButton_FileSelection_Order_ByNight.Checked;
+            bool byFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
+            bool byTime = RadioButton_FileSelection_Index_ByTime.Checked;
+
             Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
 
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
@@ -475,26 +537,24 @@ namespace XisfFileManager
 
             mRenameFile.MarkDuplicates(mFileList);
 
+            SetFileIndex(byTarget, byNight, byFilter, byTime, mFileList);
 
             foreach (XisfFile file in mFileList)
             {
-                file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
-
-                Tuple<int, string> renameTuple;
                 ProgressBar_Keyword_XisfFile.Value += 1;
                 Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
 
-                renameTuple = mRenameFile.RenameFiles(index, file);
-                indexIncrement = renameTuple.Item1;
+                file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+
+                Tuple<int, string> renameTuple = mRenameFile.RenameFile(file.Index, file);
+
+                duplicates += (renameTuple.Item1 == 0) ? 1 : 0;
+
                 Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
+
                 Application.DoEvents();
-
-                duplicates += (indexIncrement == 0) ? 1 : 0;
-
-                if (indexIncrement < 0)
-                    break;
-                index += indexIncrement;
             }
+
             ProgressBar_Keyword_XisfFile.Value = ProgressBar_Keyword_XisfFile.Maximum;
 
             if (duplicates == 1)

@@ -12,6 +12,7 @@ namespace XisfFileManager.FileOperations
         public string SourceFileName { get; set; }
         public KeywordLists KeywordData { get; set; }
         public bool Unique { get; set; } = false;
+        public int Index { get; set; } = 0;
         
 
         // List of required keywords for EVERY frame
