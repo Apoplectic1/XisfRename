@@ -380,10 +380,12 @@
             // RadioButton_FileSelection_SequenceNumbering_IndexOnly
             // 
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.AutoSize = true;
+            this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.Checked = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.Location = new System.Drawing.Point(14, 14);
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.Name = "RadioButton_FileSelection_SequenceNumbering_IndexOnly";
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.Size = new System.Drawing.Size(75, 17);
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabIndex = 2;
+            this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabStop = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.Text = "Index Only";
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.UseVisualStyleBackColor = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexOnly.CheckedChanged += new System.EventHandler(this.RadioButton_Index_CheckedChanged);
@@ -391,12 +393,10 @@
             // RadioButton_FileSelection_SequenceNumbering_IndexWeight
             // 
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.AutoSize = true;
-            this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.Checked = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.Location = new System.Drawing.Point(103, 14);
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.Name = "RadioButton_FileSelection_SequenceNumbering_IndexWeight";
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.Size = new System.Drawing.Size(88, 17);
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.TabIndex = 1;
-            this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.TabStop = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.Text = "Index Weight";
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.UseVisualStyleBackColor = true;
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight.CheckedChanged += new System.EventHandler(this.RadioButton_IndexWeight_CheckedChanged);

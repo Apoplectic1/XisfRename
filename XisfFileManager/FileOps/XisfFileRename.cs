@@ -174,7 +174,7 @@ namespace XisfFileManager.FileOperations
                 }
 
                 if (mFile.KeywordData.Rejection() != string.Empty)
-                    newName += "  (" + mFile.KeywordData.Rejection() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
+                    newName += "  (" + mFile.KeywordData.Rejection().Replace("'","") + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
                 else
                     newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
 
