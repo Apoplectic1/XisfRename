@@ -92,6 +92,24 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        // Who and Where
+        public void SetObservationSite()
+        {
+            AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
+            AddKeyword("SITELONG", -74.997372, "Logitude of observation site Degrees East");
+            AddKeyword("SITELAT", 40.282852, "Latitude of observation site Degrees North");
+            AddKeyword("SITEELEV", 80.0, "Altitude of observation site MSL Meters");
+            AddKeyword("LONG-OBS", -74.997372, "Logitude of observation site Degrees East");
+            AddKeyword("LAT-OBS", 40.282852, "Latitude of observation site Degrees North");
+            AddKeyword("ALT-OBS", 80.0, "Altitude of observation site MSL Meters");
+            AddKeyword("OBSGEO-L", -74.997372, "Logitude of observation site Degrees East");
+            AddKeyword("OBSGEO-B", 40.282852, "Latitude of observation site Degrees North");
+            AddKeyword("OBSGEO-H", 80.0, "Altitude of observation site MSL Meters");
+            AddKeyword("OBSERVER", "Dan Stark - djstark@gmail.com", "P.O. Box 156, 841 Durham Rd, Penns Park, PA 18943");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
         public void SetEGain()
         {
