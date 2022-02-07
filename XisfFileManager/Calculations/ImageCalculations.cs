@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MathNet.Numerics;
+using MathNet.Numerics.Statistics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics;
-using MathNet.Numerics.Statistics;
 using XisfFileManager.FileOperations;
 
 namespace XisfFileManager.Calculations
@@ -52,13 +52,28 @@ namespace XisfFileManager.Calculations
 
             imageType = Keywords.FrameType();
 
-            if (imageType == "L")
+            if ((imageType == "Light") || (imageType == "L"))
             {
-                FocuserPosition.Add(Convert.ToDouble(Keywords.FocuserPosition()));
-                FocuserTemperature.Add(Convert.ToDouble(Keywords.FocuserTemperature()));
-                AmbientTemperature.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+                var focusPosition = Keywords.FocuserPosition();
+                var focusTemperature = Keywords.FocuserTemperature();
+                var focusAmbientTemperature = Keywords.AmbientTemperature();
+                var ambientTemperature = Keywords.AmbientTemperature();
 
-                FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
+                if (focusPosition != string.Empty && focusTemperature != string.Empty && ambientTemperature != string.Empty)
+                {
+                    FocuserPosition.Add(Convert.ToDouble(focusPosition));
+                    FocuserTemperature.Add(Convert.ToDouble(focusTemperature));
+                    AmbientTemperature.Add(Convert.ToDouble(ambientTemperature));
+                }
+                else
+                {
+                    FocuserPosition.Add(0);
+                    FocuserTemperature.Add(-273);
+                    AmbientTemperature.Add(-273);
+                }
+
+
+                //FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
             }
         }
 
@@ -89,7 +104,7 @@ namespace XisfFileManager.Calculations
             DateTime secondInterval = new DateTime(2000, 1, 1, 0, 0, 0);
 
 
-            foreach ( XisfFile file in fileList)
+            foreach (XisfFile file in fileList)
             {
                 secondInterval = file.KeywordData.CaptureDateTime();
                 double delta = secondInterval.Subtract(firstInterval).TotalSeconds;
@@ -101,7 +116,7 @@ namespace XisfFileManager.Calculations
                 }
 
                 subFrameIntervalList.Add(delta);
- 
+
                 status = Double.TryParse(file.KeywordData.ExposureSeconds(), out exposure);
                 if (status == false)
                 {
@@ -117,7 +132,7 @@ namespace XisfFileManager.Calculations
                 return "SubFrame Overhead: Calculation Error";
             }
 
-            for(index = 0; index < subFrameIntervalList.Count; index++)
+            for (index = 0; index < subFrameIntervalList.Count; index++)
             {
                 double interval = Math.Abs(subFrameIntervalList[index]);
 
@@ -133,8 +148,8 @@ namespace XisfFileManager.Calculations
 
             double overheadPercent = ((totalIntervalTime - totalExposureTime) / totalExposureTime) * 100.0;
             double overheadSeconds = (totalIntervalTime - totalExposureTime) / exposureList.Count();
-         
-            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % with " + overheadSeconds.ToString("F0") + 
+
+            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % with " + overheadSeconds.ToString("F0") +
                    " Seconds/Frame Average Overhead\n                                   SubFrame Exposure: " + (totalExposureTime / exposureList.Count()).ToString("F0") + " Seconds" +
                    " over " + exposureList.Count() + " Frames";
         }
@@ -142,57 +157,59 @@ namespace XisfFileManager.Calculations
         public string CalculateFocuserTemperatureCompensationCoefficient()
         {
             int index;
-            PositionTemperature pt;
 
-            if (FocuserPosition.Count != FocuserTemperature.Count || FocuserPosition.Count == 0 || FocuserTemperature.Count == 0)
+            if ((FocuserPosition.Count != FocuserTemperature.Count) || (FocuserPosition.Count < 3) || FocuserTemperature.Contains(-273)) 
             {
-                return "Invalid Focuser Data";
+                return "No Focuser Position Data";
             }
 
-            List<PositionTemperature> ptList = new List<PositionTemperature>();
-
-            for (index = 0; index < FocuserPosition.Count(); index++)
+            try
             {
-                pt = new PositionTemperature
+                List<PositionTemperature> ptList = new List<PositionTemperature>();
+
+                for (index = 0; index < FocuserPosition.Count(); index++)
                 {
-                    Position = FocuserPosition[index],
-                    Temperature = Math.Round(FocuserTemperature[index], 1)
-                };
-                ptList.Add(pt);
-            }
+                    PositionTemperature pt = new PositionTemperature
+                    {
+                        Position = FocuserPosition[index],
+                        Temperature = FocuserTemperature[index]
+                    };
+                    ptList.Add(pt);
+                }
 
-            var positionAverageTemperature =
-                from position in ptList
-                group position by position.Position into positionGroup
-                select new
+                ptList.Sort((x, y) => x.Position.CompareTo(y.Position));
+
+                var DistinctItems = ptList.GroupBy(x => x.Position).Select(y => y.First());
+
+                double[] position = new double[DistinctItems.Count()];
+                double[] temperature = new double[DistinctItems.Count()];
+
+                index = 0;
+                foreach (var item in DistinctItems)
                 {
-                    Position = positionGroup.Key,
-                    AverageTemperature = positionGroup.Distinct().Average(x => x.Temperature),
-                };
+                    position[index] = item.Position;
+                    temperature[index] = item.Temperature;
+                    index++;
+                }
 
-            double[] positionArray = new double[positionAverageTemperature.Count()];
-            double[] temperatureArray = new double[positionAverageTemperature.Count()];
+                Tuple<double, double> p = Fit.Line(temperature, position);
 
-            index = 0;
-            foreach (var item in positionAverageTemperature)
-            {
-                positionArray[index] = item.Position;
-                temperatureArray[index] = item.AverageTemperature;
-                index++;
+                double maxTemperature = temperature.Max();
+                double minTemperature = temperature.Min();
+
+                if (p.Item2 >= 0)
+                {
+                    return p.Item2.ToString("F0") + " Steps/Degree OUT over " + position.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
+                }
+                else
+                {
+                    return p.Item2.ToString("F0") + " Steps/Degree IN over " + position.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
+                }
             }
-
-            if (index == 1)
+            catch
             {
-                return "Single Focus Point";
+                return "No Focuser Position Data";
             }
-            Array.Sort(temperatureArray, positionArray);
-
-            Tuple<double, double> p = Fit.Line(temperatureArray, positionArray);
-
-            double maxTemperature = FocuserTemperature.Max();
-            double minTemperature = FocuserTemperature.Min();
-
-            return p.Item2.ToString("F0") + " Steps/Degree over " + positionArray.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
         }
     }
 }

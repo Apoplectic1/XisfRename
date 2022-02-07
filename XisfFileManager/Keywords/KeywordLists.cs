@@ -523,8 +523,8 @@ namespace XisfFileManager
 
                 if (node.Value.Contains("N.I.N.A."))
                 {
-                    AddKeyword("CREATOR", "NNA", node.Value);
-                    return "NNA";
+                    AddKeyword("CREATOR", "NINA", node.Value);
+                    return "NINA";
                 }
 
                 if (node.Value.Contains("Sharp"))
@@ -533,7 +533,7 @@ namespace XisfFileManager
                     return "SCP";
                 }
 
-                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP") || node.Value.Equals("NNA"))
+                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP") || node.Value.Equals("NINA"))
                     return (node.Value);
             }
 
@@ -543,13 +543,13 @@ namespace XisfFileManager
                 {
                     mFormName = "Capture Software",
                     mFormText = "Capture Software Not Set",
-                    mFormEntryText = "Enter NNA, SGP, TSX, VOY or SCP:",
+                    mFormEntryText = "Enter NINA, SGP, TSX, VOY or SCP:",
                     mFileName = FileName()
                 };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("NNA") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
+                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("NINA") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
                 {
                     AddKeyword("CREATOR", returnData.mTextBox, "XISF File Manager");
 

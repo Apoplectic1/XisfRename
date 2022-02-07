@@ -61,7 +61,7 @@ namespace XisfFileManager
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
             {
-                RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT
+                RenameOrder = XisfFileRename.OrderType.INDEX
             };
 
             // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
@@ -75,7 +75,7 @@ namespace XisfFileManager
             ImageParameterLists = new ImageCalculations();
 
             Label_FileSelection_Statistics_Task.Text = "No Images Selected";
-            Label_FileSelection_TempratureCompensation.Text = "Temerature Coefficient: N/A";
+            Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
 
 
             // Version Number
@@ -202,11 +202,12 @@ namespace XisfFileManager
 
             ProgressBar_FileSelection_OverAll.Value = 0;
             ProgressBar_Keyword_XisfFile.Value = 0;
+            GroupBox_KeywordUpdate.Enabled = false;
 
             mFolder = new OpenFolderDialog()
-            {
+             {
                 Title = "Select .xisf Folder",
-                AutoUpgradeEnabled = true,
+                //AutoUpgradeEnabled = true,
                 CheckPathExists = false,
                 InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
                 Multiselect = false,
@@ -460,6 +461,7 @@ namespace XisfFileManager
             FindCamera();
             FindFrameType();
             // **********************************************************************
+            GroupBox_KeywordUpdate.Enabled = true;
         }
 
         public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)
@@ -570,8 +572,8 @@ namespace XisfFileManager
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
             bool bStatus;
-            GroupBox_FileSelection_DirectorySelection.Enabled = false;
-            GroupBox_FileSelection_SequenceOrder.Enabled = false;
+            GroupBox_FileSelection.Enabled = false;
+            GroupBox_KeywordUpdate.Enabled = false;
 
             Label_FileSelection_Statistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
@@ -593,8 +595,8 @@ namespace XisfFileManager
                         MessageBoxIcon.Error);
 
                     Label_FileSelection_Statistics_Task.Text = "Update Aborted";
-                    GroupBox_FileSelection_DirectorySelection.Enabled = true;
-                    GroupBox_FileSelection_SequenceOrder.Enabled = true;
+                    GroupBox_FileSelection.Enabled = true;
+                    GroupBox_KeywordUpdate.Enabled = true;
                     return;
                 }
 
@@ -613,6 +615,8 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
+                file.KeywordData.SetObservationSite();
+
                 if (CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Checked)
                     file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
 
@@ -636,15 +640,15 @@ namespace XisfFileManager
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
-                    GroupBox_FileSelection_DirectorySelection.Enabled = true;
-                    GroupBox_FileSelection_SequenceOrder.Enabled = true;
+                    GroupBox_FileSelection.Enabled = true;
+                    GroupBox_KeywordUpdate.Enabled = true;
                     return;
                 }
             }
 
             Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
-            GroupBox_FileSelection_DirectorySelection.Enabled = true;
-            GroupBox_FileSelection_SequenceOrder.Enabled = true;
+            GroupBox_FileSelection.Enabled = true;
+            GroupBox_KeywordUpdate.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -1111,13 +1115,13 @@ namespace XisfFileManager
         private void FindCaptureSoftware()
         {
             RadioButton_KeywordSoftware_TSX.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_NNA.ForeColor = Color.Black;
+            RadioButton_KeywordSoftware_NINA.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_SGP.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_VOY.ForeColor = Color.Black;
             RadioButton_KeywordSoftware_SCP.ForeColor = Color.Black;
 
             RadioButton_KeywordSoftware_TSX.Checked = false;
-            RadioButton_KeywordSoftware_NNA.Checked = false;
+            RadioButton_KeywordSoftware_NINA.Checked = false;
             RadioButton_KeywordSoftware_SGP.Checked = false;
             RadioButton_KeywordSoftware_VOY.Checked = false;
             RadioButton_KeywordSoftware_SCP.Checked = false;
@@ -1129,7 +1133,7 @@ namespace XisfFileManager
             // If identical, do nothing. If different, make all found UI software labels red 
             bool foundTSX = false;
             bool foundSGP = false;
-            bool foundNNA = false;
+            bool foundNINA = false;
             bool foundVOY = false;
             bool foundSCP = false;
 
@@ -1146,9 +1150,9 @@ namespace XisfFileManager
                     count++;
                 }
 
-                if (program.Contains("NNA"))
+                if (program.Contains("NINA"))
                 {
-                    foundNNA = true;
+                    foundNINA = true;
                     count++;
                 }
 
@@ -1173,7 +1177,7 @@ namespace XisfFileManager
 
             if (foundTSX)
             {
-                if (foundNNA | foundSGP | foundVOY | foundSCP)
+                if (foundNINA | foundSGP | foundVOY | foundSCP)
                 {
                     RadioButton_KeywordSoftware_TSX.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_TSX.Checked = false;
@@ -1184,22 +1188,22 @@ namespace XisfFileManager
                 }
             }
 
-            if (foundNNA)
+            if (foundNINA)
             {
                 if (foundTSX | foundSGP | foundVOY | foundSCP)
                 {
-                    RadioButton_KeywordSoftware_NNA.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_NNA.Checked = false;
+                    RadioButton_KeywordSoftware_NINA.ForeColor = Color.Red;
+                    RadioButton_KeywordSoftware_NINA.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_NNA.Checked = true;
+                    RadioButton_KeywordSoftware_NINA.Checked = true;
                 }
             }
 
             if (foundSGP)
             {
-                if (foundTSX | foundNNA | foundVOY | foundSCP)
+                if (foundTSX | foundNINA | foundVOY | foundSCP)
                 {
                     RadioButton_KeywordSoftware_SGP.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_SGP.Checked = false;
@@ -1212,7 +1216,7 @@ namespace XisfFileManager
 
             if (foundVOY)
             {
-                if (foundTSX | foundNNA | foundSGP | foundSCP)
+                if (foundTSX | foundNINA | foundSGP | foundSCP)
                 {
                     RadioButton_KeywordSoftware_VOY.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_VOY.Checked = false;
@@ -1225,7 +1229,7 @@ namespace XisfFileManager
 
             if (foundSCP)
             {
-                if (foundTSX | foundNNA | foundSGP | foundVOY)
+                if (foundTSX | foundNINA | foundSGP | foundVOY)
                 {
                     RadioButton_KeywordSoftware_SCP.ForeColor = Color.Red;
                     RadioButton_KeywordSoftware_SCP.Checked = false;
@@ -1236,16 +1240,16 @@ namespace XisfFileManager
                 }
             }
 
-            if (!foundTSX && !foundNNA && !foundSGP && !foundVOY && !foundSCP)
+            if (!foundTSX && !foundNINA && !foundSGP && !foundVOY && !foundSCP)
             {
                 RadioButton_KeywordSoftware_TSX.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordSoftware_NNA.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordSoftware_NINA.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_SGP.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_VOY.ForeColor = Color.DarkViolet;
                 RadioButton_KeywordSoftware_SCP.ForeColor = Color.DarkViolet;
             }
 
-            if (foundTSX ^ foundNNA ^ foundSGP ^ foundVOY ^ foundSCP)
+            if (foundTSX ^ foundNINA ^ foundSGP ^ foundVOY ^ foundSCP)
             {
                 // Set "SetAll" to black if only a single software program was found
                 Button_KeywordSoftware_SetAll.ForeColor = Color.Black;
@@ -1275,10 +1279,10 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("CREATOR", "TSX");
                 }
 
-                if (RadioButton_KeywordSoftware_NNA.Checked)
+                if (RadioButton_KeywordSoftware_NINA.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "NNA");
+                    file.KeywordData.AddKeyword("CREATOR", "NINA");
                 }
 
                 if (RadioButton_KeywordSoftware_SGP.Checked)
@@ -1585,6 +1589,9 @@ namespace XisfFileManager
         {
             if (RadioButton_KeywordTelescope_APM107.Checked)
             {
+                file.KeywordData.AddKeyword("APTDIA", 107.0, "Aperture Diameter in mm");
+                file.KeywordData.AddKeyword("APTAREA", 8992.02, "Aperture area in square mm minus obstructions");
+
                 if (CheckBox_KeywordTelescope_Riccardi.Checked)
                 {
                     file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
@@ -2276,12 +2283,11 @@ namespace XisfFileManager
                 Label_KeywordCamera_SensorTemperature.ForeColor = Color.DarkViolet;
                 Label_KeywordCamera_Binning.ForeColor = Color.DarkViolet;
                 Label_KeywordCamera_Seconds.ForeColor = Color.DarkViolet;
-                TextBox_KeywordCamera_Seconds.Text = "";
 
                 Button_KeywordCamera_SetAll.ForeColor = Color.Red;
                 Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
 
-                return;
+                //return;
             }
 
             // ****************************************************************
@@ -2444,6 +2450,10 @@ namespace XisfFileManager
             }
             else
             {
+                bool status;
+                double value;
+                status = Double.TryParse(mFileList[0].Exposure, out value);
+
                 if (missingExposure)
                 {
                     // At least one, but not all, files have a missing exposure
@@ -2452,7 +2462,18 @@ namespace XisfFileManager
                     if (uniqueExposure)
                     {
                         // Of the files that do have an exposure, this is the unique value
-                        TextBox_KeywordCamera_Seconds.Text = Convert.ToDouble(mFileList[0].Exposure).ToString("F1");
+                        if (status)
+                        {
+                            if (value < 10)
+                                TextBox_KeywordCamera_Seconds.Text = value.ToString("F3");
+                            else
+                                TextBox_KeywordCamera_Seconds.Text = value.ToString("F1");
+                        }
+                        else
+                        {
+                            // Not a number
+                            TextBox_KeywordCamera_Seconds.Text = string.Empty;
+                        }
                     }
                     else
                     {
@@ -2465,7 +2486,10 @@ namespace XisfFileManager
                     if (uniqueExposure)
                     {
                         // All files contain the same exposure
-                        TextBox_KeywordCamera_Seconds.Text = Convert.ToDouble(mFileList[0].Exposure).ToString("F1");
+                        if (value < 10)
+                            TextBox_KeywordCamera_Seconds.Text = value.ToString("F3");
+                        else
+                            TextBox_KeywordCamera_Seconds.Text = value.ToString("F1");
                     }
                     else
                     {

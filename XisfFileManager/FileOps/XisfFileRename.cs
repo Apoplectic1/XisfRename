@@ -106,7 +106,7 @@ namespace XisfFileManager.FileOperations
                 if (targetName.Contains("Master"))
                 {
                     mFile.KeywordData.TotalFrames(true);
-                    
+
                     if (frameType.Contains("Light"))
                     {
                         newName = targetName + "  Integration  L-" + mFile.KeywordData.FilterName() + "  ";
@@ -118,11 +118,23 @@ namespace XisfFileManager.FileOperations
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
+
+                        if (mFile.KeywordData.Rejection() != string.Empty)
+                            newName += "  (" + mFile.KeywordData.Rejection().Replace("'", "") + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
+                        else
+                            newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
+
+                        if (mFile.KeywordData.CaptureSoftware() != string.Empty)
+                        {
+                            newName += "  " + mFile.KeywordData.CaptureSoftware();
+                        }
+
+                        newName += ")";
                     }
 
                     if (frameType.Contains("Dark"))
                     {
-                        newName += "Dark  ";
+                        newName += "Dark  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
@@ -135,7 +147,7 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Bias"))
                     {
-                        newName += "Bias  ";
+                        newName += "Bias  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
@@ -148,7 +160,7 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Flat"))
                     {
-                        newName += "Flat " + mFile.KeywordData.FilterName() + "  ";
+                        newName += "Flat " + mFile.KeywordData.FilterName() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
                             newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
@@ -171,19 +183,24 @@ namespace XisfFileManager.FileOperations
                             newName += "  R" + mFile.KeywordData.ImageAngle();
                         }
                     }
+
+                    newName += "  (";
+
+                    if (mFile.KeywordData.Rejection() != string.Empty)
+                    {
+                        newName += mFile.KeywordData.Rejection().Replace("'", "");
+
+                        if (mFile.KeywordData.CaptureSoftware() != string.Empty)
+                            newName += "  " + mFile.KeywordData.CaptureSoftware();
+                    }
+                    else
+                    {
+                        if (mFile.KeywordData.CaptureSoftware() != string.Empty)
+                            newName +=  mFile.KeywordData.CaptureSoftware();
+                    }
+                    
+                    newName += ")  ";
                 }
-
-                if (mFile.KeywordData.Rejection() != string.Empty)
-                    newName += "  (" + mFile.KeywordData.Rejection().Replace("'","") + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
-                else
-                    newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
-
-                if (mFile.KeywordData.CaptureSoftware() != string.Empty)
-                {
-                    newName += "  " + mFile.KeywordData.CaptureSoftware();
-                }
-
-                newName += ")";
 
                 return newName;
             }

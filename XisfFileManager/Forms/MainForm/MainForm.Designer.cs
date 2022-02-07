@@ -40,7 +40,7 @@
             this.Button_FileSlection_Rename = new System.Windows.Forms.Button();
             this.GroupBox_KeywordUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_KeywordUpdate_CaptureSoftware = new System.Windows.Forms.GroupBox();
-            this.RadioButton_KeywordSoftware_NNA = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordSoftware_NINA = new System.Windows.Forms.RadioButton();
             this.Button_KeywordSoftware_SetByFile = new System.Windows.Forms.Button();
             this.Button_KeywordSoftware_SetAll = new System.Windows.Forms.Button();
             this.RadioButton_KeywordSoftware_VOY = new System.Windows.Forms.RadioButton();
@@ -245,13 +245,13 @@
             this.TextBox_SnrRangeLow = new System.Windows.Forms.TextBox();
             this.GroupBox_InitialRejectionCriteria = new System.Windows.Forms.GroupBox();
             this.NumericUpDown_Rejection_Snr = new System.Windows.Forms.NumericUpDown();
-            this.label10 = new System.Windows.Forms.Label();
+            this.Label_Rejection_SNR = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_StarResidual = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
+            this.Label_Rejection_StarResidual = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_Stars = new System.Windows.Forms.NumericUpDown();
             this.NumericUpDown_Rejection_AirMass = new System.Windows.Forms.NumericUpDown();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
+            this.Label_Rejection_Stars = new System.Windows.Forms.Label();
+            this.Label_Rejection_AirMass = new System.Windows.Forms.Label();
             this.NumericUpDown_Rejection_Noise = new System.Windows.Forms.NumericUpDown();
             this.Label_Rejection_Noise = new System.Windows.Forms.Label();
             this.Button_Rejection_RejectionSet = new System.Windows.Forms.Button();
@@ -276,7 +276,7 @@
             this.Label_FileSelection_Statistics_Task = new System.Windows.Forms.Label();
             this.Label_FileSelection_TempratureCompensation = new System.Windows.Forms.Label();
             this.Label_FileSelection_Statistics_SubFrameOverhead = new System.Windows.Forms.Label();
-            this.GroupBox_FileSlection = new System.Windows.Forms.GroupBox();
+            this.GroupBox_FileSelection = new System.Windows.Forms.GroupBox();
             this.GroupBox_FileSelection_Count = new System.Windows.Forms.GroupBox();
             this.RadioButton_FileSelection_Index_ByFilter = new System.Windows.Forms.RadioButton();
             this.RadioButton_FileSelection_Index_ByTime = new System.Windows.Forms.RadioButton();
@@ -317,7 +317,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_Eccentricity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_FWHM)).BeginInit();
             this.GroupBox_UpdateStatistics.SuspendLayout();
-            this.GroupBox_FileSlection.SuspendLayout();
+            this.GroupBox_FileSelection.SuspendLayout();
             this.GroupBox_FileSelection_Count.SuspendLayout();
             this.GroupBox_FileSelection_Order.SuspendLayout();
             this.GroupBox_FileSelection_Statistics.SuspendLayout();
@@ -431,6 +431,7 @@
             this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_ImageType);
             this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_SubFrameKeywords);
             this.GroupBox_KeywordUpdate.Controls.Add(this.ProgressBar_Keyword_XisfFile);
+            this.GroupBox_KeywordUpdate.Enabled = false;
             this.GroupBox_KeywordUpdate.Location = new System.Drawing.Point(12, 202);
             this.GroupBox_KeywordUpdate.Name = "GroupBox_KeywordUpdate";
             this.GroupBox_KeywordUpdate.Size = new System.Drawing.Size(950, 382);
@@ -440,7 +441,7 @@
             // 
             // GroupBox_KeywordUpdate_CaptureSoftware
             // 
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_NNA);
+            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_NINA);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetByFile);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetAll);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_VOY);
@@ -454,15 +455,15 @@
             this.GroupBox_KeywordUpdate_CaptureSoftware.TabStop = false;
             this.GroupBox_KeywordUpdate_CaptureSoftware.Text = "Capture Software";
             // 
-            // RadioButton_KeywordSoftware_NNA
+            // RadioButton_KeywordSoftware_NINA
             // 
-            this.RadioButton_KeywordSoftware_NNA.AutoSize = true;
-            this.RadioButton_KeywordSoftware_NNA.Location = new System.Drawing.Point(20, 41);
-            this.RadioButton_KeywordSoftware_NNA.Name = "RadioButton_KeywordSoftware_NNA";
-            this.RadioButton_KeywordSoftware_NNA.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_KeywordSoftware_NNA.TabIndex = 6;
-            this.RadioButton_KeywordSoftware_NNA.Text = "NINA";
-            this.RadioButton_KeywordSoftware_NNA.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordSoftware_NINA.AutoSize = true;
+            this.RadioButton_KeywordSoftware_NINA.Location = new System.Drawing.Point(20, 41);
+            this.RadioButton_KeywordSoftware_NINA.Name = "RadioButton_KeywordSoftware_NINA";
+            this.RadioButton_KeywordSoftware_NINA.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_KeywordSoftware_NINA.TabIndex = 6;
+            this.RadioButton_KeywordSoftware_NINA.Text = "NINA";
+            this.RadioButton_KeywordSoftware_NINA.UseVisualStyleBackColor = true;
             // 
             // Button_KeywordSoftware_SetByFile
             // 
@@ -2591,13 +2592,13 @@
             // GroupBox_InitialRejectionCriteria
             // 
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Snr);
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.label10);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_SNR);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_StarResidual);
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.label15);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_StarResidual);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Stars);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_AirMass);
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.label20);
-            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.label25);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Stars);
+            this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_AirMass);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.NumericUpDown_Rejection_Noise);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Noise);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Button_Rejection_RejectionSet);
@@ -2641,15 +2642,15 @@
             0});
             this.NumericUpDown_Rejection_Snr.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_Snr_ValueChanged);
             // 
-            // label10
+            // Label_Rejection_SNR
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(451, 65);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(33, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "SNR:";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_Rejection_SNR.AutoSize = true;
+            this.Label_Rejection_SNR.Location = new System.Drawing.Point(451, 65);
+            this.Label_Rejection_SNR.Name = "Label_Rejection_SNR";
+            this.Label_Rejection_SNR.Size = new System.Drawing.Size(33, 13);
+            this.Label_Rejection_SNR.TabIndex = 19;
+            this.Label_Rejection_SNR.Text = "SNR:";
+            this.Label_Rejection_SNR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // NumericUpDown_Rejection_StarResidual
             // 
@@ -2676,15 +2677,15 @@
             0});
             this.NumericUpDown_Rejection_StarResidual.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_StarResidual_ValueChanged);
             // 
-            // label15
+            // Label_Rejection_StarResidual
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(298, 65);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(73, 13);
-            this.label15.TabIndex = 17;
-            this.label15.Text = "Star Residual:";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_Rejection_StarResidual.AutoSize = true;
+            this.Label_Rejection_StarResidual.Location = new System.Drawing.Point(298, 65);
+            this.Label_Rejection_StarResidual.Name = "Label_Rejection_StarResidual";
+            this.Label_Rejection_StarResidual.Size = new System.Drawing.Size(73, 13);
+            this.Label_Rejection_StarResidual.TabIndex = 17;
+            this.Label_Rejection_StarResidual.Text = "Star Residual:";
+            this.Label_Rejection_StarResidual.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // NumericUpDown_Rejection_Stars
             // 
@@ -2730,25 +2731,25 @@
             0});
             this.NumericUpDown_Rejection_AirMass.ValueChanged += new System.EventHandler(this.NumericUpDown_Rejection_AirMass_ValueChanged);
             // 
-            // label20
+            // Label_Rejection_Stars
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(187, 65);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(34, 13);
-            this.label20.TabIndex = 14;
-            this.label20.Text = "Stars:";
-            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_Rejection_Stars.AutoSize = true;
+            this.Label_Rejection_Stars.Location = new System.Drawing.Point(187, 65);
+            this.Label_Rejection_Stars.Name = "Label_Rejection_Stars";
+            this.Label_Rejection_Stars.Size = new System.Drawing.Size(34, 13);
+            this.Label_Rejection_Stars.TabIndex = 14;
+            this.Label_Rejection_Stars.Text = "Stars:";
+            this.Label_Rejection_Stars.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label25
+            // Label_Rejection_AirMass
             // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(33, 65);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(50, 13);
-            this.label25.TabIndex = 13;
-            this.label25.Text = "Air Mass:";
-            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Label_Rejection_AirMass.AutoSize = true;
+            this.Label_Rejection_AirMass.Location = new System.Drawing.Point(33, 65);
+            this.Label_Rejection_AirMass.Name = "Label_Rejection_AirMass";
+            this.Label_Rejection_AirMass.Size = new System.Drawing.Size(50, 13);
+            this.Label_Rejection_AirMass.TabIndex = 13;
+            this.Label_Rejection_AirMass.Text = "Air Mass:";
+            this.Label_Rejection_AirMass.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // NumericUpDown_Rejection_Noise
             // 
@@ -3027,7 +3028,7 @@
             // Label_FileSelection_Statistics_Task
             // 
             this.Label_FileSelection_Statistics_Task.AutoSize = true;
-            this.Label_FileSelection_Statistics_Task.Location = new System.Drawing.Point(10, 28);
+            this.Label_FileSelection_Statistics_Task.Location = new System.Drawing.Point(10, 20);
             this.Label_FileSelection_Statistics_Task.Name = "Label_FileSelection_Statistics_Task";
             this.Label_FileSelection_Statistics_Task.Size = new System.Drawing.Size(86, 13);
             this.Label_FileSelection_Statistics_Task.TabIndex = 12;
@@ -3036,38 +3037,37 @@
             // Label_FileSelection_TempratureCompensation
             // 
             this.Label_FileSelection_TempratureCompensation.AutoSize = true;
-            this.Label_FileSelection_TempratureCompensation.Location = new System.Drawing.Point(207, 134);
+            this.Label_FileSelection_TempratureCompensation.Location = new System.Drawing.Point(10, 44);
             this.Label_FileSelection_TempratureCompensation.Name = "Label_FileSelection_TempratureCompensation";
-            this.Label_FileSelection_TempratureCompensation.Size = new System.Drawing.Size(161, 13);
+            this.Label_FileSelection_TempratureCompensation.Size = new System.Drawing.Size(194, 13);
             this.Label_FileSelection_TempratureCompensation.TabIndex = 13;
-            this.Label_FileSelection_TempratureCompensation.Text = "Temp Coefficient: Not Computed";
+            this.Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
             // 
             // Label_FileSelection_Statistics_SubFrameOverhead
             // 
             this.Label_FileSelection_Statistics_SubFrameOverhead.AutoSize = true;
-            this.Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(10, 64);
+            this.Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(10, 68);
             this.Label_FileSelection_Statistics_SubFrameOverhead.Name = "Label_FileSelection_Statistics_SubFrameOverhead";
             this.Label_FileSelection_Statistics_SubFrameOverhead.Size = new System.Drawing.Size(179, 13);
             this.Label_FileSelection_Statistics_SubFrameOverhead.TabIndex = 14;
             this.Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
             // 
-            // GroupBox_FileSlection
+            // GroupBox_FileSelection
             // 
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Count);
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Order);
-            this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelection_BrowseFileName);
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_Statistics);
-            this.GroupBox_FileSlection.Controls.Add(this.Label_FileSelection_TempratureCompensation);
-            this.GroupBox_FileSlection.Controls.Add(this.Button_FileSlection_Rename);
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_DirectorySelection);
-            this.GroupBox_FileSlection.Controls.Add(this.GroupBox_FileSelection_SequenceOrder);
-            this.GroupBox_FileSlection.Controls.Add(this.ProgressBar_FileSelection_OverAll);
-            this.GroupBox_FileSlection.Location = new System.Drawing.Point(12, 5);
-            this.GroupBox_FileSlection.Name = "GroupBox_FileSlection";
-            this.GroupBox_FileSlection.Size = new System.Drawing.Size(950, 187);
-            this.GroupBox_FileSlection.TabIndex = 19;
-            this.GroupBox_FileSlection.TabStop = false;
-            this.GroupBox_FileSlection.Text = "File Selection";
+            this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_Count);
+            this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_Order);
+            this.GroupBox_FileSelection.Controls.Add(this.Label_FileSelection_BrowseFileName);
+            this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_Statistics);
+            this.GroupBox_FileSelection.Controls.Add(this.Button_FileSlection_Rename);
+            this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_DirectorySelection);
+            this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_SequenceOrder);
+            this.GroupBox_FileSelection.Controls.Add(this.ProgressBar_FileSelection_OverAll);
+            this.GroupBox_FileSelection.Location = new System.Drawing.Point(12, 5);
+            this.GroupBox_FileSelection.Name = "GroupBox_FileSelection";
+            this.GroupBox_FileSelection.Size = new System.Drawing.Size(950, 187);
+            this.GroupBox_FileSelection.TabIndex = 19;
+            this.GroupBox_FileSelection.TabStop = false;
+            this.GroupBox_FileSelection.Text = "File Selection";
             // 
             // GroupBox_FileSelection_Count
             // 
@@ -3148,6 +3148,7 @@
             // 
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_Task);
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_SubFrameOverhead);
+            this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_TempratureCompensation);
             this.GroupBox_FileSelection_Statistics.Location = new System.Drawing.Point(174, 20);
             this.GroupBox_FileSelection_Statistics.Name = "GroupBox_FileSelection_Statistics";
             this.GroupBox_FileSelection_Statistics.Size = new System.Drawing.Size(549, 105);
@@ -3161,7 +3162,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(973, 1077);
             this.Controls.Add(this.GroupBox_KeywordUpdate);
-            this.Controls.Add(this.GroupBox_FileSlection);
+            this.Controls.Add(this.GroupBox_FileSelection);
             this.Controls.Add(this.GroupBox_WeightsAndStatistics);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -3221,8 +3222,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_Rejection_FWHM)).EndInit();
             this.GroupBox_UpdateStatistics.ResumeLayout(false);
             this.GroupBox_UpdateStatistics.PerformLayout();
-            this.GroupBox_FileSlection.ResumeLayout(false);
-            this.GroupBox_FileSlection.PerformLayout();
+            this.GroupBox_FileSelection.ResumeLayout(false);
+            this.GroupBox_FileSelection.PerformLayout();
             this.GroupBox_FileSelection_Count.ResumeLayout(false);
             this.GroupBox_FileSelection_Count.PerformLayout();
             this.GroupBox_FileSelection_Order.ResumeLayout(false);
@@ -3314,7 +3315,7 @@
         private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_RescaleWeights;
         private System.Windows.Forms.RadioButton RadioButton_SetImageStatistics_KeepWeights;
         private System.Windows.Forms.GroupBox GroupBox_WeightCalculations;
-        private System.Windows.Forms.GroupBox GroupBox_FileSlection;
+        private System.Windows.Forms.GroupBox GroupBox_FileSelection;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Statistics;
         private System.Windows.Forms.GroupBox GroupBox_ImageType;
         private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_S2;
@@ -3372,13 +3373,13 @@
         private System.Windows.Forms.TextBox TextBox_StarResidualRangeHigh;
         private System.Windows.Forms.TextBox TextBox_StarResidualRangeLow;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Snr;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label Label_Rejection_SNR;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_StarResidual;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label Label_Rejection_StarResidual;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Stars;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_AirMass;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label Label_Rejection_Stars;
+        private System.Windows.Forms.Label Label_Rejection_AirMass;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Noise;
         private System.Windows.Forms.Label Label_Rejection_Noise;
         private System.Windows.Forms.TextBox TextBox_AirMassRangeLow;
@@ -3484,7 +3485,7 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected;
         private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_Weights_Remove;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_NNA;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_NINA;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByTarget;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByNight;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Order;

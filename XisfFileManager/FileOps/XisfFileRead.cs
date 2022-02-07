@@ -31,7 +31,7 @@ namespace XisfFileManager.FileOperations
                 }
                 catch
                 {
-                    var selectedOption = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName + "\n\nXisfRead.cs ReadXisfFile()", "Parse XISF File Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    var selectedOption = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName + "\n\nXisfRead.cs ReadXisfFile() Line 34", "Parse XISF File Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                     if (selectedOption == DialogResult.Cancel)
                     {
                         Application.Exit();
