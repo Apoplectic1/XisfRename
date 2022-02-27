@@ -52,11 +52,19 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-        private DirectoryOps.DirectoryOps.FileType mFileType = DirectoryOps.DirectoryOps.FileType.ExcludeMasters;
+        private Calibration mCalibration;
+        private DirectoryOps mDirectoryOps;
+        private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
 
         public MainForm()
         {
             InitializeComponent();
+
+            mDirectoryOps = new DirectoryOps();
+            mCalibration = new Calibration();
+            mCalibration.UpdateCalibrationProgressBar += UpdateCalibrationProgressBar;
+            TabControl_Update.Selected += new TabControlEventHandler(TabControl_Update_Selected);
+
             Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
@@ -93,6 +101,31 @@ namespace XisfFileManager
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
         }
+
+        // ****************************************************************************************************************
+        // ************************ Event Handlers ************************************************************************
+        // ****************************************************************************************************************
+
+        // Executes when TabControl_Updated is selected (changed)
+        private void TabControl_Update_Selected(object sender, TabControlEventArgs e)
+        {
+            if (e.TabPage.Name == TabPage_Calibration.Name)
+            {
+                if (mFile.Camera.Contains("Z533")) mCalibration.Camera = DirectoryOps.CameraType.Z533;
+                if (mFile.Camera.Contains("Z183")) mCalibration.Camera = DirectoryOps.CameraType.Z183;
+                if (mFile.Camera.Contains("A144")) mCalibration.Camera = DirectoryOps.CameraType.A144;
+                if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
+            }
+        }
+
+        // Updates Calibration TabControl_Updated progress bar 
+        private void UpdateCalibrationProgressBar(int progress)
+        {
+            ProgressBar_Calibration.Value = progress;
+        }
+
+        // ****************************************************************************************************************
+        // ****************************************************************************************************************
 
         protected override void OnLoad(EventArgs e)
         {
@@ -205,7 +238,7 @@ namespace XisfFileManager
             TabControl_Update.Enabled = false;
 
             mFolder = new OpenFolderDialog()
-             {
+            {
                 Title = "Select .xisf Folder",
                 //AutoUpgradeEnabled = true,
                 CheckPathExists = false,
@@ -224,21 +257,29 @@ namespace XisfFileManager
             try
             {
                 DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
-                DirectoryOps.DirectoryOps.RecuseXisfFiles(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked, mFileType);
 
-                Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.DirectoryOps.fiFileList.Count.ToString() + " Image Files";
+                mDirectoryOps.ClearFileList();
+                mDirectoryOps.Filter = DirectoryOps.FilterType.ALL;
+                mDirectoryOps.File = mFileType;
+                mDirectoryOps.Camera = DirectoryOps.CameraType.ALL;
+                mDirectoryOps.Frame = DirectoryOps.FrameType.ALL;
+                mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
+
+                mDirectoryOps.RecuseDirectories(diDirectoryTree);
+
+                Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
 
                 ProgressBar_FileSelection_OverAll.Value = 0;
 
-                if (DirectoryOps.DirectoryOps.fiFileList.Count == 0)
+                if (mDirectoryOps.Files.Count == 0)
                 {
                     MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
                     return;
                 }
 
-                ProgressBar_FileSelection_OverAll.Maximum = DirectoryOps.DirectoryOps.fiFileList.Count;
+                ProgressBar_FileSelection_OverAll.Maximum = mDirectoryOps.Files.Count;
 
-                foreach (FileInfo file in DirectoryOps.DirectoryOps.fiFileList)
+                foreach (FileInfo file in mDirectoryOps.Files)
                 {
                     bool bStatus = false;
                     ProgressBar_FileSelection_OverAll.Value += 1;
@@ -3265,20 +3306,28 @@ namespace XisfFileManager
         {
         }
 
-        private void adioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
         {
 
-            mFileType = DirectoryOps.DirectoryOps.FileType.AllFiles;
+            mFileType = DirectoryOps.FileType.ALL;
         }
 
         private void RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged(object sender, EventArgs e)
         {
-            mFileType = DirectoryOps.DirectoryOps.FileType.ExcludeMasters;
+            mFileType = DirectoryOps.FileType.NO_MASTERS;
         }
 
-        private void adioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
         {
-            mFileType = DirectoryOps.DirectoryOps.FileType.MastersOnly;
+            mFileType = DirectoryOps.FileType.MASTERS;
+        }
+
+        private void Calibration_FindDarks_Click(object sender, EventArgs e)
+        {
+
+            mCalibration.MasterFileList();
+
+            int count = mCalibration.CalibrationFiles.Count;
         }
     }
 }

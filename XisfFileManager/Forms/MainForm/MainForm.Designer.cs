@@ -289,13 +289,13 @@
             this.TabControl_Update = new System.Windows.Forms.TabControl();
             this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             this.TabPage_Calibration = new System.Windows.Forms.TabPage();
+            this.ProgressBar_Calibration = new System.Windows.Forms.ProgressBar();
+            this.Label_Calibration_ReadFileName = new System.Windows.Forms.Label();
             this.TreeView_Darks = new System.Windows.Forms.TreeView();
             this.Calibration_FindBias = new System.Windows.Forms.Button();
             this.Calibration_FindFlats = new System.Windows.Forms.Button();
             this.Calibration_FindDarks = new System.Windows.Forms.Button();
-            this.TabPageSubFrameWeights = new System.Windows.Forms.TabPage();
-            this.Label_Calibration_ReadFileName = new System.Windows.Forms.Label();
-            this.ProgressBar_Calibration = new System.Windows.Forms.ProgressBar();
+            this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordTelescope.SuspendLayout();
@@ -333,7 +333,7 @@
             this.TabControl_Update.SuspendLayout();
             this.TabPage_KeywordUpdate.SuspendLayout();
             this.TabPage_Calibration.SuspendLayout();
-            this.TabPageSubFrameWeights.SuspendLayout();
+            this.TabPage_SubFrameWeights.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_FileSelection_DirectorySelection_Browse
@@ -1334,7 +1334,7 @@
             this.adioButton_DirectorySelection_MastersOnly.TabIndex = 6;
             this.adioButton_DirectorySelection_MastersOnly.Text = "Masters Only";
             this.adioButton_DirectorySelection_MastersOnly.UseVisualStyleBackColor = true;
-            this.adioButton_DirectorySelection_MastersOnly.CheckedChanged += new System.EventHandler(this.adioButton_DirectorySelection_MastersOnly_CheckedChanged);
+            this.adioButton_DirectorySelection_MastersOnly.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_MastersOnly_CheckedChanged);
             // 
             // RadioButton_DirectorySelection_ExcludeMasters
             // 
@@ -1358,7 +1358,7 @@
             this.adioButton_DirectorySelection_AlFiles.TabIndex = 4;
             this.adioButton_DirectorySelection_AlFiles.Text = "All Files";
             this.adioButton_DirectorySelection_AlFiles.UseVisualStyleBackColor = true;
-            this.adioButton_DirectorySelection_AlFiles.CheckedChanged += new System.EventHandler(this.adioButton_DirectorySelection_AllFiles_CheckedChanged);
+            this.adioButton_DirectorySelection_AlFiles.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_AllFiles_CheckedChanged);
             // 
             // CheckBox_FileSelection_DirectorySelection_Master
             // 
@@ -3181,7 +3181,7 @@
             // 
             this.TabControl_Update.Controls.Add(this.TabPage_KeywordUpdate);
             this.TabControl_Update.Controls.Add(this.TabPage_Calibration);
-            this.TabControl_Update.Controls.Add(this.TabPageSubFrameWeights);
+            this.TabControl_Update.Controls.Add(this.TabPage_SubFrameWeights);
             this.TabControl_Update.Location = new System.Drawing.Point(12, 198);
             this.TabControl_Update.Name = "TabControl_Update";
             this.TabControl_Update.SelectedIndex = 0;
@@ -3221,9 +3221,25 @@
             this.TabPage_Calibration.TabIndex = 1;
             this.TabPage_Calibration.Text = "Calibration";
             // 
+            // ProgressBar_Calibration
+            // 
+            this.ProgressBar_Calibration.Location = new System.Drawing.Point(42, 435);
+            this.ProgressBar_Calibration.Name = "ProgressBar_Calibration";
+            this.ProgressBar_Calibration.Size = new System.Drawing.Size(884, 11);
+            this.ProgressBar_Calibration.TabIndex = 5;
+            // 
+            // Label_Calibration_ReadFileName
+            // 
+            this.Label_Calibration_ReadFileName.AutoSize = true;
+            this.Label_Calibration_ReadFileName.Location = new System.Drawing.Point(39, 404);
+            this.Label_Calibration_ReadFileName.Name = "Label_Calibration_ReadFileName";
+            this.Label_Calibration_ReadFileName.Size = new System.Drawing.Size(35, 13);
+            this.Label_Calibration_ReadFileName.TabIndex = 4;
+            this.Label_Calibration_ReadFileName.Text = "label1";
+            // 
             // TreeView_Darks
             // 
-            this.TreeView_Darks.Location = new System.Drawing.Point(252, 64);
+            this.TreeView_Darks.Location = new System.Drawing.Point(260, 29);
             this.TreeView_Darks.Name = "TreeView_Darks";
             this.TreeView_Darks.Size = new System.Drawing.Size(130, 342);
             this.TreeView_Darks.TabIndex = 3;
@@ -3255,35 +3271,20 @@
             this.Calibration_FindDarks.TabIndex = 0;
             this.Calibration_FindDarks.Text = "Find Darks";
             this.Calibration_FindDarks.UseVisualStyleBackColor = true;
+            this.Calibration_FindDarks.Click += new System.EventHandler(this.Calibration_FindDarks_Click);
             // 
-            // TabPageSubFrameWeights
+            // TabPage_SubFrameWeights
             // 
-            this.TabPageSubFrameWeights.BackColor = System.Drawing.SystemColors.Control;
-            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_WeightCalculations);
-            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_UpdateStatistics);
-            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_InitialRejectionCriteria);
-            this.TabPageSubFrameWeights.Location = new System.Drawing.Point(4, 22);
-            this.TabPageSubFrameWeights.Name = "TabPageSubFrameWeights";
-            this.TabPageSubFrameWeights.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPageSubFrameWeights.Size = new System.Drawing.Size(975, 478);
-            this.TabPageSubFrameWeights.TabIndex = 2;
-            this.TabPageSubFrameWeights.Text = "SubFrame Weights";
-            // 
-            // Label_Calibration_ReadFileName
-            // 
-            this.Label_Calibration_ReadFileName.AutoSize = true;
-            this.Label_Calibration_ReadFileName.Location = new System.Drawing.Point(37, 16);
-            this.Label_Calibration_ReadFileName.Name = "Label_Calibration_ReadFileName";
-            this.Label_Calibration_ReadFileName.Size = new System.Drawing.Size(35, 13);
-            this.Label_Calibration_ReadFileName.TabIndex = 4;
-            this.Label_Calibration_ReadFileName.Text = "label1";
-            // 
-            // ProgressBar_Calibration
-            // 
-            this.ProgressBar_Calibration.Location = new System.Drawing.Point(70, 437);
-            this.ProgressBar_Calibration.Name = "ProgressBar_Calibration";
-            this.ProgressBar_Calibration.Size = new System.Drawing.Size(827, 23);
-            this.ProgressBar_Calibration.TabIndex = 5;
+            this.TabPage_SubFrameWeights.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_SubFrameWeights.Controls.Add(this.GroupBox_WeightCalculations);
+            this.TabPage_SubFrameWeights.Controls.Add(this.GroupBox_UpdateStatistics);
+            this.TabPage_SubFrameWeights.Controls.Add(this.GroupBox_InitialRejectionCriteria);
+            this.TabPage_SubFrameWeights.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_SubFrameWeights.Name = "TabPage_SubFrameWeights";
+            this.TabPage_SubFrameWeights.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
+            this.TabPage_SubFrameWeights.TabIndex = 2;
+            this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
             // 
             // MainForm
             // 
@@ -3360,7 +3361,7 @@
             this.TabPage_KeywordUpdate.PerformLayout();
             this.TabPage_Calibration.ResumeLayout(false);
             this.TabPage_Calibration.PerformLayout();
-            this.TabPageSubFrameWeights.ResumeLayout(false);
+            this.TabPage_SubFrameWeights.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3624,7 +3625,7 @@
         private System.Windows.Forms.TabControl TabControl_Update;
         private System.Windows.Forms.TabPage TabPage_KeywordUpdate;
         private System.Windows.Forms.TabPage TabPage_Calibration;
-        private System.Windows.Forms.TabPage TabPageSubFrameWeights;
+        private System.Windows.Forms.TabPage TabPage_SubFrameWeights;
         private System.Windows.Forms.TreeView TreeView_Darks;
         private System.Windows.Forms.Button Calibration_FindBias;
         private System.Windows.Forms.Button Calibration_FindFlats;
