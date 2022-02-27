@@ -14,8 +14,13 @@ using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
 
+
 namespace XisfFileManager
 {
+    
+    public delegate void MyDelegate(string input);
+    
+
     // ##########################################################################################################################
     // ##########################################################################################################################
     public partial class MainForm : Form
@@ -122,6 +127,20 @@ namespace XisfFileManager
         private void UpdateCalibrationProgressBar(int progress)
         {
             ProgressBar_Calibration.Value = progress;
+        }
+
+        public MyDelegate createDelegate()
+        {
+            //Class1 c2 = new Class1();
+            //MyDelegate d1 = new MyDelegate(c2.delegateMethod1);
+            MyDelegate d2 = new MyDelegate(delegateMethod2);
+            //MyDelegate d3 = d1 + d2;
+            return d2;
+        }
+
+        public void delegateMethod2(string input)
+        {
+            Label_Calibration_ReadFileName.Text = input;
         }
 
         // ****************************************************************************************************************
@@ -3325,9 +3344,8 @@ namespace XisfFileManager
         private void Calibration_FindDarks_Click(object sender, EventArgs e)
         {
 
-           
+            mCalibration.MyDelegate = createDelegate();
             mCalibration.Frame = DirectoryOps.FrameType.DARK;
-            mCalibration.Filter = DirectoryOps.FilterType.RED;
             mCalibration.MakeMasterFileList();
 
             int count = mCalibration.CalibrationFiles.Count;
