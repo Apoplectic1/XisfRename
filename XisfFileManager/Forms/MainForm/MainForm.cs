@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Deployment.Application;
-
 using LocalLib;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
@@ -30,6 +29,7 @@ namespace XisfFileManager
         private SubFrameNumericListsValidEnum eSubFrameValidListsValid;
         private XisfFile mFile;
         private XisfFileRename mRenameFile;
+        private readonly XisfFileRead mFileReader = new XisfFileRead();
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
         private double mFwhmPercent;
@@ -52,7 +52,7 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-
+        private DirectoryOps.DirectoryOps.FileType mFileType = DirectoryOps.DirectoryOps.FileType.ExcludeMasters;
 
         public MainForm()
         {
@@ -138,7 +138,7 @@ namespace XisfFileManager
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
             TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
 
-            this.Size = new Size(989, 632);
+            //this.Size = new Size(1019, 750);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -202,7 +202,7 @@ namespace XisfFileManager
 
             ProgressBar_FileSelection_OverAll.Value = 0;
             ProgressBar_Keyword_XisfFile.Value = 0;
-            GroupBox_KeywordUpdate.Enabled = false;
+            TabControl_Update.Enabled = false;
 
             mFolder = new OpenFolderDialog()
              {
@@ -224,7 +224,7 @@ namespace XisfFileManager
             try
             {
                 DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
-                DirectoryOps.DirectoryOps.RecuseXisfFiles(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked);
+                DirectoryOps.DirectoryOps.RecuseXisfFiles(diDirectoryTree, CheckBox_FileSelection_DirectorySelection_Recurse.Checked, mFileType);
 
                 Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.DirectoryOps.fiFileList.Count.ToString() + " Image Files";
 
@@ -252,7 +252,7 @@ namespace XisfFileManager
 
                     Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
 
-                    // Get the keyword data contained found within the current file
+                    // Get the keyword data contained within the current file (mFile)
                     // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
                     //
                     // FileSubFrameKeywordLists
@@ -267,7 +267,7 @@ namespace XisfFileManager
                     // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
 
-                    bStatus = XisfFileRead.ReadXisfFile(mFile);
+                    bStatus = mFileReader.ReadXisfFile(mFile);
 
                     // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                     if (bStatus)
@@ -461,7 +461,7 @@ namespace XisfFileManager
             FindCamera();
             FindFrameType();
             // **********************************************************************
-            GroupBox_KeywordUpdate.Enabled = true;
+            TabControl_Update.Enabled = true;
         }
 
         public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)
@@ -573,7 +573,7 @@ namespace XisfFileManager
         {
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
-            GroupBox_KeywordUpdate.Enabled = false;
+            TabControl_Update.Enabled = false;
 
             Label_FileSelection_Statistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
             ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
@@ -596,7 +596,7 @@ namespace XisfFileManager
 
                     Label_FileSelection_Statistics_Task.Text = "Update Aborted";
                     GroupBox_FileSelection.Enabled = true;
-                    GroupBox_KeywordUpdate.Enabled = true;
+                    TabControl_Update.Enabled = true;
                     return;
                 }
 
@@ -641,14 +641,14 @@ namespace XisfFileManager
                         MessageBoxIcon.Error);
 
                     GroupBox_FileSelection.Enabled = true;
-                    GroupBox_KeywordUpdate.Enabled = true;
+                    TabControl_Update.Enabled = true;
                     return;
                 }
             }
 
             Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
             GroupBox_FileSelection.Enabled = true;
-            GroupBox_KeywordUpdate.Enabled = true;
+            TabControl_Update.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -894,7 +894,7 @@ namespace XisfFileManager
             }
 
 
-            GroupBox_WeightsAndStatistics.Enabled = !RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked;
+            // Dan GroupBox_WeightsAndStatistics.Enabled = !RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked;
 
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
             {
@@ -982,15 +982,6 @@ namespace XisfFileManager
             if (RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Checked)
             {
                 SetUISubFrameGroupBoxState();
-            }
-
-            if (RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Checked == true)
-            {
-                this.Size = new Size(989, 1124);
-            }
-            else
-            {
-                this.Size = new Size(989, 632);
             }
         }
 
@@ -3268,6 +3259,26 @@ namespace XisfFileManager
             }
 
             return;
+        }
+
+        private void Calibration_FindFlats_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void adioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
+        {
+
+            mFileType = DirectoryOps.DirectoryOps.FileType.AllFiles;
+        }
+
+        private void RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged(object sender, EventArgs e)
+        {
+            mFileType = DirectoryOps.DirectoryOps.FileType.ExcludeMasters;
+        }
+
+        private void adioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            mFileType = DirectoryOps.DirectoryOps.FileType.MastersOnly;
         }
     }
 }

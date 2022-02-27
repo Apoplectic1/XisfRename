@@ -38,7 +38,6 @@
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             this.RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             this.Button_FileSlection_Rename = new System.Windows.Forms.Button();
-            this.GroupBox_KeywordUpdate = new System.Windows.Forms.GroupBox();
             this.GroupBox_KeywordUpdate_CaptureSoftware = new System.Windows.Forms.GroupBox();
             this.RadioButton_KeywordSoftware_NINA = new System.Windows.Forms.RadioButton();
             this.Button_KeywordSoftware_SetByFile = new System.Windows.Forms.Button();
@@ -120,8 +119,10 @@
             this.Label_KeywordUpdate_SubFrameKeywords_TagetName = new System.Windows.Forms.Label();
             this.ProgressBar_Keyword_XisfFile = new System.Windows.Forms.ProgressBar();
             this.GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
+            this.adioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
+            this.RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
+            this.adioButton_DirectorySelection_AlFiles = new System.Windows.Forms.RadioButton();
             this.CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
-            this.GroupBox_WeightsAndStatistics = new System.Windows.Forms.GroupBox();
             this.GroupBox_WeightCalculations = new System.Windows.Forms.GroupBox();
             this.GroupBox_StarResidual = new System.Windows.Forms.GroupBox();
             this.Label_StarResidualMinValue = new System.Windows.Forms.Label();
@@ -285,8 +286,17 @@
             this.RadioButton_FileSelection_Order_ByNight = new System.Windows.Forms.RadioButton();
             this.Label_FileSelection_BrowseFileName = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_Statistics = new System.Windows.Forms.GroupBox();
+            this.TabControl_Update = new System.Windows.Forms.TabControl();
+            this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
+            this.TabPage_Calibration = new System.Windows.Forms.TabPage();
+            this.TreeView_Darks = new System.Windows.Forms.TreeView();
+            this.Calibration_FindBias = new System.Windows.Forms.Button();
+            this.Calibration_FindFlats = new System.Windows.Forms.Button();
+            this.Calibration_FindDarks = new System.Windows.Forms.Button();
+            this.TabPageSubFrameWeights = new System.Windows.Forms.TabPage();
+            this.Label_Calibration_ReadFileName = new System.Windows.Forms.Label();
+            this.ProgressBar_Calibration = new System.Windows.Forms.ProgressBar();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
-            this.GroupBox_KeywordUpdate.SuspendLayout();
             this.GroupBox_KeywordUpdate_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordTelescope.SuspendLayout();
             this.GroupBox_KeywordCamera.SuspendLayout();
@@ -297,7 +307,6 @@
             this.GroupBox_KeywordUpdate_SubFrameKeywords.SuspendLayout();
             this.GroupBox_KeywordUpdate_Weights.SuspendLayout();
             this.GroupBox_FileSelection_DirectorySelection.SuspendLayout();
-            this.GroupBox_WeightsAndStatistics.SuspendLayout();
             this.GroupBox_WeightCalculations.SuspendLayout();
             this.GroupBox_StarResidual.SuspendLayout();
             this.GroupBox_FwhmWeight.SuspendLayout();
@@ -321,6 +330,10 @@
             this.GroupBox_FileSelection_Count.SuspendLayout();
             this.GroupBox_FileSelection_Order.SuspendLayout();
             this.GroupBox_FileSelection_Statistics.SuspendLayout();
+            this.TabControl_Update.SuspendLayout();
+            this.TabPage_KeywordUpdate.SuspendLayout();
+            this.TabPage_Calibration.SuspendLayout();
+            this.TabPageSubFrameWeights.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_FileSelection_DirectorySelection_Browse
@@ -335,9 +348,9 @@
             // 
             // ProgressBar_FileSelection_OverAll
             // 
-            this.ProgressBar_FileSelection_OverAll.Location = new System.Drawing.Point(28, 166);
+            this.ProgressBar_FileSelection_OverAll.Location = new System.Drawing.Point(17, 166);
             this.ProgressBar_FileSelection_OverAll.Name = "ProgressBar_FileSelection_OverAll";
-            this.ProgressBar_FileSelection_OverAll.Size = new System.Drawing.Size(889, 11);
+            this.ProgressBar_FileSelection_OverAll.Size = new System.Drawing.Size(942, 11);
             this.ProgressBar_FileSelection_OverAll.Step = 1;
             this.ProgressBar_FileSelection_OverAll.TabIndex = 1;
             // 
@@ -359,7 +372,7 @@
             this.GroupBox_FileSelection_SequenceOrder.Controls.Add(this.RadioButton_FileSelection_SequenceNumbering_IndexOnly);
             this.GroupBox_FileSelection_SequenceOrder.Controls.Add(this.RadioButton_FileSelection_SequenceNumbering_IndexWeight);
             this.GroupBox_FileSelection_SequenceOrder.Controls.Add(this.RadioButton_FileSelection_SequenceNumbering_WeightIndex);
-            this.GroupBox_FileSelection_SequenceOrder.Location = new System.Drawing.Point(737, 7);
+            this.GroupBox_FileSelection_SequenceOrder.Location = new System.Drawing.Point(760, 7);
             this.GroupBox_FileSelection_SequenceOrder.Name = "GroupBox_FileSelection_SequenceOrder";
             this.GroupBox_FileSelection_SequenceOrder.Size = new System.Drawing.Size(199, 58);
             this.GroupBox_FileSelection_SequenceOrder.TabIndex = 3;
@@ -414,30 +427,13 @@
             // 
             // Button_FileSlection_Rename
             // 
-            this.Button_FileSlection_Rename.Location = new System.Drawing.Point(776, 134);
+            this.Button_FileSlection_Rename.Location = new System.Drawing.Point(799, 134);
             this.Button_FileSlection_Rename.Name = "Button_FileSlection_Rename";
             this.Button_FileSlection_Rename.Size = new System.Drawing.Size(124, 23);
             this.Button_FileSlection_Rename.TabIndex = 4;
             this.Button_FileSlection_Rename.Text = "Rename XISF Files";
             this.Button_FileSlection_Rename.UseVisualStyleBackColor = true;
             this.Button_FileSlection_Rename.Click += new System.EventHandler(this.Button_Rename_Click);
-            // 
-            // GroupBox_KeywordUpdate
-            // 
-            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_CaptureSoftware);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_KeywordTelescope);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_KeywordCamera);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.Label_Keyword_UpdateFileName);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_ImageType);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_SubFrameKeywords);
-            this.GroupBox_KeywordUpdate.Controls.Add(this.ProgressBar_Keyword_XisfFile);
-            this.GroupBox_KeywordUpdate.Enabled = false;
-            this.GroupBox_KeywordUpdate.Location = new System.Drawing.Point(12, 202);
-            this.GroupBox_KeywordUpdate.Name = "GroupBox_KeywordUpdate";
-            this.GroupBox_KeywordUpdate.Size = new System.Drawing.Size(950, 382);
-            this.GroupBox_KeywordUpdate.TabIndex = 6;
-            this.GroupBox_KeywordUpdate.TabStop = false;
-            this.GroupBox_KeywordUpdate.Text = "Keyword Update";
             // 
             // GroupBox_KeywordUpdate_CaptureSoftware
             // 
@@ -448,7 +444,7 @@
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_SCP);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_SGP);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_TSX);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Location = new System.Drawing.Point(7, 130);
+            this.GroupBox_KeywordUpdate_CaptureSoftware.Location = new System.Drawing.Point(17, 162);
             this.GroupBox_KeywordUpdate_CaptureSoftware.Name = "GroupBox_KeywordUpdate_CaptureSoftware";
             this.GroupBox_KeywordUpdate_CaptureSoftware.Size = new System.Drawing.Size(137, 187);
             this.GroupBox_KeywordUpdate_CaptureSoftware.TabIndex = 22;
@@ -535,7 +531,7 @@
             this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_NWT254);
             this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_EVO150);
             this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_APM107);
-            this.GroupBox_KeywordTelescope.Location = new System.Drawing.Point(153, 130);
+            this.GroupBox_KeywordTelescope.Location = new System.Drawing.Point(164, 162);
             this.GroupBox_KeywordTelescope.Name = "GroupBox_KeywordTelescope";
             this.GroupBox_KeywordTelescope.Size = new System.Drawing.Size(181, 187);
             this.GroupBox_KeywordTelescope.TabIndex = 21;
@@ -650,7 +646,7 @@
             this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Q178);
             this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Z183);
             this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Z533);
-            this.GroupBox_KeywordCamera.Location = new System.Drawing.Point(343, 130);
+            this.GroupBox_KeywordCamera.Location = new System.Drawing.Point(354, 162);
             this.GroupBox_KeywordCamera.Name = "GroupBox_KeywordCamera";
             this.GroupBox_KeywordCamera.Size = new System.Drawing.Size(305, 186);
             this.GroupBox_KeywordCamera.TabIndex = 20;
@@ -910,7 +906,7 @@
             // Label_Keyword_UpdateFileName
             // 
             this.Label_Keyword_UpdateFileName.AutoSize = true;
-            this.Label_Keyword_UpdateFileName.Location = new System.Drawing.Point(17, 329);
+            this.Label_Keyword_UpdateFileName.Location = new System.Drawing.Point(17, 385);
             this.Label_Keyword_UpdateFileName.Name = "Label_Keyword_UpdateFileName";
             this.Label_Keyword_UpdateFileName.Size = new System.Drawing.Size(69, 13);
             this.Label_Keyword_UpdateFileName.TabIndex = 19;
@@ -922,7 +918,7 @@
             this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImageType_SetAll);
             this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFrame);
             this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFilter);
-            this.GroupBox_ImageType.Location = new System.Drawing.Point(655, 130);
+            this.GroupBox_ImageType.Location = new System.Drawing.Point(666, 162);
             this.GroupBox_ImageType.Name = "GroupBox_ImageType";
             this.GroupBox_ImageType.Size = new System.Drawing.Size(288, 186);
             this.GroupBox_ImageType.TabIndex = 18;
@@ -1135,9 +1131,9 @@
             this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords);
             this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames);
             this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Label_KeywordUpdate_SubFrameKeywords_TagetName);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Location = new System.Drawing.Point(13, 19);
+            this.GroupBox_KeywordUpdate_SubFrameKeywords.Location = new System.Drawing.Point(17, 31);
             this.GroupBox_KeywordUpdate_SubFrameKeywords.Name = "GroupBox_KeywordUpdate_SubFrameKeywords";
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Size = new System.Drawing.Size(930, 105);
+            this.GroupBox_KeywordUpdate_SubFrameKeywords.Size = new System.Drawing.Size(936, 105);
             this.GroupBox_KeywordUpdate_SubFrameKeywords.TabIndex = 14;
             this.GroupBox_KeywordUpdate_SubFrameKeywords.TabStop = false;
             this.GroupBox_KeywordUpdate_SubFrameKeywords.Text = "SubFrame Keywords";
@@ -1308,23 +1304,61 @@
             // 
             // ProgressBar_Keyword_XisfFile
             // 
-            this.ProgressBar_Keyword_XisfFile.Location = new System.Drawing.Point(28, 361);
+            this.ProgressBar_Keyword_XisfFile.Location = new System.Drawing.Point(17, 418);
             this.ProgressBar_Keyword_XisfFile.Name = "ProgressBar_Keyword_XisfFile";
-            this.ProgressBar_Keyword_XisfFile.Size = new System.Drawing.Size(889, 11);
+            this.ProgressBar_Keyword_XisfFile.Size = new System.Drawing.Size(938, 11);
             this.ProgressBar_Keyword_XisfFile.Step = 1;
             this.ProgressBar_Keyword_XisfFile.TabIndex = 13;
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
+            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.adioButton_DirectorySelection_MastersOnly);
+            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.RadioButton_DirectorySelection_ExcludeMasters);
+            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.adioButton_DirectorySelection_AlFiles);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.CheckBox_FileSelection_DirectorySelection_Master);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.Button_FileSelection_DirectorySelection_Browse);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.CheckBox_FileSelection_DirectorySelection_Recurse);
             this.GroupBox_FileSelection_DirectorySelection.Location = new System.Drawing.Point(17, 20);
             this.GroupBox_FileSelection_DirectorySelection.Name = "GroupBox_FileSelection_DirectorySelection";
-            this.GroupBox_FileSelection_DirectorySelection.Size = new System.Drawing.Size(147, 105);
+            this.GroupBox_FileSelection_DirectorySelection.Size = new System.Drawing.Size(238, 105);
             this.GroupBox_FileSelection_DirectorySelection.TabIndex = 7;
             this.GroupBox_FileSelection_DirectorySelection.TabStop = false;
             this.GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
+            // 
+            // adioButton_DirectorySelection_MastersOnly
+            // 
+            this.adioButton_DirectorySelection_MastersOnly.AutoSize = true;
+            this.adioButton_DirectorySelection_MastersOnly.Location = new System.Drawing.Point(134, 69);
+            this.adioButton_DirectorySelection_MastersOnly.Name = "adioButton_DirectorySelection_MastersOnly";
+            this.adioButton_DirectorySelection_MastersOnly.Size = new System.Drawing.Size(86, 17);
+            this.adioButton_DirectorySelection_MastersOnly.TabIndex = 6;
+            this.adioButton_DirectorySelection_MastersOnly.Text = "Masters Only";
+            this.adioButton_DirectorySelection_MastersOnly.UseVisualStyleBackColor = true;
+            this.adioButton_DirectorySelection_MastersOnly.CheckedChanged += new System.EventHandler(this.adioButton_DirectorySelection_MastersOnly_CheckedChanged);
+            // 
+            // RadioButton_DirectorySelection_ExcludeMasters
+            // 
+            this.RadioButton_DirectorySelection_ExcludeMasters.AutoSize = true;
+            this.RadioButton_DirectorySelection_ExcludeMasters.Checked = true;
+            this.RadioButton_DirectorySelection_ExcludeMasters.Location = new System.Drawing.Point(134, 47);
+            this.RadioButton_DirectorySelection_ExcludeMasters.Name = "RadioButton_DirectorySelection_ExcludeMasters";
+            this.RadioButton_DirectorySelection_ExcludeMasters.Size = new System.Drawing.Size(103, 17);
+            this.RadioButton_DirectorySelection_ExcludeMasters.TabIndex = 5;
+            this.RadioButton_DirectorySelection_ExcludeMasters.TabStop = true;
+            this.RadioButton_DirectorySelection_ExcludeMasters.Text = "Exclude Masters";
+            this.RadioButton_DirectorySelection_ExcludeMasters.UseVisualStyleBackColor = true;
+            this.RadioButton_DirectorySelection_ExcludeMasters.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged);
+            // 
+            // adioButton_DirectorySelection_AlFiles
+            // 
+            this.adioButton_DirectorySelection_AlFiles.AutoSize = true;
+            this.adioButton_DirectorySelection_AlFiles.Location = new System.Drawing.Point(134, 25);
+            this.adioButton_DirectorySelection_AlFiles.Name = "adioButton_DirectorySelection_AlFiles";
+            this.adioButton_DirectorySelection_AlFiles.Size = new System.Drawing.Size(60, 17);
+            this.adioButton_DirectorySelection_AlFiles.TabIndex = 4;
+            this.adioButton_DirectorySelection_AlFiles.Text = "All Files";
+            this.adioButton_DirectorySelection_AlFiles.UseVisualStyleBackColor = true;
+            this.adioButton_DirectorySelection_AlFiles.CheckedChanged += new System.EventHandler(this.adioButton_DirectorySelection_AllFiles_CheckedChanged);
             // 
             // CheckBox_FileSelection_DirectorySelection_Master
             // 
@@ -1337,19 +1371,6 @@
             this.CheckBox_FileSelection_DirectorySelection_Master.UseVisualStyleBackColor = true;
             this.CheckBox_FileSelection_DirectorySelection_Master.CheckedChanged += new System.EventHandler(this.CheckBox_Master_CheckedChanged);
             // 
-            // GroupBox_WeightsAndStatistics
-            // 
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_WeightCalculations);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_InitialRejectionCriteria);
-            this.GroupBox_WeightsAndStatistics.Controls.Add(this.GroupBox_UpdateStatistics);
-            this.GroupBox_WeightsAndStatistics.Enabled = false;
-            this.GroupBox_WeightsAndStatistics.Location = new System.Drawing.Point(12, 595);
-            this.GroupBox_WeightsAndStatistics.Name = "GroupBox_WeightsAndStatistics";
-            this.GroupBox_WeightsAndStatistics.Size = new System.Drawing.Size(950, 477);
-            this.GroupBox_WeightsAndStatistics.TabIndex = 11;
-            this.GroupBox_WeightsAndStatistics.TabStop = false;
-            this.GroupBox_WeightsAndStatistics.Text = "SubFrame Weights and Statistics";
-            // 
             // GroupBox_WeightCalculations
             // 
             this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_StarResidual);
@@ -1360,7 +1381,7 @@
             this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_NoiseWeight);
             this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_MedianWeight);
             this.GroupBox_WeightCalculations.Controls.Add(this.GroupBox_SnrWeight);
-            this.GroupBox_WeightCalculations.Location = new System.Drawing.Point(17, 213);
+            this.GroupBox_WeightCalculations.Location = new System.Drawing.Point(31, 210);
             this.GroupBox_WeightCalculations.Name = "GroupBox_WeightCalculations";
             this.GroupBox_WeightCalculations.Size = new System.Drawing.Size(911, 251);
             this.GroupBox_WeightCalculations.TabIndex = 27;
@@ -2610,9 +2631,9 @@
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Total);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_Eccentricity);
             this.GroupBox_InitialRejectionCriteria.Controls.Add(this.Label_Rejection_FWHM);
-            this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(20, 109);
+            this.GroupBox_InitialRejectionCriteria.Location = new System.Drawing.Point(31, 100);
             this.GroupBox_InitialRejectionCriteria.Name = "GroupBox_InitialRejectionCriteria";
-            this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(908, 98);
+            this.GroupBox_InitialRejectionCriteria.Size = new System.Drawing.Size(911, 98);
             this.GroupBox_InitialRejectionCriteria.TabIndex = 26;
             this.GroupBox_InitialRejectionCriteria.TabStop = false;
             this.GroupBox_InitialRejectionCriteria.Text = "Initial Rejection Criteria";
@@ -2725,7 +2746,7 @@
             this.NumericUpDown_Rejection_AirMass.TabIndex = 15;
             this.NumericUpDown_Rejection_AirMass.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.NumericUpDown_Rejection_AirMass.Value = new decimal(new int[] {
-            1,
+            2,
             0,
             0,
             0});
@@ -2788,7 +2809,7 @@
             // 
             // Button_Rejection_RejectionSet
             // 
-            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(751, 43);
+            this.Button_Rejection_RejectionSet.Location = new System.Drawing.Point(777, 43);
             this.Button_Rejection_RejectionSet.Name = "Button_Rejection_RejectionSet";
             this.Button_Rejection_RejectionSet.Size = new System.Drawing.Size(83, 23);
             this.Button_Rejection_RejectionSet.TabIndex = 10;
@@ -2877,7 +2898,7 @@
             // 
             // TextBox_Rejection_Total
             // 
-            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(700, 44);
+            this.TextBox_Rejection_Total.Location = new System.Drawing.Point(726, 44);
             this.TextBox_Rejection_Total.Name = "TextBox_Rejection_Total";
             this.TextBox_Rejection_Total.Size = new System.Drawing.Size(44, 20);
             this.TextBox_Rejection_Total.TabIndex = 5;
@@ -2886,7 +2907,7 @@
             // Label_Rejection_Total
             // 
             this.Label_Rejection_Total.AutoSize = true;
-            this.Label_Rejection_Total.Location = new System.Drawing.Point(590, 48);
+            this.Label_Rejection_Total.Location = new System.Drawing.Point(616, 48);
             this.Label_Rejection_Total.Name = "Label_Rejection_Total";
             this.Label_Rejection_Total.Size = new System.Drawing.Size(109, 13);
             this.Label_Rejection_Total.TabIndex = 4;
@@ -2924,7 +2945,7 @@
             this.GroupBox_UpdateStatistics.Controls.Add(this.TextBox_UpdateStatisticsRangeHigh);
             this.GroupBox_UpdateStatistics.Controls.Add(this.TextBox_UpdateStatisticsRangeLow);
             this.GroupBox_UpdateStatistics.Controls.Add(this.Label_UpdateStatisticsRangeLow);
-            this.GroupBox_UpdateStatistics.Location = new System.Drawing.Point(127, 25);
+            this.GroupBox_UpdateStatistics.Location = new System.Drawing.Point(122, 15);
             this.GroupBox_UpdateStatistics.Name = "GroupBox_UpdateStatistics";
             this.GroupBox_UpdateStatistics.Size = new System.Drawing.Size(700, 73);
             this.GroupBox_UpdateStatistics.TabIndex = 20;
@@ -3028,7 +3049,7 @@
             // Label_FileSelection_Statistics_Task
             // 
             this.Label_FileSelection_Statistics_Task.AutoSize = true;
-            this.Label_FileSelection_Statistics_Task.Location = new System.Drawing.Point(10, 20);
+            this.Label_FileSelection_Statistics_Task.Location = new System.Drawing.Point(14, 20);
             this.Label_FileSelection_Statistics_Task.Name = "Label_FileSelection_Statistics_Task";
             this.Label_FileSelection_Statistics_Task.Size = new System.Drawing.Size(86, 13);
             this.Label_FileSelection_Statistics_Task.TabIndex = 12;
@@ -3037,7 +3058,7 @@
             // Label_FileSelection_TempratureCompensation
             // 
             this.Label_FileSelection_TempratureCompensation.AutoSize = true;
-            this.Label_FileSelection_TempratureCompensation.Location = new System.Drawing.Point(10, 44);
+            this.Label_FileSelection_TempratureCompensation.Location = new System.Drawing.Point(14, 44);
             this.Label_FileSelection_TempratureCompensation.Name = "Label_FileSelection_TempratureCompensation";
             this.Label_FileSelection_TempratureCompensation.Size = new System.Drawing.Size(194, 13);
             this.Label_FileSelection_TempratureCompensation.TabIndex = 13;
@@ -3046,7 +3067,7 @@
             // Label_FileSelection_Statistics_SubFrameOverhead
             // 
             this.Label_FileSelection_Statistics_SubFrameOverhead.AutoSize = true;
-            this.Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(10, 68);
+            this.Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(14, 68);
             this.Label_FileSelection_Statistics_SubFrameOverhead.Name = "Label_FileSelection_Statistics_SubFrameOverhead";
             this.Label_FileSelection_Statistics_SubFrameOverhead.Size = new System.Drawing.Size(179, 13);
             this.Label_FileSelection_Statistics_SubFrameOverhead.TabIndex = 14;
@@ -3064,7 +3085,7 @@
             this.GroupBox_FileSelection.Controls.Add(this.ProgressBar_FileSelection_OverAll);
             this.GroupBox_FileSelection.Location = new System.Drawing.Point(12, 5);
             this.GroupBox_FileSelection.Name = "GroupBox_FileSelection";
-            this.GroupBox_FileSelection.Size = new System.Drawing.Size(950, 187);
+            this.GroupBox_FileSelection.Size = new System.Drawing.Size(979, 187);
             this.GroupBox_FileSelection.TabIndex = 19;
             this.GroupBox_FileSelection.TabStop = false;
             this.GroupBox_FileSelection.Text = "File Selection";
@@ -3073,7 +3094,7 @@
             // 
             this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Index_ByFilter);
             this.GroupBox_FileSelection_Count.Controls.Add(this.RadioButton_FileSelection_Index_ByTime);
-            this.GroupBox_FileSelection_Count.Location = new System.Drawing.Point(845, 66);
+            this.GroupBox_FileSelection_Count.Location = new System.Drawing.Point(868, 66);
             this.GroupBox_FileSelection_Count.Name = "GroupBox_FileSelection_Count";
             this.GroupBox_FileSelection_Count.Size = new System.Drawing.Size(91, 59);
             this.GroupBox_FileSelection_Count.TabIndex = 16;
@@ -3106,7 +3127,7 @@
             // 
             this.GroupBox_FileSelection_Order.Controls.Add(this.RadioButton_FileSelection_Order_ByTarget);
             this.GroupBox_FileSelection_Order.Controls.Add(this.RadioButton_FileSelection_Order_ByNight);
-            this.GroupBox_FileSelection_Order.Location = new System.Drawing.Point(737, 66);
+            this.GroupBox_FileSelection_Order.Location = new System.Drawing.Point(760, 66);
             this.GroupBox_FileSelection_Order.Name = "GroupBox_FileSelection_Order";
             this.GroupBox_FileSelection_Order.Size = new System.Drawing.Size(102, 59);
             this.GroupBox_FileSelection_Order.TabIndex = 15;
@@ -3149,21 +3170,128 @@
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_Task);
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_SubFrameOverhead);
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_TempratureCompensation);
-            this.GroupBox_FileSelection_Statistics.Location = new System.Drawing.Point(174, 20);
+            this.GroupBox_FileSelection_Statistics.Location = new System.Drawing.Point(264, 20);
             this.GroupBox_FileSelection_Statistics.Name = "GroupBox_FileSelection_Statistics";
-            this.GroupBox_FileSelection_Statistics.Size = new System.Drawing.Size(549, 105);
+            this.GroupBox_FileSelection_Statistics.Size = new System.Drawing.Size(487, 105);
             this.GroupBox_FileSelection_Statistics.TabIndex = 20;
             this.GroupBox_FileSelection_Statistics.TabStop = false;
             this.GroupBox_FileSelection_Statistics.Text = "Statistics";
+            // 
+            // TabControl_Update
+            // 
+            this.TabControl_Update.Controls.Add(this.TabPage_KeywordUpdate);
+            this.TabControl_Update.Controls.Add(this.TabPage_Calibration);
+            this.TabControl_Update.Controls.Add(this.TabPageSubFrameWeights);
+            this.TabControl_Update.Location = new System.Drawing.Point(12, 198);
+            this.TabControl_Update.Name = "TabControl_Update";
+            this.TabControl_Update.SelectedIndex = 0;
+            this.TabControl_Update.Size = new System.Drawing.Size(983, 504);
+            this.TabControl_Update.TabIndex = 23;
+            // 
+            // TabPage_KeywordUpdate
+            // 
+            this.TabPage_KeywordUpdate.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_KeywordUpdate.Controls.Add(this.Label_Keyword_UpdateFileName);
+            this.TabPage_KeywordUpdate.Controls.Add(this.ProgressBar_Keyword_XisfFile);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_CaptureSoftware);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordTelescope);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_SubFrameKeywords);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordCamera);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_ImageType);
+            this.TabPage_KeywordUpdate.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_KeywordUpdate.Name = "TabPage_KeywordUpdate";
+            this.TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_KeywordUpdate.Size = new System.Drawing.Size(975, 478);
+            this.TabPage_KeywordUpdate.TabIndex = 0;
+            this.TabPage_KeywordUpdate.Text = "Keyword Update";
+            // 
+            // TabPage_Calibration
+            // 
+            this.TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_Calibration.Controls.Add(this.ProgressBar_Calibration);
+            this.TabPage_Calibration.Controls.Add(this.Label_Calibration_ReadFileName);
+            this.TabPage_Calibration.Controls.Add(this.TreeView_Darks);
+            this.TabPage_Calibration.Controls.Add(this.Calibration_FindBias);
+            this.TabPage_Calibration.Controls.Add(this.Calibration_FindFlats);
+            this.TabPage_Calibration.Controls.Add(this.Calibration_FindDarks);
+            this.TabPage_Calibration.Location = new System.Drawing.Point(4, 22);
+            this.TabPage_Calibration.Name = "TabPage_Calibration";
+            this.TabPage_Calibration.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPage_Calibration.Size = new System.Drawing.Size(975, 478);
+            this.TabPage_Calibration.TabIndex = 1;
+            this.TabPage_Calibration.Text = "Calibration";
+            // 
+            // TreeView_Darks
+            // 
+            this.TreeView_Darks.Location = new System.Drawing.Point(252, 64);
+            this.TreeView_Darks.Name = "TreeView_Darks";
+            this.TreeView_Darks.Size = new System.Drawing.Size(130, 342);
+            this.TreeView_Darks.TabIndex = 3;
+            // 
+            // Calibration_FindBias
+            // 
+            this.Calibration_FindBias.Location = new System.Drawing.Point(84, 86);
+            this.Calibration_FindBias.Name = "Calibration_FindBias";
+            this.Calibration_FindBias.Size = new System.Drawing.Size(75, 23);
+            this.Calibration_FindBias.TabIndex = 2;
+            this.Calibration_FindBias.Text = "Find Bias";
+            this.Calibration_FindBias.UseVisualStyleBackColor = true;
+            // 
+            // Calibration_FindFlats
+            // 
+            this.Calibration_FindFlats.Location = new System.Drawing.Point(84, 144);
+            this.Calibration_FindFlats.Name = "Calibration_FindFlats";
+            this.Calibration_FindFlats.Size = new System.Drawing.Size(75, 23);
+            this.Calibration_FindFlats.TabIndex = 1;
+            this.Calibration_FindFlats.Text = "Find Flats";
+            this.Calibration_FindFlats.UseVisualStyleBackColor = true;
+            this.Calibration_FindFlats.Click += new System.EventHandler(this.Calibration_FindFlats_Click);
+            // 
+            // Calibration_FindDarks
+            // 
+            this.Calibration_FindDarks.Location = new System.Drawing.Point(84, 115);
+            this.Calibration_FindDarks.Name = "Calibration_FindDarks";
+            this.Calibration_FindDarks.Size = new System.Drawing.Size(75, 23);
+            this.Calibration_FindDarks.TabIndex = 0;
+            this.Calibration_FindDarks.Text = "Find Darks";
+            this.Calibration_FindDarks.UseVisualStyleBackColor = true;
+            // 
+            // TabPageSubFrameWeights
+            // 
+            this.TabPageSubFrameWeights.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_WeightCalculations);
+            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_UpdateStatistics);
+            this.TabPageSubFrameWeights.Controls.Add(this.GroupBox_InitialRejectionCriteria);
+            this.TabPageSubFrameWeights.Location = new System.Drawing.Point(4, 22);
+            this.TabPageSubFrameWeights.Name = "TabPageSubFrameWeights";
+            this.TabPageSubFrameWeights.Padding = new System.Windows.Forms.Padding(3);
+            this.TabPageSubFrameWeights.Size = new System.Drawing.Size(975, 478);
+            this.TabPageSubFrameWeights.TabIndex = 2;
+            this.TabPageSubFrameWeights.Text = "SubFrame Weights";
+            // 
+            // Label_Calibration_ReadFileName
+            // 
+            this.Label_Calibration_ReadFileName.AutoSize = true;
+            this.Label_Calibration_ReadFileName.Location = new System.Drawing.Point(37, 16);
+            this.Label_Calibration_ReadFileName.Name = "Label_Calibration_ReadFileName";
+            this.Label_Calibration_ReadFileName.Size = new System.Drawing.Size(35, 13);
+            this.Label_Calibration_ReadFileName.TabIndex = 4;
+            this.Label_Calibration_ReadFileName.Text = "label1";
+            // 
+            // ProgressBar_Calibration
+            // 
+            this.ProgressBar_Calibration.Location = new System.Drawing.Point(70, 437);
+            this.ProgressBar_Calibration.Name = "ProgressBar_Calibration";
+            this.ProgressBar_Calibration.Size = new System.Drawing.Size(827, 23);
+            this.ProgressBar_Calibration.TabIndex = 5;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(973, 1077);
-            this.Controls.Add(this.GroupBox_KeywordUpdate);
+            this.ClientSize = new System.Drawing.Size(1003, 711);
+            this.Controls.Add(this.TabControl_Update);
             this.Controls.Add(this.GroupBox_FileSelection);
-            this.Controls.Add(this.GroupBox_WeightsAndStatistics);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -3172,8 +3300,6 @@
             this.Text = "XISF Manager";
             this.GroupBox_FileSelection_SequenceOrder.ResumeLayout(false);
             this.GroupBox_FileSelection_SequenceOrder.PerformLayout();
-            this.GroupBox_KeywordUpdate.ResumeLayout(false);
-            this.GroupBox_KeywordUpdate.PerformLayout();
             this.GroupBox_KeywordUpdate_CaptureSoftware.ResumeLayout(false);
             this.GroupBox_KeywordUpdate_CaptureSoftware.PerformLayout();
             this.GroupBox_KeywordTelescope.ResumeLayout(false);
@@ -3192,7 +3318,6 @@
             this.GroupBox_KeywordUpdate_Weights.PerformLayout();
             this.GroupBox_FileSelection_DirectorySelection.ResumeLayout(false);
             this.GroupBox_FileSelection_DirectorySelection.PerformLayout();
-            this.GroupBox_WeightsAndStatistics.ResumeLayout(false);
             this.GroupBox_WeightCalculations.ResumeLayout(false);
             this.GroupBox_StarResidual.ResumeLayout(false);
             this.GroupBox_StarResidual.PerformLayout();
@@ -3230,6 +3355,12 @@
             this.GroupBox_FileSelection_Order.PerformLayout();
             this.GroupBox_FileSelection_Statistics.ResumeLayout(false);
             this.GroupBox_FileSelection_Statistics.PerformLayout();
+            this.TabControl_Update.ResumeLayout(false);
+            this.TabPage_KeywordUpdate.ResumeLayout(false);
+            this.TabPage_KeywordUpdate.PerformLayout();
+            this.TabPage_Calibration.ResumeLayout(false);
+            this.TabPage_Calibration.PerformLayout();
+            this.TabPageSubFrameWeights.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3241,12 +3372,10 @@
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_SequenceOrder;
         private System.Windows.Forms.Button Button_FileSlection_Rename;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdate;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
         private System.Windows.Forms.Label Label_KeywordUpdate_SubFrameKeywords_TagetName;
         private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames;
-        private System.Windows.Forms.GroupBox GroupBox_WeightsAndStatistics;
         private System.Windows.Forms.Button Button_ReadSubFrameSelectorCsvFile;
         private System.Windows.Forms.Label Label_FwhmSigma;
         private System.Windows.Forms.Label Label_FwhmMean;
@@ -3492,5 +3621,18 @@
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Count;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByFilter;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTime;
+        private System.Windows.Forms.TabControl TabControl_Update;
+        private System.Windows.Forms.TabPage TabPage_KeywordUpdate;
+        private System.Windows.Forms.TabPage TabPage_Calibration;
+        private System.Windows.Forms.TabPage TabPageSubFrameWeights;
+        private System.Windows.Forms.TreeView TreeView_Darks;
+        private System.Windows.Forms.Button Calibration_FindBias;
+        private System.Windows.Forms.Button Calibration_FindFlats;
+        private System.Windows.Forms.Button Calibration_FindDarks;
+        private System.Windows.Forms.RadioButton adioButton_DirectorySelection_MastersOnly;
+        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_ExcludeMasters;
+        private System.Windows.Forms.RadioButton adioButton_DirectorySelection_AlFiles;
+        private System.Windows.Forms.Label Label_Calibration_ReadFileName;
+        private System.Windows.Forms.ProgressBar ProgressBar_Calibration;
     }
 }
