@@ -3325,7 +3325,10 @@ namespace XisfFileManager
         private void Calibration_FindDarks_Click(object sender, EventArgs e)
         {
 
-            mCalibration.MasterFileList();
+           
+            mCalibration.Frame = DirectoryOps.FrameType.DARK;
+            mCalibration.Filter = DirectoryOps.FilterType.RED;
+            mCalibration.MakeMasterFileList();
 
             int count = mCalibration.CalibrationFiles.Count;
         }

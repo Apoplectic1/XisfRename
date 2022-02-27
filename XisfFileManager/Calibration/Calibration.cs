@@ -35,7 +35,7 @@ public class Calibration
         mDirectoryOps = new DirectoryOps();
     }
 
-    public void MasterFileList()
+    public void MakeMasterFileList()
     {
         int progress = 0;
 
