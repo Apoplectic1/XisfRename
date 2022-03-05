@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace XisfFileManager
 {
-    public class CalibrationPageValues
+    public class CalibrationTabPageValues
     {
         public string FileName { get; set; }
         public int Progress { get; set; }
         public int TotalFiles { get; set; }
     }
 
-    public class Transmitter
+    public class CalibrationTabPageEvent
     {
-        public static event DataReceivedEventHandler DataReceived;
+        public static event DataReceivedEventHandler CalibrationTabPage_InvokeEvent;
 
-        public static void TransmitData(CalibrationPageValues data)
+        public static void TransmitData(CalibrationTabPageValues data)
         {
-            DataReceived?.Invoke(data); // Raise the event.
+            CalibrationTabPage_InvokeEvent?.Invoke(data); // Raise the event.
         }
     }
 }

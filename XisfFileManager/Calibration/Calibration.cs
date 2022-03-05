@@ -26,7 +26,7 @@ namespace XisfFileManager
         public List<XisfFile> CalibrationFiles { get { return mFileList; } }
         public bool Recurse { get; set; } = true;
 
-        private CalibrationPageValues mValues;
+        private CalibrationTabPageValues mValues;
 
         
         public Calibration()
@@ -34,7 +34,7 @@ namespace XisfFileManager
             mFileList = new List<XisfFile>();
             mFileReader = new XisfFileRead();
             mDirectoryOps = new DirectoryOps();
-            mValues = new CalibrationPageValues();
+            mValues = new CalibrationTabPageValues();
         }
 
 
@@ -78,7 +78,7 @@ namespace XisfFileManager
 
                     mValues.Progress = progress;
                     mValues.FileName = Path.GetDirectoryName(mFile.SourceFileName) + "\n" + Path.GetFileName(mFile.SourceFileName);
-                    Transmitter.TransmitData(mValues);
+                    CalibrationTabPageEvent.TransmitData(mValues);
 
 
                     // Get the keyword data contained within the current file (mFile)

@@ -18,7 +18,7 @@ using MathNet.Numerics.Statistics;
 namespace XisfFileManager
 {
 
-    public delegate void DataReceivedEventHandler(CalibrationPageValues data);
+    public delegate void DataReceivedEventHandler(CalibrationTabPageValues data);
 
 
     // ##########################################################################################################################
@@ -65,7 +65,7 @@ namespace XisfFileManager
         public MainForm()
         {
             InitializeComponent();
-            Transmitter.DataReceived += EventHandler_UpdateCalibrationPageForm;
+            CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
 
             //mDelegateValues = new CalibrationPageValues();
             mDirectoryOps = new DirectoryOps();
@@ -118,14 +118,17 @@ namespace XisfFileManager
         {
             if (e.TabPage.Name == TabPage_Calibration.Name)
             {
-                if (mFile.Camera.Contains("Z533")) mCalibration.Camera = DirectoryOps.CameraType.Z533;
-                if (mFile.Camera.Contains("Z183")) mCalibration.Camera = DirectoryOps.CameraType.Z183;
-                if (mFile.Camera.Contains("A144")) mCalibration.Camera = DirectoryOps.CameraType.A144;
-                if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
+                if (mFile != null)
+                {
+                    if (mFile.Camera.Contains("Z533")) mCalibration.Camera = DirectoryOps.CameraType.Z533;
+                    if (mFile.Camera.Contains("Z183")) mCalibration.Camera = DirectoryOps.CameraType.Z183;
+                    if (mFile.Camera.Contains("A144")) mCalibration.Camera = DirectoryOps.CameraType.A144;
+                    if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
+                }
             }
         }
         
-        private void EventHandler_UpdateCalibrationPageForm(CalibrationPageValues data)
+        private void EventHandler_UpdateCalibrationPageForm(CalibrationTabPageValues data)
         {
             ProgressBar_Calibration.Value = data.Progress;
             Label_Calibration_ReadFileName.Text = data.FileName;
