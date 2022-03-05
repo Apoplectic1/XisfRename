@@ -26,23 +26,22 @@ namespace XisfFileManager
         public List<XisfFile> CalibrationFiles { get { return mFileList; } }
         public bool Recurse { get; set; } = true;
 
-        public MyDelegate MyDelegate { get; set; }
-
-        internal delegate void UpdateProgressDelegate(int ProgressPercentage);
-        internal event UpdateProgressDelegate UpdateCalibrationProgressBar;
+        public CalibrationPage_Delegates CalibrationPageDelegate { get; set; }
+        public CalibrationPageValues DelegateValues;
 
         public Calibration()
         {
             mFileList = new List<XisfFile>();
             mFileReader = new XisfFileRead();
             mDirectoryOps = new DirectoryOps();
+            DelegateValues = new CalibrationPageValues();
         }
         
-        public void callDelegate(MyDelegate d, string input)
+        public void CallDelegate(CalibrationPage_Delegates CalibratioPageDelegate, CalibrationPageValues DelegateValues)
         {
-            d(input);
+            CalibratioPageDelegate(DelegateValues);
         }
-        
+      
         public void MakeMasterFileList()
         {
             int progress = 0;
@@ -57,10 +56,6 @@ namespace XisfFileManager
                 mDirectoryOps.Frame = Frame;
                 mDirectoryOps.Recurse = Recurse;
                 mDirectoryOps.RecuseDirectories(diDirectoryTree);
-
-                //Label_Calibration_ReadFileName.Text = "Reading " + DirectoryOps.DirectoryOps.fiFileList.Count.ToString() + " Master Files";
-
-
 
                 if (mDirectoryOps.Files.Count == 0)
                 {
@@ -79,11 +74,14 @@ namespace XisfFileManager
                         SourceFileName = file.FullName
                     };
 
-                    callDelegate(MyDelegate, Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName));
+                    
 
                     progress = (int)(((double)index++ / (double)mDirectoryOps.Files.Count) * 100.0);
-                    UpdateCalibrationProgressBar(progress);
-                    Application.DoEvents();
+
+                    DelegateValues.Progress = progress;
+                    DelegateValues.FileName = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
+
+                    CallDelegate(CalibrationPageDelegate, DelegateValues);
 
 
                     // Get the keyword data contained within the current file (mFile)

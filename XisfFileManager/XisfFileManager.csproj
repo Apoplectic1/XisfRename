@@ -145,6 +145,7 @@
   <ItemGroup>
     <Compile Include="Calculations\ImageCalculations.cs" />
     <Compile Include="Calculations\PositionTemperature.cs" />
+    <Compile Include="Calibration\CalibrationPageValues.cs" />
     <Compile Include="Calibration\Calibration.cs" />
     <Compile Include="DirectoryOps\DirectoryOps.cs" />
     <Compile Include="FileOps\CsvFileRead.cs" />

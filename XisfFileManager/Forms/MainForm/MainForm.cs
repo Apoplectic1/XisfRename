@@ -17,9 +17,9 @@ using MathNet.Numerics.Statistics;
 
 namespace XisfFileManager
 {
-    
-    public delegate void MyDelegate(string input);
-    
+    public delegate void CalibrationPage_Delegates(CalibrationPageValues DelegateValues);
+
+
 
     // ##########################################################################################################################
     // ##########################################################################################################################
@@ -60,14 +60,15 @@ namespace XisfFileManager
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
+        public CalibrationPageValues DelegateValues;
 
         public MainForm()
         {
             InitializeComponent();
 
+            //mDelegateValues = new CalibrationPageValues();
             mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
-            mCalibration.UpdateCalibrationProgressBar += UpdateCalibrationProgressBar;
             TabControl_Update.Selected += new TabControlEventHandler(TabControl_Update_Selected);
 
             Label_FileSelection_Statistics_Task.Text = "";
@@ -123,24 +124,22 @@ namespace XisfFileManager
             }
         }
 
-        // Updates Calibration TabControl_Updated progress bar 
-        private void UpdateCalibrationProgressBar(int progress)
+        public CalibrationPage_Delegates CreateDelegate()
         {
-            ProgressBar_Calibration.Value = progress;
+            CalibrationPage_Delegates d1 = new CalibrationPage_Delegates(Update_CalibrationProgressBar);
+            CalibrationPage_Delegates d2 = new CalibrationPage_Delegates(Update_CalibrationFileName);
+            CalibrationPage_Delegates d3 = d1 + d2;
+            return d3;
         }
 
-        public MyDelegate createDelegate()
+        private void Update_CalibrationProgressBar(CalibrationPageValues DelegateValues)
         {
-            //Class1 c2 = new Class1();
-            //MyDelegate d1 = new MyDelegate(c2.delegateMethod1);
-            MyDelegate d2 = new MyDelegate(delegateMethod2);
-            //MyDelegate d3 = d1 + d2;
-            return d2;
+            ProgressBar_Calibration.Value = DelegateValues.Progress;
         }
 
-        public void delegateMethod2(string input)
+        private void Update_CalibrationFileName(CalibrationPageValues DelegateValues)
         {
-            Label_Calibration_ReadFileName.Text = input;
+            Label_Calibration_ReadFileName.Text = DelegateValues.FileName;
         }
 
         // ****************************************************************************************************************
@@ -3344,7 +3343,7 @@ namespace XisfFileManager
         private void Calibration_FindDarks_Click(object sender, EventArgs e)
         {
 
-            mCalibration.MyDelegate = createDelegate();
+            mCalibration.CalibrationPageDelegate = CreateDelegate();
             mCalibration.Frame = DirectoryOps.FrameType.DARK;
             mCalibration.MakeMasterFileList();
 
