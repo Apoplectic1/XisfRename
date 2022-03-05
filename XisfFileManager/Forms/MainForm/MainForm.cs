@@ -17,8 +17,8 @@ using MathNet.Numerics.Statistics;
 
 namespace XisfFileManager
 {
-    public delegate void CalibrationPage_Delegates(CalibrationPageValues DelegateValues);
 
+    public delegate void DataReceivedEventHandler(CalibrationPageValues data);
 
 
     // ##########################################################################################################################
@@ -60,11 +60,12 @@ namespace XisfFileManager
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
-        public CalibrationPageValues DelegateValues;
+        
 
         public MainForm()
         {
             InitializeComponent();
+            Transmitter.DataReceived += EventHandler_UpdateCalibrationPageForm;
 
             //mDelegateValues = new CalibrationPageValues();
             mDirectoryOps = new DirectoryOps();
@@ -123,23 +124,13 @@ namespace XisfFileManager
                 if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
             }
         }
-
-        public CalibrationPage_Delegates CreateDelegate()
+        
+        private void EventHandler_UpdateCalibrationPageForm(CalibrationPageValues data)
         {
-            CalibrationPage_Delegates d1 = new CalibrationPage_Delegates(Update_CalibrationProgressBar);
-            CalibrationPage_Delegates d2 = new CalibrationPage_Delegates(Update_CalibrationFileName);
-            CalibrationPage_Delegates d3 = d1 + d2;
-            return d3;
-        }
-
-        private void Update_CalibrationProgressBar(CalibrationPageValues DelegateValues)
-        {
-            ProgressBar_Calibration.Value = DelegateValues.Progress;
-        }
-
-        private void Update_CalibrationFileName(CalibrationPageValues DelegateValues)
-        {
-            Label_Calibration_ReadFileName.Text = DelegateValues.FileName;
+            ProgressBar_Calibration.Value = data.Progress;
+            Label_Calibration_ReadFileName.Text = data.FileName;
+            Label_Calibration_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
+            TabPage_Calibration.Update();
         }
 
         // ****************************************************************************************************************
@@ -3342,10 +3333,12 @@ namespace XisfFileManager
 
         private void Calibration_FindDarks_Click(object sender, EventArgs e)
         {
+            //mCalibration.SetMainFormValues = CreateDelegate();
 
-            mCalibration.CalibrationPageDelegate = CreateDelegate();
+            
+
             mCalibration.Frame = DirectoryOps.FrameType.DARK;
-            mCalibration.MakeMasterFileList();
+            mCalibration.MakeMasterFileList(this);
 
             int count = mCalibration.CalibrationFiles.Count;
         }

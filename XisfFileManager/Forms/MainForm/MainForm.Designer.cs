@@ -296,6 +296,7 @@
             this.Calibration_FindFlats = new System.Windows.Forms.Button();
             this.Calibration_FindDarks = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
+            this.Label_Calibration_TotalFiles = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordTelescope.SuspendLayout();
@@ -3208,6 +3209,7 @@
             // TabPage_Calibration
             // 
             this.TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_Calibration.Controls.Add(this.Label_Calibration_TotalFiles);
             this.TabPage_Calibration.Controls.Add(this.ProgressBar_Calibration);
             this.TabPage_Calibration.Controls.Add(this.Label_Calibration_ReadFileName);
             this.TabPage_Calibration.Controls.Add(this.TreeView_Darks);
@@ -3285,6 +3287,15 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
+            // 
+            // Label_Calibration_TotalFiles
+            // 
+            this.Label_Calibration_TotalFiles.AutoSize = true;
+            this.Label_Calibration_TotalFiles.Location = new System.Drawing.Point(25, 20);
+            this.Label_Calibration_TotalFiles.Name = "Label_Calibration_TotalFiles";
+            this.Label_Calibration_TotalFiles.Size = new System.Drawing.Size(35, 13);
+            this.Label_Calibration_TotalFiles.TabIndex = 6;
+            this.Label_Calibration_TotalFiles.Text = "label1";
             // 
             // MainForm
             // 
@@ -3635,5 +3646,6 @@
         private System.Windows.Forms.RadioButton adioButton_DirectorySelection_AlFiles;
         private System.Windows.Forms.Label Label_Calibration_ReadFileName;
         private System.Windows.Forms.ProgressBar ProgressBar_Calibration;
+        private System.Windows.Forms.Label Label_Calibration_TotalFiles;
     }
 }

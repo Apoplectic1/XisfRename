@@ -26,23 +26,19 @@ namespace XisfFileManager
         public List<XisfFile> CalibrationFiles { get { return mFileList; } }
         public bool Recurse { get; set; } = true;
 
-        public CalibrationPage_Delegates CalibrationPageDelegate { get; set; }
-        public CalibrationPageValues DelegateValues;
+        private CalibrationPageValues mValues;
 
+        
         public Calibration()
         {
             mFileList = new List<XisfFile>();
             mFileReader = new XisfFileRead();
             mDirectoryOps = new DirectoryOps();
-            DelegateValues = new CalibrationPageValues();
+            mValues = new CalibrationPageValues();
         }
-        
-        public void CallDelegate(CalibrationPage_Delegates CalibratioPageDelegate, CalibrationPageValues DelegateValues)
-        {
-            CalibratioPageDelegate(DelegateValues);
-        }
-      
-        public void MakeMasterFileList()
+
+
+        public void MakeMasterFileList(MainForm mainForm)
         {
             int progress = 0;
  
@@ -64,6 +60,8 @@ namespace XisfFileManager
                 }
 
                 int index = 1;
+                mValues.TotalFiles = mDirectoryOps.Files.Count;
+
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
                     bool bStatus = false;
@@ -78,10 +76,9 @@ namespace XisfFileManager
 
                     progress = (int)(((double)index++ / (double)mDirectoryOps.Files.Count) * 100.0);
 
-                    DelegateValues.Progress = progress;
-                    DelegateValues.FileName = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
-
-                    CallDelegate(CalibrationPageDelegate, DelegateValues);
+                    mValues.Progress = progress;
+                    mValues.FileName = Path.GetDirectoryName(mFile.SourceFileName) + "\n" + Path.GetFileName(mFile.SourceFileName);
+                    Transmitter.TransmitData(mValues);
 
 
                     // Get the keyword data contained within the current file (mFile)
