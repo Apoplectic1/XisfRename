@@ -3314,10 +3314,6 @@ namespace XisfFileManager
             return;
         }
 
-        private void Calibration_FindFlats_Click(object sender, EventArgs e)
-        {
-        }
-
         private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -3334,16 +3330,22 @@ namespace XisfFileManager
             mFileType = DirectoryOps.FileType.MASTERS;
         }
 
-        private void Calibration_FindDarks_Click(object sender, EventArgs e)
+        private void Calibration_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
-            //mCalibration.SetMainFormValues = CreateDelegate();
-
-            
-
-            mCalibration.Frame = DirectoryOps.FrameType.DARK;
-            mCalibration.MakeMasterFileList(this);
+            mCalibration.Frame = DirectoryOps.FrameType.ALL;
+            mCalibration.FindCalibrationFrames(mFileList);
 
             int count = mCalibration.CalibrationFiles.Count;
+        }
+
+        private void Calibration_MatchCalibrationFrames_Click(object sender, EventArgs e)
+        {
+            mCalibration.MatchCalibrationFrames(mFileList);
+        }
+
+        private void Calibration_CreateCalibrationDirectory_Click(object sender, EventArgs e)
+        {
+            mCalibration.CreateTargetCalibrationDirectory(mFileList);
         }
     }
 }

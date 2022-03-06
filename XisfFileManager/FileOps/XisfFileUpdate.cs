@@ -70,12 +70,12 @@ namespace XisfFileManager.FileOperations
                     }
                     else
                     {
-                        mFile.KeywordData.RemoveKeyword("COMMENT");
-                        mFile.KeywordData.RemoveKeyword("HISTORY");
+                        //mFile.KeywordData.RemoveKeyword("COMMENT");
+                        //mFile.KeywordData.RemoveKeyword("HISTORY");
                     }
 
                     mFile.KeywordData.RemoveKeyword("ALIGNH");    
-                    mFile.KeywordData.RemoveKeyword("NOISE");
+                    //mFile.KeywordData.RemoveKeyword("NOISE");
                     mFile.KeywordData.RemoveKeyword("Bandwidth setting");
                     mFile.KeywordData.RemoveKeyword("BTP");
                     mFile.KeywordData.RemoveKeyword("SBUUID");

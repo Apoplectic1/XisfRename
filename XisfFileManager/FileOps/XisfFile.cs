@@ -32,6 +32,10 @@ namespace XisfFileManager.FileOperations
         public string Filter { get; set; }
         public string FrameType { get; set; }
         public bool Master { get; set; } = false;
+        public DateTime CaptureTime { get; set; }
+        public string FileName { get; set; }
+        public string CDARK { get; set; }
+        public string CFLAT { get; set; }
 
 
         public XisfFile()
@@ -83,6 +87,8 @@ namespace XisfFileManager.FileOperations
 
         public void ParseRequiredKeywords()
         {
+            FileName = KeywordData.FileName();
+            CaptureTime = KeywordData.CaptureDateTime();
             Target = KeywordData.TargetName();
             CaptureSoftware = KeywordData.CaptureSoftware();
             Telescope = KeywordData.Telescope();
