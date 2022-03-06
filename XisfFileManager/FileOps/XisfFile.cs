@@ -30,10 +30,10 @@ namespace XisfFileManager.FileOperations
         public string Temperature { get; set; } = string.Empty;
         public int Binning { get; set; }
         public string Filter { get; set; }
+        public string FileName { get; set; }
         public string FrameType { get; set; }
         public bool Master { get; set; } = false;
         public DateTime CaptureTime { get; set; }
-        public string FileName { get; set; }
         public string CDARK { get; set; }
         public string CFLAT { get; set; }
 
@@ -87,23 +87,23 @@ namespace XisfFileManager.FileOperations
 
         public void ParseRequiredKeywords()
         {
-            FileName = KeywordData.FileName();
-            CaptureTime = KeywordData.CaptureDateTime();
-            Target = KeywordData.TargetName();
-            CaptureSoftware = KeywordData.CaptureSoftware();
-            Telescope = KeywordData.Telescope();
-            RiccardiReducer = Telescope.EndsWith("R");
-            FocalLength = KeywordData.FocalLength();
+            Binning = KeywordData.Binning();
             Camera = KeywordData.Camera();
+            CaptureSoftware = KeywordData.CaptureSoftware();
+            CaptureTime = KeywordData.CaptureDateTime();
             Exposure = KeywordData.ExposureSeconds();
             Filter = KeywordData.FilterName();
-            NarrowBand = Filter.Contains("Ha") || Filter.Contains("O3") || Filter.Contains("S2");
-            Gain = KeywordData.Gain();
-            Offset = KeywordData.Offset();
-            Temperature = KeywordData.SensorTemperature();
-            Binning = KeywordData.Binning();
+            FocalLength = KeywordData.FocalLength();
             FrameType = KeywordData.FrameType();
+            Gain = KeywordData.Gain();
+            Target = KeywordData.TargetName();
             Master = Target.Contains("Master");
+            NarrowBand = Filter.Contains("Ha") || Filter.Contains("O3") || Filter.Contains("S2");
+            Offset = KeywordData.Offset();
+            FileName = KeywordData.FileName();
+            Telescope = KeywordData.Telescope();
+            RiccardiReducer = Telescope.EndsWith("R");
+            Temperature = KeywordData.SensorTemperature();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XisfFileManager;
@@ -19,8 +20,8 @@ namespace XisfFileManager
         public string Filter { get; set; }
         public string Exposure { get; set; }
 
-        public string CDARK { get; set; }
-        public string CFLAT { get; set; }
+        public string CDARK { get; set; } = string.Empty;
+        public string CFLAT { get; set; } = string.Empty;
     }
 
     public class Calibration
@@ -39,12 +40,6 @@ namespace XisfFileManager
         public bool Recurse { get; set; } = true;
 
         private CalibrationTabPageValues mValues;
-
-
-        private List<DateTime> mDateList;
-        private List<string> mCameraList;
-        private List<string> mExposureList;
-        private List<string> mFilterList;
 
         private List<XisfFile> mLumaFileList;
         private List<XisfFile> mRedFileList;
@@ -65,7 +60,6 @@ namespace XisfFileManager
             mDirectoryOps = new DirectoryOps();
             mValues = new CalibrationTabPageValues();
 
-            mDateList = new List<DateTime>();
             mLumaFileList = new List<XisfFile>();
             mRedFileList = new List<XisfFile>();
             mGreenFileList = new List<XisfFile>();
@@ -78,9 +72,6 @@ namespace XisfFileManager
             mFlatFileList = new List<XisfFile>();
             mBiasFileList = new List<XisfFile>();
 
-            mCameraList = new List<string>();
-            mFilterList = new List<string>();
-            mExposureList = new List<string>();
         }
 
 
@@ -88,7 +79,7 @@ namespace XisfFileManager
         {
             int progress = 0;
 
-            AddTargetFrameParameters(targetFileList);
+            //AddTargetFrameParameters(targetFileList);
 
 
             try
@@ -174,28 +165,6 @@ namespace XisfFileManager
             }
         }
 
-        private void AddTargetFrameParameters(List<XisfFile> targetFileList)
-        {
-            // Make a list of unique Parameters
-            mCameraList.Clear();
-            mFilterList.Clear();
-            mDateList.Clear();
-            mExposureList.Clear();
-
-            foreach (var frame in targetFileList)
-            {
-                mCameraList.Add(frame.Camera);
-                mFilterList.Add(frame.Filter);
-                mExposureList.Add(frame.Exposure);
-                mDateList.Add(frame.KeywordData.CaptureDateTime().Date);
-            }
-
-            mCameraList = mCameraList.Distinct().ToList();
-            mFilterList = mFilterList.Distinct().ToList();
-            mExposureList = mExposureList.Distinct().ToList();
-            mDateList = mDateList.Distinct().ToList();
-        }
-
         public XisfFile FindNearestCalibrationFile(string type, XisfFile targetFile)
         {
             bool calibrationStatus;
@@ -206,7 +175,6 @@ namespace XisfFileManager
             double marginTemperture = 0;
 
             XisfFile nearestCalibrationFile = null;
-
             long min = long.MaxValue;
             long diff;
 
@@ -244,7 +212,7 @@ namespace XisfFileManager
 
                                             if (Math.Abs(calibrationTemperture - targetTemperature) < marginTemperture)
                                             {
-                                                diff = Math.Abs(calibrationFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Date.Ticks);
+                                                diff = Math.Abs(calibrationFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Ticks);
                                                 if (diff < min)
                                                 {
                                                     min = diff;
@@ -288,7 +256,7 @@ namespace XisfFileManager
 
                                             if (Math.Abs(calibrationTemperture - targetTemperature) < marginTemperture)
                                             {
-                                                diff = Math.Abs(calibrationFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Date.Ticks);
+                                                diff = Math.Abs(calibrationFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Ticks);
                                                 if (diff < min)
                                                 {
                                                     min = diff;
@@ -313,10 +281,11 @@ namespace XisfFileManager
             double marginExposure, marginGain, marginOffset, marginTemperature;
             XisfFile nearestDarkFile = null;
             XisfFile nearestFlatFile = null;
+            XisfFile nearestBiasFile = null;
 
-            XisfFile nearestDarkCalibrationFile;
-            XisfFile nearestFlatCalibrationFile;
-            XisfFile nearestBiasCalibrationFile;
+            XisfFile nearestDarkCalibrationFile = null;
+            XisfFile nearestFlatCalibrationFile = null;
+            XisfFile nearestBiasCalibrationFile = null;
 
             mDarkFileList.Clear();
             mFlatFileList.Clear();
@@ -334,8 +303,8 @@ namespace XisfFileManager
                 if (nearestFlatCalibrationFile != null)
                     mFlatFileList.Add(nearestFlatCalibrationFile);
 
-                if (nearestFlatCalibrationFile != null)
-                    mFlatFileList.Add(nearestFlatCalibrationFile);
+                if (nearestBiasCalibrationFile != null)
+                    mBiasFileList.Add(nearestBiasCalibrationFile);
             }
 
             mDarkFileList = mDarkFileList.Distinct().ToList();
@@ -344,60 +313,62 @@ namespace XisfFileManager
 
             long min;
             long diff;
-            int nearestDarkIndex;
             int darkIndex;
             int flatIndex;
-            int nearestFlatIndex;
 
+            darkIndex = 1;
+            foreach (var darkFile in mDarkFileList)
+            {
+                darkFile.CFLAT = string.Empty;
+                darkFile.KeywordData.RemoveKeyword("CFLAT");
 
+                darkFile.CDARK = "D" + darkIndex.ToString();
+                darkFile.KeywordData.AddKeyword("CDARK", darkFile.CDARK);
+                darkIndex++;
+            }
+
+            // Match Each found Dark calibration file with its corresponding targetFile
             // Darks
             foreach (var targetFile in targetFileList)
             {
+                nearestDarkFile = null;
                 min = long.MaxValue;
-                nearestDarkIndex = 0;
-                darkIndex = 0;
 
                 foreach (var darkFile in mDarkFileList)
                 {
-                    darkIndex++;
-                    if (darkFile.FrameType == "Dark")
+                    if (darkFile.Camera == targetFile.Camera)
                     {
-                        if (darkFile.Camera == targetFile.Camera)
+                        if (darkFile.Binning == targetFile.Binning)
                         {
-                            if (darkFile.Binning == targetFile.Binning)
+                            double darkExposure, targetExposure;
+                            darkStatus = double.TryParse(darkFile.Exposure, out darkExposure);
+                            targetStatus = double.TryParse(targetFile.Exposure, out targetExposure);
+
+                            marginExposure = targetExposure * 0.1;
+
+                            if (Math.Abs(darkExposure - targetExposure) < marginExposure)
                             {
+                                marginGain = targetFile.Gain * 0.1;
 
-                                double darkExposure, targetExposure;
-                                darkStatus = double.TryParse(darkFile.Exposure, out darkExposure);
-                                targetStatus = double.TryParse(targetFile.Exposure, out targetExposure);
-
-                                marginExposure = targetExposure * 0.1;
-
-                                if (Math.Abs(darkExposure - targetExposure) < marginExposure)
+                                if (Math.Abs(darkFile.Gain - targetFile.Gain) < marginGain)
                                 {
-                                    marginGain = targetFile.Gain * 0.1;
+                                    marginOffset = targetFile.Offset * 0.1;
 
-                                    if (Math.Abs(darkFile.Gain - targetFile.Gain) < marginGain)
+                                    if (Math.Abs(darkFile.Offset - targetFile.Offset) < marginOffset)
                                     {
-                                        marginOffset = targetFile.Offset * 0.1;
+                                        double darkTemperture, targetTemperature;
+                                        darkStatus = double.TryParse(darkFile.Temperature, out darkTemperture);
+                                        targetStatus = double.TryParse(targetFile.Temperature, out targetTemperature);
 
-                                        if (Math.Abs(darkFile.Offset - targetFile.Offset) < marginOffset)
+                                        marginTemperature = Math.Abs(targetTemperature * 0.1);
+
+                                        if (Math.Abs(darkTemperture - targetTemperature) < marginTemperature)
                                         {
-                                            double calibrationTemperture, targetTemperature;
-                                            darkStatus = double.TryParse(darkFile.Temperature, out calibrationTemperture);
-                                            targetStatus = double.TryParse(targetFile.Temperature, out targetTemperature);
-
-                                            marginTemperature = Math.Abs(targetTemperature * 0.1);
-
-                                            if (Math.Abs(calibrationTemperture - targetTemperature) < marginTemperature)
+                                            diff = Math.Abs(darkFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Ticks);
+                                            if (diff < min)
                                             {
-                                                diff = Math.Abs(darkFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Date.Ticks);
-                                                if (diff < min)
-                                                {
-                                                    min = diff;
-                                                    nearestDarkFile = darkFile;
-                                                    nearestDarkIndex = darkIndex;
-                                                }
+                                                min = diff;
+                                                nearestDarkFile = darkFile;
                                             }
                                         }
                                     }
@@ -407,32 +378,36 @@ namespace XisfFileManager
                     }
                 }
 
-                if (nearestDarkIndex != 0)
-                {
-                    nearestDarkFile.CDARK = "D" + nearestDarkIndex.ToString();
-                    nearestDarkFile.KeywordData.AddKeyword("CDARK", "D" + nearestDarkIndex.ToString());
-
-                    targetFile.CDARK = "D" + nearestDarkIndex.ToString();
-                    targetFile.KeywordData.AddKeyword("CDARK", "D" + nearestDarkIndex.ToString());
-                }
+                targetFile.CDARK = nearestDarkFile.CDARK;
+                targetFile.KeywordData.AddKeyword("CDARK", targetFile.CDARK);
             }
 
 
+            flatIndex = 1;
+            foreach (var flatFile in mFlatFileList)
+            {
+                flatFile.CDARK = string.Empty;
+                flatFile.KeywordData.RemoveKeyword("CDARK");
+
+                flatFile.CFLAT = "F" + flatIndex.ToString();
+                flatFile.KeywordData.AddKeyword("CFLAT", flatFile.CFLAT);
+                flatIndex++;
+            }
+
+            // Match Each found Flat calibration file with its corresponding targetFile
             // Flats 
             foreach (var targetFile in targetFileList)
             {
+                nearestFlatFile = null;
                 min = long.MaxValue;
-                nearestFlatIndex = 0;
-                flatIndex = 0;
 
                 foreach (var flatFile in mFlatFileList)
                 {
-                    flatIndex++;
-                    if (flatFile.FrameType == "Flat")
+                    if (flatFile.Camera == targetFile.Camera)
                     {
-                        if (flatFile.Camera == targetFile.Camera)
+                        if (flatFile.Binning == targetFile.Binning)
                         {
-                            if (flatFile.Binning == targetFile.Binning)
+                            if (flatFile.Filter == targetFile.Filter)
                             {
                                 marginGain = targetFile.Gain * 0.1;
 
@@ -442,20 +417,19 @@ namespace XisfFileManager
 
                                     if (Math.Abs(flatFile.Offset - targetFile.Offset) < marginOffset)
                                     {
-                                        double calibrationTemperture, targetTemperature;
-                                        flatStatus = double.TryParse(flatFile.Temperature, out calibrationTemperture);
+                                        double flatTemperture, targetTemperature;
+                                        flatStatus = double.TryParse(flatFile.Temperature, out flatTemperture);
                                         targetStatus = double.TryParse(targetFile.Temperature, out targetTemperature);
 
                                         marginTemperature = Math.Abs(targetTemperature * 0.1);
 
-                                        if (Math.Abs(calibrationTemperture - targetTemperature) < marginTemperature)
+                                        if (Math.Abs(flatTemperture - targetTemperature) < marginTemperature)
                                         {
-                                            diff = Math.Abs(flatFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Date.Ticks);
+                                            diff = Math.Abs(flatFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Ticks);
                                             if (diff < min)
                                             {
                                                 min = diff;
                                                 nearestFlatFile = flatFile;
-                                                nearestFlatIndex = flatIndex;
                                             }
                                         }
                                     }
@@ -464,22 +438,15 @@ namespace XisfFileManager
                         }
                     }
                 }
-
-                if (nearestFlatIndex != 0)
-                {
-                    nearestFlatFile.CFLAT = "F" + nearestFlatIndex.ToString();
-                    nearestFlatFile.KeywordData.AddKeyword("CFLAT", "F" + nearestFlatIndex.ToString());
-
-                    targetFile.CFLAT = "F" + nearestFlatIndex.ToString();
-                    targetFile.KeywordData.AddKeyword("CFLAT", "F" + nearestFlatIndex.ToString());
-                }
+                targetFile.CFLAT = nearestFlatFile.CFLAT;
+                targetFile.KeywordData.AddKeyword("CFLAT", targetFile.CFLAT);
             }
         }
 
         public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
         {
             string directoryName = Path.GetDirectoryName(targetFileList[0].SourceFileName);
-            directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..\") + @"\Calibration");
+            directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..\..") + @"\Calibration");
 
             if (Directory.Exists(directoryName))
             {

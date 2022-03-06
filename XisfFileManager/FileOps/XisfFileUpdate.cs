@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using XisfFileManager.Calculations;
@@ -21,7 +22,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists, bool tarhetCalibration = false)
+        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists)
         {
             int xmlStart;
             int xisfStart;
@@ -29,6 +30,16 @@ namespace XisfFileManager.FileOperations
             byte[] rawFileData = new byte[(int)1e9];
             mBufferList = new List<Buffer>();
             string sourceFilePath;
+
+            FileInfo fileInfo = new FileInfo(mFile.SourceFileName);
+
+            while(IsFileLocked(fileInfo))
+            {
+                Thread.Sleep(500);
+                fileInfo = new FileInfo(mFile.SourceFileName);
+            }
+
+
             try
             {
                 using (Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open))
@@ -194,7 +205,7 @@ namespace XisfFileManager.FileOperations
 
         public static bool UpdateTargetCalibrationFile(string targetCalibationDirectoryPath, XisfFile mFile, SubFrameLists SubFrameKeywordLists)
         {
-            UpdateFile(mFile, SubFrameKeywordLists, true);
+            UpdateFile(mFile, SubFrameKeywordLists);
 
             return true;
         }
@@ -472,6 +483,27 @@ namespace XisfFileManager.FileOperations
             // ##############################################################################################################################################
             // ##############################################################################################################################################
 
+        }
+        private static bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
         }
     }
 }
