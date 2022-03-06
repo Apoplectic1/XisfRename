@@ -21,7 +21,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists)
+        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists, bool tarhetCalibration = false)
         {
             int xmlStart;
             int xisfStart;
@@ -189,6 +189,16 @@ namespace XisfFileManager.FileOperations
 
             return true;
         }
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
+
+        public static bool UpdateTargetCalibrationFile(string targetCalibationDirectoryPath, XisfFile mFile, SubFrameLists SubFrameKeywordLists)
+        {
+            UpdateFile(mFile, SubFrameKeywordLists, true);
+
+            return true;
+        }
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 

@@ -116,6 +116,8 @@ namespace XisfFileManager
         // Executes when TabControl_Updated is selected (changed)
         private void TabControl_Update_Selected(object sender, TabControlEventArgs e)
         {
+            return;
+
             if (e.TabPage.Name == TabPage_Calibration.Name)
             {
                 if (mFile != null)
@@ -2620,6 +2622,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
+                    file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Z533Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Z533Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
@@ -2659,7 +2662,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
-                    file.KeywordData.RemoveKeyword("GAIN");
+                    file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
+                    file.KeywordData.AddKeyword("GAIN", 0.37);
                     file.KeywordData.RemoveKeyword("OFFSET");
                     file.KeywordData.SetEGain();
                 }
@@ -3345,7 +3349,7 @@ namespace XisfFileManager
 
         private void Calibration_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
-            mCalibration.CreateTargetCalibrationDirectory(mFileList);
+            mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
         }
     }
 }

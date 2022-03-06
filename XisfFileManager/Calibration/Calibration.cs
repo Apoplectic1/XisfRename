@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XisfFileManager;
 using XisfFileManager.FileOperations;
-
+using XisfFileManager.Keywords;
 
 namespace XisfFileManager
 {
@@ -476,7 +476,7 @@ namespace XisfFileManager
             }
         }
 
-        public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList)
+        public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
         {
             string directoryName = Path.GetDirectoryName(targetFileList[0].SourceFileName);
             directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..\") + @"\Calibration");
@@ -506,14 +506,23 @@ namespace XisfFileManager
                 fileInfo.CopyTo(directoryName + @"\" + Path.GetFileName(file.SourceFileName), true);
             }
 
-
-            foreach (XisfFile file in mCalibrationFileList)
+            foreach (var file in mDarkFileList)
             {
-                //XisfFileUpdate.UpdateFile(file, SubFrameLists);
-
-                //Application.DoEvents();
+                file.SourceFileName = directoryName + @"\" + Path.GetFileName(file.SourceFileName);
+                XisfFileUpdate.UpdateTargetCalibrationFile(directoryName + @"\" + Path.GetFileName(file.SourceFileName), file, subFrameLists);
             }
 
+            foreach (var file in mFlatFileList)
+            {
+                file.SourceFileName = directoryName + @"\" + Path.GetFileName(file.SourceFileName);
+                XisfFileUpdate.UpdateTargetCalibrationFile(directoryName + @"\" + Path.GetFileName(file.SourceFileName), file, subFrameLists);
+            }
+
+            foreach (var file in mBiasFileList)
+            {
+                file.SourceFileName = directoryName + @"\" + Path.GetFileName(file.SourceFileName);
+                XisfFileUpdate.UpdateTargetCalibrationFile(directoryName + @"\" + Path.GetFileName(file.SourceFileName), file, subFrameLists);
+            }
             return true;
 
         }
