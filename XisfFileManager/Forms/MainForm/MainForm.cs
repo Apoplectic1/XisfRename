@@ -60,7 +60,7 @@ namespace XisfFileManager
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
-        
+
 
         public MainForm()
         {
@@ -129,7 +129,7 @@ namespace XisfFileManager
             }
             */
         }
-        
+
         private void EventHandler_UpdateCalibrationPageForm(CalibrationTabPageValues data)
         {
             ProgressBar_CalibrationTab.Value = data.Progress;
@@ -3350,6 +3350,59 @@ namespace XisfFileManager
         private void Calibration_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
             mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
+        }
+
+        private void TextBox_CalibrationTab_ExposureTolerance_TextChanged(object sender, EventArgs e)
+        {
+            double value;
+
+            if (double.TryParse(TextBox_CalibrationTab_ExposureTolerance.Text, out value) == false)
+            {
+                TextBox_CalibrationTab_ExposureTolerance.Text = "10";
+                return;
+            }
+
+            mCalibration.ExposureTolerance = value / 100.0;
+        }
+
+        private void TextBox_CalibrationTab_GainTolerance_TextChanged(object sender, EventArgs e)
+        {
+            double value;
+
+            if (double.TryParse(TextBox_CalibrationTab_GainTolerance.Text, out value) == false)
+            {
+                TextBox_CalibrationTab_GainTolerance.Text = "10";
+                return;
+            }
+
+            mCalibration.GainTolerance = value / 100.0;
+        }
+
+        private void TextBox_CalibrationTab_OffsetTolerance_TextChanged(object sender, EventArgs e)
+        {
+            double value;
+
+            if (double.TryParse(TextBox_CalibrationTab_OffsetTolerance.Text, out value) == false)
+            {
+                TextBox_CalibrationTab_OffsetTolerance.Text = "10";
+                return;
+            }
+
+            mCalibration.OffsetTolerance = value / 100.0;
+
+        }
+
+        private void TextBox_CalibrationTab_TemperatureTolerance_TextChanged(object sender, EventArgs e)
+        {
+            double value;
+
+            if (double.TryParse(TextBox_CalibrationTab_TemperatureTolerance.Text, out value) == false)
+            {
+                TextBox_CalibrationTab_TemperatureTolerance.Text = "25";
+                return;
+            }
+
+            mCalibration.TemperatureTolerance = value / 100.0;
         }
     }
 }

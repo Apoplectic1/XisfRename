@@ -22,7 +22,11 @@ namespace XisfFileManager
 
         private DirectoryOps mDirectoryOps;
 
-        public DirectoryOps.CameraType Camera { get; set; } = DirectoryOps.CameraType.ALL;
+        public double ExposureTolerance { get; set; } = 0.1;
+        public double GainTolerance { get; set; } = 0.1;
+        public double OffsetTolerance { get; set; } = 0.1;
+        public double TemperatureTolerance { get; set; } = 0.25;
+
         public DirectoryOps.FileType File { get; set; } = DirectoryOps.FileType.MASTERS;
         public DirectoryOps.FilterType Filter { get; set; } = DirectoryOps.FilterType.ALL;
         public DirectoryOps.FrameType Frame { get; set; } = DirectoryOps.FrameType.ALL;
@@ -82,7 +86,6 @@ namespace XisfFileManager
                 mDirectoryOps.ClearFileList();
                 mDirectoryOps.Filter = Filter;
                 mDirectoryOps.File = File;
-                mDirectoryOps.Camera = Camera;
                 mDirectoryOps.Frame = Frame;
                 mDirectoryOps.Recurse = Recurse;
                 mDirectoryOps.RecuseDirectories(diDirectoryTree);
@@ -171,12 +174,8 @@ namespace XisfFileManager
 
             // To cleanly reuse this code, we have to use the margin calculations when differentiating Flats from Darks from Biases. Unfortunate but not really a performance issue...
 
-            XisfFile nearestCalibrationFile;
-            double exposureTolerance = 1.0;
-            double temperatureTolerance = 1.0;
-
+            XisfFile nearestCalibrationFile = (XisfFile)null;
             long min = long.MaxValue;
-            nearestCalibrationFile = (XisfFile)null;
 
             // To Do
             // Add code to test for Flat rotation angle
@@ -191,20 +190,14 @@ namespace XisfFileManager
                 {
                     if (frameType == "Dark")
                     {
-                        exposureTolerance = 0.1;
-                        temperatureTolerance = 0.25;
                         bIgnoreCalibrationFilter = true;
                     }
                     else if (frameType == "Flat")
                     {
-                        exposureTolerance = 1.0; // Flats are exposure independent; set a big value so margin test never fails
-                        temperatureTolerance = 0.25;
                         bIgnoreCalibrationExposure = true;
                     }
                     else if (frameType == "Bias")
                     {
-                        exposureTolerance = 1.0; // Biases are exposure independent; set a big value so margin test never fails
-                        temperatureTolerance = 0.25;
                         bIgnoreCalibrationExposure = true;
                     }
 
@@ -216,21 +209,21 @@ namespace XisfFileManager
                             {
                                 double calibrationExposure = double.Parse(calibrationFile.Exposure);
                                 double targetExposure = double.Parse(targetFile.Exposure);
-                                double marginExposure = calibrationExposure * exposureTolerance;
+                                double marginExposure = calibrationExposure * ExposureTolerance;
 
                                 if ((Math.Abs(calibrationExposure - targetExposure) < marginExposure) || (bIgnoreCalibrationExposure))
                                 {
-                                    double marginGain = calibrationFile.Gain * 0.1;
+                                    double marginGain = calibrationFile.Gain * GainTolerance;
 
                                     if (Math.Abs(calibrationFile.Gain - targetFile.Gain) < marginGain)
                                     {
-                                        double marginOffset = calibrationFile.Offset * 0.1;
+                                        double marginOffset = calibrationFile.Offset * OffsetTolerance;
 
                                         if (Math.Abs(calibrationFile.Offset - targetFile.Offset) < marginOffset)
                                         {
                                             double calibrationTemperture = double.Parse(calibrationFile.Temperature);
                                             double targetTemperature = double.Parse(targetFile.Temperature);
-                                            double marginTemperature = Math.Abs(calibrationTemperture) * temperatureTolerance;
+                                            double marginTemperature = Math.Abs(calibrationTemperture) * TemperatureTolerance;
 
                                             if (Math.Abs(calibrationTemperture - targetTemperature) < marginTemperature)
                                             {
