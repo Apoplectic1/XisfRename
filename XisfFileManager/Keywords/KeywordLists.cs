@@ -303,10 +303,10 @@ namespace XisfFileManager
             {
                 AddKeyword("AOCAMBT", FocuserTemperature());
                 node = KeywordList.Find(i => i.Name == "AOCAMBT");
-                node.Type = Keyword.EType.FLOAT;
+                node.Type = Keyword.EType.DOUBLE;
             }
 
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
             value = node.Value;
 
             return FormatTemperatureString(value);
@@ -828,7 +828,7 @@ namespace XisfFileManager
 
             if (node == null) return string.Empty;
 
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
             value = node.Value;
 
             return FormatTemperatureString(value);
@@ -900,7 +900,7 @@ namespace XisfFileManager
             if (node == null) return string.Empty;
 
             value = node.Value;
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             return String.Format("{0:000.0}", Convert.ToDouble(value));
         }
@@ -975,6 +975,53 @@ namespace XisfFileManager
             AddKeyword("YPIXSZ", Convert.ToDouble(FormValue.mTextBox));
 
             return Convert.ToDouble(FormValue.mTextBox);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public bool Protected()
+        {
+            Keyword node = new Keyword();
+            bool bInvalidEntry = true;
+
+            node = KeywordList.Find(i => i.Name == "Protected");
+            if (node != null)
+            {
+                return  Convert.ToBoolean(node.Value);
+            }
+
+            AddKeyword("Protected", false);
+            return false;
+
+            UserInputFormData formData = new UserInputFormData
+            {
+                mFormName = "Protected File",
+                mFormText = "Set to preserve all File Keyword data",
+                mFormEntryText = "Enter True or False (t/T/true/True or f/F/false/False):",
+                mFileName = FileName()
+            };
+
+            while (bInvalidEntry)
+            {
+                UserInputFormData FormValue = OpenUIForm(formData);
+
+                if (FormValue.mTextBox.ToUpper().StartsWith("T"))
+                {
+                    AddKeyword("Protected", true);
+                    return true;
+                }
+
+                if (FormValue.mTextBox.ToUpper().StartsWith("F"))
+                {
+                    AddKeyword("Protected", false);
+                    return false;
+                }
+
+                FormValue.mTextBox = string.Empty;
+                bInvalidEntry = true;
+            }
+
+            return true;
         }
 
         // *********************************************************************************************************
@@ -1070,7 +1117,7 @@ namespace XisfFileManager
             node = KeywordList.Find(i => i.Name == "SSWEIGHT");
 
             if (node == null) return Double.NaN;
-            double SSWeight = Convert.ToDouble(node.GetValue());
+            double SSWeight = Convert.ToDouble(node.GetKeyword());
 
             if (Double.IsNaN(SSWeight)) return Double.NaN;
 
@@ -1220,7 +1267,7 @@ namespace XisfFileManager
                 Name = name,
                 Value = value.ToString("F6"),
                 Comment = comment,
-                Type = Keyword.EType.FLOAT
+                Type = Keyword.EType.DOUBLE
             };
             KeywordList.Add(keyword);
         }
@@ -1350,13 +1397,4 @@ namespace XisfFileManager
             return nullFormData;
         }
     }
-
-    //public class GoogleTimeZone
-    //{
-    //    public double dstOffset { get; set; }
-    //    public double rawOffset { get; set; }
-    //    public string status { get; set; }
-    //    public string timeZoneId { get; set; }
-    //    public string timeZoneName { get; set; }
-    //}
 }

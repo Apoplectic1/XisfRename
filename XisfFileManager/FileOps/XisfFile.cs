@@ -5,6 +5,9 @@ namespace XisfFileManager.FileOperations
 {
     public class XisfFile
     {
+        public enum eFrameType { LIGHT, DARK, FLAT, BIAS }
+        public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER }
+
         public int ImageAttachmentLength { get; set; } = 0;
         public int ImageAttachmentStart { get; set; } = 0;
         public int ThumbnailAttachmentLength { get; set; } = 0;
@@ -36,6 +39,8 @@ namespace XisfFileManager.FileOperations
         public DateTime CaptureTime { get; set; }
         public string CDARK { get; set; }
         public string CFLAT { get; set; }
+        public string CBIAS { get; set; }
+        public bool Protected { get; set; } = false;
 
 
         public XisfFile()
@@ -104,6 +109,7 @@ namespace XisfFileManager.FileOperations
             Telescope = KeywordData.Telescope();
             RiccardiReducer = Telescope.EndsWith("R");
             Temperature = KeywordData.SensorTemperature();
+            Protected = KeywordData.Protected();
         }
     }
 }

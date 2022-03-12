@@ -142,7 +142,7 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString("F6"),
                 Comment = comment,
-                Type = Keyword.EType.FLOAT
+                Type = Keyword.EType.DOUBLE
             };
             return keyword;
         }

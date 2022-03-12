@@ -42,7 +42,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.AirMass.Add(node);
             keywords.KeywordList.Remove(node);
@@ -55,7 +55,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.Eccentricity.Add(node);
             keywords.KeywordList.Remove(node);
@@ -68,7 +68,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.EccentricityMeanDeviation.Add(node);
             keywords.KeywordList.Remove(node);
@@ -80,7 +80,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.Fwhm.Add(node);
             keywords.KeywordList.Remove(node);
@@ -92,7 +92,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.FwhmMeanDeviation.Add(node);
             keywords.KeywordList.Remove(node);
@@ -104,7 +104,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.Median.Add(node);
             keywords.KeywordList.Remove(node);
@@ -116,7 +116,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.MedianMeanDeviation.Add(node);
             keywords.KeywordList.Remove(node);
@@ -128,7 +128,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.Noise.Add(node);
             keywords.KeywordList.Remove(node);
@@ -140,7 +140,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.NoiseRatio.Add(node);
             keywords.KeywordList.Remove(node);
@@ -152,7 +152,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.SnrWeight.Add(node);
             keywords.KeywordList.Remove(node);
@@ -164,7 +164,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.StarResidual.Add(node);
             keywords.KeywordList.Remove(node);
@@ -176,7 +176,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.StarResidualMeanDeviation.Add(node);
             keywords.KeywordList.Remove(node);
@@ -200,7 +200,7 @@
             if (node == null) return;
 
             node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.FLOAT;
+            node.Type = Keyword.EType.DOUBLE;
 
             SubFrameList.Weight.Add(node);
             keywords.KeywordList.Remove(node);

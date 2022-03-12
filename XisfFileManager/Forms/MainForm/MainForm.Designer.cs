@@ -289,14 +289,17 @@
             this.TabControl_Update = new System.Windows.Forms.TabControl();
             this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             this.TabPage_Calibration = new System.Windows.Forms.TabPage();
-            this.Label_Calibration_TotalFiles = new System.Windows.Forms.Label();
-            this.ProgressBar_Calibration = new System.Windows.Forms.ProgressBar();
-            this.Label_Calibration_ReadFileName = new System.Windows.Forms.Label();
-            this.TreeView_Darks = new System.Windows.Forms.TreeView();
-            this.Calibration_CreateCalibrationDirectory = new System.Windows.Forms.Button();
-            this.Calibration_MatchCalibrationFrames = new System.Windows.Forms.Button();
-            this.Calibration_FindCalibrationFrames = new System.Windows.Forms.Button();
+            this.Label_CalibrationTab_TotalFiles = new System.Windows.Forms.Label();
+            this.ProgressBar_CalibrationTab = new System.Windows.Forms.ProgressBar();
+            this.Label_CalibrationTab_ReadFileName = new System.Windows.Forms.Label();
+            this.TreeView_CalibrationTab = new System.Windows.Forms.TreeView();
+            this.Button_CalibrationTab_CreateCalibrationDirectory = new System.Windows.Forms.Button();
+            this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
+            this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
+            this.groupBox_CalibrationTab_MatchTolerance = new System.Windows.Forms.GroupBox();
+            this.TextBox_CalibrationTab_Exposure = new System.Windows.Forms.TextBox();
+            this.Label_CalibrationTab_Exposure = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdate_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordTelescope.SuspendLayout();
@@ -335,6 +338,7 @@
             this.TabPage_KeywordUpdate.SuspendLayout();
             this.TabPage_Calibration.SuspendLayout();
             this.TabPage_SubFrameWeights.SuspendLayout();
+            this.groupBox_CalibrationTab_MatchTolerance.SuspendLayout();
             this.SuspendLayout();
             // 
             // Button_FileSelection_DirectorySelection_Browse
@@ -3209,13 +3213,14 @@
             // TabPage_Calibration
             // 
             this.TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
-            this.TabPage_Calibration.Controls.Add(this.Label_Calibration_TotalFiles);
-            this.TabPage_Calibration.Controls.Add(this.ProgressBar_Calibration);
-            this.TabPage_Calibration.Controls.Add(this.Label_Calibration_ReadFileName);
-            this.TabPage_Calibration.Controls.Add(this.TreeView_Darks);
-            this.TabPage_Calibration.Controls.Add(this.Calibration_CreateCalibrationDirectory);
-            this.TabPage_Calibration.Controls.Add(this.Calibration_MatchCalibrationFrames);
-            this.TabPage_Calibration.Controls.Add(this.Calibration_FindCalibrationFrames);
+            this.TabPage_Calibration.Controls.Add(this.groupBox_CalibrationTab_MatchTolerance);
+            this.TabPage_Calibration.Controls.Add(this.Label_CalibrationTab_TotalFiles);
+            this.TabPage_Calibration.Controls.Add(this.ProgressBar_CalibrationTab);
+            this.TabPage_Calibration.Controls.Add(this.Label_CalibrationTab_ReadFileName);
+            this.TabPage_Calibration.Controls.Add(this.TreeView_CalibrationTab);
+            this.TabPage_Calibration.Controls.Add(this.Button_CalibrationTab_CreateCalibrationDirectory);
+            this.TabPage_Calibration.Controls.Add(this.Button_CalibrationTab_MatchCalibrationFrames);
+            this.TabPage_Calibration.Controls.Add(this.Button_CalibrationTab_FindCalibrationFrames);
             this.TabPage_Calibration.Location = new System.Drawing.Point(4, 22);
             this.TabPage_Calibration.Name = "TabPage_Calibration";
             this.TabPage_Calibration.Padding = new System.Windows.Forms.Padding(3);
@@ -3223,67 +3228,67 @@
             this.TabPage_Calibration.TabIndex = 1;
             this.TabPage_Calibration.Text = "Calibration";
             // 
-            // Label_Calibration_TotalFiles
+            // Label_CalibrationTab_TotalFiles
             // 
-            this.Label_Calibration_TotalFiles.AutoSize = true;
-            this.Label_Calibration_TotalFiles.Location = new System.Drawing.Point(25, 20);
-            this.Label_Calibration_TotalFiles.Name = "Label_Calibration_TotalFiles";
-            this.Label_Calibration_TotalFiles.Size = new System.Drawing.Size(110, 13);
-            this.Label_Calibration_TotalFiles.TabIndex = 6;
-            this.Label_Calibration_TotalFiles.Text = "No Calibration Frames";
+            this.Label_CalibrationTab_TotalFiles.AutoSize = true;
+            this.Label_CalibrationTab_TotalFiles.Location = new System.Drawing.Point(25, 20);
+            this.Label_CalibrationTab_TotalFiles.Name = "Label_CalibrationTab_TotalFiles";
+            this.Label_CalibrationTab_TotalFiles.Size = new System.Drawing.Size(110, 13);
+            this.Label_CalibrationTab_TotalFiles.TabIndex = 6;
+            this.Label_CalibrationTab_TotalFiles.Text = "No Calibration Frames";
             // 
-            // ProgressBar_Calibration
+            // ProgressBar_CalibrationTab
             // 
-            this.ProgressBar_Calibration.Location = new System.Drawing.Point(17, 435);
-            this.ProgressBar_Calibration.Name = "ProgressBar_Calibration";
-            this.ProgressBar_Calibration.Size = new System.Drawing.Size(942, 11);
-            this.ProgressBar_Calibration.TabIndex = 5;
+            this.ProgressBar_CalibrationTab.Location = new System.Drawing.Point(17, 435);
+            this.ProgressBar_CalibrationTab.Name = "ProgressBar_CalibrationTab";
+            this.ProgressBar_CalibrationTab.Size = new System.Drawing.Size(942, 11);
+            this.ProgressBar_CalibrationTab.TabIndex = 5;
             // 
-            // Label_Calibration_ReadFileName
+            // Label_CalibrationTab_ReadFileName
             // 
-            this.Label_Calibration_ReadFileName.AutoSize = true;
-            this.Label_Calibration_ReadFileName.Location = new System.Drawing.Point(25, 404);
-            this.Label_Calibration_ReadFileName.Name = "Label_Calibration_ReadFileName";
-            this.Label_Calibration_ReadFileName.Size = new System.Drawing.Size(106, 13);
-            this.Label_Calibration_ReadFileName.TabIndex = 4;
-            this.Label_Calibration_ReadFileName.Text = "Calibration File Name";
+            this.Label_CalibrationTab_ReadFileName.AutoSize = true;
+            this.Label_CalibrationTab_ReadFileName.Location = new System.Drawing.Point(25, 404);
+            this.Label_CalibrationTab_ReadFileName.Name = "Label_CalibrationTab_ReadFileName";
+            this.Label_CalibrationTab_ReadFileName.Size = new System.Drawing.Size(106, 13);
+            this.Label_CalibrationTab_ReadFileName.TabIndex = 4;
+            this.Label_CalibrationTab_ReadFileName.Text = "Calibration File Name";
             // 
-            // TreeView_Darks
+            // TreeView_CalibrationTab
             // 
-            this.TreeView_Darks.Location = new System.Drawing.Point(260, 29);
-            this.TreeView_Darks.Name = "TreeView_Darks";
-            this.TreeView_Darks.Size = new System.Drawing.Size(130, 342);
-            this.TreeView_Darks.TabIndex = 3;
+            this.TreeView_CalibrationTab.Location = new System.Drawing.Point(507, 20);
+            this.TreeView_CalibrationTab.Name = "TreeView_CalibrationTab";
+            this.TreeView_CalibrationTab.Size = new System.Drawing.Size(130, 342);
+            this.TreeView_CalibrationTab.TabIndex = 3;
             // 
-            // Calibration_CreateCalibrationDirectory
+            // Button_CalibrationTab_CreateCalibrationDirectory
             // 
-            this.Calibration_CreateCalibrationDirectory.Location = new System.Drawing.Point(93, 154);
-            this.Calibration_CreateCalibrationDirectory.Name = "Calibration_CreateCalibrationDirectory";
-            this.Calibration_CreateCalibrationDirectory.Size = new System.Drawing.Size(75, 75);
-            this.Calibration_CreateCalibrationDirectory.TabIndex = 2;
-            this.Calibration_CreateCalibrationDirectory.Text = "Create Target Calibration Directory";
-            this.Calibration_CreateCalibrationDirectory.UseVisualStyleBackColor = true;
-            this.Calibration_CreateCalibrationDirectory.Click += new System.EventHandler(this.Calibration_CreateCalibrationDirectory_Click);
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Location = new System.Drawing.Point(93, 154);
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Name = "Button_CalibrationTab_CreateCalibrationDirectory";
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Size = new System.Drawing.Size(75, 75);
+            this.Button_CalibrationTab_CreateCalibrationDirectory.TabIndex = 2;
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Text = "Create Target Calibration Directory";
+            this.Button_CalibrationTab_CreateCalibrationDirectory.UseVisualStyleBackColor = true;
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Click += new System.EventHandler(this.Calibration_CreateCalibrationDirectory_Click);
             // 
-            // Calibration_MatchCalibrationFrames
+            // Button_CalibrationTab_MatchCalibrationFrames
             // 
-            this.Calibration_MatchCalibrationFrames.Location = new System.Drawing.Point(93, 98);
-            this.Calibration_MatchCalibrationFrames.Name = "Calibration_MatchCalibrationFrames";
-            this.Calibration_MatchCalibrationFrames.Size = new System.Drawing.Size(75, 50);
-            this.Calibration_MatchCalibrationFrames.TabIndex = 1;
-            this.Calibration_MatchCalibrationFrames.Text = "Match Calibration Frames";
-            this.Calibration_MatchCalibrationFrames.UseVisualStyleBackColor = true;
-            this.Calibration_MatchCalibrationFrames.Click += new System.EventHandler(this.Calibration_MatchCalibrationFrames_Click);
+            this.Button_CalibrationTab_MatchCalibrationFrames.Location = new System.Drawing.Point(93, 98);
+            this.Button_CalibrationTab_MatchCalibrationFrames.Name = "Button_CalibrationTab_MatchCalibrationFrames";
+            this.Button_CalibrationTab_MatchCalibrationFrames.Size = new System.Drawing.Size(75, 50);
+            this.Button_CalibrationTab_MatchCalibrationFrames.TabIndex = 1;
+            this.Button_CalibrationTab_MatchCalibrationFrames.Text = "Match Calibration Frames";
+            this.Button_CalibrationTab_MatchCalibrationFrames.UseVisualStyleBackColor = true;
+            this.Button_CalibrationTab_MatchCalibrationFrames.Click += new System.EventHandler(this.Calibration_MatchCalibrationFrames_Click);
             // 
-            // Calibration_FindCalibrationFrames
+            // Button_CalibrationTab_FindCalibrationFrames
             // 
-            this.Calibration_FindCalibrationFrames.Location = new System.Drawing.Point(93, 42);
-            this.Calibration_FindCalibrationFrames.Name = "Calibration_FindCalibrationFrames";
-            this.Calibration_FindCalibrationFrames.Size = new System.Drawing.Size(75, 50);
-            this.Calibration_FindCalibrationFrames.TabIndex = 0;
-            this.Calibration_FindCalibrationFrames.Text = "Find Calibration Frames";
-            this.Calibration_FindCalibrationFrames.UseVisualStyleBackColor = true;
-            this.Calibration_FindCalibrationFrames.Click += new System.EventHandler(this.Calibration_FindCalibrationFrames_Click);
+            this.Button_CalibrationTab_FindCalibrationFrames.Location = new System.Drawing.Point(93, 42);
+            this.Button_CalibrationTab_FindCalibrationFrames.Name = "Button_CalibrationTab_FindCalibrationFrames";
+            this.Button_CalibrationTab_FindCalibrationFrames.Size = new System.Drawing.Size(75, 50);
+            this.Button_CalibrationTab_FindCalibrationFrames.TabIndex = 0;
+            this.Button_CalibrationTab_FindCalibrationFrames.Text = "Find Calibration Frames";
+            this.Button_CalibrationTab_FindCalibrationFrames.UseVisualStyleBackColor = true;
+            this.Button_CalibrationTab_FindCalibrationFrames.Click += new System.EventHandler(this.Calibration_FindCalibrationFrames_Click);
             // 
             // TabPage_SubFrameWeights
             // 
@@ -3297,6 +3302,33 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
+            // 
+            // groupBox_CalibrationTab_MatchTolerance
+            // 
+            this.groupBox_CalibrationTab_MatchTolerance.Controls.Add(this.Label_CalibrationTab_Exposure);
+            this.groupBox_CalibrationTab_MatchTolerance.Controls.Add(this.TextBox_CalibrationTab_Exposure);
+            this.groupBox_CalibrationTab_MatchTolerance.Location = new System.Drawing.Point(226, 57);
+            this.groupBox_CalibrationTab_MatchTolerance.Name = "groupBox_CalibrationTab_MatchTolerance";
+            this.groupBox_CalibrationTab_MatchTolerance.Size = new System.Drawing.Size(265, 263);
+            this.groupBox_CalibrationTab_MatchTolerance.TabIndex = 7;
+            this.groupBox_CalibrationTab_MatchTolerance.TabStop = false;
+            this.groupBox_CalibrationTab_MatchTolerance.Text = "Match Tolerance";
+            // 
+            // TextBox_CalibrationTab_Exposure
+            // 
+            this.TextBox_CalibrationTab_Exposure.Location = new System.Drawing.Point(110, 57);
+            this.TextBox_CalibrationTab_Exposure.Name = "TextBox_CalibrationTab_Exposure";
+            this.TextBox_CalibrationTab_Exposure.Size = new System.Drawing.Size(42, 20);
+            this.TextBox_CalibrationTab_Exposure.TabIndex = 0;
+            // 
+            // Label_CalibrationTab_Exposure
+            // 
+            this.Label_CalibrationTab_Exposure.AutoSize = true;
+            this.Label_CalibrationTab_Exposure.Location = new System.Drawing.Point(31, 64);
+            this.Label_CalibrationTab_Exposure.Name = "Label_CalibrationTab_Exposure";
+            this.Label_CalibrationTab_Exposure.Size = new System.Drawing.Size(35, 13);
+            this.Label_CalibrationTab_Exposure.TabIndex = 1;
+            this.Label_CalibrationTab_Exposure.Text = "label1";
             // 
             // MainForm
             // 
@@ -3374,6 +3406,8 @@
             this.TabPage_Calibration.ResumeLayout(false);
             this.TabPage_Calibration.PerformLayout();
             this.TabPage_SubFrameWeights.ResumeLayout(false);
+            this.groupBox_CalibrationTab_MatchTolerance.ResumeLayout(false);
+            this.groupBox_CalibrationTab_MatchTolerance.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3638,15 +3672,18 @@
         private System.Windows.Forms.TabPage TabPage_KeywordUpdate;
         private System.Windows.Forms.TabPage TabPage_Calibration;
         private System.Windows.Forms.TabPage TabPage_SubFrameWeights;
-        private System.Windows.Forms.TreeView TreeView_Darks;
-        private System.Windows.Forms.Button Calibration_CreateCalibrationDirectory;
-        private System.Windows.Forms.Button Calibration_MatchCalibrationFrames;
-        private System.Windows.Forms.Button Calibration_FindCalibrationFrames;
+        private System.Windows.Forms.TreeView TreeView_CalibrationTab;
+        private System.Windows.Forms.Button Button_CalibrationTab_CreateCalibrationDirectory;
+        private System.Windows.Forms.Button Button_CalibrationTab_MatchCalibrationFrames;
+        private System.Windows.Forms.Button Button_CalibrationTab_FindCalibrationFrames;
         private System.Windows.Forms.RadioButton adioButton_DirectorySelection_MastersOnly;
         private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_ExcludeMasters;
         private System.Windows.Forms.RadioButton adioButton_DirectorySelection_AlFiles;
-        private System.Windows.Forms.Label Label_Calibration_ReadFileName;
-        private System.Windows.Forms.ProgressBar ProgressBar_Calibration;
-        private System.Windows.Forms.Label Label_Calibration_TotalFiles;
+        private System.Windows.Forms.Label Label_CalibrationTab_ReadFileName;
+        private System.Windows.Forms.ProgressBar ProgressBar_CalibrationTab;
+        private System.Windows.Forms.Label Label_CalibrationTab_TotalFiles;
+        private System.Windows.Forms.GroupBox groupBox_CalibrationTab_MatchTolerance;
+        private System.Windows.Forms.Label Label_CalibrationTab_Exposure;
+        private System.Windows.Forms.TextBox TextBox_CalibrationTab_Exposure;
     }
 }

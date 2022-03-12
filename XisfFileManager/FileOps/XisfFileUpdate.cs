@@ -18,11 +18,11 @@ namespace XisfFileManager.FileOperations
         public static Buffer mBuffer;
         public static List<Buffer> mBufferList;
         public static string TargetName { get; set; }
-       
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists)
+        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists, bool bPreserveProtectedFiles)
         {
             int xmlStart;
             int xisfStart;
@@ -33,7 +33,7 @@ namespace XisfFileManager.FileOperations
 
             FileInfo fileInfo = new FileInfo(mFile.SourceFileName);
 
-            while(IsFileLocked(fileInfo))
+            while (IsFileLocked(fileInfo))
             {
                 Thread.Sleep(500);
                 fileInfo = new FileInfo(mFile.SourceFileName);
@@ -85,7 +85,7 @@ namespace XisfFileManager.FileOperations
                         //mFile.KeywordData.RemoveKeyword("HISTORY");
                     }
 
-                    mFile.KeywordData.RemoveKeyword("ALIGNH");    
+                    mFile.KeywordData.RemoveKeyword("ALIGNH");
                     //mFile.KeywordData.RemoveKeyword("NOISE");
                     mFile.KeywordData.RemoveKeyword("Bandwidth setting");
                     mFile.KeywordData.RemoveKeyword("BTP");
@@ -97,6 +97,13 @@ namespace XisfFileManager.FileOperations
                     mFile.KeywordData.RemoveKeyword("FOCTMPSC");
                     mFile.KeywordData.RemoveKeyword("PICTTYPE");
 
+                    if (bPreserveProtectedFiles)
+                    {
+                        if (mFile.Protected)
+                        {
+                            return false;
+                        }
+                    }
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
                     ReplaceAllFitsKeywords(xmlDoc, mFile, SubFrameKeywordLists);
 
@@ -109,7 +116,7 @@ namespace XisfFileManager.FileOperations
                         mFile.ImageAttachmentLength,
                         xmlDoc.OuterXml.Length + 16 + mFile.ImageAttachmentLength,
                         mFile.ThumbnailAttachmentLength);
-                    
+
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Begin setting up output XISF File
@@ -196,7 +203,7 @@ namespace XisfFileManager.FileOperations
                 sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
                 Directory.CreateDirectory(sourceFilePath + "\\Rejected");
                 File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
-             }
+            }
 
             return true;
         }
@@ -205,7 +212,7 @@ namespace XisfFileManager.FileOperations
 
         public static bool UpdateTargetCalibrationFile(string targetCalibationDirectoryPath, XisfFile mFile, SubFrameLists SubFrameKeywordLists)
         {
-            UpdateFile(mFile, SubFrameKeywordLists);
+            UpdateFile(mFile, SubFrameKeywordLists, true);
 
             return true;
         }
@@ -299,7 +306,7 @@ namespace XisfFileManager.FileOperations
                             case Keyword.EType.BOOL:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.EType.FLOAT:
+                            case Keyword.EType.DOUBLE:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
                             case Keyword.EType.INTEGER:
@@ -446,7 +453,7 @@ namespace XisfFileManager.FileOperations
                     // Fix Header length
                     int binaryDataLength = rawStream.ToArray().Length;
                     byte[] binaryData = new byte[binaryDataLength];
-                    
+
                     binaryData = rawStream.ToArray();
 
                     int xisfStart = BinaryFind(binaryData, "<?xml"); // returns the position of '<'

@@ -404,95 +404,95 @@ namespace XisfFileManager.Calculations
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Approved)
             {
-                Approved.Add((bool)Convert.ChangeType(keyword.GetValue(), typeof(bool)));
+                Approved.Add((bool)Convert.ChangeType(keyword.GetKeyword(), typeof(bool)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.AirMass)
             {
-                AirMass.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                AirMass.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.FileName)
             {
-                FileName.Add((string)Convert.ChangeType(keyword.GetValue(), typeof(string)));
+                FileName.Add((string)Convert.ChangeType(keyword.GetKeyword(), typeof(string)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Eccentricity)
             {
                 //if (Approved[index++] == true)
-                Eccentricity.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Eccentricity.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.EccentricityMeanDeviation)
             {
                 //if (Approved[index++] == true) 
-                EccentricityMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                EccentricityMeanDeviation.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Fwhm)
             {
                 //if (Approved[index++] == true) 
-                Fwhm.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Fwhm.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.FwhmMeanDeviation)
             {
                 //if (Approved[index++] == true) 
-                FwhmMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                FwhmMeanDeviation.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Median)
             {
                 //if (Approved[index++] == true) 
-                Median.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Median.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.MedianMeanDeviation)
             {
                 //if (Approved[index++] == true) 
-                MedianMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                MedianMeanDeviation.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Noise)
             {
                 //if (Approved[index++] == true) 
-                Noise.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Noise.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.NoiseRatio)
             {
                 //if (Approved[index++] == true) 
-                NoiseRatio.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                NoiseRatio.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.SnrWeight)
             {
                 //if (Approved[index++] == true) 
-                Snr.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Snr.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidual)
             {
                 //if (Approved[index++] == true) 
-                StarResidual.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                StarResidual.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.StarResidualMeanDeviation)
             {
                 //if (Approved[index++] == true) 
-                StarResidualMeanDeviation.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                StarResidualMeanDeviation.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 ;
             foreach (Keyword keyword in KeywordLists.SubFrameList.Stars)
             {
                 //if (Approved[index++] == true) 
-                Stars.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Stars.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
 
             foreach (Keyword keyword in KeywordLists.SubFrameList.Weight)
             {
                 //if (Approved[index++] == true) 
-                Weight.Add((double)Convert.ChangeType(keyword.GetValue(), typeof(double)));
+                Weight.Add((double)Convert.ChangeType(keyword.GetKeyword(), typeof(double)));
             }
         }
     }

@@ -116,8 +116,7 @@ namespace XisfFileManager
         // Executes when TabControl_Updated is selected (changed)
         private void TabControl_Update_Selected(object sender, TabControlEventArgs e)
         {
-            return;
-
+            /*
             if (e.TabPage.Name == TabPage_Calibration.Name)
             {
                 if (mFile != null)
@@ -128,13 +127,14 @@ namespace XisfFileManager
                     if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
                 }
             }
+            */
         }
         
         private void EventHandler_UpdateCalibrationPageForm(CalibrationTabPageValues data)
         {
-            ProgressBar_Calibration.Value = data.Progress;
-            Label_Calibration_ReadFileName.Text = data.FileName;
-            Label_Calibration_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
+            ProgressBar_CalibrationTab.Value = data.Progress;
+            Label_CalibrationTab_ReadFileName.Text = data.FileName;
+            Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
             TabPage_Calibration.Update();
         }
 
@@ -681,7 +681,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
                 ProgressBar_Keyword_XisfFile.Value += 1;
-                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists);
+                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, true);
                 Label_Keyword_UpdateFileName.Text = Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
                 Application.DoEvents();
 
