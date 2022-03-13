@@ -135,6 +135,35 @@ namespace XisfFileManager
             ProgressBar_CalibrationTab.Value = data.Progress;
             Label_CalibrationTab_ReadFileName.Text = data.FileName;
             Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
+
+            switch (data.MessageMode)
+            {
+                case CalibrationTabPageValues.eMessageMode.CLEAR:
+                    TextBox_CalibrationTab_Messgaes.Clear();
+                    break;
+
+                case CalibrationTabPageValues.eMessageMode.APPEND:
+                    TextBox_CalibrationTab_Messgaes.AppendText(data.MatchCalibrationMessage);
+                    break;
+
+                case CalibrationTabPageValues.eMessageMode.NEW:
+                    TextBox_CalibrationTab_Messgaes.Clear();
+                    TextBox_CalibrationTab_Messgaes.AppendText(data.MatchCalibrationMessage);
+                    break;
+
+                default:
+                    break;
+
+            }
+            data.MessageMode = CalibrationTabPageValues.eMessageMode.KEEP;
+
+
+            Label_CalibrationTab_TotalMatchedFiles.Text = "Matched " + data.TotalMatchedCalibrationFiles.ToString() + " Calibration Files: " + 
+                data.TotalUniqueDarkCalibrationFiles.ToString() + " Unique Darks, " + 
+                data.TotalUniqueFlatCalibrationFiles.ToString() + " Unique Flats and " + 
+                data.TotalUniqueBiasCalibrationFiles.ToString() + " Unique Bias Files " +
+                "from " + mFileList.Count.ToString() + " Target Frames";
+            
             TabPage_Calibration.Update();
         }
 
@@ -681,11 +710,11 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
                 ProgressBar_Keyword_XisfFile.Value += 1;
-                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, true);
+                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Checked);
                 Label_Keyword_UpdateFileName.Text = Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
                 Application.DoEvents();
 
-                if (bStatus == false)
+                if ((bStatus == false) && (CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Checked == false))
                 {
                     Label_FileSelection_Statistics_Task.Text = "File Write Error";
 
@@ -3336,14 +3365,14 @@ namespace XisfFileManager
 
         private void Calibration_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
+            TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = DirectoryOps.FrameType.ALL;
             mCalibration.FindCalibrationFrames(mFileList);
-
-            int count = mCalibration.CalibrationFiles.Count;
         }
 
         private void Calibration_MatchCalibrationFrames_Click(object sender, EventArgs e)
         {
+            TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.MatchCalibrationFrames(mFileList);
         }
 

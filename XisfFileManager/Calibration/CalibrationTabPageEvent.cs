@@ -8,9 +8,16 @@ namespace XisfFileManager
 {
     public class CalibrationTabPageValues
     {
+        public enum eMessageMode { CLEAR, APPEND, NEW, KEEP }
+        public eMessageMode MessageMode { get; set; } = eMessageMode.KEEP;
         public string FileName { get; set; }
         public int Progress { get; set; }
         public int TotalFiles { get; set; }
+        public int TotalMatchedCalibrationFiles { get; set; }
+        public int TotalUniqueDarkCalibrationFiles { get; set; }
+        public int TotalUniqueFlatCalibrationFiles { get; set; }
+        public int TotalUniqueBiasCalibrationFiles { get; set; }
+        public string MatchCalibrationMessage { get; set; }
     }
 
     public class CalibrationTabPageEvent

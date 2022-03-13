@@ -33,7 +33,7 @@ namespace XisfFileManager
         public List<XisfFile> CalibrationFiles { get { return mCalibrationLibraryFileList; } }
         public bool Recurse { get; set; } = true;
 
-        private CalibrationTabPageValues mValues;
+        private CalibrationTabPageValues mCalibrationTabValues;
 
         private List<XisfFile> mLumaFileList;
         private List<XisfFile> mRedFileList;
@@ -56,7 +56,7 @@ namespace XisfFileManager
             mCalibrationLibraryFileList = new List<XisfFile>();
             mFileReader = new XisfFileRead();
             mDirectoryOps = new DirectoryOps();
-            mValues = new CalibrationTabPageValues();
+            mCalibrationTabValues = new CalibrationTabPageValues();
 
             mLumaFileList = new List<XisfFile>();
             mRedFileList = new List<XisfFile>();
@@ -77,12 +77,13 @@ namespace XisfFileManager
         {
             int progress = 0;
 
-            //AddTargetFrameParameters(targetFileList);
+            mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
+            CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
 
             try
             {
-                DirectoryInfo diDirectoryTree = new DirectoryInfo(@"E:\Photography\Astro Photography\Calibration\");
+                DirectoryInfo diDirectoryTree = new DirectoryInfo(@"E:\Photography\Astro Photography\Calibration");
                 mDirectoryOps.ClearFileList();
                 mDirectoryOps.Filter = Filter;
                 mDirectoryOps.File = File;
@@ -97,7 +98,7 @@ namespace XisfFileManager
                 }
 
                 int index = 1;
-                mValues.TotalFiles = mDirectoryOps.Files.Count;
+                mCalibrationTabValues.TotalFiles = mDirectoryOps.Files.Count;
 
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
@@ -111,9 +112,9 @@ namespace XisfFileManager
 
                     progress = (int)(((double)index++ / (double)mDirectoryOps.Files.Count) * 100.0);
 
-                    mValues.Progress = progress;
-                    mValues.FileName = Path.GetDirectoryName(mFile.SourceFileName) + "\n" + Path.GetFileName(mFile.SourceFileName);
-                    CalibrationTabPageEvent.TransmitData(mValues);
+                    mCalibrationTabValues.Progress = progress;
+                    mCalibrationTabValues.FileName = Path.GetDirectoryName(mFile.SourceFileName) + "\n" + Path.GetFileName(mFile.SourceFileName);
+                    CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
 
                     // Get the keyword data contained within the current file (mFile)
@@ -143,8 +144,8 @@ namespace XisfFileManager
                 mCalibrationLibraryFileList.Sort(XisfFile.CaptureTimeComparison);
                 mCalibrationLibraryFileList = mCalibrationLibraryFileList.Distinct().ToList();
 
-                mValues.TotalFiles = mCalibrationLibraryFileList.Count;
-                CalibrationTabPageEvent.TransmitData(mValues);
+                mCalibrationTabValues.TotalFiles = mCalibrationLibraryFileList.Count;
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
                 return mCalibrationLibraryFileList.Count;
             }
@@ -261,6 +262,9 @@ namespace XisfFileManager
 
             mDarkFileList.Clear();
             mFlatFileList.Clear();
+            bool bAllDarksMatched = true;
+            bool bAllFlatsMatched = true;
+            bool bAllBiasMatched = true;
 
             // Build lists of all the nearest (by DateTime) Dark and Flat calibration files
             // These lists will initially be the same size as the target list (contains many duplicates) 
@@ -271,9 +275,23 @@ namespace XisfFileManager
 
                 if (nearestDarkCalibrationFile != null)
                     mDarkFileList.Add(nearestDarkCalibrationFile);
+                else
+                {
+                    mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                    mCalibrationTabValues.MatchCalibrationMessage = "No matching Dark for target frame: " + targetFile.SourceFileName + "\r\n";
+                    CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                    bAllDarksMatched = false;
+                }
 
                 if (nearestFlatCalibrationFile != null)
                     mFlatFileList.Add(nearestFlatCalibrationFile);
+                else
+                {
+                    mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                    mCalibrationTabValues.MatchCalibrationMessage = "No matching Flat for target frame: " + targetFile.SourceFileName + "\r\n";
+                    CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                    bAllFlatsMatched = false;
+                }
             }
 
             // Remove all duplicate list elements
@@ -293,6 +311,10 @@ namespace XisfFileManager
 
                 if (nearestBiasCalibrationFile != null)
                     mBiasFileList.Add(nearestBiasCalibrationFile);
+                else
+                {
+                    bAllBiasMatched = true;
+                }
             }
 
             // Remove all duplicate list elements
@@ -342,12 +364,61 @@ namespace XisfFileManager
 
                 targetFile.KeywordData.AddKeyword("Protected", true);
 
-                targetFile.CDARK = nearestDarkCalibrationFile.CDARK;
-                targetFile.KeywordData.AddKeyword("CDARK", nearestDarkCalibrationFile.CDARK);
+                if (nearestDarkCalibrationFile != null)
+                {
+                    targetFile.CDARK = nearestDarkCalibrationFile.CDARK;
+                    targetFile.KeywordData.AddKeyword("CDARK", nearestDarkCalibrationFile.CDARK);
+                }
 
-                targetFile.CFLAT = nearestFlatCalibrationFile.CFLAT;
-                targetFile.KeywordData.AddKeyword("CFLAT", nearestFlatCalibrationFile.CFLAT);
+                if (nearestFlatCalibrationFile != null)
+                {
+                    targetFile.CFLAT = nearestFlatCalibrationFile.CFLAT;
+                    targetFile.KeywordData.AddKeyword("CFLAT", nearestFlatCalibrationFile.CFLAT);
+                }
             }
+
+
+            // Build a list of all Filters used independent of Camera, Binning, Gain, Offset andTemperature 
+            // To Do: The list is only dependent on Binning - maybe
+            
+            List<string> filterList = new List<string>();
+
+            // Now set CLIGHT to group all filters together independent of exposure time
+            foreach (var target in targetFileList)
+            {
+                filterList.Add(target.Filter);
+            }
+
+            filterList = filterList.Distinct().ToList();
+
+            // Match each target with Filter and index
+            // To Do: Handle Protected and adding new frames and new filters
+            foreach (var target in targetFileList)
+            {
+                int filterIndex = 1;
+                foreach (var filter in filterList)
+                {
+                    if (target.Filter == filter)
+                    {
+                        target.KeywordData.AddKeyword("CLIGHT", "L" + filterIndex.ToString());
+                        break;
+                    }
+                    filterIndex++;
+                }
+            }
+
+
+            mCalibrationTabValues.TotalUniqueFlatCalibrationFiles = mFlatFileList.Count;
+            mCalibrationTabValues.TotalUniqueDarkCalibrationFiles = mDarkFileList.Count;
+            mCalibrationTabValues.TotalUniqueBiasCalibrationFiles = mBiasFileList.Count;
+            mCalibrationTabValues.TotalMatchedCalibrationFiles = mDarkFileList.Count + mFlatFileList.Count + mBiasFileList.Count;
+
+            if (bAllDarksMatched && bAllFlatsMatched & bAllBiasMatched)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            All Taget Frames Matched\r\n";
+            }
+            CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
             // To Do
             // What do we do with Bias frames?
@@ -358,7 +429,10 @@ namespace XisfFileManager
         public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
         {
             string directoryName = Path.GetDirectoryName(targetFileList[0].SourceFileName);
-            directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..\..") + @"\Calibration");
+            if (directoryName.Contains(@"Captures\"))
+                directoryName = directoryName.Substring(0, directoryName.IndexOf("Captures")) + @"Captures\Calibration";
+            else
+                directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..") + @"\Calibration");
 
             if (Directory.Exists(directoryName))
             {
