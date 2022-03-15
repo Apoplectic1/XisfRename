@@ -97,13 +97,6 @@ namespace XisfFileManager.FileOperations
                     mFile.KeywordData.RemoveKeyword("FOCTMPSC");
                     mFile.KeywordData.RemoveKeyword("PICTTYPE");
 
-                    if (bPreserveProtectedFiles)
-                    {
-                        if (mFile.Protected)
-                        {
-                            return false;
-                        }
-                    }
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
                     ReplaceAllFitsKeywords(xmlDoc, mFile, SubFrameKeywordLists);
 

@@ -16,11 +16,14 @@ namespace XisfFileManager
     // ******************************************************************************************************************
     public class Calibration
     {
-        private XisfFile mFile;
-        private List<XisfFile> mCalibrationLibraryFileList;
-        private readonly XisfFileRead mFileReader;
-
         private DirectoryOps mDirectoryOps;
+        private List<XisfFile> mBiasFileList;
+        private List<XisfFile> mCalibrationLibraryFileList;
+        private List<XisfFile> mDarkFileList;
+        private List<XisfFile> mFlatFileList;
+        private XisfFile mFile;
+        private readonly CalibrationTabPageValues mCalibrationTabValues;
+        private readonly XisfFileRead mFileReader;
 
         public double ExposureTolerance { get; set; } = 0.1;
         public double GainTolerance { get; set; } = 0.1;
@@ -30,22 +33,8 @@ namespace XisfFileManager
         public DirectoryOps.FileType File { get; set; } = DirectoryOps.FileType.MASTERS;
         public DirectoryOps.FilterType Filter { get; set; } = DirectoryOps.FilterType.ALL;
         public DirectoryOps.FrameType Frame { get; set; } = DirectoryOps.FrameType.ALL;
-        public List<XisfFile> CalibrationFiles { get { return mCalibrationLibraryFileList; } }
+        public List<XisfFile> CalibrationFileList { get { return mCalibrationLibraryFileList; } }
         public bool Recurse { get; set; } = true;
-
-        private CalibrationTabPageValues mCalibrationTabValues;
-
-        private List<XisfFile> mLumaFileList;
-        private List<XisfFile> mRedFileList;
-        private List<XisfFile> mGreenFileList;
-        private List<XisfFile> mBlueFileList;
-        private List<XisfFile> mHaFileList;
-        private List<XisfFile> mO3FileList;
-        private List<XisfFile> mS2FileList;
-
-        private List<XisfFile> mDarkFileList;
-        private List<XisfFile> mFlatFileList;
-        private List<XisfFile> mBiasFileList;
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
@@ -53,22 +42,13 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         public Calibration()
         {
-            mCalibrationLibraryFileList = new List<XisfFile>();
-            mFileReader = new XisfFileRead();
-            mDirectoryOps = new DirectoryOps();
-            mCalibrationTabValues = new CalibrationTabPageValues();
-
-            mLumaFileList = new List<XisfFile>();
-            mRedFileList = new List<XisfFile>();
-            mGreenFileList = new List<XisfFile>();
-            mBlueFileList = new List<XisfFile>();
-            mHaFileList = new List<XisfFile>();
-            mO3FileList = new List<XisfFile>();
-            mS2FileList = new List<XisfFile>();
-
-            mDarkFileList = new List<XisfFile>();
-            mFlatFileList = new List<XisfFile>();
             mBiasFileList = new List<XisfFile>();
+            mCalibrationLibraryFileList = new List<XisfFile>();
+            mCalibrationTabValues = new CalibrationTabPageValues();
+            mDarkFileList = new List<XisfFile>();
+            mDirectoryOps = new DirectoryOps();
+            mFileReader = new XisfFileRead();
+            mFlatFileList = new List<XisfFile>();
         }
 
         // ******************************************************************************************************************
@@ -79,7 +59,6 @@ namespace XisfFileManager
 
             mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
-
 
             try
             {
@@ -93,13 +72,13 @@ namespace XisfFileManager
 
                 if (mDirectoryOps.Files.Count == 0)
                 {
-                    MessageBox.Show("No Master .xisf Files Found", "Select Calibration Folder");
+                    MessageBox.Show("No Calibration Files Found", "Select Calibration Folder");
                     return 0;
                 }
 
-                int index = 1;
                 mCalibrationTabValues.TotalFiles = mDirectoryOps.Files.Count;
 
+                int index = 1;
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
                     bool bStatus = false;
@@ -153,7 +132,7 @@ namespace XisfFileManager
             {
                 MessageBox.Show(
                          "An exception occured during file Browse/Read.\n\n" + ex.ToString(),
-                         "\nMainForm.cs Button_Browse_Click()",
+                         "\nCalibration.cs Button_Browse_Click()",
                          MessageBoxButtons.OK,
                          MessageBoxIcon.Error);
 

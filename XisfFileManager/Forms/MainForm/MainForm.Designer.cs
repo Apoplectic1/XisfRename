@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
-            this.ProgressBar_FileSelection_OverAll = new System.Windows.Forms.ProgressBar();
+            this.ProgressBar_FileSelection_ReadProgress = new System.Windows.Forms.ProgressBar();
             this.CheckBox_FileSelection_DirectorySelection_Recurse = new System.Windows.Forms.CheckBox();
             this.GroupBox_FileSelection_SequenceOrder = new System.Windows.Forms.GroupBox();
             this.RadioButton_FileSelection_SequenceNumbering_WeightOnly = new System.Windows.Forms.RadioButton();
@@ -38,90 +38,93 @@
             this.RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             this.RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             this.Button_FileSlection_Rename = new System.Windows.Forms.Button();
-            this.GroupBox_KeywordUpdate_CaptureSoftware = new System.Windows.Forms.GroupBox();
-            this.RadioButton_KeywordSoftware_NINA = new System.Windows.Forms.RadioButton();
-            this.Button_KeywordSoftware_SetByFile = new System.Windows.Forms.Button();
-            this.Button_KeywordSoftware_SetAll = new System.Windows.Forms.Button();
-            this.RadioButton_KeywordSoftware_VOY = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordSoftware_SCP = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordSoftware_SGP = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordSoftware_TSX = new System.Windows.Forms.RadioButton();
-            this.GroupBox_KeywordTelescope = new System.Windows.Forms.GroupBox();
-            this.TextBox_KeywordTelescope_FocalLength = new System.Windows.Forms.TextBox();
-            this.Label_KeywordTelescope_FocalLength = new System.Windows.Forms.Label();
-            this.Button_KeywordTelescope_SetByFile = new System.Windows.Forms.Button();
-            this.Button_KeywordTelescope_SetAll = new System.Windows.Forms.Button();
-            this.CheckBox_KeywordTelescope_Riccardi = new System.Windows.Forms.CheckBox();
-            this.RadioButton_KeywordTelescope_NWT254 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordTelescope_EVO150 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordTelescope_APM107 = new System.Windows.Forms.RadioButton();
-            this.GroupBox_KeywordCamera = new System.Windows.Forms.GroupBox();
-            this.Label_KeywordCamera_Camera = new System.Windows.Forms.Label();
-            this.Label_KeywordCamera_Common = new System.Windows.Forms.Label();
-            this.Button_KeywordCamera_SetByFile = new System.Windows.Forms.Button();
-            this.Button_KeywordCamera_SetAll = new System.Windows.Forms.Button();
-            this.Label_KeywordCamera_Seconds = new System.Windows.Forms.Label();
-            this.TextBox_KeywordCamera_Seconds = new System.Windows.Forms.TextBox();
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware = new System.Windows.Forms.GroupBox();
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA = new System.Windows.Forms.RadioButton();
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll = new System.Windows.Forms.Button();
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX = new System.Windows.Forms.RadioButton();
+            this.GroupBox_KeywordUpdateTab_Telescope = new System.Windows.Forms.GroupBox();
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength = new System.Windows.Forms.TextBox();
+            this.Label_KeywordUpdateTab_Telescope_FocalLength = new System.Windows.Forms.Label();
+            this.Button_KeywordUpdateTab_Telescope_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordUpdateTab_Telescope_SetAll = new System.Windows.Forms.Button();
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi = new System.Windows.Forms.CheckBox();
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107 = new System.Windows.Forms.RadioButton();
+            this.GroupBox_KeywordUpdateTab_Camera = new System.Windows.Forms.GroupBox();
+            this.Label_KeywordUpdateTab_Camera_Camera = new System.Windows.Forms.Label();
+            this.Label_KeywordUpdateTab_Camera_Common = new System.Windows.Forms.Label();
+            this.Button_KeywordUpdateTab_Camera_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordUpdateTab_Camera_SetAll = new System.Windows.Forms.Button();
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds = new System.Windows.Forms.Label();
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds = new System.Windows.Forms.TextBox();
             this.Label_CameraDivider = new System.Windows.Forms.Label();
-            this.Label_KeywordCamera_Binning = new System.Windows.Forms.Label();
-            this.NumericUpDown_KeywordCamera_Binning = new System.Windows.Forms.NumericUpDown();
-            this.TextBox_KeywordCamera_SensorTemperature = new System.Windows.Forms.TextBox();
-            this.Label_KeywordCamera_SensorTemperature = new System.Windows.Forms.Label();
-            this.CheckBox_KeywordCamera_NarrowBand = new System.Windows.Forms.CheckBox();
-            this.Label_CameraA144Gain = new System.Windows.Forms.Label();
-            this.Label_KeywordCamera_Offset = new System.Windows.Forms.Label();
-            this.Label_KeywordCamera_Gain = new System.Windows.Forms.Label();
-            this.TextBox_KeywordCamera_Q178Offset = new System.Windows.Forms.TextBox();
-            this.TextBox_KeywordCamera_Q178Gain = new System.Windows.Forms.TextBox();
-            this.TextBox_KeywordCamera_Z183Offset = new System.Windows.Forms.TextBox();
-            this.TextBox_KeywordCamera_Z183Gain = new System.Windows.Forms.TextBox();
-            this.TextBox_KeywordCamera_Z533Offset = new System.Windows.Forms.TextBox();
-            this.TextBox_KeywordCamera_Z533Gain = new System.Windows.Forms.TextBox();
-            this.RadioButton_KeywordCamera_A144 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordCamera_Q178 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordCamera_Z183 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordCamera_Z533 = new System.Windows.Forms.RadioButton();
-            this.Label_Keyword_UpdateFileName = new System.Windows.Forms.Label();
-            this.GroupBox_ImageType = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordImageType_SetByFile = new System.Windows.Forms.Button();
-            this.Button_KeywordImageType_SetAll = new System.Windows.Forms.Button();
-            this.GroupBox_ImageTypeFrame = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordImageTypeFrame_SetMaster = new System.Windows.Forms.Button();
-            this.RadioButton_KeywordImageTypeFrame_Bias = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFrame_Flat = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFrame_Dark = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFrame_Light = new System.Windows.Forms.RadioButton();
-            this.GroupBox_ImageTypeFilter = new System.Windows.Forms.GroupBox();
-            this.RadioButton_KeywordImageTypeFilter_Luma = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_Shutter = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_Red = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_S2 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_Ha = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_Blue = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_Green = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordImageTypeFilter_O3 = new System.Windows.Forms.RadioButton();
-            this.GroupBox_KeywordUpdate_SubFrameKeywords = new System.Windows.Forms.GroupBox();
-            this.GroupBox_KeywordUpdate_Weights = new System.Windows.Forms.GroupBox();
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove = new System.Windows.Forms.Button();
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All = new System.Windows.Forms.RadioButton();
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword = new System.Windows.Forms.Label();
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords = new System.Windows.Forms.ComboBox();
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete = new System.Windows.Forms.Button();
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace = new System.Windows.Forms.Button();
-            this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue = new System.Windows.Forms.TextBox();
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName = new System.Windows.Forms.ComboBox();
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations = new System.Windows.Forms.RadioButton();
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords = new System.Windows.Forms.RadioButton();
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords = new System.Windows.Forms.Button();
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames = new System.Windows.Forms.ComboBox();
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName = new System.Windows.Forms.Label();
-            this.ProgressBar_Keyword_XisfFile = new System.Windows.Forms.ProgressBar();
+            this.Label_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.Label();
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.NumericUpDown();
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature = new System.Windows.Forms.TextBox();
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature = new System.Windows.Forms.Label();
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand = new System.Windows.Forms.CheckBox();
+            this.Label_KeywordUpdateTab_Camera_A144Gain = new System.Windows.Forms.Label();
+            this.Label_KeywordUpdateTab_Camera_Offset = new System.Windows.Forms.Label();
+            this.Label_KeywordUpdateTab_Camera_Gain = new System.Windows.Forms.Label();
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset = new System.Windows.Forms.TextBox();
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain = new System.Windows.Forms.TextBox();
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset = new System.Windows.Forms.TextBox();
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain = new System.Windows.Forms.TextBox();
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset = new System.Windows.Forms.TextBox();
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain = new System.Windows.Forms.TextBox();
+            this.RadioButton_KeywordUpdateTab_Camera_A144 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_Camera_Q178 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_Camera_Z183 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_Camera_Z533 = new System.Windows.Forms.RadioButton();
+            this.Label_KeywordUpdateTab_FileName = new System.Windows.Forms.Label();
+            this.GroupBox_KeywordUpdateTab_ImageType = new System.Windows.Forms.GroupBox();
+            this.Button_KeywordUpdateTab_ImageType_SetByFile = new System.Windows.Forms.Button();
+            this.Button_KeywordUpdateTab_ImageType_SetAll = new System.Windows.Forms.Button();
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame = new System.Windows.Forms.GroupBox();
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster = new System.Windows.Forms.Button();
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light = new System.Windows.Forms.RadioButton();
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter = new System.Windows.Forms.GroupBox();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2 = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords = new System.Windows.Forms.GroupBox();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection = new System.Windows.Forms.GroupBox();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All = new System.Windows.Forms.RadioButton();
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect = new System.Windows.Forms.CheckBox();
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords = new System.Windows.Forms.CheckBox();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights = new System.Windows.Forms.GroupBox();
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove = new System.Windows.Forms.Button();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All = new System.Windows.Forms.RadioButton();
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords = new System.Windows.Forms.Label();
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords = new System.Windows.Forms.ComboBox();
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete = new System.Windows.Forms.Button();
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace = new System.Windows.Forms.Button();
+            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue = new System.Windows.Forms.TextBox();
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName = new System.Windows.Forms.ComboBox();
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords = new System.Windows.Forms.Button();
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames = new System.Windows.Forms.ComboBox();
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName = new System.Windows.Forms.Label();
+            this.ProgressBar_KeywordUpdateTab_WriteProgress = new System.Windows.Forms.ProgressBar();
             this.GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
-            this.adioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
+            this.RadioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
             this.RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
-            this.adioButton_DirectorySelection_AlFiles = new System.Windows.Forms.RadioButton();
+            this.RadioButton_DirectorySelection_AlFiles = new System.Windows.Forms.RadioButton();
             this.CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
             this.GroupBox_WeightCalculations = new System.Windows.Forms.GroupBox();
             this.GroupBox_StarResidual = new System.Windows.Forms.GroupBox();
@@ -275,7 +278,7 @@
             this.TextBox_UpdateStatisticsRangeLow = new System.Windows.Forms.TextBox();
             this.Label_UpdateStatisticsRangeLow = new System.Windows.Forms.Label();
             this.Label_FileSelection_Statistics_Task = new System.Windows.Forms.Label();
-            this.Label_FileSelection_TempratureCompensation = new System.Windows.Forms.Label();
+            this.Label_FileSelection_Statistics_TempratureCompensation = new System.Windows.Forms.Label();
             this.Label_FileSelection_Statistics_SubFrameOverhead = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection = new System.Windows.Forms.GroupBox();
             this.GroupBox_FileSelection_Count = new System.Windows.Forms.GroupBox();
@@ -289,16 +292,22 @@
             this.TabControl_Update = new System.Windows.Forms.TabControl();
             this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             this.TabPage_Calibration = new System.Windows.Forms.TabPage();
+            this.Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
+            this.TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
             this.groupBox_CalibrationTab_MatchingTolerance = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.TextBox_CalibrationTab_TemperatureTolerance = new System.Windows.Forms.TextBox();
-            this.TextBox_CalibrationTab_OffsetTolerance = new System.Windows.Forms.TextBox();
-            this.TextBox_CalibrationTab_GainTolerance = new System.Windows.Forms.TextBox();
-            this.Label_CalibrationTab_TemperatureTolerance = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_OffsetTolerance = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_GainTolerance = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_ExposureTolerance = new System.Windows.Forms.Label();
-            this.TextBox_CalibrationTab_ExposureTolerance = new System.Windows.Forms.TextBox();
+            this.Label_CalibrationTab_TemperatureToleranceMatched = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_OffsetToleranceMatched = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_GainToleranceMatched = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_ExposureToleranceMatched = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_MatchingTolerance_Percentage = new System.Windows.Forms.Label();
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature = new System.Windows.Forms.TextBox();
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset = new System.Windows.Forms.TextBox();
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain = new System.Windows.Forms.TextBox();
+            this.Label_CalibrationTab_MatchingTolerance_Temperature = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_MatchingTolerance_Offset = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_MatchingTolerance_Gain = new System.Windows.Forms.Label();
+            this.Label_CalibrationTab_MatchingTolerance_Exposure = new System.Windows.Forms.Label();
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure = new System.Windows.Forms.TextBox();
             this.Label_CalibrationTab_TotalFiles = new System.Windows.Forms.Label();
             this.ProgressBar_CalibrationTab = new System.Windows.Forms.ProgressBar();
             this.Label_CalibrationTab_ReadFileName = new System.Windows.Forms.Label();
@@ -306,23 +315,17 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected = new System.Windows.Forms.CheckBox();
-            this.Label_CalibrationTab_ExposureToleranceMatched = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_GainToleranceMatched = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_OffsetToleranceMatched = new System.Windows.Forms.Label();
-            this.Label_CalibrationTab_TemperatureToleranceMatched = new System.Windows.Forms.Label();
-            this.TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
-            this.Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
-            this.GroupBox_KeywordUpdate_CaptureSoftware.SuspendLayout();
-            this.GroupBox_KeywordTelescope.SuspendLayout();
-            this.GroupBox_KeywordCamera.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordCamera_Binning)).BeginInit();
-            this.GroupBox_ImageType.SuspendLayout();
-            this.GroupBox_ImageTypeFrame.SuspendLayout();
-            this.GroupBox_ImageTypeFilter.SuspendLayout();
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.SuspendLayout();
-            this.GroupBox_KeywordUpdate_Weights.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_Camera.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordUpdateTab_Camera_Binning)).BeginInit();
+            this.GroupBox_KeywordUpdateTab_ImageType.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.SuspendLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.SuspendLayout();
             this.GroupBox_FileSelection_DirectorySelection.SuspendLayout();
             this.GroupBox_WeightCalculations.SuspendLayout();
             this.GroupBox_StarResidual.SuspendLayout();
@@ -364,13 +367,13 @@
             this.Button_FileSelection_DirectorySelection_Browse.UseVisualStyleBackColor = true;
             this.Button_FileSelection_DirectorySelection_Browse.Click += new System.EventHandler(this.Button_Browse_Click);
             // 
-            // ProgressBar_FileSelection_OverAll
+            // ProgressBar_FileSelection_ReadProgress
             // 
-            this.ProgressBar_FileSelection_OverAll.Location = new System.Drawing.Point(17, 166);
-            this.ProgressBar_FileSelection_OverAll.Name = "ProgressBar_FileSelection_OverAll";
-            this.ProgressBar_FileSelection_OverAll.Size = new System.Drawing.Size(942, 11);
-            this.ProgressBar_FileSelection_OverAll.Step = 1;
-            this.ProgressBar_FileSelection_OverAll.TabIndex = 1;
+            this.ProgressBar_FileSelection_ReadProgress.Location = new System.Drawing.Point(17, 166);
+            this.ProgressBar_FileSelection_ReadProgress.Name = "ProgressBar_FileSelection_ReadProgress";
+            this.ProgressBar_FileSelection_ReadProgress.Size = new System.Drawing.Size(942, 11);
+            this.ProgressBar_FileSelection_ReadProgress.Step = 1;
+            this.ProgressBar_FileSelection_ReadProgress.TabIndex = 1;
             // 
             // CheckBox_FileSelection_DirectorySelection_Recurse
             // 
@@ -453,278 +456,278 @@
             this.Button_FileSlection_Rename.UseVisualStyleBackColor = true;
             this.Button_FileSlection_Rename.Click += new System.EventHandler(this.Button_Rename_Click);
             // 
-            // GroupBox_KeywordUpdate_CaptureSoftware
+            // GroupBox_KeywordUpdateTab_CaptureSoftware
             // 
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_NINA);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetByFile);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.Button_KeywordSoftware_SetAll);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_VOY);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_SCP);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_SGP);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Controls.Add(this.RadioButton_KeywordSoftware_TSX);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Location = new System.Drawing.Point(17, 162);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Name = "GroupBox_KeywordUpdate_CaptureSoftware";
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Size = new System.Drawing.Size(137, 187);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.TabIndex = 22;
-            this.GroupBox_KeywordUpdate_CaptureSoftware.TabStop = false;
-            this.GroupBox_KeywordUpdate_CaptureSoftware.Text = "Capture Software";
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.Button_KeywordUpdateTab_CaptureSoftware_SetAll);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Location = new System.Drawing.Point(17, 162);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Name = "GroupBox_KeywordUpdateTab_CaptureSoftware";
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Size = new System.Drawing.Size(137, 187);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.TabIndex = 22;
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.Text = "Capture Software";
             // 
-            // RadioButton_KeywordSoftware_NINA
+            // RadioButton_KeywordUpdateTab_CaptureSoftware_NINA
             // 
-            this.RadioButton_KeywordSoftware_NINA.AutoSize = true;
-            this.RadioButton_KeywordSoftware_NINA.Location = new System.Drawing.Point(20, 41);
-            this.RadioButton_KeywordSoftware_NINA.Name = "RadioButton_KeywordSoftware_NINA";
-            this.RadioButton_KeywordSoftware_NINA.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_KeywordSoftware_NINA.TabIndex = 6;
-            this.RadioButton_KeywordSoftware_NINA.Text = "NINA";
-            this.RadioButton_KeywordSoftware_NINA.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Location = new System.Drawing.Point(20, 41);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_NINA";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.TabIndex = 6;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Text = "NINA";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.UseVisualStyleBackColor = true;
             // 
-            // Button_KeywordSoftware_SetByFile
+            // Button_KeywordUpdateTab_CaptureSoftware_SetByFile
             // 
-            this.Button_KeywordSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
-            this.Button_KeywordSoftware_SetByFile.Name = "Button_KeywordSoftware_SetByFile";
-            this.Button_KeywordSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordSoftware_SetByFile.TabIndex = 5;
-            this.Button_KeywordSoftware_SetByFile.Text = "Set By File";
-            this.Button_KeywordSoftware_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Location = new System.Drawing.Point(29, 157);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Name = "Button_KeywordUpdateTab_CaptureSoftware_SetByFile";
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.TabIndex = 5;
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Text = "Set By File";
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Click += new System.EventHandler(this.Button_CaptureSoftware_SetByFile_Click);
             // 
-            // Button_KeywordSoftware_SetAll
+            // Button_KeywordUpdateTab_CaptureSoftware_SetAll
             // 
-            this.Button_KeywordSoftware_SetAll.Location = new System.Drawing.Point(29, 130);
-            this.Button_KeywordSoftware_SetAll.Name = "Button_KeywordSoftware_SetAll";
-            this.Button_KeywordSoftware_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordSoftware_SetAll.TabIndex = 4;
-            this.Button_KeywordSoftware_SetAll.Text = "Set All";
-            this.Button_KeywordSoftware_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordSoftware_SetAll.Click += new System.EventHandler(this.Button_CaptureSoftware_SetAll_Click);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.Location = new System.Drawing.Point(29, 130);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.Name = "Button_KeywordUpdateTab_CaptureSoftware_SetAll";
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.TabIndex = 4;
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.Text = "Set All";
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_CaptureSoftware_SetAll.Click += new System.EventHandler(this.Button_CaptureSoftware_SetAll_Click);
             // 
-            // RadioButton_KeywordSoftware_VOY
+            // RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager
             // 
-            this.RadioButton_KeywordSoftware_VOY.AutoSize = true;
-            this.RadioButton_KeywordSoftware_VOY.Location = new System.Drawing.Point(20, 81);
-            this.RadioButton_KeywordSoftware_VOY.Name = "RadioButton_KeywordSoftware_VOY";
-            this.RadioButton_KeywordSoftware_VOY.Size = new System.Drawing.Size(64, 17);
-            this.RadioButton_KeywordSoftware_VOY.TabIndex = 3;
-            this.RadioButton_KeywordSoftware_VOY.Text = "Voyager";
-            this.RadioButton_KeywordSoftware_VOY.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Location = new System.Drawing.Point(20, 81);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Size = new System.Drawing.Size(64, 17);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.TabIndex = 3;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Text = "Voyager";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordSoftware_SCP
+            // RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap
             // 
-            this.RadioButton_KeywordSoftware_SCP.AutoSize = true;
-            this.RadioButton_KeywordSoftware_SCP.Location = new System.Drawing.Point(20, 101);
-            this.RadioButton_KeywordSoftware_SCP.Name = "RadioButton_KeywordSoftware_SCP";
-            this.RadioButton_KeywordSoftware_SCP.Size = new System.Drawing.Size(72, 17);
-            this.RadioButton_KeywordSoftware_SCP.TabIndex = 2;
-            this.RadioButton_KeywordSoftware_SCP.Text = "SharpCap";
-            this.RadioButton_KeywordSoftware_SCP.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Location = new System.Drawing.Point(20, 101);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Size = new System.Drawing.Size(72, 17);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.TabIndex = 2;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Text = "SharpCap";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordSoftware_SGP
+            // RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro
             // 
-            this.RadioButton_KeywordSoftware_SGP.AutoSize = true;
-            this.RadioButton_KeywordSoftware_SGP.Location = new System.Drawing.Point(20, 61);
-            this.RadioButton_KeywordSoftware_SGP.Name = "RadioButton_KeywordSoftware_SGP";
-            this.RadioButton_KeywordSoftware_SGP.Size = new System.Drawing.Size(56, 17);
-            this.RadioButton_KeywordSoftware_SGP.TabIndex = 1;
-            this.RadioButton_KeywordSoftware_SGP.Text = "SGPro";
-            this.RadioButton_KeywordSoftware_SGP.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Location = new System.Drawing.Point(20, 61);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Size = new System.Drawing.Size(56, 17);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.TabIndex = 1;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Text = "SGPro";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordSoftware_TSX
+            // RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX
             // 
-            this.RadioButton_KeywordSoftware_TSX.AutoSize = true;
-            this.RadioButton_KeywordSoftware_TSX.Location = new System.Drawing.Point(20, 21);
-            this.RadioButton_KeywordSoftware_TSX.Name = "RadioButton_KeywordSoftware_TSX";
-            this.RadioButton_KeywordSoftware_TSX.Size = new System.Drawing.Size(72, 17);
-            this.RadioButton_KeywordSoftware_TSX.TabIndex = 0;
-            this.RadioButton_KeywordSoftware_TSX.Text = "The SkyX";
-            this.RadioButton_KeywordSoftware_TSX.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Location = new System.Drawing.Point(20, 21);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Size = new System.Drawing.Size(72, 17);
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.TabIndex = 0;
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Text = "The SkyX";
+            this.RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.UseVisualStyleBackColor = true;
             // 
-            // GroupBox_KeywordTelescope
+            // GroupBox_KeywordUpdateTab_Telescope
             // 
-            this.GroupBox_KeywordTelescope.Controls.Add(this.TextBox_KeywordTelescope_FocalLength);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.Label_KeywordTelescope_FocalLength);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.Button_KeywordTelescope_SetByFile);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.Button_KeywordTelescope_SetAll);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.CheckBox_KeywordTelescope_Riccardi);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_NWT254);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_EVO150);
-            this.GroupBox_KeywordTelescope.Controls.Add(this.RadioButton_KeywordTelescope_APM107);
-            this.GroupBox_KeywordTelescope.Location = new System.Drawing.Point(164, 162);
-            this.GroupBox_KeywordTelescope.Name = "GroupBox_KeywordTelescope";
-            this.GroupBox_KeywordTelescope.Size = new System.Drawing.Size(181, 187);
-            this.GroupBox_KeywordTelescope.TabIndex = 21;
-            this.GroupBox_KeywordTelescope.TabStop = false;
-            this.GroupBox_KeywordTelescope.Text = "Telescope";
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.TextBox_KeywordUpdateTab_Telescope_FocalLength);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.Label_KeywordUpdateTab_Telescope_FocalLength);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.Button_KeywordUpdateTab_Telescope_SetByFile);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.Button_KeywordUpdateTab_Telescope_SetAll);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.CheckBox_KeywordUpdateTab_Telescope_Riccardi);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150);
+            this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_APM107);
+            this.GroupBox_KeywordUpdateTab_Telescope.Location = new System.Drawing.Point(164, 162);
+            this.GroupBox_KeywordUpdateTab_Telescope.Name = "GroupBox_KeywordUpdateTab_Telescope";
+            this.GroupBox_KeywordUpdateTab_Telescope.Size = new System.Drawing.Size(181, 187);
+            this.GroupBox_KeywordUpdateTab_Telescope.TabIndex = 21;
+            this.GroupBox_KeywordUpdateTab_Telescope.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_Telescope.Text = "Telescope";
             // 
-            // TextBox_KeywordTelescope_FocalLength
+            // TextBox_KeywordUpdateTab_Telescope_FocalLength
             // 
-            this.TextBox_KeywordTelescope_FocalLength.Location = new System.Drawing.Point(32, 123);
-            this.TextBox_KeywordTelescope_FocalLength.Name = "TextBox_KeywordTelescope_FocalLength";
-            this.TextBox_KeywordTelescope_FocalLength.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordTelescope_FocalLength.TabIndex = 19;
-            this.TextBox_KeywordTelescope_FocalLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(32, 123);
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength.Name = "TextBox_KeywordUpdateTab_Telescope_FocalLength";
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength.TabIndex = 19;
+            this.TextBox_KeywordUpdateTab_Telescope_FocalLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // Label_KeywordTelescope_FocalLength
+            // Label_KeywordUpdateTab_Telescope_FocalLength
             // 
-            this.Label_KeywordTelescope_FocalLength.AutoSize = true;
-            this.Label_KeywordTelescope_FocalLength.Location = new System.Drawing.Point(85, 127);
-            this.Label_KeywordTelescope_FocalLength.Name = "Label_KeywordTelescope_FocalLength";
-            this.Label_KeywordTelescope_FocalLength.Size = new System.Drawing.Size(69, 13);
-            this.Label_KeywordTelescope_FocalLength.TabIndex = 18;
-            this.Label_KeywordTelescope_FocalLength.Text = "Focal Length";
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.AutoSize = true;
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(85, 127);
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.Name = "Label_KeywordUpdateTab_Telescope_FocalLength";
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(69, 13);
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.TabIndex = 18;
+            this.Label_KeywordUpdateTab_Telescope_FocalLength.Text = "Focal Length";
             // 
-            // Button_KeywordTelescope_SetByFile
+            // Button_KeywordUpdateTab_Telescope_SetByFile
             // 
-            this.Button_KeywordTelescope_SetByFile.Location = new System.Drawing.Point(93, 157);
-            this.Button_KeywordTelescope_SetByFile.Name = "Button_KeywordTelescope_SetByFile";
-            this.Button_KeywordTelescope_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordTelescope_SetByFile.TabIndex = 17;
-            this.Button_KeywordTelescope_SetByFile.Text = "Set By File";
-            this.Button_KeywordTelescope_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordTelescope_SetByFile.Click += new System.EventHandler(this.Button_Telescope_SetByFile_Click);
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.Location = new System.Drawing.Point(93, 157);
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.Name = "Button_KeywordUpdateTab_Telescope_SetByFile";
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.TabIndex = 17;
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.Text = "Set By File";
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_Telescope_SetByFile.Click += new System.EventHandler(this.Button_Telescope_SetByFile_Click);
             // 
-            // Button_KeywordTelescope_SetAll
+            // Button_KeywordUpdateTab_Telescope_SetAll
             // 
-            this.Button_KeywordTelescope_SetAll.Location = new System.Drawing.Point(11, 157);
-            this.Button_KeywordTelescope_SetAll.Name = "Button_KeywordTelescope_SetAll";
-            this.Button_KeywordTelescope_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordTelescope_SetAll.TabIndex = 16;
-            this.Button_KeywordTelescope_SetAll.Text = "Set All";
-            this.Button_KeywordTelescope_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordTelescope_SetAll.Click += new System.EventHandler(this.Button_Telescope_SetAll_Click);
+            this.Button_KeywordUpdateTab_Telescope_SetAll.Location = new System.Drawing.Point(11, 157);
+            this.Button_KeywordUpdateTab_Telescope_SetAll.Name = "Button_KeywordUpdateTab_Telescope_SetAll";
+            this.Button_KeywordUpdateTab_Telescope_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_Telescope_SetAll.TabIndex = 16;
+            this.Button_KeywordUpdateTab_Telescope_SetAll.Text = "Set All";
+            this.Button_KeywordUpdateTab_Telescope_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_Telescope_SetAll.Click += new System.EventHandler(this.Button_Telescope_SetAll_Click);
             // 
-            // CheckBox_KeywordTelescope_Riccardi
+            // CheckBox_KeywordUpdateTab_Telescope_Riccardi
             // 
-            this.CheckBox_KeywordTelescope_Riccardi.AutoSize = true;
-            this.CheckBox_KeywordTelescope_Riccardi.Location = new System.Drawing.Point(17, 99);
-            this.CheckBox_KeywordTelescope_Riccardi.Name = "CheckBox_KeywordTelescope_Riccardi";
-            this.CheckBox_KeywordTelescope_Riccardi.Size = new System.Drawing.Size(133, 17);
-            this.CheckBox_KeywordTelescope_Riccardi.TabIndex = 3;
-            this.CheckBox_KeywordTelescope_Riccardi.Text = "Riccardi 0.75 Reducer";
-            this.CheckBox_KeywordTelescope_Riccardi.UseVisualStyleBackColor = true;
-            this.CheckBox_KeywordTelescope_Riccardi.CheckedChanged += new System.EventHandler(this.CheckBox_KeywordTelescope_Riccardi_CheckedChanged);
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.Location = new System.Drawing.Point(17, 99);
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.Name = "CheckBox_KeywordUpdateTab_Telescope_Riccardi";
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.Size = new System.Drawing.Size(133, 17);
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.TabIndex = 3;
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.Text = "Riccardi 0.75 Reducer";
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.UseVisualStyleBackColor = true;
+            this.CheckBox_KeywordUpdateTab_Telescope_Riccardi.CheckedChanged += new System.EventHandler(this.CheckBox_KeywordTelescope_Riccardi_CheckedChanged);
             // 
-            // RadioButton_KeywordTelescope_NWT254
+            // RadioButton_KeywordUpdateTab_Telescope_Newtonian254
             // 
-            this.RadioButton_KeywordTelescope_NWT254.AutoSize = true;
-            this.RadioButton_KeywordTelescope_NWT254.Location = new System.Drawing.Point(17, 73);
-            this.RadioButton_KeywordTelescope_NWT254.Name = "RadioButton_KeywordTelescope_NWT254";
-            this.RadioButton_KeywordTelescope_NWT254.Size = new System.Drawing.Size(97, 17);
-            this.RadioButton_KeywordTelescope_NWT254.TabIndex = 2;
-            this.RadioButton_KeywordTelescope_NWT254.Text = "Newtonian 254";
-            this.RadioButton_KeywordTelescope_NWT254.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordTelescope_NWT254.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_NWT254_CheckedChanged);
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Location = new System.Drawing.Point(17, 73);
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Name = "RadioButton_KeywordUpdateTab_Telescope_Newtonian254";
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Size = new System.Drawing.Size(97, 17);
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.TabIndex = 2;
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Text = "Newtonian 254";
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_NWT254_CheckedChanged);
             // 
-            // RadioButton_KeywordTelescope_EVO150
+            // RadioButton_KeywordUpdateTab_Telescope_EvoStar150
             // 
-            this.RadioButton_KeywordTelescope_EVO150.AutoSize = true;
-            this.RadioButton_KeywordTelescope_EVO150.Location = new System.Drawing.Point(17, 47);
-            this.RadioButton_KeywordTelescope_EVO150.Name = "RadioButton_KeywordTelescope_EVO150";
-            this.RadioButton_KeywordTelescope_EVO150.Size = new System.Drawing.Size(84, 17);
-            this.RadioButton_KeywordTelescope_EVO150.TabIndex = 1;
-            this.RadioButton_KeywordTelescope_EVO150.Text = "EvoStar 150";
-            this.RadioButton_KeywordTelescope_EVO150.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordTelescope_EVO150.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_EVO150_CheckedChanged);
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Location = new System.Drawing.Point(17, 47);
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Name = "RadioButton_KeywordUpdateTab_Telescope_EvoStar150";
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Size = new System.Drawing.Size(84, 17);
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.TabIndex = 1;
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Text = "EvoStar 150";
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_EVO150_CheckedChanged);
             // 
-            // RadioButton_KeywordTelescope_APM107
+            // RadioButton_KeywordUpdateTab_Telescope_APM107
             // 
-            this.RadioButton_KeywordTelescope_APM107.AutoSize = true;
-            this.RadioButton_KeywordTelescope_APM107.Location = new System.Drawing.Point(17, 21);
-            this.RadioButton_KeywordTelescope_APM107.Name = "RadioButton_KeywordTelescope_APM107";
-            this.RadioButton_KeywordTelescope_APM107.Size = new System.Drawing.Size(69, 17);
-            this.RadioButton_KeywordTelescope_APM107.TabIndex = 0;
-            this.RadioButton_KeywordTelescope_APM107.Text = "APM 107";
-            this.RadioButton_KeywordTelescope_APM107.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordTelescope_APM107.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_APM107_CheckedChanged);
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.Location = new System.Drawing.Point(17, 21);
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.Name = "RadioButton_KeywordUpdateTab_Telescope_APM107";
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.Size = new System.Drawing.Size(69, 17);
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.TabIndex = 0;
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.Text = "APM 107";
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Telescope_APM107.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordTelescope_APM107_CheckedChanged);
             // 
-            // GroupBox_KeywordCamera
+            // GroupBox_KeywordUpdateTab_Camera
             // 
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Camera);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Common);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Button_KeywordCamera_SetByFile);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Button_KeywordCamera_SetAll);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Seconds);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Seconds);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_CameraDivider);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Binning);
-            this.GroupBox_KeywordCamera.Controls.Add(this.NumericUpDown_KeywordCamera_Binning);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_SensorTemperature);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_SensorTemperature);
-            this.GroupBox_KeywordCamera.Controls.Add(this.CheckBox_KeywordCamera_NarrowBand);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_CameraA144Gain);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Offset);
-            this.GroupBox_KeywordCamera.Controls.Add(this.Label_KeywordCamera_Gain);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Q178Offset);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Q178Gain);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Z183Offset);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Z183Gain);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Z533Offset);
-            this.GroupBox_KeywordCamera.Controls.Add(this.TextBox_KeywordCamera_Z533Gain);
-            this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_A144);
-            this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Q178);
-            this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Z183);
-            this.GroupBox_KeywordCamera.Controls.Add(this.RadioButton_KeywordCamera_Z533);
-            this.GroupBox_KeywordCamera.Location = new System.Drawing.Point(354, 162);
-            this.GroupBox_KeywordCamera.Name = "GroupBox_KeywordCamera";
-            this.GroupBox_KeywordCamera.Size = new System.Drawing.Size(305, 186);
-            this.GroupBox_KeywordCamera.TabIndex = 20;
-            this.GroupBox_KeywordCamera.TabStop = false;
-            this.GroupBox_KeywordCamera.Text = "Camera";
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Camera);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Common);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Button_KeywordUpdateTab_Camera_SetByFile);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Button_KeywordUpdateTab_Camera_SetAll);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_ExposureSeconds);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_CameraDivider);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Binning);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.NumericUpDown_KeywordUpdateTab_Camera_Binning);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_SensorTemperature);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_SensorTemperature);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.CheckBox_KeywordUpdateTab_Camera_NarrowBand);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_A144Gain);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Offset);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Gain);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Q178Offset);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Q178Gain);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z183Offset);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z183Gain);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z533Offset);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z533Gain);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_A144);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Q178);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Z183);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Z533);
+            this.GroupBox_KeywordUpdateTab_Camera.Location = new System.Drawing.Point(354, 162);
+            this.GroupBox_KeywordUpdateTab_Camera.Name = "GroupBox_KeywordUpdateTab_Camera";
+            this.GroupBox_KeywordUpdateTab_Camera.Size = new System.Drawing.Size(305, 186);
+            this.GroupBox_KeywordUpdateTab_Camera.TabIndex = 20;
+            this.GroupBox_KeywordUpdateTab_Camera.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_Camera.Text = "Camera";
             // 
-            // Label_KeywordCamera_Camera
+            // Label_KeywordUpdateTab_Camera_Camera
             // 
-            this.Label_KeywordCamera_Camera.AutoSize = true;
-            this.Label_KeywordCamera_Camera.Location = new System.Drawing.Point(25, 20);
-            this.Label_KeywordCamera_Camera.Name = "Label_KeywordCamera_Camera";
-            this.Label_KeywordCamera_Camera.Size = new System.Drawing.Size(43, 13);
-            this.Label_KeywordCamera_Camera.TabIndex = 23;
-            this.Label_KeywordCamera_Camera.Text = "Camera";
+            this.Label_KeywordUpdateTab_Camera_Camera.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_Camera.Location = new System.Drawing.Point(25, 20);
+            this.Label_KeywordUpdateTab_Camera_Camera.Name = "Label_KeywordUpdateTab_Camera_Camera";
+            this.Label_KeywordUpdateTab_Camera_Camera.Size = new System.Drawing.Size(43, 13);
+            this.Label_KeywordUpdateTab_Camera_Camera.TabIndex = 23;
+            this.Label_KeywordUpdateTab_Camera_Camera.Text = "Camera";
             // 
-            // Label_KeywordCamera_Common
+            // Label_KeywordUpdateTab_Camera_Common
             // 
-            this.Label_KeywordCamera_Common.AutoSize = true;
-            this.Label_KeywordCamera_Common.Location = new System.Drawing.Point(192, 20);
-            this.Label_KeywordCamera_Common.Name = "Label_KeywordCamera_Common";
-            this.Label_KeywordCamera_Common.Size = new System.Drawing.Size(48, 13);
-            this.Label_KeywordCamera_Common.TabIndex = 22;
-            this.Label_KeywordCamera_Common.Text = "Common";
+            this.Label_KeywordUpdateTab_Camera_Common.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_Common.Location = new System.Drawing.Point(192, 20);
+            this.Label_KeywordUpdateTab_Camera_Common.Name = "Label_KeywordUpdateTab_Camera_Common";
+            this.Label_KeywordUpdateTab_Camera_Common.Size = new System.Drawing.Size(48, 13);
+            this.Label_KeywordUpdateTab_Camera_Common.TabIndex = 22;
+            this.Label_KeywordUpdateTab_Camera_Common.Text = "Common";
             // 
-            // Button_KeywordCamera_SetByFile
+            // Button_KeywordUpdateTab_Camera_SetByFile
             // 
-            this.Button_KeywordCamera_SetByFile.Location = new System.Drawing.Point(168, 157);
-            this.Button_KeywordCamera_SetByFile.Name = "Button_KeywordCamera_SetByFile";
-            this.Button_KeywordCamera_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordCamera_SetByFile.TabIndex = 19;
-            this.Button_KeywordCamera_SetByFile.Text = "Set By File";
-            this.Button_KeywordCamera_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordCamera_SetByFile.Click += new System.EventHandler(this.Button_KeywordCamera_SetByFile_Click);
+            this.Button_KeywordUpdateTab_Camera_SetByFile.Location = new System.Drawing.Point(168, 157);
+            this.Button_KeywordUpdateTab_Camera_SetByFile.Name = "Button_KeywordUpdateTab_Camera_SetByFile";
+            this.Button_KeywordUpdateTab_Camera_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_Camera_SetByFile.TabIndex = 19;
+            this.Button_KeywordUpdateTab_Camera_SetByFile.Text = "Set By File";
+            this.Button_KeywordUpdateTab_Camera_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_Camera_SetByFile.Click += new System.EventHandler(this.Button_KeywordCamera_SetByFile_Click);
             // 
-            // Button_KeywordCamera_SetAll
+            // Button_KeywordUpdateTab_Camera_SetAll
             // 
-            this.Button_KeywordCamera_SetAll.Location = new System.Drawing.Point(70, 157);
-            this.Button_KeywordCamera_SetAll.Name = "Button_KeywordCamera_SetAll";
-            this.Button_KeywordCamera_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordCamera_SetAll.TabIndex = 19;
-            this.Button_KeywordCamera_SetAll.Text = "Set All";
-            this.Button_KeywordCamera_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordCamera_SetAll.Click += new System.EventHandler(this.Button_KeywordCamera_SetAll_Click);
+            this.Button_KeywordUpdateTab_Camera_SetAll.Location = new System.Drawing.Point(70, 157);
+            this.Button_KeywordUpdateTab_Camera_SetAll.Name = "Button_KeywordUpdateTab_Camera_SetAll";
+            this.Button_KeywordUpdateTab_Camera_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_Camera_SetAll.TabIndex = 19;
+            this.Button_KeywordUpdateTab_Camera_SetAll.Text = "Set All";
+            this.Button_KeywordUpdateTab_Camera_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_Camera_SetAll.Click += new System.EventHandler(this.Button_KeywordCamera_SetAll_Click);
             // 
-            // Label_KeywordCamera_Seconds
+            // Label_KeywordUpdateTab_Camera_ExposureSeconds
             // 
-            this.Label_KeywordCamera_Seconds.AutoSize = true;
-            this.Label_KeywordCamera_Seconds.Location = new System.Drawing.Point(241, 124);
-            this.Label_KeywordCamera_Seconds.Name = "Label_KeywordCamera_Seconds";
-            this.Label_KeywordCamera_Seconds.Size = new System.Drawing.Size(49, 13);
-            this.Label_KeywordCamera_Seconds.TabIndex = 21;
-            this.Label_KeywordCamera_Seconds.Text = "Seconds";
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.Location = new System.Drawing.Point(241, 124);
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.Name = "Label_KeywordUpdateTab_Camera_ExposureSeconds";
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.Size = new System.Drawing.Size(49, 13);
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.TabIndex = 21;
+            this.Label_KeywordUpdateTab_Camera_ExposureSeconds.Text = "Seconds";
             // 
-            // TextBox_KeywordCamera_Seconds
+            // TextBox_KeywordUpdateTab_Camera_ExposureSeconds
             // 
-            this.TextBox_KeywordCamera_Seconds.Location = new System.Drawing.Point(192, 120);
-            this.TextBox_KeywordCamera_Seconds.Name = "TextBox_KeywordCamera_Seconds";
-            this.TextBox_KeywordCamera_Seconds.Size = new System.Drawing.Size(48, 20);
-            this.TextBox_KeywordCamera_Seconds.TabIndex = 20;
-            this.TextBox_KeywordCamera_Seconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Location = new System.Drawing.Point(192, 120);
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Name = "TextBox_KeywordUpdateTab_Camera_ExposureSeconds";
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Size = new System.Drawing.Size(48, 20);
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds.TabIndex = 20;
+            this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Label_CameraDivider
             // 
@@ -735,605 +738,640 @@
             this.Label_CameraDivider.TabIndex = 19;
             this.Label_CameraDivider.Text = "label1";
             // 
-            // Label_KeywordCamera_Binning
+            // Label_KeywordUpdateTab_Camera_Binning
             // 
-            this.Label_KeywordCamera_Binning.AutoSize = true;
-            this.Label_KeywordCamera_Binning.Location = new System.Drawing.Point(230, 96);
-            this.Label_KeywordCamera_Binning.Name = "Label_KeywordCamera_Binning";
-            this.Label_KeywordCamera_Binning.Size = new System.Drawing.Size(42, 13);
-            this.Label_KeywordCamera_Binning.TabIndex = 18;
-            this.Label_KeywordCamera_Binning.Text = "Binning";
+            this.Label_KeywordUpdateTab_Camera_Binning.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(230, 96);
+            this.Label_KeywordUpdateTab_Camera_Binning.Name = "Label_KeywordUpdateTab_Camera_Binning";
+            this.Label_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(42, 13);
+            this.Label_KeywordUpdateTab_Camera_Binning.TabIndex = 18;
+            this.Label_KeywordUpdateTab_Camera_Binning.Text = "Binning";
             // 
-            // NumericUpDown_KeywordCamera_Binning
+            // NumericUpDown_KeywordUpdateTab_Camera_Binning
             // 
-            this.NumericUpDown_KeywordCamera_Binning.Location = new System.Drawing.Point(192, 93);
-            this.NumericUpDown_KeywordCamera_Binning.Maximum = new decimal(new int[] {
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(192, 93);
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
-            this.NumericUpDown_KeywordCamera_Binning.Minimum = new decimal(new int[] {
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.NumericUpDown_KeywordCamera_Binning.Name = "NumericUpDown_KeywordCamera_Binning";
-            this.NumericUpDown_KeywordCamera_Binning.Size = new System.Drawing.Size(36, 20);
-            this.NumericUpDown_KeywordCamera_Binning.TabIndex = 17;
-            this.NumericUpDown_KeywordCamera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.NumericUpDown_KeywordCamera_Binning.Value = new decimal(new int[] {
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Name = "NumericUpDown_KeywordUpdateTab_Camera_Binning";
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(36, 20);
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.TabIndex = 17;
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // TextBox_KeywordCamera_SensorTemperature
-            // 
-            this.TextBox_KeywordCamera_SensorTemperature.Location = new System.Drawing.Point(192, 46);
-            this.TextBox_KeywordCamera_SensorTemperature.Name = "TextBox_KeywordCamera_SensorTemperature";
-            this.TextBox_KeywordCamera_SensorTemperature.Size = new System.Drawing.Size(41, 20);
-            this.TextBox_KeywordCamera_SensorTemperature.TabIndex = 15;
-            this.TextBox_KeywordCamera_SensorTemperature.Text = "-10.0";
-            this.TextBox_KeywordCamera_SensorTemperature.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // Label_KeywordCamera_SensorTemperature
-            // 
-            this.Label_KeywordCamera_SensorTemperature.AutoSize = true;
-            this.Label_KeywordCamera_SensorTemperature.Location = new System.Drawing.Point(233, 49);
-            this.Label_KeywordCamera_SensorTemperature.Name = "Label_KeywordCamera_SensorTemperature";
-            this.Label_KeywordCamera_SensorTemperature.Size = new System.Drawing.Size(70, 13);
-            this.Label_KeywordCamera_SensorTemperature.TabIndex = 16;
-            this.Label_KeywordCamera_SensorTemperature.Text = "Sensor Temp";
-            // 
-            // CheckBox_KeywordCamera_NarrowBand
-            // 
-            this.CheckBox_KeywordCamera_NarrowBand.AutoSize = true;
-            this.CheckBox_KeywordCamera_NarrowBand.Location = new System.Drawing.Point(192, 72);
-            this.CheckBox_KeywordCamera_NarrowBand.Name = "CheckBox_KeywordCamera_NarrowBand";
-            this.CheckBox_KeywordCamera_NarrowBand.Size = new System.Drawing.Size(88, 17);
-            this.CheckBox_KeywordCamera_NarrowBand.TabIndex = 14;
-            this.CheckBox_KeywordCamera_NarrowBand.Text = "Narrow Band";
-            this.CheckBox_KeywordCamera_NarrowBand.UseVisualStyleBackColor = true;
-            this.CheckBox_KeywordCamera_NarrowBand.CheckedChanged += new System.EventHandler(this.CheckBox_CameraNarrowBand_CheckedChanged);
-            // 
-            // Label_CameraA144Gain
-            // 
-            this.Label_CameraA144Gain.AutoSize = true;
-            this.Label_CameraA144Gain.Location = new System.Drawing.Point(86, 124);
-            this.Label_CameraA144Gain.Name = "Label_CameraA144Gain";
-            this.Label_CameraA144Gain.Size = new System.Drawing.Size(28, 13);
-            this.Label_CameraA144Gain.TabIndex = 12;
-            this.Label_CameraA144Gain.Text = "0.37";
-            // 
-            // Label_KeywordCamera_Offset
-            // 
-            this.Label_KeywordCamera_Offset.AutoSize = true;
-            this.Label_KeywordCamera_Offset.Location = new System.Drawing.Point(134, 20);
-            this.Label_KeywordCamera_Offset.Name = "Label_KeywordCamera_Offset";
-            this.Label_KeywordCamera_Offset.Size = new System.Drawing.Size(35, 13);
-            this.Label_KeywordCamera_Offset.TabIndex = 11;
-            this.Label_KeywordCamera_Offset.Text = "Offset";
-            // 
-            // Label_KeywordCamera_Gain
-            // 
-            this.Label_KeywordCamera_Gain.AutoSize = true;
-            this.Label_KeywordCamera_Gain.Location = new System.Drawing.Point(86, 20);
-            this.Label_KeywordCamera_Gain.Name = "Label_KeywordCamera_Gain";
-            this.Label_KeywordCamera_Gain.Size = new System.Drawing.Size(29, 13);
-            this.Label_KeywordCamera_Gain.TabIndex = 10;
-            this.Label_KeywordCamera_Gain.Text = "Gain";
-            // 
-            // TextBox_KeywordCamera_Q178Offset
-            // 
-            this.TextBox_KeywordCamera_Q178Offset.Location = new System.Drawing.Point(129, 94);
-            this.TextBox_KeywordCamera_Q178Offset.Name = "TextBox_KeywordCamera_Q178Offset";
-            this.TextBox_KeywordCamera_Q178Offset.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Q178Offset.TabIndex = 9;
-            this.TextBox_KeywordCamera_Q178Offset.Text = "10";
-            this.TextBox_KeywordCamera_Q178Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TextBox_KeywordCamera_Q178Gain
-            // 
-            this.TextBox_KeywordCamera_Q178Gain.Location = new System.Drawing.Point(78, 94);
-            this.TextBox_KeywordCamera_Q178Gain.Name = "TextBox_KeywordCamera_Q178Gain";
-            this.TextBox_KeywordCamera_Q178Gain.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Q178Gain.TabIndex = 8;
-            this.TextBox_KeywordCamera_Q178Gain.Text = "40";
-            this.TextBox_KeywordCamera_Q178Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TextBox_KeywordCamera_Z183Offset
-            // 
-            this.TextBox_KeywordCamera_Z183Offset.Location = new System.Drawing.Point(129, 68);
-            this.TextBox_KeywordCamera_Z183Offset.Name = "TextBox_KeywordCamera_Z183Offset";
-            this.TextBox_KeywordCamera_Z183Offset.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Z183Offset.TabIndex = 7;
-            this.TextBox_KeywordCamera_Z183Offset.Text = "10";
-            this.TextBox_KeywordCamera_Z183Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TextBox_KeywordCamera_Z183Gain
-            // 
-            this.TextBox_KeywordCamera_Z183Gain.Location = new System.Drawing.Point(78, 68);
-            this.TextBox_KeywordCamera_Z183Gain.Name = "TextBox_KeywordCamera_Z183Gain";
-            this.TextBox_KeywordCamera_Z183Gain.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Z183Gain.TabIndex = 6;
-            this.TextBox_KeywordCamera_Z183Gain.Text = "53";
-            this.TextBox_KeywordCamera_Z183Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TextBox_KeywordCamera_Z533Offset
-            // 
-            this.TextBox_KeywordCamera_Z533Offset.Location = new System.Drawing.Point(130, 42);
-            this.TextBox_KeywordCamera_Z533Offset.Name = "TextBox_KeywordCamera_Z533Offset";
-            this.TextBox_KeywordCamera_Z533Offset.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Z533Offset.TabIndex = 5;
-            this.TextBox_KeywordCamera_Z533Offset.Text = "50";
-            this.TextBox_KeywordCamera_Z533Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // TextBox_KeywordCamera_Z533Gain
-            // 
-            this.TextBox_KeywordCamera_Z533Gain.Location = new System.Drawing.Point(78, 42);
-            this.TextBox_KeywordCamera_Z533Gain.Name = "TextBox_KeywordCamera_Z533Gain";
-            this.TextBox_KeywordCamera_Z533Gain.Size = new System.Drawing.Size(44, 20);
-            this.TextBox_KeywordCamera_Z533Gain.TabIndex = 4;
-            this.TextBox_KeywordCamera_Z533Gain.Text = "100";
-            this.TextBox_KeywordCamera_Z533Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // RadioButton_KeywordCamera_A144
-            // 
-            this.RadioButton_KeywordCamera_A144.AutoSize = true;
-            this.RadioButton_KeywordCamera_A144.Location = new System.Drawing.Point(23, 122);
-            this.RadioButton_KeywordCamera_A144.Name = "RadioButton_KeywordCamera_A144";
-            this.RadioButton_KeywordCamera_A144.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordCamera_A144.TabIndex = 3;
-            this.RadioButton_KeywordCamera_A144.Text = "A144";
-            this.RadioButton_KeywordCamera_A144.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordCamera_A144.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_A144_CheckedChanged);
-            // 
-            // RadioButton_KeywordCamera_Q178
-            // 
-            this.RadioButton_KeywordCamera_Q178.AutoSize = true;
-            this.RadioButton_KeywordCamera_Q178.Location = new System.Drawing.Point(23, 96);
-            this.RadioButton_KeywordCamera_Q178.Name = "RadioButton_KeywordCamera_Q178";
-            this.RadioButton_KeywordCamera_Q178.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_KeywordCamera_Q178.TabIndex = 2;
-            this.RadioButton_KeywordCamera_Q178.Text = "Q178";
-            this.RadioButton_KeywordCamera_Q178.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordCamera_Q178.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Q178_CheckedChanged);
-            // 
-            // RadioButton_KeywordCamera_Z183
-            // 
-            this.RadioButton_KeywordCamera_Z183.AutoSize = true;
-            this.RadioButton_KeywordCamera_Z183.Location = new System.Drawing.Point(23, 70);
-            this.RadioButton_KeywordCamera_Z183.Name = "RadioButton_KeywordCamera_Z183";
-            this.RadioButton_KeywordCamera_Z183.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordCamera_Z183.TabIndex = 1;
-            this.RadioButton_KeywordCamera_Z183.Text = "Z183";
-            this.RadioButton_KeywordCamera_Z183.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordCamera_Z183.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Z183_CheckedChanged);
-            // 
-            // RadioButton_KeywordCamera_Z533
-            // 
-            this.RadioButton_KeywordCamera_Z533.AutoSize = true;
-            this.RadioButton_KeywordCamera_Z533.Location = new System.Drawing.Point(23, 44);
-            this.RadioButton_KeywordCamera_Z533.Name = "RadioButton_KeywordCamera_Z533";
-            this.RadioButton_KeywordCamera_Z533.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordCamera_Z533.TabIndex = 0;
-            this.RadioButton_KeywordCamera_Z533.Text = "Z533";
-            this.RadioButton_KeywordCamera_Z533.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordCamera_Z533.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Z533_CheckedChanged);
-            // 
-            // Label_Keyword_UpdateFileName
-            // 
-            this.Label_Keyword_UpdateFileName.AutoSize = true;
-            this.Label_Keyword_UpdateFileName.Location = new System.Drawing.Point(17, 385);
-            this.Label_Keyword_UpdateFileName.Name = "Label_Keyword_UpdateFileName";
-            this.Label_Keyword_UpdateFileName.Size = new System.Drawing.Size(69, 13);
-            this.Label_Keyword_UpdateFileName.TabIndex = 19;
-            this.Label_Keyword_UpdateFileName.Text = "Updating File";
-            // 
-            // GroupBox_ImageType
-            // 
-            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImageType_SetByFile);
-            this.GroupBox_ImageType.Controls.Add(this.Button_KeywordImageType_SetAll);
-            this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFrame);
-            this.GroupBox_ImageType.Controls.Add(this.GroupBox_ImageTypeFilter);
-            this.GroupBox_ImageType.Location = new System.Drawing.Point(666, 162);
-            this.GroupBox_ImageType.Name = "GroupBox_ImageType";
-            this.GroupBox_ImageType.Size = new System.Drawing.Size(288, 186);
-            this.GroupBox_ImageType.TabIndex = 18;
-            this.GroupBox_ImageType.TabStop = false;
-            this.GroupBox_ImageType.Text = "Image Type";
-            // 
-            // Button_KeywordImageType_SetByFile
-            // 
-            this.Button_KeywordImageType_SetByFile.Location = new System.Drawing.Point(156, 157);
-            this.Button_KeywordImageType_SetByFile.Name = "Button_KeywordImageType_SetByFile";
-            this.Button_KeywordImageType_SetByFile.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordImageType_SetByFile.TabIndex = 18;
-            this.Button_KeywordImageType_SetByFile.Text = "Set By File";
-            this.Button_KeywordImageType_SetByFile.UseVisualStyleBackColor = true;
-            this.Button_KeywordImageType_SetByFile.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetByFile_Click);
-            // 
-            // Button_KeywordImageType_SetAll
-            // 
-            this.Button_KeywordImageType_SetAll.Location = new System.Drawing.Point(58, 157);
-            this.Button_KeywordImageType_SetAll.Name = "Button_KeywordImageType_SetAll";
-            this.Button_KeywordImageType_SetAll.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordImageType_SetAll.TabIndex = 18;
-            this.Button_KeywordImageType_SetAll.Text = "Set All";
-            this.Button_KeywordImageType_SetAll.UseVisualStyleBackColor = true;
-            this.Button_KeywordImageType_SetAll.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetAll_Click);
-            // 
-            // GroupBox_ImageTypeFrame
-            // 
-            this.GroupBox_ImageTypeFrame.Controls.Add(this.Button_KeywordImageTypeFrame_SetMaster);
-            this.GroupBox_ImageTypeFrame.Controls.Add(this.RadioButton_KeywordImageTypeFrame_Bias);
-            this.GroupBox_ImageTypeFrame.Controls.Add(this.RadioButton_KeywordImageTypeFrame_Flat);
-            this.GroupBox_ImageTypeFrame.Controls.Add(this.RadioButton_KeywordImageTypeFrame_Dark);
-            this.GroupBox_ImageTypeFrame.Controls.Add(this.RadioButton_KeywordImageTypeFrame_Light);
-            this.GroupBox_ImageTypeFrame.Location = new System.Drawing.Point(9, 92);
-            this.GroupBox_ImageTypeFrame.Name = "GroupBox_ImageTypeFrame";
-            this.GroupBox_ImageTypeFrame.Size = new System.Drawing.Size(268, 63);
-            this.GroupBox_ImageTypeFrame.TabIndex = 11;
-            this.GroupBox_ImageTypeFrame.TabStop = false;
-            this.GroupBox_ImageTypeFrame.Text = "Frame";
-            // 
-            // Button_KeywordImageTypeFrame_SetMaster
-            // 
-            this.Button_KeywordImageTypeFrame_SetMaster.Location = new System.Drawing.Point(96, 36);
-            this.Button_KeywordImageTypeFrame_SetMaster.Name = "Button_KeywordImageTypeFrame_SetMaster";
-            this.Button_KeywordImageTypeFrame_SetMaster.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordImageTypeFrame_SetMaster.TabIndex = 4;
-            this.Button_KeywordImageTypeFrame_SetMaster.Text = "Set Master";
-            this.Button_KeywordImageTypeFrame_SetMaster.UseVisualStyleBackColor = true;
-            this.Button_KeywordImageTypeFrame_SetMaster.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetMaster_Click);
-            // 
-            // RadioButton_KeywordImageTypeFrame_Bias
-            // 
-            this.RadioButton_KeywordImageTypeFrame_Bias.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFrame_Bias.Location = new System.Drawing.Point(200, 17);
-            this.RadioButton_KeywordImageTypeFrame_Bias.Name = "RadioButton_KeywordImageTypeFrame_Bias";
-            this.RadioButton_KeywordImageTypeFrame_Bias.Size = new System.Drawing.Size(45, 17);
-            this.RadioButton_KeywordImageTypeFrame_Bias.TabIndex = 3;
-            this.RadioButton_KeywordImageTypeFrame_Bias.TabStop = true;
-            this.RadioButton_KeywordImageTypeFrame_Bias.Text = "Bias";
-            this.RadioButton_KeywordImageTypeFrame_Bias.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFrame_Flat
-            // 
-            this.RadioButton_KeywordImageTypeFrame_Flat.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFrame_Flat.Location = new System.Drawing.Point(147, 17);
-            this.RadioButton_KeywordImageTypeFrame_Flat.Name = "RadioButton_KeywordImageTypeFrame_Flat";
-            this.RadioButton_KeywordImageTypeFrame_Flat.Size = new System.Drawing.Size(42, 17);
-            this.RadioButton_KeywordImageTypeFrame_Flat.TabIndex = 2;
-            this.RadioButton_KeywordImageTypeFrame_Flat.TabStop = true;
-            this.RadioButton_KeywordImageTypeFrame_Flat.Text = "Flat";
-            this.RadioButton_KeywordImageTypeFrame_Flat.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFrame_Dark
-            // 
-            this.RadioButton_KeywordImageTypeFrame_Dark.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFrame_Dark.Location = new System.Drawing.Point(88, 17);
-            this.RadioButton_KeywordImageTypeFrame_Dark.Name = "RadioButton_KeywordImageTypeFrame_Dark";
-            this.RadioButton_KeywordImageTypeFrame_Dark.Size = new System.Drawing.Size(48, 17);
-            this.RadioButton_KeywordImageTypeFrame_Dark.TabIndex = 1;
-            this.RadioButton_KeywordImageTypeFrame_Dark.TabStop = true;
-            this.RadioButton_KeywordImageTypeFrame_Dark.Text = "Dark";
-            this.RadioButton_KeywordImageTypeFrame_Dark.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFrame_Light
-            // 
-            this.RadioButton_KeywordImageTypeFrame_Light.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFrame_Light.Location = new System.Drawing.Point(29, 17);
-            this.RadioButton_KeywordImageTypeFrame_Light.Name = "RadioButton_KeywordImageTypeFrame_Light";
-            this.RadioButton_KeywordImageTypeFrame_Light.Size = new System.Drawing.Size(48, 17);
-            this.RadioButton_KeywordImageTypeFrame_Light.TabIndex = 0;
-            this.RadioButton_KeywordImageTypeFrame_Light.TabStop = true;
-            this.RadioButton_KeywordImageTypeFrame_Light.Text = "Light";
-            this.RadioButton_KeywordImageTypeFrame_Light.UseVisualStyleBackColor = true;
-            // 
-            // GroupBox_ImageTypeFilter
-            // 
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Luma);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Shutter);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Red);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_S2);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Ha);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Blue);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_Green);
-            this.GroupBox_ImageTypeFilter.Controls.Add(this.RadioButton_KeywordImageTypeFilter_O3);
-            this.GroupBox_ImageTypeFilter.Location = new System.Drawing.Point(9, 17);
-            this.GroupBox_ImageTypeFilter.Name = "GroupBox_ImageTypeFilter";
-            this.GroupBox_ImageTypeFilter.Size = new System.Drawing.Size(268, 70);
-            this.GroupBox_ImageTypeFilter.TabIndex = 10;
-            this.GroupBox_ImageTypeFilter.TabStop = false;
-            this.GroupBox_ImageTypeFilter.Text = "Filter";
-            // 
-            // RadioButton_KeywordImageTypeFilter_Luma
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Luma.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Luma.Location = new System.Drawing.Point(29, 18);
-            this.RadioButton_KeywordImageTypeFilter_Luma.Name = "RadioButton_KeywordImageTypeFilter_Luma";
-            this.RadioButton_KeywordImageTypeFilter_Luma.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_KeywordImageTypeFilter_Luma.TabIndex = 0;
-            this.RadioButton_KeywordImageTypeFilter_Luma.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Luma.Text = "Luma";
-            this.RadioButton_KeywordImageTypeFilter_Luma.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_Shutter
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Shutter.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Shutter.Location = new System.Drawing.Point(200, 44);
-            this.RadioButton_KeywordImageTypeFilter_Shutter.Name = "RadioButton_KeywordImageTypeFilter_Shutter";
-            this.RadioButton_KeywordImageTypeFilter_Shutter.Size = new System.Drawing.Size(59, 17);
-            this.RadioButton_KeywordImageTypeFilter_Shutter.TabIndex = 8;
-            this.RadioButton_KeywordImageTypeFilter_Shutter.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Shutter.Text = "Shutter";
-            this.RadioButton_KeywordImageTypeFilter_Shutter.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_Red
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Red.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Red.Location = new System.Drawing.Point(29, 44);
-            this.RadioButton_KeywordImageTypeFilter_Red.Name = "RadioButton_KeywordImageTypeFilter_Red";
-            this.RadioButton_KeywordImageTypeFilter_Red.Size = new System.Drawing.Size(45, 17);
-            this.RadioButton_KeywordImageTypeFilter_Red.TabIndex = 1;
-            this.RadioButton_KeywordImageTypeFilter_Red.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Red.Text = "Red";
-            this.RadioButton_KeywordImageTypeFilter_Red.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_S2
-            // 
-            this.RadioButton_KeywordImageTypeFilter_S2.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_S2.Location = new System.Drawing.Point(200, 18);
-            this.RadioButton_KeywordImageTypeFilter_S2.Name = "RadioButton_KeywordImageTypeFilter_S2";
-            this.RadioButton_KeywordImageTypeFilter_S2.Size = new System.Drawing.Size(41, 17);
-            this.RadioButton_KeywordImageTypeFilter_S2.TabIndex = 6;
-            this.RadioButton_KeywordImageTypeFilter_S2.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_S2.Text = "S II";
-            this.RadioButton_KeywordImageTypeFilter_S2.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_Ha
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Ha.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Ha.Location = new System.Drawing.Point(92, 18);
-            this.RadioButton_KeywordImageTypeFilter_Ha.Name = "RadioButton_KeywordImageTypeFilter_Ha";
-            this.RadioButton_KeywordImageTypeFilter_Ha.Size = new System.Drawing.Size(39, 17);
-            this.RadioButton_KeywordImageTypeFilter_Ha.TabIndex = 2;
-            this.RadioButton_KeywordImageTypeFilter_Ha.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Ha.Text = "Ha";
-            this.RadioButton_KeywordImageTypeFilter_Ha.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_Blue
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Blue.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Blue.Location = new System.Drawing.Point(146, 44);
-            this.RadioButton_KeywordImageTypeFilter_Blue.Name = "RadioButton_KeywordImageTypeFilter_Blue";
-            this.RadioButton_KeywordImageTypeFilter_Blue.Size = new System.Drawing.Size(46, 17);
-            this.RadioButton_KeywordImageTypeFilter_Blue.TabIndex = 5;
-            this.RadioButton_KeywordImageTypeFilter_Blue.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Blue.Text = "Blue";
-            this.RadioButton_KeywordImageTypeFilter_Blue.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_Green
-            // 
-            this.RadioButton_KeywordImageTypeFilter_Green.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_Green.Location = new System.Drawing.Point(83, 44);
-            this.RadioButton_KeywordImageTypeFilter_Green.Name = "RadioButton_KeywordImageTypeFilter_Green";
-            this.RadioButton_KeywordImageTypeFilter_Green.Size = new System.Drawing.Size(54, 17);
-            this.RadioButton_KeywordImageTypeFilter_Green.TabIndex = 3;
-            this.RadioButton_KeywordImageTypeFilter_Green.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_Green.Text = "Green";
-            this.RadioButton_KeywordImageTypeFilter_Green.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordImageTypeFilter_O3
-            // 
-            this.RadioButton_KeywordImageTypeFilter_O3.AutoSize = true;
-            this.RadioButton_KeywordImageTypeFilter_O3.Location = new System.Drawing.Point(143, 18);
-            this.RadioButton_KeywordImageTypeFilter_O3.Name = "RadioButton_KeywordImageTypeFilter_O3";
-            this.RadioButton_KeywordImageTypeFilter_O3.Size = new System.Drawing.Size(45, 17);
-            this.RadioButton_KeywordImageTypeFilter_O3.TabIndex = 4;
-            this.RadioButton_KeywordImageTypeFilter_O3.TabStop = true;
-            this.RadioButton_KeywordImageTypeFilter_O3.Text = "O III";
-            this.RadioButton_KeywordImageTypeFilter_O3.UseVisualStyleBackColor = true;
-            // 
-            // GroupBox_KeywordUpdate_SubFrameKeywords
-            // 
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.GroupBox_KeywordUpdate_Weights);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdate_SubFrameKeywords_Delete);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdate_SubFrameKeywords_AddReplace);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.RadioButton_SubFrameKeywords_AlphabetizeKeywords);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Controls.Add(this.Label_KeywordUpdate_SubFrameKeywords_TagetName);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Location = new System.Drawing.Point(17, 31);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Name = "GroupBox_KeywordUpdate_SubFrameKeywords";
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Size = new System.Drawing.Size(936, 105);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.TabIndex = 14;
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.TabStop = false;
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.Text = "SubFrame Keywords";
-            // 
-            // GroupBox_KeywordUpdate_Weights
-            // 
-            this.GroupBox_KeywordUpdate_Weights.Controls.Add(this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove);
-            this.GroupBox_KeywordUpdate_Weights.Controls.Add(this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected);
-            this.GroupBox_KeywordUpdate_Weights.Controls.Add(this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All);
-            this.GroupBox_KeywordUpdate_Weights.Controls.Add(this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword);
-            this.GroupBox_KeywordUpdate_Weights.Controls.Add(this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords);
-            this.GroupBox_KeywordUpdate_Weights.Location = new System.Drawing.Point(680, 12);
-            this.GroupBox_KeywordUpdate_Weights.Name = "GroupBox_KeywordUpdate_Weights";
-            this.GroupBox_KeywordUpdate_Weights.Size = new System.Drawing.Size(239, 87);
-            this.GroupBox_KeywordUpdate_Weights.TabIndex = 7;
-            this.GroupBox_KeywordUpdate_Weights.TabStop = false;
-            this.GroupBox_KeywordUpdate_Weights.Text = "Weights";
-            // 
-            // Button_KeywordUpdate_SubFrameKeywords_Weights_Remove
-            // 
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.Location = new System.Drawing.Point(150, 57);
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.Name = "Button_KeywordUpdate_SubFrameKeywords_Weights_Remove";
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.Size = new System.Drawing.Size(75, 23);
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.TabIndex = 20;
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.Text = "Remove";
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.UseVisualStyleBackColor = true;
-            this.Button_KeywordUpdate_SubFrameKeywords_Weights_Remove.Click += new System.EventHandler(this.Button_KeywordSubFrameWeight_Remove_Click);
-            // 
-            // RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected
-            // 
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.AutoSize = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Location = new System.Drawing.Point(150, 34);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Name = "RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Size = new System.Drawing.Size(67, 17);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.TabIndex = 9;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.TabStop = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Text = "Selected";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All
-            // 
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.AutoSize = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Location = new System.Drawing.Point(150, 14);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Name = "RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Size = new System.Drawing.Size(36, 17);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.TabIndex = 8;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.TabStop = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Text = "All";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.UseVisualStyleBackColor = true;
-            // 
-            // Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword
-            // 
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.AutoSize = true;
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.Location = new System.Drawing.Point(30, 27);
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.Name = "Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword";
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.Size = new System.Drawing.Size(85, 13);
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.TabIndex = 6;
-            this.Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.Text = "Weight Keyword";
-            // 
-            // ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords
-            // 
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.FormattingEnabled = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(12, 46);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Name = "ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords";
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(121, 21);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Sorted = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 5;
-            // 
-            // Button_KeywordUpdate_SubFrameKeywords_Delete
-            // 
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.Location = new System.Drawing.Point(574, 72);
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.Name = "Button_KeywordUpdate_SubFrameKeywords_Delete";
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.Size = new System.Drawing.Size(93, 23);
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.TabIndex = 21;
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.Text = "Delete";
-            this.Button_KeywordUpdate_SubFrameKeywords_Delete.UseVisualStyleBackColor = true;
-            // 
-            // Button_KeywordUpdate_SubFrameKeywords_AddReplace
-            // 
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.Location = new System.Drawing.Point(450, 72);
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.Name = "Button_KeywordUpdate_SubFrameKeywords_AddReplace";
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.Size = new System.Drawing.Size(108, 23);
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.TabIndex = 20;
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.Text = "Add/Replace";
-            this.Button_KeywordUpdate_SubFrameKeywords_AddReplace.UseVisualStyleBackColor = true;
-            // 
-            // TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue
-            // 
-            this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue.Location = new System.Drawing.Point(450, 46);
-            this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue.Name = "TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue";
-            this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue.Size = new System.Drawing.Size(217, 20);
-            this.TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue.TabIndex = 19;
-            // 
-            // ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName
-            // 
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.AllowDrop = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.FormattingEnabled = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.Location = new System.Drawing.Point(450, 20);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.Name = "ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName";
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.Size = new System.Drawing.Size(217, 21);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.Sorted = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName.TabIndex = 18;
-            // 
-            // CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName
-            // 
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.AutoSize = true;
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(246, 58);
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName";
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(126, 17);
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name";
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations
-            // 
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.AutoSize = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Location = new System.Drawing.Point(246, 37);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Name = "RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Size = new System.Drawing.Size(170, 17);
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.TabIndex = 15;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Text = "SubFrame Weight Calculations";
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeyWords_SubFrameWeightCalculations_CheckedChanged);
-            // 
-            // RadioButton_SubFrameKeywords_AlphabetizeKeywords
-            // 
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.AutoSize = true;
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked = true;
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.Location = new System.Drawing.Point(246, 16);
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.Name = "RadioButton_SubFrameKeywords_AlphabetizeKeywords";
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.Size = new System.Drawing.Size(129, 17);
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.TabIndex = 14;
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.TabStop = true;
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.Text = "Alphabetize Keywords";
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.UseVisualStyleBackColor = true;
-            this.RadioButton_SubFrameKeywords_AlphabetizeKeywords.CheckedChanged += new System.EventHandler(this.RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged);
-            // 
-            // Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords
-            // 
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.Location = new System.Drawing.Point(30, 72);
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.Name = "Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords";
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.Size = new System.Drawing.Size(167, 23);
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.TabIndex = 4;
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.Text = "Update XISF File Keywords";
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.UseVisualStyleBackColor = true;
-            this.Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords.Click += new System.EventHandler(this.Button_KeywordSubFrame_UpdateXisfFiles_Click);
-            // 
-            // ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames
-            // 
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.AllowDrop = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.FormattingEnabled = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Location = new System.Drawing.Point(30, 45);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Name = "ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames";
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Size = new System.Drawing.Size(167, 21);
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Sorted = true;
-            this.ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.TabIndex = 5;
-            // 
-            // Label_KeywordUpdate_SubFrameKeywords_TagetName
-            // 
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.AllowDrop = true;
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.AutoSize = true;
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.Location = new System.Drawing.Point(79, 26);
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.Name = "Label_KeywordUpdate_SubFrameKeywords_TagetName";
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.Size = new System.Drawing.Size(69, 13);
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.TabIndex = 0;
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.Text = "Target Name";
-            this.Label_KeywordUpdate_SubFrameKeywords_TagetName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // ProgressBar_Keyword_XisfFile
-            // 
-            this.ProgressBar_Keyword_XisfFile.Location = new System.Drawing.Point(17, 418);
-            this.ProgressBar_Keyword_XisfFile.Name = "ProgressBar_Keyword_XisfFile";
-            this.ProgressBar_Keyword_XisfFile.Size = new System.Drawing.Size(938, 11);
-            this.ProgressBar_Keyword_XisfFile.Step = 1;
-            this.ProgressBar_Keyword_XisfFile.TabIndex = 13;
+            // TextBox_KeywordUpdateTab_Camera_SensorTemperature
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.Location = new System.Drawing.Point(192, 46);
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.Name = "TextBox_KeywordUpdateTab_Camera_SensorTemperature";
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.Size = new System.Drawing.Size(41, 20);
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.TabIndex = 15;
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "-10.0";
+            this.TextBox_KeywordUpdateTab_Camera_SensorTemperature.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Label_KeywordUpdateTab_Camera_SensorTemperature
+            // 
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.Location = new System.Drawing.Point(233, 49);
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.Name = "Label_KeywordUpdateTab_Camera_SensorTemperature";
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.Size = new System.Drawing.Size(70, 13);
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.TabIndex = 16;
+            this.Label_KeywordUpdateTab_Camera_SensorTemperature.Text = "Sensor Temp";
+            // 
+            // CheckBox_KeywordUpdateTab_Camera_NarrowBand
+            // 
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.Location = new System.Drawing.Point(192, 72);
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.Name = "CheckBox_KeywordUpdateTab_Camera_NarrowBand";
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.Size = new System.Drawing.Size(88, 17);
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.TabIndex = 14;
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.Text = "Narrow Band";
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.UseVisualStyleBackColor = true;
+            this.CheckBox_KeywordUpdateTab_Camera_NarrowBand.CheckedChanged += new System.EventHandler(this.CheckBox_CameraNarrowBand_CheckedChanged);
+            // 
+            // Label_KeywordUpdateTab_Camera_A144Gain
+            // 
+            this.Label_KeywordUpdateTab_Camera_A144Gain.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_A144Gain.Location = new System.Drawing.Point(86, 124);
+            this.Label_KeywordUpdateTab_Camera_A144Gain.Name = "Label_KeywordUpdateTab_Camera_A144Gain";
+            this.Label_KeywordUpdateTab_Camera_A144Gain.Size = new System.Drawing.Size(28, 13);
+            this.Label_KeywordUpdateTab_Camera_A144Gain.TabIndex = 12;
+            this.Label_KeywordUpdateTab_Camera_A144Gain.Text = "0.37";
+            // 
+            // Label_KeywordUpdateTab_Camera_Offset
+            // 
+            this.Label_KeywordUpdateTab_Camera_Offset.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_Offset.Location = new System.Drawing.Point(134, 20);
+            this.Label_KeywordUpdateTab_Camera_Offset.Name = "Label_KeywordUpdateTab_Camera_Offset";
+            this.Label_KeywordUpdateTab_Camera_Offset.Size = new System.Drawing.Size(35, 13);
+            this.Label_KeywordUpdateTab_Camera_Offset.TabIndex = 11;
+            this.Label_KeywordUpdateTab_Camera_Offset.Text = "Offset";
+            // 
+            // Label_KeywordUpdateTab_Camera_Gain
+            // 
+            this.Label_KeywordUpdateTab_Camera_Gain.AutoSize = true;
+            this.Label_KeywordUpdateTab_Camera_Gain.Location = new System.Drawing.Point(86, 20);
+            this.Label_KeywordUpdateTab_Camera_Gain.Name = "Label_KeywordUpdateTab_Camera_Gain";
+            this.Label_KeywordUpdateTab_Camera_Gain.Size = new System.Drawing.Size(29, 13);
+            this.Label_KeywordUpdateTab_Camera_Gain.TabIndex = 10;
+            this.Label_KeywordUpdateTab_Camera_Gain.Text = "Gain";
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Q178Offset
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.Location = new System.Drawing.Point(129, 94);
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.Name = "TextBox_KeywordUpdateTab_Camera_Q178Offset";
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.TabIndex = 9;
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "10";
+            this.TextBox_KeywordUpdateTab_Camera_Q178Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Q178Gain
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.Location = new System.Drawing.Point(78, 94);
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.Name = "TextBox_KeywordUpdateTab_Camera_Q178Gain";
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.TabIndex = 8;
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+            this.TextBox_KeywordUpdateTab_Camera_Q178Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Z183Offset
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.Location = new System.Drawing.Point(129, 68);
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.Name = "TextBox_KeywordUpdateTab_Camera_Z183Offset";
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.TabIndex = 7;
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
+            this.TextBox_KeywordUpdateTab_Camera_Z183Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Z183Gain
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.Location = new System.Drawing.Point(78, 68);
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.Name = "TextBox_KeywordUpdateTab_Camera_Z183Gain";
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.TabIndex = 6;
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
+            this.TextBox_KeywordUpdateTab_Camera_Z183Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Z533Offset
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.Location = new System.Drawing.Point(130, 42);
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.Name = "TextBox_KeywordUpdateTab_Camera_Z533Offset";
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.TabIndex = 5;
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+            this.TextBox_KeywordUpdateTab_Camera_Z533Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Z533Gain
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.Location = new System.Drawing.Point(78, 42);
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.Name = "TextBox_KeywordUpdateTab_Camera_Z533Gain";
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.Size = new System.Drawing.Size(44, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.TabIndex = 4;
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+            this.TextBox_KeywordUpdateTab_Camera_Z533Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // RadioButton_KeywordUpdateTab_Camera_A144
+            // 
+            this.RadioButton_KeywordUpdateTab_Camera_A144.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Camera_A144.Location = new System.Drawing.Point(23, 122);
+            this.RadioButton_KeywordUpdateTab_Camera_A144.Name = "RadioButton_KeywordUpdateTab_Camera_A144";
+            this.RadioButton_KeywordUpdateTab_Camera_A144.Size = new System.Drawing.Size(50, 17);
+            this.RadioButton_KeywordUpdateTab_Camera_A144.TabIndex = 3;
+            this.RadioButton_KeywordUpdateTab_Camera_A144.Text = "A144";
+            this.RadioButton_KeywordUpdateTab_Camera_A144.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Camera_A144.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_A144_CheckedChanged);
+            // 
+            // RadioButton_KeywordUpdateTab_Camera_Q178
+            // 
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.Location = new System.Drawing.Point(23, 96);
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.Name = "RadioButton_KeywordUpdateTab_Camera_Q178";
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.TabIndex = 2;
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.Text = "Q178";
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Q178.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Q178_CheckedChanged);
+            // 
+            // RadioButton_KeywordUpdateTab_Camera_Z183
+            // 
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.Location = new System.Drawing.Point(23, 70);
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.Name = "RadioButton_KeywordUpdateTab_Camera_Z183";
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.Size = new System.Drawing.Size(50, 17);
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.TabIndex = 1;
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.Text = "Z183";
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Z183.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Z183_CheckedChanged);
+            // 
+            // RadioButton_KeywordUpdateTab_Camera_Z533
+            // 
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.Location = new System.Drawing.Point(23, 44);
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.Name = "RadioButton_KeywordUpdateTab_Camera_Z533";
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.Size = new System.Drawing.Size(50, 17);
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.TabIndex = 0;
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.Text = "Z533";
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_Camera_Z533.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordCamera_Z533_CheckedChanged);
+            // 
+            // Label_KeywordUpdateTab_FileName
+            // 
+            this.Label_KeywordUpdateTab_FileName.AutoSize = true;
+            this.Label_KeywordUpdateTab_FileName.Location = new System.Drawing.Point(17, 385);
+            this.Label_KeywordUpdateTab_FileName.Name = "Label_KeywordUpdateTab_FileName";
+            this.Label_KeywordUpdateTab_FileName.Size = new System.Drawing.Size(69, 13);
+            this.Label_KeywordUpdateTab_FileName.TabIndex = 19;
+            this.Label_KeywordUpdateTab_FileName.Text = "Updating File";
+            // 
+            // GroupBox_KeywordUpdateTab_ImageType
+            // 
+            this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.Button_KeywordUpdateTab_ImageType_SetByFile);
+            this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.Button_KeywordUpdateTab_ImageType_SetAll);
+            this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.GroupBox_KeywordUpdateTab_ImageType_Frame);
+            this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.GroupBox_KeywordUpdateTab_ImageType_Filter);
+            this.GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(666, 162);
+            this.GroupBox_KeywordUpdateTab_ImageType.Name = "GroupBox_KeywordUpdateTab_ImageType";
+            this.GroupBox_KeywordUpdateTab_ImageType.Size = new System.Drawing.Size(288, 186);
+            this.GroupBox_KeywordUpdateTab_ImageType.TabIndex = 18;
+            this.GroupBox_KeywordUpdateTab_ImageType.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_ImageType.Text = "Image Type";
+            // 
+            // Button_KeywordUpdateTab_ImageType_SetByFile
+            // 
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.Location = new System.Drawing.Point(156, 157);
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.Name = "Button_KeywordUpdateTab_ImageType_SetByFile";
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.TabIndex = 18;
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.Text = "Set By File";
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_ImageType_SetByFile.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetByFile_Click);
+            // 
+            // Button_KeywordUpdateTab_ImageType_SetAll
+            // 
+            this.Button_KeywordUpdateTab_ImageType_SetAll.Location = new System.Drawing.Point(58, 157);
+            this.Button_KeywordUpdateTab_ImageType_SetAll.Name = "Button_KeywordUpdateTab_ImageType_SetAll";
+            this.Button_KeywordUpdateTab_ImageType_SetAll.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_ImageType_SetAll.TabIndex = 18;
+            this.Button_KeywordUpdateTab_ImageType_SetAll.Text = "Set All";
+            this.Button_KeywordUpdateTab_ImageType_SetAll.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_ImageType_SetAll.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetAll_Click);
+            // 
+            // GroupBox_KeywordUpdateTab_ImageType_Frame
+            // 
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Location = new System.Drawing.Point(9, 92);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Name = "GroupBox_KeywordUpdateTab_ImageType_Frame";
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Size = new System.Drawing.Size(268, 63);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.TabIndex = 11;
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.Text = "Frame";
+            // 
+            // Button_KeywordUpdateTab_ImageType_Frame_SetMaster
+            // 
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Location = new System.Drawing.Point(96, 36);
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Name = "Button_KeywordUpdateTab_ImageType_Frame_SetMaster";
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.TabIndex = 4;
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Text = "Set Master";
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Click += new System.EventHandler(this.Button_KeywordImageTypeFrame_SetMaster_Click);
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Frame_Bias
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Location = new System.Drawing.Point(200, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Bias";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Size = new System.Drawing.Size(45, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.TabIndex = 3;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Text = "Bias";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Frame_Flat
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Location = new System.Drawing.Point(147, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Flat";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Size = new System.Drawing.Size(42, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.TabIndex = 2;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Text = "Flat";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Frame_Dark
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Location = new System.Drawing.Point(88, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Dark";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Size = new System.Drawing.Size(48, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.TabIndex = 1;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Text = "Dark";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Frame_Light
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Location = new System.Drawing.Point(29, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Light";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Size = new System.Drawing.Size(48, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.TabIndex = 0;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Text = "Light";
+            this.RadioButton_KeywordUpdateTab_ImageType_Frame_Light.UseVisualStyleBackColor = true;
+            // 
+            // GroupBox_KeywordUpdateTab_ImageType_Filter
+            // 
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Location = new System.Drawing.Point(9, 17);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Name = "GroupBox_KeywordUpdateTab_ImageType_Filter";
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Size = new System.Drawing.Size(268, 70);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.TabIndex = 10;
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Text = "Filter";
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_Luma
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Location = new System.Drawing.Point(29, 18);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Luma";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Size = new System.Drawing.Size(51, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.TabIndex = 0;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Text = "Luma";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Location = new System.Drawing.Point(200, 44);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Size = new System.Drawing.Size(59, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.TabIndex = 8;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Text = "Shutter";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_Red
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Location = new System.Drawing.Point(29, 44);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Red";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Size = new System.Drawing.Size(45, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.TabIndex = 1;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Text = "Red";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Red.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_S2
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Location = new System.Drawing.Point(200, 18);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_S2";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Size = new System.Drawing.Size(41, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.TabIndex = 6;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Text = "S II";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_Ha
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Location = new System.Drawing.Point(92, 18);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Ha";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Size = new System.Drawing.Size(39, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.TabIndex = 2;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Text = "Ha";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_Blue
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Location = new System.Drawing.Point(146, 44);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Blue";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Size = new System.Drawing.Size(46, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.TabIndex = 5;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Text = "Blue";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filterr_Green
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Location = new System.Drawing.Point(83, 44);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Name = "RadioButton_KeywordUpdateTab_ImageType_Filterr_Green";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Size = new System.Drawing.Size(54, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.TabIndex = 3;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Text = "Green";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_ImageType_Filter_O3
+            // 
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Location = new System.Drawing.Point(143, 18);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_O3";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Size = new System.Drawing.Size(45, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.TabIndex = 4;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Text = "O III";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;
+            // 
+            // GroupBox_KeywordUpdateTab_SubFrameKeywords
+            // 
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_Delete);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Location = new System.Drawing.Point(17, 31);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords";
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Size = new System.Drawing.Size(936, 105);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.TabIndex = 14;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Text = "SubFrame Keywords";
+            // 
+            // GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection
+            // 
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Location = new System.Drawing.Point(221, 57);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection";
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Size = new System.Drawing.Size(206, 42);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabIndex = 24;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Text = "Keyword Protection";
+            // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Checked = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Location = new System.Drawing.Point(111, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Size = new System.Drawing.Size(85, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.TabIndex = 24;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Text = "Update New";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged);
+            // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Location = new System.Drawing.Point(76, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Size = new System.Drawing.Size(36, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.TabIndex = 23;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Text = "All";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect
+            // 
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Location = new System.Drawing.Point(10, 18);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Size = new System.Drawing.Size(60, 17);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 22;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Text = "Protect";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.UseVisualStyleBackColor = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckedChanged += new System.EventHandler(this.CheckBox_KeywordUpdate_SubFrameKeywords_Protect_CheckedChanged);
+            // 
+            // CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords
+            // 
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Checked = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Location = new System.Drawing.Point(231, 13);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Size = new System.Drawing.Size(130, 17);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.TabIndex = 23;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Text = "Alphabetize Keywords";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.UseVisualStyleBackColor = true;
+            // 
+            // GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights
+            // 
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Location = new System.Drawing.Point(680, 12);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights";
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Size = new System.Drawing.Size(239, 87);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabIndex = 7;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabStop = false;
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Text = "Weights";
+            // 
+            // Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove
+            // 
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Location = new System.Drawing.Point(150, 57);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Size = new System.Drawing.Size(75, 23);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.TabIndex = 20;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Text = "Remove";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Click += new System.EventHandler(this.Button_KeywordSubFrameWeight_Remove_Click);
+            // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Location = new System.Drawing.Point(150, 34);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Size = new System.Drawing.Size(67, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabIndex = 9;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Text = "Selected";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Location = new System.Drawing.Point(150, 14);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Size = new System.Drawing.Size(36, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.TabIndex = 8;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Text = "All";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.UseVisualStyleBackColor = true;
+            // 
+            // Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords
+            // 
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.AutoSize = true;
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(29, 27);
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Name = "Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords";
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(90, 13);
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 6;
+            this.Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "Weight Keywords";
+            // 
+            // ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords
+            // 
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.FormattingEnabled = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(12, 46);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords";
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(121, 21);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Sorted = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 5;
+            // 
+            // Button_KeywordUpdateTab_SubFrameKeywords_Delete
+            // 
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Location = new System.Drawing.Point(574, 72);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Delete";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Size = new System.Drawing.Size(93, 23);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.TabIndex = 21;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Text = "Delete";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.UseVisualStyleBackColor = true;
+            // 
+            // Button_KeywordUpdateTab_SubFrameKeywords_AddReplace
+            // 
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Location = new System.Drawing.Point(450, 72);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Name = "Button_KeywordUpdateTab_SubFrameKeywords_AddReplace";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Size = new System.Drawing.Size(108, 23);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.TabIndex = 20;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Text = "Add/Replace";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.UseVisualStyleBackColor = true;
+            // 
+            // TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue
+            // 
+            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Location = new System.Drawing.Point(450, 46);
+            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Name = "TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue";
+            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Size = new System.Drawing.Size(217, 20);
+            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TabIndex = 19;
+            // 
+            // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName
+            // 
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.AllowDrop = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.FormattingEnabled = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Location = new System.Drawing.Point(450, 20);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName";
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Size = new System.Drawing.Size(217, 21);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Sorted = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.TabIndex = 18;
+            // 
+            // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName
+            // 
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(231, 35);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(126, 17);
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name";
+            this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
+            // 
+            // Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords
+            // 
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Location = new System.Drawing.Point(30, 72);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Name = "Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Size = new System.Drawing.Size(167, 23);
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.TabIndex = 4;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Text = "Update XISF File Keywords";
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Click += new System.EventHandler(this.Button_KeywordSubFrame_UpdateXisfFiles_Click);
+            // 
+            // ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames
+            // 
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.AllowDrop = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.FormattingEnabled = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Location = new System.Drawing.Point(30, 45);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames";
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Size = new System.Drawing.Size(167, 21);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Sorted = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.TabIndex = 5;
+            // 
+            // Label_KeywordUpdateTab_SubFrameKeywords_TagetName
+            // 
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.AllowDrop = true;
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.AutoSize = true;
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Location = new System.Drawing.Point(79, 26);
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Name = "Label_KeywordUpdateTab_SubFrameKeywords_TagetName";
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Size = new System.Drawing.Size(69, 13);
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.TabIndex = 0;
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Text = "Target Name";
+            this.Label_KeywordUpdateTab_SubFrameKeywords_TagetName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // ProgressBar_KeywordUpdateTab_WriteProgress
+            // 
+            this.ProgressBar_KeywordUpdateTab_WriteProgress.Location = new System.Drawing.Point(17, 418);
+            this.ProgressBar_KeywordUpdateTab_WriteProgress.Name = "ProgressBar_KeywordUpdateTab_WriteProgress";
+            this.ProgressBar_KeywordUpdateTab_WriteProgress.Size = new System.Drawing.Size(938, 11);
+            this.ProgressBar_KeywordUpdateTab_WriteProgress.Step = 1;
+            this.ProgressBar_KeywordUpdateTab_WriteProgress.TabIndex = 13;
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
-            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.adioButton_DirectorySelection_MastersOnly);
+            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.RadioButton_DirectorySelection_MastersOnly);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.RadioButton_DirectorySelection_ExcludeMasters);
-            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.adioButton_DirectorySelection_AlFiles);
+            this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.RadioButton_DirectorySelection_AlFiles);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.CheckBox_FileSelection_DirectorySelection_Master);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.Button_FileSelection_DirectorySelection_Browse);
             this.GroupBox_FileSelection_DirectorySelection.Controls.Add(this.CheckBox_FileSelection_DirectorySelection_Recurse);
@@ -1344,16 +1382,16 @@
             this.GroupBox_FileSelection_DirectorySelection.TabStop = false;
             this.GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
             // 
-            // adioButton_DirectorySelection_MastersOnly
+            // RadioButton_DirectorySelection_MastersOnly
             // 
-            this.adioButton_DirectorySelection_MastersOnly.AutoSize = true;
-            this.adioButton_DirectorySelection_MastersOnly.Location = new System.Drawing.Point(134, 69);
-            this.adioButton_DirectorySelection_MastersOnly.Name = "adioButton_DirectorySelection_MastersOnly";
-            this.adioButton_DirectorySelection_MastersOnly.Size = new System.Drawing.Size(86, 17);
-            this.adioButton_DirectorySelection_MastersOnly.TabIndex = 6;
-            this.adioButton_DirectorySelection_MastersOnly.Text = "Masters Only";
-            this.adioButton_DirectorySelection_MastersOnly.UseVisualStyleBackColor = true;
-            this.adioButton_DirectorySelection_MastersOnly.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_MastersOnly_CheckedChanged);
+            this.RadioButton_DirectorySelection_MastersOnly.AutoSize = true;
+            this.RadioButton_DirectorySelection_MastersOnly.Location = new System.Drawing.Point(134, 69);
+            this.RadioButton_DirectorySelection_MastersOnly.Name = "RadioButton_DirectorySelection_MastersOnly";
+            this.RadioButton_DirectorySelection_MastersOnly.Size = new System.Drawing.Size(86, 17);
+            this.RadioButton_DirectorySelection_MastersOnly.TabIndex = 6;
+            this.RadioButton_DirectorySelection_MastersOnly.Text = "Masters Only";
+            this.RadioButton_DirectorySelection_MastersOnly.UseVisualStyleBackColor = true;
+            this.RadioButton_DirectorySelection_MastersOnly.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_MastersOnly_CheckedChanged);
             // 
             // RadioButton_DirectorySelection_ExcludeMasters
             // 
@@ -1368,16 +1406,16 @@
             this.RadioButton_DirectorySelection_ExcludeMasters.UseVisualStyleBackColor = true;
             this.RadioButton_DirectorySelection_ExcludeMasters.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged);
             // 
-            // adioButton_DirectorySelection_AlFiles
+            // RadioButton_DirectorySelection_AlFiles
             // 
-            this.adioButton_DirectorySelection_AlFiles.AutoSize = true;
-            this.adioButton_DirectorySelection_AlFiles.Location = new System.Drawing.Point(134, 25);
-            this.adioButton_DirectorySelection_AlFiles.Name = "adioButton_DirectorySelection_AlFiles";
-            this.adioButton_DirectorySelection_AlFiles.Size = new System.Drawing.Size(60, 17);
-            this.adioButton_DirectorySelection_AlFiles.TabIndex = 4;
-            this.adioButton_DirectorySelection_AlFiles.Text = "All Files";
-            this.adioButton_DirectorySelection_AlFiles.UseVisualStyleBackColor = true;
-            this.adioButton_DirectorySelection_AlFiles.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_AllFiles_CheckedChanged);
+            this.RadioButton_DirectorySelection_AlFiles.AutoSize = true;
+            this.RadioButton_DirectorySelection_AlFiles.Location = new System.Drawing.Point(134, 25);
+            this.RadioButton_DirectorySelection_AlFiles.Name = "RadioButton_DirectorySelection_AlFiles";
+            this.RadioButton_DirectorySelection_AlFiles.Size = new System.Drawing.Size(60, 17);
+            this.RadioButton_DirectorySelection_AlFiles.TabIndex = 4;
+            this.RadioButton_DirectorySelection_AlFiles.Text = "All Files";
+            this.RadioButton_DirectorySelection_AlFiles.UseVisualStyleBackColor = true;
+            this.RadioButton_DirectorySelection_AlFiles.CheckedChanged += new System.EventHandler(this.RadioButton_DirectorySelection_AllFiles_CheckedChanged);
             // 
             // CheckBox_FileSelection_DirectorySelection_Master
             // 
@@ -3074,14 +3112,14 @@
             this.Label_FileSelection_Statistics_Task.TabIndex = 12;
             this.Label_FileSelection_Statistics_Task.Text = "Operation Status";
             // 
-            // Label_FileSelection_TempratureCompensation
+            // Label_FileSelection_Statistics_TempratureCompensation
             // 
-            this.Label_FileSelection_TempratureCompensation.AutoSize = true;
-            this.Label_FileSelection_TempratureCompensation.Location = new System.Drawing.Point(14, 44);
-            this.Label_FileSelection_TempratureCompensation.Name = "Label_FileSelection_TempratureCompensation";
-            this.Label_FileSelection_TempratureCompensation.Size = new System.Drawing.Size(194, 13);
-            this.Label_FileSelection_TempratureCompensation.TabIndex = 13;
-            this.Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
+            this.Label_FileSelection_Statistics_TempratureCompensation.AutoSize = true;
+            this.Label_FileSelection_Statistics_TempratureCompensation.Location = new System.Drawing.Point(14, 44);
+            this.Label_FileSelection_Statistics_TempratureCompensation.Name = "Label_FileSelection_Statistics_TempratureCompensation";
+            this.Label_FileSelection_Statistics_TempratureCompensation.Size = new System.Drawing.Size(194, 13);
+            this.Label_FileSelection_Statistics_TempratureCompensation.TabIndex = 13;
+            this.Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
             // 
             // Label_FileSelection_Statistics_SubFrameOverhead
             // 
@@ -3101,7 +3139,7 @@
             this.GroupBox_FileSelection.Controls.Add(this.Button_FileSlection_Rename);
             this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_DirectorySelection);
             this.GroupBox_FileSelection.Controls.Add(this.GroupBox_FileSelection_SequenceOrder);
-            this.GroupBox_FileSelection.Controls.Add(this.ProgressBar_FileSelection_OverAll);
+            this.GroupBox_FileSelection.Controls.Add(this.ProgressBar_FileSelection_ReadProgress);
             this.GroupBox_FileSelection.Location = new System.Drawing.Point(12, 5);
             this.GroupBox_FileSelection.Name = "GroupBox_FileSelection";
             this.GroupBox_FileSelection.Size = new System.Drawing.Size(979, 187);
@@ -3188,7 +3226,7 @@
             // 
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_Task);
             this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_SubFrameOverhead);
-            this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_TempratureCompensation);
+            this.GroupBox_FileSelection_Statistics.Controls.Add(this.Label_FileSelection_Statistics_TempratureCompensation);
             this.GroupBox_FileSelection_Statistics.Location = new System.Drawing.Point(264, 20);
             this.GroupBox_FileSelection_Statistics.Name = "GroupBox_FileSelection_Statistics";
             this.GroupBox_FileSelection_Statistics.Size = new System.Drawing.Size(487, 105);
@@ -3210,13 +3248,13 @@
             // TabPage_KeywordUpdate
             // 
             this.TabPage_KeywordUpdate.BackColor = System.Drawing.SystemColors.Control;
-            this.TabPage_KeywordUpdate.Controls.Add(this.Label_Keyword_UpdateFileName);
-            this.TabPage_KeywordUpdate.Controls.Add(this.ProgressBar_Keyword_XisfFile);
-            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_CaptureSoftware);
-            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordTelescope);
-            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdate_SubFrameKeywords);
-            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordCamera);
-            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_ImageType);
+            this.TabPage_KeywordUpdate.Controls.Add(this.Label_KeywordUpdateTab_FileName);
+            this.TabPage_KeywordUpdate.Controls.Add(this.ProgressBar_KeywordUpdateTab_WriteProgress);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdateTab_CaptureSoftware);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdateTab_Telescope);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdateTab_SubFrameKeywords);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdateTab_Camera);
+            this.TabPage_KeywordUpdate.Controls.Add(this.GroupBox_KeywordUpdateTab_ImageType);
             this.TabPage_KeywordUpdate.Location = new System.Drawing.Point(4, 22);
             this.TabPage_KeywordUpdate.Name = "TabPage_KeywordUpdate";
             this.TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(3);
@@ -3243,21 +3281,39 @@
             this.TabPage_Calibration.TabIndex = 1;
             this.TabPage_Calibration.Text = "Calibration";
             // 
+            // Label_CalibrationTab_TotalMatchedFiles
+            // 
+            this.Label_CalibrationTab_TotalMatchedFiles.AutoSize = true;
+            this.Label_CalibrationTab_TotalMatchedFiles.Location = new System.Drawing.Point(25, 240);
+            this.Label_CalibrationTab_TotalMatchedFiles.Name = "Label_CalibrationTab_TotalMatchedFiles";
+            this.Label_CalibrationTab_TotalMatchedFiles.Size = new System.Drawing.Size(155, 13);
+            this.Label_CalibrationTab_TotalMatchedFiles.TabIndex = 9;
+            this.Label_CalibrationTab_TotalMatchedFiles.Text = "No Matched Calibration Frames";
+            // 
+            // TextBox_CalibrationTab_Messgaes
+            // 
+            this.TextBox_CalibrationTab_Messgaes.Location = new System.Drawing.Point(25, 265);
+            this.TextBox_CalibrationTab_Messgaes.Multiline = true;
+            this.TextBox_CalibrationTab_Messgaes.Name = "TextBox_CalibrationTab_Messgaes";
+            this.TextBox_CalibrationTab_Messgaes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TextBox_CalibrationTab_Messgaes.Size = new System.Drawing.Size(930, 140);
+            this.TextBox_CalibrationTab_Messgaes.TabIndex = 8;
+            // 
             // groupBox_CalibrationTab_MatchingTolerance
             // 
             this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_TemperatureToleranceMatched);
             this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_OffsetToleranceMatched);
             this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_GainToleranceMatched);
             this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_ExposureToleranceMatched);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.label4);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_TemperatureTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_OffsetTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_GainTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_TemperatureTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_OffsetTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_GainTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_ExposureTolerance);
-            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_ExposureTolerance);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Percentage);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_MatchingTolerance_Temperature);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_MatchingTolerance_Offset);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_MatchingTolerance_Gain);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Temperature);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Offset);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Gain);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Exposure);
+            this.groupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_MatchingTolerance_Exposure);
             this.groupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(178, 42);
             this.groupBox_CalibrationTab_MatchingTolerance.Name = "groupBox_CalibrationTab_MatchingTolerance";
             this.groupBox_CalibrationTab_MatchingTolerance.Size = new System.Drawing.Size(242, 187);
@@ -3265,90 +3321,126 @@
             this.groupBox_CalibrationTab_MatchingTolerance.TabStop = false;
             this.groupBox_CalibrationTab_MatchingTolerance.Text = "Matching Tolerance";
             // 
-            // label4
+            // Label_CalibrationTab_TemperatureToleranceMatched
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(90, 33);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(62, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "Percentage";
+            this.Label_CalibrationTab_TemperatureToleranceMatched.AutoSize = true;
+            this.Label_CalibrationTab_TemperatureToleranceMatched.Location = new System.Drawing.Point(166, 132);
+            this.Label_CalibrationTab_TemperatureToleranceMatched.Name = "Label_CalibrationTab_TemperatureToleranceMatched";
+            this.Label_CalibrationTab_TemperatureToleranceMatched.Size = new System.Drawing.Size(55, 13);
+            this.Label_CalibrationTab_TemperatureToleranceMatched.TabIndex = 12;
+            this.Label_CalibrationTab_TemperatureToleranceMatched.Text = "Tolerance";
             // 
-            // TextBox_CalibrationTab_TemperatureTolerance
+            // Label_CalibrationTab_OffsetToleranceMatched
             // 
-            this.TextBox_CalibrationTab_TemperatureTolerance.Location = new System.Drawing.Point(100, 128);
-            this.TextBox_CalibrationTab_TemperatureTolerance.Name = "TextBox_CalibrationTab_TemperatureTolerance";
-            this.TextBox_CalibrationTab_TemperatureTolerance.Size = new System.Drawing.Size(42, 20);
-            this.TextBox_CalibrationTab_TemperatureTolerance.TabIndex = 7;
-            this.TextBox_CalibrationTab_TemperatureTolerance.Text = "25";
-            this.TextBox_CalibrationTab_TemperatureTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_CalibrationTab_TemperatureTolerance.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_TemperatureTolerance_TextChanged);
+            this.Label_CalibrationTab_OffsetToleranceMatched.AutoSize = true;
+            this.Label_CalibrationTab_OffsetToleranceMatched.Location = new System.Drawing.Point(166, 107);
+            this.Label_CalibrationTab_OffsetToleranceMatched.Name = "Label_CalibrationTab_OffsetToleranceMatched";
+            this.Label_CalibrationTab_OffsetToleranceMatched.Size = new System.Drawing.Size(55, 13);
+            this.Label_CalibrationTab_OffsetToleranceMatched.TabIndex = 11;
+            this.Label_CalibrationTab_OffsetToleranceMatched.Text = "Tolerance";
             // 
-            // TextBox_CalibrationTab_OffsetTolerance
+            // Label_CalibrationTab_GainToleranceMatched
             // 
-            this.TextBox_CalibrationTab_OffsetTolerance.Location = new System.Drawing.Point(100, 103);
-            this.TextBox_CalibrationTab_OffsetTolerance.Name = "TextBox_CalibrationTab_OffsetTolerance";
-            this.TextBox_CalibrationTab_OffsetTolerance.Size = new System.Drawing.Size(42, 20);
-            this.TextBox_CalibrationTab_OffsetTolerance.TabIndex = 6;
-            this.TextBox_CalibrationTab_OffsetTolerance.Text = "10";
-            this.TextBox_CalibrationTab_OffsetTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_CalibrationTab_OffsetTolerance.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_OffsetTolerance_TextChanged);
+            this.Label_CalibrationTab_GainToleranceMatched.AutoSize = true;
+            this.Label_CalibrationTab_GainToleranceMatched.Location = new System.Drawing.Point(166, 82);
+            this.Label_CalibrationTab_GainToleranceMatched.Name = "Label_CalibrationTab_GainToleranceMatched";
+            this.Label_CalibrationTab_GainToleranceMatched.Size = new System.Drawing.Size(55, 13);
+            this.Label_CalibrationTab_GainToleranceMatched.TabIndex = 10;
+            this.Label_CalibrationTab_GainToleranceMatched.Text = "Tolerance";
             // 
-            // TextBox_CalibrationTab_GainTolerance
+            // Label_CalibrationTab_ExposureToleranceMatched
             // 
-            this.TextBox_CalibrationTab_GainTolerance.Location = new System.Drawing.Point(100, 78);
-            this.TextBox_CalibrationTab_GainTolerance.Name = "TextBox_CalibrationTab_GainTolerance";
-            this.TextBox_CalibrationTab_GainTolerance.Size = new System.Drawing.Size(42, 20);
-            this.TextBox_CalibrationTab_GainTolerance.TabIndex = 5;
-            this.TextBox_CalibrationTab_GainTolerance.Text = "10";
-            this.TextBox_CalibrationTab_GainTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_CalibrationTab_GainTolerance.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_GainTolerance_TextChanged);
+            this.Label_CalibrationTab_ExposureToleranceMatched.AutoSize = true;
+            this.Label_CalibrationTab_ExposureToleranceMatched.Location = new System.Drawing.Point(166, 57);
+            this.Label_CalibrationTab_ExposureToleranceMatched.Name = "Label_CalibrationTab_ExposureToleranceMatched";
+            this.Label_CalibrationTab_ExposureToleranceMatched.Size = new System.Drawing.Size(55, 13);
+            this.Label_CalibrationTab_ExposureToleranceMatched.TabIndex = 9;
+            this.Label_CalibrationTab_ExposureToleranceMatched.Text = "Tolerance";
             // 
-            // Label_CalibrationTab_TemperatureTolerance
+            // Label_CalibrationTab_MatchingTolerance_Percentage
             // 
-            this.Label_CalibrationTab_TemperatureTolerance.AutoSize = true;
-            this.Label_CalibrationTab_TemperatureTolerance.Location = new System.Drawing.Point(31, 132);
-            this.Label_CalibrationTab_TemperatureTolerance.Name = "Label_CalibrationTab_TemperatureTolerance";
-            this.Label_CalibrationTab_TemperatureTolerance.Size = new System.Drawing.Size(67, 13);
-            this.Label_CalibrationTab_TemperatureTolerance.TabIndex = 4;
-            this.Label_CalibrationTab_TemperatureTolerance.Text = "Temperature";
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.AutoSize = true;
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.Location = new System.Drawing.Point(90, 33);
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.Name = "Label_CalibrationTab_MatchingTolerance_Percentage";
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.Size = new System.Drawing.Size(62, 13);
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.TabIndex = 8;
+            this.Label_CalibrationTab_MatchingTolerance_Percentage.Text = "Percentage";
             // 
-            // Label_CalibrationTab_OffsetTolerance
+            // TextBox_CalibrationTab_MatchingTolerance_Temperature
             // 
-            this.Label_CalibrationTab_OffsetTolerance.AutoSize = true;
-            this.Label_CalibrationTab_OffsetTolerance.Location = new System.Drawing.Point(31, 107);
-            this.Label_CalibrationTab_OffsetTolerance.Name = "Label_CalibrationTab_OffsetTolerance";
-            this.Label_CalibrationTab_OffsetTolerance.Size = new System.Drawing.Size(35, 13);
-            this.Label_CalibrationTab_OffsetTolerance.TabIndex = 3;
-            this.Label_CalibrationTab_OffsetTolerance.Text = "Offset";
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(100, 128);
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.Name = "TextBox_CalibrationTab_MatchingTolerance_Temperature";
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(42, 20);
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.TabIndex = 7;
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = "25";
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_CalibrationTab_MatchingTolerance_Temperature.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_TemperatureTolerance_TextChanged);
             // 
-            // Label_CalibrationTab_GainTolerance
+            // TextBox_CalibrationTab_MatchingTolerance_Offset
             // 
-            this.Label_CalibrationTab_GainTolerance.AutoSize = true;
-            this.Label_CalibrationTab_GainTolerance.Location = new System.Drawing.Point(31, 82);
-            this.Label_CalibrationTab_GainTolerance.Name = "Label_CalibrationTab_GainTolerance";
-            this.Label_CalibrationTab_GainTolerance.Size = new System.Drawing.Size(29, 13);
-            this.Label_CalibrationTab_GainTolerance.TabIndex = 2;
-            this.Label_CalibrationTab_GainTolerance.Text = "Gain";
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(100, 103);
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.Name = "TextBox_CalibrationTab_MatchingTolerance_Offset";
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.Size = new System.Drawing.Size(42, 20);
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.TabIndex = 6;
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "10";
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_CalibrationTab_MatchingTolerance_Offset.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_OffsetTolerance_TextChanged);
             // 
-            // Label_CalibrationTab_ExposureTolerance
+            // TextBox_CalibrationTab_MatchingTolerance_Gain
             // 
-            this.Label_CalibrationTab_ExposureTolerance.AutoSize = true;
-            this.Label_CalibrationTab_ExposureTolerance.Location = new System.Drawing.Point(31, 57);
-            this.Label_CalibrationTab_ExposureTolerance.Name = "Label_CalibrationTab_ExposureTolerance";
-            this.Label_CalibrationTab_ExposureTolerance.Size = new System.Drawing.Size(51, 13);
-            this.Label_CalibrationTab_ExposureTolerance.TabIndex = 1;
-            this.Label_CalibrationTab_ExposureTolerance.Text = "Exposure";
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(100, 78);
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.Name = "TextBox_CalibrationTab_MatchingTolerance_Gain";
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.Size = new System.Drawing.Size(42, 20);
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.TabIndex = 5;
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "10";
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_CalibrationTab_MatchingTolerance_Gain.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_GainTolerance_TextChanged);
             // 
-            // TextBox_CalibrationTab_ExposureTolerance
+            // Label_CalibrationTab_MatchingTolerance_Temperature
             // 
-            this.TextBox_CalibrationTab_ExposureTolerance.Location = new System.Drawing.Point(100, 53);
-            this.TextBox_CalibrationTab_ExposureTolerance.Name = "TextBox_CalibrationTab_ExposureTolerance";
-            this.TextBox_CalibrationTab_ExposureTolerance.Size = new System.Drawing.Size(42, 20);
-            this.TextBox_CalibrationTab_ExposureTolerance.TabIndex = 0;
-            this.TextBox_CalibrationTab_ExposureTolerance.Text = "10";
-            this.TextBox_CalibrationTab_ExposureTolerance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.TextBox_CalibrationTab_ExposureTolerance.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_ExposureTolerance_TextChanged);
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.AutoSize = true;
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(31, 132);
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.Name = "Label_CalibrationTab_MatchingTolerance_Temperature";
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(67, 13);
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.TabIndex = 4;
+            this.Label_CalibrationTab_MatchingTolerance_Temperature.Text = "Temperature";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_Offset
+            // 
+            this.Label_CalibrationTab_MatchingTolerance_Offset.AutoSize = true;
+            this.Label_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(31, 107);
+            this.Label_CalibrationTab_MatchingTolerance_Offset.Name = "Label_CalibrationTab_MatchingTolerance_Offset";
+            this.Label_CalibrationTab_MatchingTolerance_Offset.Size = new System.Drawing.Size(35, 13);
+            this.Label_CalibrationTab_MatchingTolerance_Offset.TabIndex = 3;
+            this.Label_CalibrationTab_MatchingTolerance_Offset.Text = "Offset";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_Gain
+            // 
+            this.Label_CalibrationTab_MatchingTolerance_Gain.AutoSize = true;
+            this.Label_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(31, 82);
+            this.Label_CalibrationTab_MatchingTolerance_Gain.Name = "Label_CalibrationTab_MatchingTolerance_Gain";
+            this.Label_CalibrationTab_MatchingTolerance_Gain.Size = new System.Drawing.Size(29, 13);
+            this.Label_CalibrationTab_MatchingTolerance_Gain.TabIndex = 2;
+            this.Label_CalibrationTab_MatchingTolerance_Gain.Text = "Gain";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_Exposure
+            // 
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.AutoSize = true;
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(31, 57);
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.Name = "Label_CalibrationTab_MatchingTolerance_Exposure";
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(51, 13);
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.TabIndex = 1;
+            this.Label_CalibrationTab_MatchingTolerance_Exposure.Text = "Exposure";
+            // 
+            // TextBox_CalibrationTab_MatchingTolerance_Exposure
+            // 
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(100, 53);
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.Name = "TextBox_CalibrationTab_MatchingTolerance_Exposure";
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(42, 20);
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.TabIndex = 0;
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "10";
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.TextBox_CalibrationTab_MatchingTolerance_Exposure.TextChanged += new System.EventHandler(this.TextBox_CalibrationTab_ExposureTolerance_TextChanged);
             // 
             // Label_CalibrationTab_TotalFiles
             // 
@@ -3383,7 +3475,7 @@
             this.Button_CalibrationTab_CreateCalibrationDirectory.TabIndex = 2;
             this.Button_CalibrationTab_CreateCalibrationDirectory.Text = "Create Target Calibration Directory";
             this.Button_CalibrationTab_CreateCalibrationDirectory.UseVisualStyleBackColor = true;
-            this.Button_CalibrationTab_CreateCalibrationDirectory.Click += new System.EventHandler(this.Calibration_CreateCalibrationDirectory_Click);
+            this.Button_CalibrationTab_CreateCalibrationDirectory.Click += new System.EventHandler(this.CalibrationTab_CreateCalibrationDirectory_Click);
             // 
             // Button_CalibrationTab_MatchCalibrationFrames
             // 
@@ -3393,7 +3485,7 @@
             this.Button_CalibrationTab_MatchCalibrationFrames.TabIndex = 1;
             this.Button_CalibrationTab_MatchCalibrationFrames.Text = "Match Calibration Frames";
             this.Button_CalibrationTab_MatchCalibrationFrames.UseVisualStyleBackColor = true;
-            this.Button_CalibrationTab_MatchCalibrationFrames.Click += new System.EventHandler(this.Calibration_MatchCalibrationFrames_Click);
+            this.Button_CalibrationTab_MatchCalibrationFrames.Click += new System.EventHandler(this.CalibrationTab_MatchCalibrationFrames_Click);
             // 
             // Button_CalibrationTab_FindCalibrationFrames
             // 
@@ -3403,7 +3495,7 @@
             this.Button_CalibrationTab_FindCalibrationFrames.TabIndex = 0;
             this.Button_CalibrationTab_FindCalibrationFrames.Text = "Find Calibration Frames";
             this.Button_CalibrationTab_FindCalibrationFrames.UseVisualStyleBackColor = true;
-            this.Button_CalibrationTab_FindCalibrationFrames.Click += new System.EventHandler(this.Calibration_FindCalibrationFrames_Click);
+            this.Button_CalibrationTab_FindCalibrationFrames.Click += new System.EventHandler(this.CalibrationTab_FindCalibrationFrames_Click);
             // 
             // TabPage_SubFrameWeights
             // 
@@ -3417,70 +3509,6 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
-            // 
-            // CheckBox_KeywordUpdate_SubFrameKeywords_Protected
-            // 
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.AutoSize = true;
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Location = new System.Drawing.Point(246, 79);
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Name = "CheckBox_KeywordUpdate_SubFrameKeywords_Protected";
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Size = new System.Drawing.Size(72, 17);
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.TabIndex = 22;
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Text = "Protected";
-            this.CheckBox_KeywordUpdate_SubFrameKeywords_Protected.UseVisualStyleBackColor = true;
-            // 
-            // Label_CalibrationTab_ExposureToleranceMatched
-            // 
-            this.Label_CalibrationTab_ExposureToleranceMatched.AutoSize = true;
-            this.Label_CalibrationTab_ExposureToleranceMatched.Location = new System.Drawing.Point(166, 57);
-            this.Label_CalibrationTab_ExposureToleranceMatched.Name = "Label_CalibrationTab_ExposureToleranceMatched";
-            this.Label_CalibrationTab_ExposureToleranceMatched.Size = new System.Drawing.Size(55, 13);
-            this.Label_CalibrationTab_ExposureToleranceMatched.TabIndex = 9;
-            this.Label_CalibrationTab_ExposureToleranceMatched.Text = "Tolerance";
-            // 
-            // Label_CalibrationTab_GainToleranceMatched
-            // 
-            this.Label_CalibrationTab_GainToleranceMatched.AutoSize = true;
-            this.Label_CalibrationTab_GainToleranceMatched.Location = new System.Drawing.Point(166, 82);
-            this.Label_CalibrationTab_GainToleranceMatched.Name = "Label_CalibrationTab_GainToleranceMatched";
-            this.Label_CalibrationTab_GainToleranceMatched.Size = new System.Drawing.Size(55, 13);
-            this.Label_CalibrationTab_GainToleranceMatched.TabIndex = 10;
-            this.Label_CalibrationTab_GainToleranceMatched.Text = "Tolerance";
-            // 
-            // Label_CalibrationTab_OffsetToleranceMatched
-            // 
-            this.Label_CalibrationTab_OffsetToleranceMatched.AutoSize = true;
-            this.Label_CalibrationTab_OffsetToleranceMatched.Location = new System.Drawing.Point(166, 107);
-            this.Label_CalibrationTab_OffsetToleranceMatched.Name = "Label_CalibrationTab_OffsetToleranceMatched";
-            this.Label_CalibrationTab_OffsetToleranceMatched.Size = new System.Drawing.Size(55, 13);
-            this.Label_CalibrationTab_OffsetToleranceMatched.TabIndex = 11;
-            this.Label_CalibrationTab_OffsetToleranceMatched.Text = "Tolerance";
-            // 
-            // Label_CalibrationTab_TemperatureToleranceMatched
-            // 
-            this.Label_CalibrationTab_TemperatureToleranceMatched.AutoSize = true;
-            this.Label_CalibrationTab_TemperatureToleranceMatched.Location = new System.Drawing.Point(166, 132);
-            this.Label_CalibrationTab_TemperatureToleranceMatched.Name = "Label_CalibrationTab_TemperatureToleranceMatched";
-            this.Label_CalibrationTab_TemperatureToleranceMatched.Size = new System.Drawing.Size(55, 13);
-            this.Label_CalibrationTab_TemperatureToleranceMatched.TabIndex = 12;
-            this.Label_CalibrationTab_TemperatureToleranceMatched.Text = "Tolerance";
-            // 
-            // TextBox_CalibrationTab_Messgaes
-            // 
-            this.TextBox_CalibrationTab_Messgaes.Location = new System.Drawing.Point(25, 265);
-            this.TextBox_CalibrationTab_Messgaes.Multiline = true;
-            this.TextBox_CalibrationTab_Messgaes.Name = "TextBox_CalibrationTab_Messgaes";
-            this.TextBox_CalibrationTab_Messgaes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.TextBox_CalibrationTab_Messgaes.Size = new System.Drawing.Size(930, 140);
-            this.TextBox_CalibrationTab_Messgaes.TabIndex = 8;
-            // 
-            // Label_CalibrationTab_TotalMatchedFiles
-            // 
-            this.Label_CalibrationTab_TotalMatchedFiles.AutoSize = true;
-            this.Label_CalibrationTab_TotalMatchedFiles.Location = new System.Drawing.Point(25, 240);
-            this.Label_CalibrationTab_TotalMatchedFiles.Name = "Label_CalibrationTab_TotalMatchedFiles";
-            this.Label_CalibrationTab_TotalMatchedFiles.Size = new System.Drawing.Size(155, 13);
-            this.Label_CalibrationTab_TotalMatchedFiles.TabIndex = 9;
-            this.Label_CalibrationTab_TotalMatchedFiles.Text = "No Matched Calibration Frames";
             // 
             // MainForm
             // 
@@ -3497,22 +3525,24 @@
             this.Text = "XISF Manager";
             this.GroupBox_FileSelection_SequenceOrder.ResumeLayout(false);
             this.GroupBox_FileSelection_SequenceOrder.PerformLayout();
-            this.GroupBox_KeywordUpdate_CaptureSoftware.ResumeLayout(false);
-            this.GroupBox_KeywordUpdate_CaptureSoftware.PerformLayout();
-            this.GroupBox_KeywordTelescope.ResumeLayout(false);
-            this.GroupBox_KeywordTelescope.PerformLayout();
-            this.GroupBox_KeywordCamera.ResumeLayout(false);
-            this.GroupBox_KeywordCamera.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordCamera_Binning)).EndInit();
-            this.GroupBox_ImageType.ResumeLayout(false);
-            this.GroupBox_ImageTypeFrame.ResumeLayout(false);
-            this.GroupBox_ImageTypeFrame.PerformLayout();
-            this.GroupBox_ImageTypeFilter.ResumeLayout(false);
-            this.GroupBox_ImageTypeFilter.PerformLayout();
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.ResumeLayout(false);
-            this.GroupBox_KeywordUpdate_SubFrameKeywords.PerformLayout();
-            this.GroupBox_KeywordUpdate_Weights.ResumeLayout(false);
-            this.GroupBox_KeywordUpdate_Weights.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_CaptureSoftware.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_Telescope.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_Telescope.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_Camera.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_Camera.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordUpdateTab_Camera_Binning)).EndInit();
+            this.GroupBox_KeywordUpdateTab_ImageType.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_ImageType_Frame.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.PerformLayout();
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.ResumeLayout(false);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.PerformLayout();
             this.GroupBox_FileSelection_DirectorySelection.ResumeLayout(false);
             this.GroupBox_FileSelection_DirectorySelection.PerformLayout();
             this.GroupBox_WeightCalculations.ResumeLayout(false);
@@ -3567,14 +3597,14 @@
         #endregion
 
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Browse;
-        private System.Windows.Forms.ProgressBar ProgressBar_FileSelection_OverAll;
+        private System.Windows.Forms.ProgressBar ProgressBar_FileSelection_ReadProgress;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_SequenceOrder;
         private System.Windows.Forms.Button Button_FileSlection_Rename;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
-        private System.Windows.Forms.Label Label_KeywordUpdate_SubFrameKeywords_TagetName;
-        private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_UpdateXisfFileKeywords;
-        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_SubFrameKeywords_TagetName;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords;
+        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames;
         private System.Windows.Forms.Button Button_ReadSubFrameSelectorCsvFile;
         private System.Windows.Forms.Label Label_FwhmSigma;
         private System.Windows.Forms.Label Label_FwhmMean;
@@ -3618,24 +3648,22 @@
         private System.Windows.Forms.GroupBox GroupBox_AirMassWeight;
         private System.Windows.Forms.Label Label_FwhmMeanDeviationRangeLow;
         private System.Windows.Forms.Label Label_FwhmMeanDeviationRangeHigh;
-        private System.Windows.Forms.ProgressBar ProgressBar_Keyword_XisfFile;
+        private System.Windows.Forms.ProgressBar ProgressBar_KeywordUpdateTab_WriteProgress;
         private System.Windows.Forms.GroupBox GroupBox_InitialRejectionCriteria;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightOnly;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_IndexOnly;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_IndexWeight;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightIndex;
-        private System.Windows.Forms.Label Label_FileSelection_TempratureCompensation;
+        private System.Windows.Forms.Label Label_FileSelection_Statistics_TempratureCompensation;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Eccentricity;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_FWHM;
         private System.Windows.Forms.TextBox TextBox_Rejection_Total;
         private System.Windows.Forms.Label Label_Rejection_Total;
         private System.Windows.Forms.Label Label_Rejection_Eccentricity;
         private System.Windows.Forms.Label Label_Rejection_FWHM;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdate_SubFrameKeywords;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations;
-        private System.Windows.Forms.RadioButton RadioButton_SubFrameKeywords_AlphabetizeKeywords;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords;
         private System.Windows.Forms.Label Label_FileSelection_Statistics_SubFrameOverhead;
-        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName;
         private System.Windows.Forms.Button Button_Rejection_RejectionSet;
         private System.Windows.Forms.NumericUpDown NumericUpDown_Rejection_Median;
         private System.Windows.Forms.Label Label_Rejection_Median;
@@ -3645,17 +3673,17 @@
         private System.Windows.Forms.GroupBox GroupBox_WeightCalculations;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Statistics;
-        private System.Windows.Forms.GroupBox GroupBox_ImageType;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_S2;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Blue;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_O3;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Green;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Ha;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Red;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Luma;
-        private System.Windows.Forms.TextBox TextBox_KeywordUpdate_SubFrameKeyword_KeywordValue;
-        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdate_SubFrameKeywords_KeywordName;
-        private System.Windows.Forms.Label Label_Keyword_UpdateFileName;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_S2;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Blue;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filterr_Green;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Ha;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Red;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Luma;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue;
+        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_FileName;
         private System.Windows.Forms.Label Label_FileSelection_BrowseFileName;
         private System.Windows.Forms.Label Label_FwhmMin;
         private System.Windows.Forms.Label Label_FwhmMax;
@@ -3752,68 +3780,68 @@
         private System.Windows.Forms.Label Label_SnrMedianValue;
         private System.Windows.Forms.Label Label_SnrMeanValue;
         private System.Windows.Forms.Label Label_SnrSigmaValue;
-        private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_Delete;
-        private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_AddReplace;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFilter_Shutter;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_SubFrameKeywords_Delete;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_SubFrameKeywords_AddReplace;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Master;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordCamera;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_A144;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_Q178;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_Z183;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordCamera_Z533;
-        private System.Windows.Forms.Label Label_CameraA144Gain;
-        private System.Windows.Forms.Label Label_KeywordCamera_Offset;
-        private System.Windows.Forms.Label Label_KeywordCamera_Gain;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Q178Offset;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Q178Gain;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Z183Offset;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Z183Gain;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Z533Offset;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Z533Gain;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdate_CaptureSoftware;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_VOY;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_SCP;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_SGP;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_TSX;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordTelescope;
-        private System.Windows.Forms.CheckBox CheckBox_KeywordTelescope_Riccardi;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordTelescope_NWT254;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordTelescope_EVO150;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordTelescope_APM107;
-        private System.Windows.Forms.CheckBox CheckBox_KeywordCamera_NarrowBand;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_SensorTemperature;
-        private System.Windows.Forms.Label Label_KeywordCamera_SensorTemperature;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_Camera;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_A144;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Q178;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Z183;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Z533;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_A144Gain;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Offset;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Gain;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Q178Offset;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Q178Gain;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Z183Offset;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Z183Gain;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Z533Offset;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Z533Gain;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_CaptureSoftware;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_Telescope;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Telescope_Riccardi;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Telescope_Newtonian254;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Telescope_EvoStar150;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Telescope_APM107;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Camera_NarrowBand;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_SensorTemperature;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_SensorTemperature;
         private System.Windows.Forms.Label Label_CameraDivider;
-        private System.Windows.Forms.Label Label_KeywordCamera_Binning;
-        private System.Windows.Forms.NumericUpDown NumericUpDown_KeywordCamera_Binning;
-        private System.Windows.Forms.GroupBox GroupBox_ImageTypeFilter;
-        private System.Windows.Forms.GroupBox GroupBox_ImageTypeFrame;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFrame_Bias;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFrame_Flat;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFrame_Dark;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordImageTypeFrame_Light;
-        private System.Windows.Forms.Button Button_KeywordSoftware_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordSoftware_SetAll;
-        private System.Windows.Forms.Button Button_KeywordTelescope_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordTelescope_SetAll;
-        private System.Windows.Forms.Label Label_KeywordCamera_Seconds;
-        private System.Windows.Forms.TextBox TextBox_KeywordCamera_Seconds;
-        private System.Windows.Forms.Button Button_KeywordImageType_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordImageType_SetAll;
-        private System.Windows.Forms.Button Button_KeywordCamera_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordCamera_SetAll;
-        private System.Windows.Forms.Label Label_KeywordCamera_Common;
-        private System.Windows.Forms.TextBox TextBox_KeywordTelescope_FocalLength;
-        private System.Windows.Forms.Label Label_KeywordTelescope_FocalLength;
-        private System.Windows.Forms.Button Button_KeywordImageTypeFrame_SetMaster;
-        private System.Windows.Forms.Label Label_KeywordCamera_Camera;
-        private System.Windows.Forms.Label Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword;
-        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords;
-        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdate_Weights;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected;
-        private System.Windows.Forms.Button Button_KeywordUpdate_SubFrameKeywords_Weights_Remove;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordSoftware_NINA;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Binning;
+        private System.Windows.Forms.NumericUpDown NumericUpDown_KeywordUpdateTab_Camera_Binning;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Filter;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Frame;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Bias;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Flat;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Dark;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Light;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_CaptureSoftware_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_CaptureSoftware_SetAll;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_Telescope_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_Telescope_SetAll;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_ExposureSeconds;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_ExposureSeconds;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_SetAll;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_Camera_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_Camera_SetAll;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Common;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Telescope_FocalLength;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Telescope_FocalLength;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_Frame_SetMaster;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Camera;
+        private System.Windows.Forms.Label Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords;
+        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected;
+        private System.Windows.Forms.Button Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_CaptureSoftware_NINA;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByTarget;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByNight;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Order;
@@ -3827,28 +3855,32 @@
         private System.Windows.Forms.Button Button_CalibrationTab_CreateCalibrationDirectory;
         private System.Windows.Forms.Button Button_CalibrationTab_MatchCalibrationFrames;
         private System.Windows.Forms.Button Button_CalibrationTab_FindCalibrationFrames;
-        private System.Windows.Forms.RadioButton adioButton_DirectorySelection_MastersOnly;
+        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_MastersOnly;
         private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_ExcludeMasters;
-        private System.Windows.Forms.RadioButton adioButton_DirectorySelection_AlFiles;
+        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_AlFiles;
         private System.Windows.Forms.Label Label_CalibrationTab_ReadFileName;
         private System.Windows.Forms.ProgressBar ProgressBar_CalibrationTab;
         private System.Windows.Forms.Label Label_CalibrationTab_TotalFiles;
         private System.Windows.Forms.GroupBox groupBox_CalibrationTab_MatchingTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_ExposureTolerance;
-        private System.Windows.Forms.TextBox TextBox_CalibrationTab_ExposureTolerance;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox TextBox_CalibrationTab_TemperatureTolerance;
-        private System.Windows.Forms.TextBox TextBox_CalibrationTab_OffsetTolerance;
-        private System.Windows.Forms.TextBox TextBox_CalibrationTab_GainTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_TemperatureTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_OffsetTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_GainTolerance;
-        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdate_SubFrameKeywords_Protected;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Exposure;
+        private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Exposure;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Percentage;
+        private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Temperature;
+        private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Offset;
+        private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Gain;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Temperature;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Offset;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Gain;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
         private System.Windows.Forms.Label Label_CalibrationTab_TemperatureToleranceMatched;
         private System.Windows.Forms.Label Label_CalibrationTab_OffsetToleranceMatched;
         private System.Windows.Forms.Label Label_CalibrationTab_GainToleranceMatched;
         private System.Windows.Forms.Label Label_CalibrationTab_ExposureToleranceMatched;
         private System.Windows.Forms.TextBox TextBox_CalibrationTab_Messgaes;
         private System.Windows.Forms.Label Label_CalibrationTab_TotalMatchedFiles;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords;
+        private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All;
     }
 }

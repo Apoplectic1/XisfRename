@@ -90,7 +90,7 @@ namespace XisfFileManager
             ImageParameterLists = new ImageCalculations();
 
             Label_FileSelection_Statistics_Task.Text = "No Images Selected";
-            Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
+            Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
 
 
             // Version Number
@@ -273,11 +273,11 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
-            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text = "";
-            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "";
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
 
-            ProgressBar_FileSelection_OverAll.Value = 0;
-            ProgressBar_Keyword_XisfFile.Value = 0;
+            ProgressBar_FileSelection_ReadProgress.Value = 0;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             TabControl_Update.Enabled = false;
 
             mFolder = new OpenFolderDialog()
@@ -311,8 +311,10 @@ namespace XisfFileManager
                 mDirectoryOps.RecuseDirectories(diDirectoryTree);
 
                 Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
+                Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
+                Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
 
-                ProgressBar_FileSelection_OverAll.Value = 0;
+                ProgressBar_FileSelection_ReadProgress.Value = 0;
 
                 if (mDirectoryOps.Files.Count == 0)
                 {
@@ -320,12 +322,12 @@ namespace XisfFileManager
                     return;
                 }
 
-                ProgressBar_FileSelection_OverAll.Maximum = mDirectoryOps.Files.Count;
+                ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
 
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
                     bool bStatus = false;
-                    ProgressBar_FileSelection_OverAll.Value += 1;
+                    ProgressBar_FileSelection_ReadProgress.Value += 1;
                     Application.DoEvents();
 
                     // Create a new xisf file instance
@@ -458,24 +460,24 @@ namespace XisfFileManager
 
                 if (TargetNames.Count > 1)
                 {
-                    Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.Black;
+                    Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Black;
                 }
 
                 foreach (string item in TargetNames)
                 {
-                    ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
                 }
 
-                ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.SelectedIndex = 0;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
             }
             else
             {
-                ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Items.Clear();
-                Label_KeywordUpdate_SubFrameKeywords_TagetName.ForeColor = Color.DarkViolet;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
+                Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.DarkViolet;
             }
 
 
@@ -492,24 +494,24 @@ namespace XisfFileManager
 
                 foreach (string item in WeightKeywords)
                 {
-                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
                 }
 
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
             }
             else
             {
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
-                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
             }
             // **********************************************************************
 
@@ -529,7 +531,7 @@ namespace XisfFileManager
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
-            Label_FileSelection_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+            Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
             // **********************************************************************
 
 
@@ -618,8 +620,8 @@ namespace XisfFileManager
 
             Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
 
-            ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
-            ProgressBar_Keyword_XisfFile.Value = 0;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count();
+            ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
             mRenameFile.MarkDuplicates(mFileList);
 
@@ -627,7 +629,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                ProgressBar_Keyword_XisfFile.Value += 1;
+                ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
 
                 file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
@@ -636,12 +638,12 @@ namespace XisfFileManager
 
                 duplicates += (renameTuple.Item1 == 0) ? 1 : 0;
 
-                Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
+                Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
 
                 Application.DoEvents();
             }
 
-            ProgressBar_Keyword_XisfFile.Value = ProgressBar_Keyword_XisfFile.Maximum;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
 
             if (duplicates == 1)
                 Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
@@ -650,18 +652,35 @@ namespace XisfFileManager
 
             mFileList.Clear();
 
-            ProgressBar_FileSelection_OverAll.Value = 0;
+            ProgressBar_FileSelection_ReadProgress.Value = 0;
         }
 
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
+            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked && RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked)
+            {
+                CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Red;
+                return;
+            }
+
+            int iUnprotectedCount = 0;
+            foreach (XisfFile file in mFileList)
+            {
+                if (file.KeywordData.Protected() != true)
+                    iUnprotectedCount++;
+            }
+
+            
+
+            Label_FileSelection_Statistics_Task.Text = "Updating " + iUnprotectedCount.ToString() + "/" + mFileList.Count().ToString() + " File Keywords";
+            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = iUnprotectedCount;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
+
+            return;
+
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
             TabControl_Update.Enabled = false;
-
-            Label_FileSelection_Statistics_Task.Text = "Updating " + mFileList.Count().ToString() + " File Keywords";
-            ProgressBar_Keyword_XisfFile.Maximum = mFileList.Count();
-            ProgressBar_Keyword_XisfFile.Value = 0;
 
             // Only fill out the weight lists if in fact, we are actually updating them
             if (XisfFileUpdate.Operation == XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS)
@@ -695,31 +714,38 @@ namespace XisfFileManager
                 }
             }
 
-            XisfFileUpdate.TargetName = ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", "");
+            XisfFileUpdate.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", "");
 
+            int count = 0;
             foreach (XisfFile file in mFileList)
             {
+                // Don't update existing files that have the Protected Keyword set unless the UI overrides this setting
+                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked && RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked && (file.KeywordData.Protected() == true))
+                {
+                    break;
+                }
+
                 file.KeywordData.SetObservationSite();
 
-                if (CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Checked)
-                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
+                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked)
+                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
 
                 file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
                 if (file.Master)
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
-                ProgressBar_Keyword_XisfFile.Value += 1;
-                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Checked);
-                Label_Keyword_UpdateFileName.Text = Label_Keyword_UpdateFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
+                ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
+                bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
+                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
                 Application.DoEvents();
 
-                if ((bStatus == false) && (CheckBox_KeywordUpdate_SubFrameKeywords_Protected.Checked == false))
+                if ((bStatus == false) && (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked == false))
                 {
                     Label_FileSelection_Statistics_Task.Text = "File Write Error";
 
                     var result = MessageBox.Show(
-                        "File Update Failed.\n\n" + Label_Keyword_UpdateFileName.Text,
+                        "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
                         "\nMainForm.cs Button_Update_Click()",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
@@ -728,9 +754,11 @@ namespace XisfFileManager
                     TabControl_Update.Enabled = true;
                     return;
                 }
+
+                count++;
             }
 
-            Label_FileSelection_Statistics_Task.Text = mFileList.Count().ToString() + " Images Updated";
+            Label_FileSelection_Statistics_Task.Text = count.ToString() + " Images Updated";
             GroupBox_FileSelection.Enabled = true;
             TabControl_Update.Enabled = true;
         }
@@ -1053,22 +1081,6 @@ namespace XisfFileManager
             }
         }
 
-        private void RadioButton_SubFrameKeywords_Alphabetize_CheckedChanged(object sender, EventArgs e)
-        {
-            if (RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked)
-            {
-                SetUISubFrameGroupBoxState();
-            }
-        }
-
-        private void RadioButton_SubFrameKeyWords_SubFrameWeightCalculations_CheckedChanged(object sender, EventArgs e)
-        {
-            if (RadioButton_KeywordUpdate_SubFrameKeywords_SubFrameWeightCalculations.Checked)
-            {
-                SetUISubFrameGroupBoxState();
-            }
-        }
-
         private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
         {
             SetUISubFrameGroupBoxState();
@@ -1189,20 +1201,20 @@ namespace XisfFileManager
 
         private void FindCaptureSoftware()
         {
-            RadioButton_KeywordSoftware_TSX.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_NINA.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_SGP.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_VOY.ForeColor = Color.Black;
-            RadioButton_KeywordSoftware_SCP.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.Black;
 
-            RadioButton_KeywordSoftware_TSX.Checked = false;
-            RadioButton_KeywordSoftware_NINA.Checked = false;
-            RadioButton_KeywordSoftware_SGP.Checked = false;
-            RadioButton_KeywordSoftware_VOY.Checked = false;
-            RadioButton_KeywordSoftware_SCP.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
 
-            Button_KeywordSoftware_SetAll.ForeColor = Color.Black;
-            Button_KeywordSoftware_SetByFile.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Black;
 
             // Now check each and every source file for different or the same capture software
             // If identical, do nothing. If different, make all found UI software labels red 
@@ -1254,12 +1266,12 @@ namespace XisfFileManager
             {
                 if (foundNINA | foundSGP | foundVOY | foundSCP)
                 {
-                    RadioButton_KeywordSoftware_TSX.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_TSX.Checked = false;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_TSX.Checked = true;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = true;
                 }
             }
 
@@ -1267,12 +1279,12 @@ namespace XisfFileManager
             {
                 if (foundTSX | foundSGP | foundVOY | foundSCP)
                 {
-                    RadioButton_KeywordSoftware_NINA.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_NINA.Checked = false;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_NINA.Checked = true;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = true;
                 }
             }
 
@@ -1280,12 +1292,12 @@ namespace XisfFileManager
             {
                 if (foundTSX | foundNINA | foundVOY | foundSCP)
                 {
-                    RadioButton_KeywordSoftware_SGP.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_SGP.Checked = false;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_SGP.Checked = true;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = true;
                 }
             }
 
@@ -1293,12 +1305,12 @@ namespace XisfFileManager
             {
                 if (foundTSX | foundNINA | foundSGP | foundSCP)
                 {
-                    RadioButton_KeywordSoftware_VOY.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_VOY.Checked = false;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_VOY.Checked = true;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = true;
                 }
             }
 
@@ -1306,40 +1318,40 @@ namespace XisfFileManager
             {
                 if (foundTSX | foundNINA | foundSGP | foundVOY)
                 {
-                    RadioButton_KeywordSoftware_SCP.ForeColor = Color.Red;
-                    RadioButton_KeywordSoftware_SCP.Checked = false;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordSoftware_SCP.Checked = true;
+                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = true;
                 }
             }
 
             if (!foundTSX && !foundNINA && !foundSGP && !foundVOY && !foundSCP)
             {
-                RadioButton_KeywordSoftware_TSX.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordSoftware_NINA.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordSoftware_SGP.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordSoftware_VOY.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordSoftware_SCP.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.DarkViolet;
             }
 
             if (foundTSX ^ foundNINA ^ foundSGP ^ foundVOY ^ foundSCP)
             {
                 // Set "SetAll" to black if only a single software program was found
-                Button_KeywordSoftware_SetAll.ForeColor = Color.Black;
+                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
             }
             else
             {
                 // More that one software program - set "SetByFile" to red
-                Button_KeywordSoftware_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Red;
             }
 
             if (count != mFileList.Count)
             {
                 // The number of source files didn't equal the number of files with a known software program
                 // Set "SetByFile" to red
-                Button_KeywordSoftware_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Red;
             }
         }
 
@@ -1348,31 +1360,31 @@ namespace XisfFileManager
             int count = 0;
             foreach (XisfFile file in mFileList)
             {
-                if (RadioButton_KeywordSoftware_TSX.Checked)
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "TSX");
                 }
 
-                if (RadioButton_KeywordSoftware_NINA.Checked)
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked)
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "NINA");
                 }
 
-                if (RadioButton_KeywordSoftware_SGP.Checked)
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked)
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "SGP");
                 }
 
-                if (RadioButton_KeywordSoftware_VOY.Checked)
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked)
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "VOY");
                 }
 
-                if (RadioButton_KeywordSoftware_SCP.Checked)
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked)
                 {
                     count++;
                     file.KeywordData.AddKeyword("CREATOR", "SCP");
@@ -1422,64 +1434,64 @@ namespace XisfFileManager
 
         private void RadioButton_KeywordTelescope_APM107_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "525";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
             }
             else
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "700";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
             }
         }
 
         private void RadioButton_KeywordTelescope_EVO150_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "750";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
             }
             else
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "1000";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
             }
         }
 
         private void RadioButton_KeywordTelescope_NWT254_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordTelescope_Riccardi.Checked)
+            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "825";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
             }
             else
             {
-                TextBox_KeywordTelescope_FocalLength.Text = "1100";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
             }
         }
 
         private void CheckBox_KeywordTelescope_Riccardi_CheckedChanged(object sender, EventArgs e)
         {
-            if (RadioButton_KeywordTelescope_APM107.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_APM107.Checked)
             {
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
-                    TextBox_KeywordTelescope_FocalLength.Text = "525";
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
                 else
-                    TextBox_KeywordTelescope_FocalLength.Text = "700";
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
             }
 
-            if (RadioButton_KeywordTelescope_EVO150.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked)
             {
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
-                    TextBox_KeywordTelescope_FocalLength.Text = "750";
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
                 else
-                    TextBox_KeywordTelescope_FocalLength.Text = "1000";
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
             }
 
-            if (RadioButton_KeywordTelescope_NWT254.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked)
             {
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
-                    TextBox_KeywordTelescope_FocalLength.Text = "825";
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
                 else
-                    TextBox_KeywordTelescope_FocalLength.Text = "1100";
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
             }
         }
 
@@ -1497,23 +1509,23 @@ namespace XisfFileManager
             bool multipleFocalLengths = false;
             bool foundFocalLength = false;
 
-            RadioButton_KeywordTelescope_APM107.Checked = false;
-            RadioButton_KeywordTelescope_APM107.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = false;
+            RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Black;
 
-            RadioButton_KeywordTelescope_EVO150.Checked = false;
-            RadioButton_KeywordTelescope_EVO150.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = false;
+            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Black;
 
-            RadioButton_KeywordTelescope_NWT254.Checked = false;
-            RadioButton_KeywordTelescope_NWT254.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
+            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
 
-            CheckBox_KeywordTelescope_Riccardi.ForeColor = Color.Black;
-            CheckBox_KeywordTelescope_Riccardi.Checked = false;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
 
-            TextBox_KeywordTelescope_FocalLength.Text = "";
-            Label_KeywordTelescope_FocalLength.ForeColor = Color.Black;
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "";
+            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
 
-            Button_KeywordTelescope_SetAll.ForeColor = Color.Black;
-            Button_KeywordTelescope_SetByFile.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Black;
 
             if (mFileList.Count == 0)
                 return;
@@ -1565,16 +1577,16 @@ namespace XisfFileManager
 
             if ((riccardiCount != mFileList.Count) && (riccardiCount != 0))
             {
-                CheckBox_KeywordTelescope_Riccardi.ForeColor = Color.Red;
+                CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Red;
             }
             else
             {
-                CheckBox_KeywordTelescope_Riccardi.Checked = true;
+                CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = true;
             }
 
             if ((focalCount != mFileList.Count) || !foundFocalLength || multipleFocalLengths)
             {
-                Label_KeywordTelescope_FocalLength.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Red;
             }
 
 
@@ -1582,16 +1594,16 @@ namespace XisfFileManager
             {
                 if (foundEVO || foundNWT)
                 {
-                    RadioButton_KeywordTelescope_APM107.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordTelescope_APM107.Checked = true;
+                    RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = true;
 
                     if (foundRiccardi)
-                        TextBox_KeywordTelescope_FocalLength.Text = "525";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
                     else
-                        TextBox_KeywordTelescope_FocalLength.Text = "700";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
                 }
             }
 
@@ -1599,16 +1611,16 @@ namespace XisfFileManager
             {
                 if (foundAPM || foundNWT)
                 {
-                    RadioButton_KeywordTelescope_EVO150.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordTelescope_EVO150.Checked = true;
+                    RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = true;
 
                     if (foundRiccardi)
-                        TextBox_KeywordTelescope_FocalLength.Text = "750";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
                     else
-                        TextBox_KeywordTelescope_FocalLength.Text = "1000";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
                 }
             }
 
@@ -1616,29 +1628,29 @@ namespace XisfFileManager
             {
                 if (foundAPM || foundEVO)
                 {
-                    RadioButton_KeywordTelescope_NWT254.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordTelescope_NWT254.Checked = true;
+                    RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = true;
 
                     if (foundRiccardi)
-                        TextBox_KeywordTelescope_FocalLength.Text = "825";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
                     else
-                        TextBox_KeywordTelescope_FocalLength.Text = "1100";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
                 }
             }
 
             if (!foundAPM && !foundEVO & !foundNWT)
             {
-                RadioButton_KeywordTelescope_APM107.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordTelescope_EVO150.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordTelescope_NWT254.ForeColor = Color.DarkViolet;
-                Label_KeywordTelescope_FocalLength.ForeColor = Color.DarkViolet;
-                CheckBox_KeywordTelescope_Riccardi.Checked = false;
-                CheckBox_KeywordTelescope_Riccardi.ForeColor = Color.DarkViolet;
-                Button_KeywordTelescope_SetAll.ForeColor = Color.Red;
-                Button_KeywordTelescope_SetByFile.ForeColor = Color.Red;
+                RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.DarkViolet;
+                CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
+                CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.DarkViolet;
+                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Red;
                 return;
             }
 
@@ -1646,28 +1658,28 @@ namespace XisfFileManager
             if ((foundAPM ^ foundEVO ^ foundNWT) && (focalCount == mFileList.Count))
             {
                 // Set "SetAll" to black if only a single filter and a single frame type was found
-                Button_KeywordTelescope_SetAll.ForeColor = Color.Black;
+                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
             }
             else
             {
                 // More that one software program - set "SetByFile" to red
-                Button_KeywordTelescope_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Red;
             }
 
             if ((telescopeCount < mFileList.Count) || (riccardiCount < mFileList.Count) || (focalCount < mFileList.Count))
             {
-                Button_KeywordTelescope_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Red;
             }
         }
 
         private void SetTelescopeUI(XisfFile file)
         {
-            if (RadioButton_KeywordTelescope_APM107.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_APM107.Checked)
             {
                 file.KeywordData.AddKeyword("APTDIA", 107.0, "Aperture Diameter in mm");
                 file.KeywordData.AddKeyword("APTAREA", 8992.02, "Aperture area in square mm minus obstructions");
 
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
                     file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
                     file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 Super ED with Riccardi 0.75 Reducer");
@@ -1679,9 +1691,9 @@ namespace XisfFileManager
                 }
             }
 
-            if (RadioButton_KeywordTelescope_EVO150.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked)
             {
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
                     file.KeywordData.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
                     file.KeywordData.AddKeyword("FOCALLEN", 750, "EvoStar 150 with Riccardi 0.75 Reducer");
@@ -1693,9 +1705,9 @@ namespace XisfFileManager
                 }
             }
 
-            if (RadioButton_KeywordTelescope_NWT254.Checked)
+            if (RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked)
             {
-                if (CheckBox_KeywordTelescope_Riccardi.Checked)
+                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
                     file.KeywordData.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
                     file.KeywordData.AddKeyword("FOCALLEN", 825, "10 inch Newtonian with Riccardi 0.75 Reducer");
@@ -1742,14 +1754,14 @@ namespace XisfFileManager
                         telescope = telescope.Replace("Global_", "");
 
                         if (telescope.EndsWith("R"))
-                            CheckBox_KeywordTelescope_Riccardi.Checked = true;
+                            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = true;
                         else
-                            CheckBox_KeywordTelescope_Riccardi.Checked = false;
+                            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
 
                         // Checking the radio button for the found telescope with also set focal length and Riccardi checkbox
-                        RadioButton_KeywordTelescope_APM107.Checked = telescope.Contains("APM") ? true : false;
-                        RadioButton_KeywordTelescope_EVO150.Checked = telescope.Contains("EVO") ? true : false;
-                        RadioButton_KeywordTelescope_NWT254.Checked = telescope.Contains("NWT") ? true : false;
+                        RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = telescope.Contains("APM") ? true : false;
+                        RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = telescope.Contains("EVO") ? true : false;
+                        RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = telescope.Contains("NWT") ? true : false;
 
                         SetTelescopeUI(file);
                     }
@@ -1831,16 +1843,16 @@ namespace XisfFileManager
         {
             foreach (XisfFile file in mFileList)
             {
-                if (RadioButton_KeywordImageTypeFrame_Light.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked)
                     file.KeywordData.AddKeyword("IMAGETYP", "Light", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFrame_Dark.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked)
                     file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFrame_Flat.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked)
                     file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFrame_Bias.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked)
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
@@ -1860,28 +1872,28 @@ namespace XisfFileManager
 
                 }
 
-                if (RadioButton_KeywordImageTypeFilter_Luma.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Luma", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_Red.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_Green.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_Blue.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Blue", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_Ha.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Ha", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_O3.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked)
                     file.KeywordData.AddKeyword("FILTER", "O3", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_S2.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked)
                     file.KeywordData.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordImageTypeFilter_Shutter.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 file.ParseRequiredKeywords();
@@ -1906,30 +1918,30 @@ namespace XisfFileManager
             bool foundShutter = false;
             bool foundMaster = false;
 
-            RadioButton_KeywordImageTypeFilter_Luma.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_Red.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_Green.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_Blue.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_Ha.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_O3.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_S2.ForeColor = Color.Black;
-            RadioButton_KeywordImageTypeFilter_Shutter.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Black;
 
-            RadioButton_KeywordImageTypeFilter_Luma.Checked = false;
-            RadioButton_KeywordImageTypeFilter_Red.Checked = false;
-            RadioButton_KeywordImageTypeFilter_Green.Checked = false;
-            RadioButton_KeywordImageTypeFilter_Blue.Checked = false;
-            RadioButton_KeywordImageTypeFilter_Ha.Checked = false;
-            RadioButton_KeywordImageTypeFilter_O3.Checked = false;
-            RadioButton_KeywordImageTypeFilter_S2.Checked = false;
-            RadioButton_KeywordImageTypeFilter_Shutter.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
 
             CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Black;
             CheckBox_FileSelection_DirectorySelection_Master.Checked = false;
 
-            Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Black;
-            Button_KeywordImageType_SetAll.ForeColor = Color.Black;
-            Button_KeywordImageType_SetByFile.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Black;
 
 
             if (mFileList.Count == 0)
@@ -1995,26 +2007,26 @@ namespace XisfFileManager
 
             if (filterCount != mFileList.Count)
             {
-                RadioButton_KeywordImageTypeFilter_Luma.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_Red.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_Green.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_Blue.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_Ha.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_O3.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_S2.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFilter_Shutter.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.DarkViolet;
             }
 
             if (foundLuma)
             {
                 if (foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_Luma.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Luma.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Luma.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
                 }
             }
 
@@ -2022,12 +2034,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_Red.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Red.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Red.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
                 }
             }
 
@@ -2035,12 +2047,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_Green.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Green.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Green.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = true;
                 }
             }
 
@@ -2048,12 +2060,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundGreen || foundHa || foundO3 || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_Blue.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Blue.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Blue.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
                 }
             }
 
@@ -2061,12 +2073,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundGreen || foundBlue || foundO3 || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_Ha.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Ha.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Ha.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
                 }
             }
 
@@ -2074,12 +2086,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundS2 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_O3.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_O3.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_O3.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
                 }
             }
 
@@ -2087,12 +2099,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundShutter)
                 {
-                    RadioButton_KeywordImageTypeFilter_S2.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_S2.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_S2.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
                 }
             }
 
@@ -2100,12 +2112,12 @@ namespace XisfFileManager
             {
                 if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2)
                 {
-                    RadioButton_KeywordImageTypeFilter_Shutter.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFilter_Shutter.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFilter_Shutter.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
                 }
             }
 
@@ -2162,12 +2174,12 @@ namespace XisfFileManager
             {
                 if (foundDark || foundFlat || foundBias)
                 {
-                    RadioButton_KeywordImageTypeFrame_Light.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFrame_Light.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFrame_Light.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
                 }
             }
 
@@ -2175,12 +2187,12 @@ namespace XisfFileManager
             {
                 if (foundLight || foundFlat || foundBias)
                 {
-                    RadioButton_KeywordImageTypeFrame_Dark.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFrame_Dark.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFrame_Dark.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
                 }
             }
 
@@ -2188,12 +2200,12 @@ namespace XisfFileManager
             {
                 if (foundLight || foundDark || foundBias)
                 {
-                    RadioButton_KeywordImageTypeFrame_Flat.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFrame_Flat.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFrame_Flat.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
                 }
             }
 
@@ -2201,21 +2213,21 @@ namespace XisfFileManager
             {
                 if (foundLight || foundDark || foundFlat)
                 {
-                    RadioButton_KeywordImageTypeFrame_Bias.ForeColor = Color.Red;
-                    RadioButton_KeywordImageTypeFrame_Bias.Checked = false;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
                 }
                 else
                 {
-                    RadioButton_KeywordImageTypeFrame_Bias.Checked = true;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
                 }
             }
 
             if (!foundLight && !foundDark && !foundFlat && !foundBias)
             {
-                RadioButton_KeywordImageTypeFrame_Light.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFrame_Dark.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFrame_Flat.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordImageTypeFrame_Bias.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkViolet;
 
                 return;
             }
@@ -2225,7 +2237,7 @@ namespace XisfFileManager
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
                     CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
-                    Button_KeywordImageTypeFrame_SetMaster.ForeColor = Color.Red;
+                    Button_KeywordUpdateTab_ImageType_Frame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
@@ -2240,52 +2252,52 @@ namespace XisfFileManager
             if ((foundLight || foundDark || foundFlat || foundBias) & (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter))
             {
                 // Set "SetAll" to black if only a single filter and a single frame type was found
-                Button_KeywordImageType_SetAll.ForeColor = Color.Black;
+                Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
             }
             else
             {
                 // More that one software program - set "SetByFile" to red
-                Button_KeywordImageType_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Red;
             }
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
                 CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
-                Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
 
             if ((filterCount != mFileList.Count) || (frameTypeCount != mFileList.Count))
             {
                 // The number of source files didn't equal the number of files with a known filter
                 // Set "SetByFile" to red
-                Button_KeywordImageType_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
         }
 
         public void FindCamera()
         {
-            Label_KeywordCamera_Camera.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
 
-            RadioButton_KeywordCamera_Z533.Checked = false;
-            RadioButton_KeywordCamera_Z533.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
+            RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
 
-            RadioButton_KeywordCamera_Z183.Checked = false;
-            RadioButton_KeywordCamera_Z183.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
+            RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
 
-            RadioButton_KeywordCamera_Q178.Checked = false;
-            RadioButton_KeywordCamera_Q178.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
+            RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
 
-            RadioButton_KeywordCamera_A144.Checked = false;
-            RadioButton_KeywordCamera_A144.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
+            RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
 
-            Label_KeywordCamera_SensorTemperature.ForeColor = Color.Black;
-            Label_KeywordCamera_Gain.ForeColor = Color.Black;
-            Label_KeywordCamera_Offset.ForeColor = Color.Black;
-            Label_KeywordCamera_Binning.ForeColor = Color.Black;
-            Label_KeywordCamera_Seconds.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Black;
 
-            Button_KeywordCamera_SetAll.ForeColor = Color.Black;
-            Button_KeywordCamera_SetByFile.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
 
 
             if (mFileList.Count == 0) return;
@@ -2299,12 +2311,12 @@ namespace XisfFileManager
             {
                 if (foundZ183 | foundQ178 | foundA144)
                 {
-                    RadioButton_KeywordCamera_Z533.Checked = false;
-                    RadioButton_KeywordCamera_Z533.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
+                    RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordCamera_Z533.Checked = true;
+                    RadioButton_KeywordUpdateTab_Camera_Z533.Checked = true;
                 }
             }
 
@@ -2312,12 +2324,12 @@ namespace XisfFileManager
             {
                 if (foundZ533 | foundQ178 | foundA144)
                 {
-                    RadioButton_KeywordCamera_Z183.Checked = false;
-                    RadioButton_KeywordCamera_Z183.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
+                    RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordCamera_Z183.Checked = true;
+                    RadioButton_KeywordUpdateTab_Camera_Z183.Checked = true;
                 }
             }
 
@@ -2325,12 +2337,12 @@ namespace XisfFileManager
             {
                 if (foundZ533 | foundZ183 | foundA144)
                 {
-                    RadioButton_KeywordCamera_Q178.Checked = false;
-                    RadioButton_KeywordCamera_Q178.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
+                    RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordCamera_Q178.Checked = true;
+                    RadioButton_KeywordUpdateTab_Camera_Q178.Checked = true;
                 }
             }
 
@@ -2338,29 +2350,29 @@ namespace XisfFileManager
             {
                 if (foundZ533 | foundZ183 | foundQ178)
                 {
-                    RadioButton_KeywordCamera_A144.Checked = false;
-                    RadioButton_KeywordCamera_A144.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
+                    RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
                 }
                 else
                 {
-                    RadioButton_KeywordCamera_A144.Checked = true;
+                    RadioButton_KeywordUpdateTab_Camera_A144.Checked = true;
                 }
             }
 
             if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
             {
-                RadioButton_KeywordCamera_A144.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordCamera_Q178.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordCamera_Z183.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordCamera_Z533.ForeColor = Color.DarkViolet;
-                Label_KeywordCamera_Gain.ForeColor = Color.DarkViolet;
-                Label_KeywordCamera_Offset.ForeColor = Color.DarkViolet;
-                Label_KeywordCamera_SensorTemperature.ForeColor = Color.DarkViolet;
-                Label_KeywordCamera_Binning.ForeColor = Color.DarkViolet;
-                Label_KeywordCamera_Seconds.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.DarkViolet;
+                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
 
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
 
                 //return;
             }
@@ -2372,30 +2384,30 @@ namespace XisfFileManager
 
             if (missingGain)
             {
-                Label_KeywordCamera_Gain.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
             }
             else
             {
                 if (!uniqueGain)
                 {
-                    Label_KeywordCamera_Gain.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
                 }
             }
 
             if (missingGain && !uniqueGain)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
             }
 
             foreach (XisfFile file in mFileList)
             {
                 if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordCamera_Z533Gain.Text = file.Gain.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = file.Gain.ToString();
                 if (file.Camera.Equals("Z183"))
-                    TextBox_KeywordCamera_Z183Gain.Text = file.Gain.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = file.Gain.ToString();
                 if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordCamera_Q178Gain.Text = file.Gain.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = file.Gain.ToString();
             }
 
             // ****************************************************************
@@ -2406,30 +2418,30 @@ namespace XisfFileManager
 
             if (missingOffset)
             {
-                Label_KeywordCamera_Offset.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
             }
             else
             {
                 if (!uniqueOffset)
                 {
-                    Label_KeywordCamera_Offset.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
                 }
             }
 
             if ((missingOffset && !uniqueOffset) || !hasOffset)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
             }
 
             foreach (XisfFile file in mFileList)
             {
                 if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordCamera_Z533Offset.Text = file.Offset.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = file.Offset.ToString();
                 if (file.Camera.Equals("Z183"))
-                    TextBox_KeywordCamera_Z183Offset.Text = file.Offset.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = file.Offset.ToString();
                 if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordCamera_Q178Offset.Text = file.Offset.ToString();
+                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = file.Offset.ToString();
             }
 
             // ****************************************************************
@@ -2441,25 +2453,25 @@ namespace XisfFileManager
             if (!hasTemperature)
             {
                 // No temperatures for any file
-                Label_KeywordCamera_SensorTemperature.ForeColor = Color.Red;
-                TextBox_KeywordCamera_SensorTemperature.Text = string.Empty;
+                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
+                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
             }
             else
             {
                 if (missingTemperature)
                 {
                     // At least one, but not all, files have a missing temperature
-                    Label_KeywordCamera_SensorTemperature.ForeColor = Color.DarkViolet;
+                    Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
 
                     if (uniqueTemperature)
                     {
                         // Of the files that do have a temperature, this is the unique value
-                        TextBox_KeywordCamera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
+                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
                     }
                     else
                     {
                         // At least two files have different temperatures
-                        TextBox_KeywordCamera_SensorTemperature.Text = string.Empty;
+                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
                     }
                 }
                 else
@@ -2467,12 +2479,12 @@ namespace XisfFileManager
                     if (uniqueTemperature)
                     {
                         // All files contain the same temerature
-                        TextBox_KeywordCamera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
+                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
                     }
                     else
                     {
                         // All files contain temperatures but at least two files contain different temperatures
-                        TextBox_KeywordCamera_SensorTemperature.Text = string.Empty;
+                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
                     }
                 }
             }
@@ -2480,8 +2492,8 @@ namespace XisfFileManager
             // Now set button colors
             if ((missingTemperature && !uniqueTemperature) || !hasTemperature)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
             }
 
             // ***************************************************************
@@ -2491,24 +2503,24 @@ namespace XisfFileManager
 
             if (missingBinning)
             {
-                Label_KeywordCamera_Binning.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
             }
             else
             {
                 if (!uniqueBinning)
                 {
-                    Label_KeywordCamera_Binning.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
                 }
                 else
                 {
-                    NumericUpDown_KeywordCamera_Binning.Value = mFileList[0].Binning;
+                    NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = mFileList[0].Binning;
                 }
             }
 
             if (missingBinning && !uniqueBinning)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
             }
 
             // ****************************************************************
@@ -2520,8 +2532,8 @@ namespace XisfFileManager
             if (!hasExposure)
             {
                 // No exposure for any file
-                Label_KeywordCamera_Seconds.ForeColor = Color.Red;
-                TextBox_KeywordCamera_Seconds.Text = string.Empty;
+                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
+                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
             }
             else
             {
@@ -2532,7 +2544,7 @@ namespace XisfFileManager
                 if (missingExposure)
                 {
                     // At least one, but not all, files have a missing exposure
-                    Label_KeywordCamera_Seconds.ForeColor = Color.DarkViolet;
+                    Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
 
                     if (uniqueExposure)
                     {
@@ -2540,20 +2552,20 @@ namespace XisfFileManager
                         if (status)
                         {
                             if (value < 10)
-                                TextBox_KeywordCamera_Seconds.Text = value.ToString("F3");
+                                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F3");
                             else
-                                TextBox_KeywordCamera_Seconds.Text = value.ToString("F1");
+                                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
                         }
                         else
                         {
                             // Not a number
-                            TextBox_KeywordCamera_Seconds.Text = string.Empty;
+                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
                         }
                     }
                     else
                     {
                         // At least two files have different exposures
-                        TextBox_KeywordCamera_Seconds.Text = string.Empty;
+                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
                     }
                 }
                 else
@@ -2562,14 +2574,14 @@ namespace XisfFileManager
                     {
                         // All files contain the same exposure
                         if (value < 10)
-                            TextBox_KeywordCamera_Seconds.Text = value.ToString("F3");
+                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F3");
                         else
-                            TextBox_KeywordCamera_Seconds.Text = value.ToString("F1");
+                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
                     }
                     else
                     {
                         // All files contain exposures but at least two files contain different exposures
-                        TextBox_KeywordCamera_Seconds.Text = string.Empty;
+                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
                     }
                 }
             }
@@ -2577,8 +2589,8 @@ namespace XisfFileManager
 
             if ((missingExposure && !uniqueExposure) || !hasExposure)
             {
-                Button_KeywordCamera_SetAll.ForeColor = Color.Red;
-                Button_KeywordCamera_SetByFile.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
             }
 
             // ****************************************************************
@@ -2586,27 +2598,27 @@ namespace XisfFileManager
 
         private void CheckBox_CameraNarrowBand_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordCamera_NarrowBand.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
             {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
 
-                TextBox_KeywordCamera_Z183Gain.Text = "111";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
+                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
 
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
+                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
             }
             else
             {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
 
-                TextBox_KeywordCamera_Z183Gain.Text = "53";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
+                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
 
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
+                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
             }
         }
 
@@ -2627,23 +2639,23 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
 
-                bool status = double.TryParse(TextBox_KeywordCamera_SensorTemperature.Text, out value);
+                bool status = double.TryParse(TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text, out value);
                 if (status)
                 {
                     file.KeywordData.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
                 }
 
                 file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Horizontal Binning");
-                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Vertical Bining");
+                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Horizontal Binning");
+                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Vertical Bining");
 
-                status = double.TryParse(TextBox_KeywordCamera_Seconds.Text, out value);
+                status = double.TryParse(TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text, out value);
                 if (status)
                 {
                     file.KeywordData.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
                 }
 
-                if (RadioButton_KeywordCamera_Z533.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
@@ -2652,12 +2664,12 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
                     file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Z533Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Z533Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
-                if (RadioButton_KeywordCamera_Z183.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
@@ -2665,12 +2677,12 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Z183Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Z183Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
-                if (RadioButton_KeywordCamera_Q178.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
@@ -2678,12 +2690,12 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordCamera_Q178Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordCamera_Q178Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text), "Camera Gain");
+                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text), "Camera Offset");
                     file.KeywordData.SetEGain();
                 }
 
-                if (RadioButton_KeywordCamera_A144.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
@@ -2733,7 +2745,7 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("BITPIX", 16, "Bits Per Pixel");
                 file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
-                string temperatureTextUI = TextBox_KeywordCamera_SensorTemperature.Text;
+                string temperatureTextUI = TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text;
 
                 string temperatureText;
                 if (globalTemperature)
@@ -2772,9 +2784,9 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
 
                 file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Horizontal Binning");
-                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordCamera_Binning.Value.ToString(), "Vertical Bining");
-                string secondsTextUI = TextBox_KeywordCamera_Seconds.Text;
+                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Horizontal Binning");
+                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Vertical Bining");
+                string secondsTextUI = TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text;
 
                 string secondsText;
                 if (globalSeconds)
@@ -2819,7 +2831,7 @@ namespace XisfFileManager
                 int gainValueUI;
                 int offsetValue;
                 int offsetValueUI;
-                if (RadioButton_KeywordCamera_Z533.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
@@ -2828,7 +2840,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
 
-                    status = int.TryParse(TextBox_KeywordCamera_Z533Gain.Text, out gainValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -2866,7 +2878,7 @@ namespace XisfFileManager
                     file.KeywordData.SetEGain();
 
 
-                    status = int.TryParse(TextBox_KeywordCamera_Z533Offset.Text, out offsetValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -2903,7 +2915,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
                 }
 
-                if (RadioButton_KeywordCamera_Z183.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
@@ -2912,7 +2924,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordCamera_Z183Gain.Text, out gainValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -2950,7 +2962,7 @@ namespace XisfFileManager
                     file.KeywordData.SetEGain();
 
 
-                    status = int.TryParse(TextBox_KeywordCamera_Z183Offset.Text, out offsetValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -2990,7 +3002,7 @@ namespace XisfFileManager
 
 
 
-                if (RadioButton_KeywordCamera_Q178.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
@@ -2999,7 +3011,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordCamera_Q178Gain.Text, out gainValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -3037,7 +3049,7 @@ namespace XisfFileManager
                     file.KeywordData.SetEGain();
 
 
-                    status = int.TryParse(TextBox_KeywordCamera_Q178Offset.Text, out offsetValueUI);
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -3074,7 +3086,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
                 }
 
-                if (RadioButton_KeywordCamera_A144.Checked)
+                if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
@@ -3095,62 +3107,62 @@ namespace XisfFileManager
 
         private void RadioButton_KeywordCamera_Z533_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_KeywordCamera_SensorTemperature.Text = "-10";
+            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "-10";
 
-            if (CheckBox_KeywordCamera_NarrowBand.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
             {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
             }
             else
             {
-                TextBox_KeywordCamera_Z533Gain.Text = "100";
-                TextBox_KeywordCamera_Z533Offset.Text = "50";
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
             }
         }
 
         private void RadioButton_KeywordCamera_Z183_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_KeywordCamera_SensorTemperature.Text = "-20";
+            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "-20";
 
-            if (CheckBox_KeywordCamera_NarrowBand.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
             {
-                TextBox_KeywordCamera_Z183Gain.Text = "111";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
+                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
             }
             else
             {
-                TextBox_KeywordCamera_Z183Gain.Text = "53";
-                TextBox_KeywordCamera_Z183Offset.Text = "10";
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
+                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
             }
         }
 
         private void RadioButton_KeywordCamera_Q178_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_KeywordCamera_SensorTemperature.Text = "";
+            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "";
 
-            if (CheckBox_KeywordCamera_NarrowBand.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
             {
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
+                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
             }
             else
             {
-                TextBox_KeywordCamera_Q178Gain.Text = "40";
-                TextBox_KeywordCamera_Q178Offset.Text = "15";
+                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
             }
         }
 
         private void RadioButton_KeywordCamera_A144_CheckedChanged(object sender, EventArgs e)
         {
-            TextBox_KeywordCamera_SensorTemperature.Text = "";
+            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "";
         }
 
 
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
-            ComboBox_KeywordUpdate_SubFrameKeywords_TargetNames.Text = "Master";
-            CheckBox_KeywordUpdate_SubFrameKeywords_UpdateTargetName.Checked = true;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
 
             bool globalTotalFrames = false;
@@ -3265,7 +3277,7 @@ namespace XisfFileManager
         {
             List<string> WeightKeywords = new List<string>();
 
-            ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
 
             // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
@@ -3280,29 +3292,29 @@ namespace XisfFileManager
 
                 foreach (string item in WeightKeywords)
                 {
-                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
                 }
             }
             else
             {
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
-                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
                 return;
             }
 
             // Remove ALL WEIGHT items
-            if (RadioButton_KeywordUpdate_SubFrameKeywords_Weights_All.Checked)
+            if (RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Checked)
             {
-                foreach (string item in ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items)
+                foreach (string item in ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items)
                 {
                     foreach (XisfFile file in mFileList)
                     {
@@ -3310,36 +3322,36 @@ namespace XisfFileManager
                     }
                 }
 
-                Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text = "";
+                Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
                 return;
             }
 
             // Only Remove selected item
-            if (RadioButton_KeywordUpdate_SubFrameKeywords_Weights_Selected.Checked)
+            if (RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Checked)
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
+                    file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 }
 
-                WeightKeywords.Remove(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text);
-                ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.Text = "";
+                WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
                 if (WeightKeywords.Count > 1)
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
                 }
                 else
                 {
-                    Label_KeywordUpdate_SubFrameKeyword_Weights_WeightKeyword.ForeColor = Color.Black;
+                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
                 }
 
                 if (WeightKeywords.Count > 0)
                 {
-                    ComboBox_KeywordUpdate_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
                 }
                 return;
             }
@@ -3349,7 +3361,6 @@ namespace XisfFileManager
 
         private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
         {
-
             mFileType = DirectoryOps.FileType.ALL;
         }
 
@@ -3363,20 +3374,21 @@ namespace XisfFileManager
             mFileType = DirectoryOps.FileType.MASTERS;
         }
 
-        private void Calibration_FindCalibrationFrames_Click(object sender, EventArgs e)
+        private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
+            mCalibration.CalibrationFileList.Clear();
             mCalibration.Frame = DirectoryOps.FrameType.ALL;
             mCalibration.FindCalibrationFrames(mFileList);
         }
 
-        private void Calibration_MatchCalibrationFrames_Click(object sender, EventArgs e)
+        private void CalibrationTab_MatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.MatchCalibrationFrames(mFileList);
         }
 
-        private void Calibration_CreateCalibrationDirectory_Click(object sender, EventArgs e)
+        private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
             mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
         }
@@ -3385,9 +3397,9 @@ namespace XisfFileManager
         {
             double value;
 
-            if (double.TryParse(TextBox_CalibrationTab_ExposureTolerance.Text, out value) == false)
+            if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Exposure.Text, out value) == false)
             {
-                TextBox_CalibrationTab_ExposureTolerance.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "10";
                 return;
             }
 
@@ -3398,9 +3410,9 @@ namespace XisfFileManager
         {
             double value;
 
-            if (double.TryParse(TextBox_CalibrationTab_GainTolerance.Text, out value) == false)
+            if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Gain.Text, out value) == false)
             {
-                TextBox_CalibrationTab_GainTolerance.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "10";
                 return;
             }
 
@@ -3411,9 +3423,9 @@ namespace XisfFileManager
         {
             double value;
 
-            if (double.TryParse(TextBox_CalibrationTab_OffsetTolerance.Text, out value) == false)
+            if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Offset.Text, out value) == false)
             {
-                TextBox_CalibrationTab_OffsetTolerance.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "10";
                 return;
             }
 
@@ -3425,13 +3437,34 @@ namespace XisfFileManager
         {
             double value;
 
-            if (double.TryParse(TextBox_CalibrationTab_TemperatureTolerance.Text, out value) == false)
+            if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Temperature.Text, out value) == false)
             {
-                TextBox_CalibrationTab_TemperatureTolerance.Text = "25";
+                TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = "25";
                 return;
             }
 
             mCalibration.TemperatureTolerance = value / 100.0;
+        }
+
+        private void CheckBox_KeywordUpdate_SubFrameKeywords_Protect_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Black;
+
+            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
+            {
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = true;
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Enabled = true;
+            }
+            else
+            {
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = false;
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Enabled = false;
+            }
+        }
+
+        private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Black;
         }
     }
 }

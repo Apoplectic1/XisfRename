@@ -40,7 +40,7 @@ namespace XisfFileManager.FileOperations
         public string CDARK { get; set; }
         public string CFLAT { get; set; }
         public string CBIAS { get; set; }
-        public bool Protected { get; set; } = false;
+        public bool? Protected { get; set; } = null;
 
 
         public XisfFile()

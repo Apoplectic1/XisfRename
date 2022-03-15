@@ -96,16 +96,22 @@ namespace XisfFileManager
         public void SetObservationSite()
         {
             AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
-            AddKeyword("SITELONG", -74.997372, "Logitude of observation site Degrees East");
-            AddKeyword("SITELAT", 40.282852, "Latitude of observation site Degrees North");
-            AddKeyword("SITEELEV", 80.0, "Altitude of observation site MSL Meters");
-            AddKeyword("LONG-OBS", -74.997372, "Logitude of observation site Degrees East");
-            AddKeyword("LAT-OBS", 40.282852, "Latitude of observation site Degrees North");
-            AddKeyword("ALT-OBS", 80.0, "Altitude of observation site MSL Meters");
-            AddKeyword("OBSGEO-L", -74.997372, "Logitude of observation site Degrees East");
-            AddKeyword("OBSGEO-B", 40.282852, "Latitude of observation site Degrees North");
-            AddKeyword("OBSGEO-H", 80.0, "Altitude of observation site MSL Meters");
-            AddKeyword("OBSERVER", "Dan Stark - djstark@gmail.com", "P.O. Box 156, 841 Durham Rd, Penns Park, PA 18943");
+            AddKeyword("SITELONG", -74.997372, "Logitude of observation site - Degrees East");
+            AddKeyword("SITELAT", 40.282852, "Latitude of observation site - Degrees North");
+            AddKeyword("SITEELEV", 80.0, "Altitude of observation site - MSL Meters");
+            RemoveKeyword("LONG-OBS");
+            RemoveKeyword("LAT-OBS");
+            RemoveKeyword("ALT-OBS");
+            RemoveKeyword("OBSGEO-L");
+            RemoveKeyword("OBSGEO-B");
+            RemoveKeyword("OBSGEO-H");
+            //AddKeyword("LONG-OBS", -74.997372, "Logitude of observation site Degrees East");
+            //AddKeyword("LAT-OBS", 40.282852, "Latitude of observation site Degrees North");
+            //AddKeyword("ALT-OBS", 80.0, "Altitude of observation site MSL Meters");
+            //AddKeyword("OBSGEO-L", -74.997372, "Logitude of observation site Degrees East");
+            //AddKeyword("OBSGEO-B", 40.282852, "Latitude of observation site Degrees North");
+            //AddKeyword("OBSGEO-H", 80.0, "Altitude of observation site MSL Meters");
+            AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
 
         // *********************************************************************************************************
@@ -979,49 +985,17 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public bool Protected()
+        public bool? Protected()
         {
             Keyword node = new Keyword();
-            bool bInvalidEntry = true;
-
+          
             node = KeywordList.Find(i => i.Name == "Protected");
             if (node != null)
             {
                 return  Convert.ToBoolean(node.Value);
             }
 
-            AddKeyword("Protected", false);
-            return false;
-
-            UserInputFormData formData = new UserInputFormData
-            {
-                mFormName = "Protected File",
-                mFormText = "Set to preserve all File Keyword data",
-                mFormEntryText = "Enter True or False (t/T/true/True or f/F/false/False):",
-                mFileName = FileName()
-            };
-
-            while (bInvalidEntry)
-            {
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                if (FormValue.mTextBox.ToUpper().StartsWith("T"))
-                {
-                    AddKeyword("Protected", true);
-                    return true;
-                }
-
-                if (FormValue.mTextBox.ToUpper().StartsWith("F"))
-                {
-                    AddKeyword("Protected", false);
-                    return false;
-                }
-
-                FormValue.mTextBox = string.Empty;
-                bInvalidEntry = true;
-            }
-
-            return true;
+            return null;
         }
 
         // *********************************************************************************************************
