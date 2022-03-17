@@ -3522,7 +3522,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "XISF Manager";
+            this.Text = "XISF File Manager";
             this.GroupBox_FileSelection_SequenceOrder.ResumeLayout(false);
             this.GroupBox_FileSelection_SequenceOrder.PerformLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.ResumeLayout(false);

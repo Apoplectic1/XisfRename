@@ -81,6 +81,8 @@ namespace XisfFileManager
                 int index = 1;
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
+                    Application.DoEvents();
+
                     bool bStatus = false;
 
                     // Create a new xisf file instance
@@ -243,7 +245,6 @@ namespace XisfFileManager
             mFlatFileList.Clear();
             bool bAllDarksMatched = true;
             bool bAllFlatsMatched = true;
-            bool bAllBiasMatched = true;
 
             // Build lists of all the nearest (by DateTime) Dark and Flat calibration files
             // These lists will initially be the same size as the target list (contains many duplicates) 
@@ -277,9 +278,12 @@ namespace XisfFileManager
             mDarkFileList = mDarkFileList.Distinct().ToList();
             mFlatFileList = mFlatFileList.Distinct().ToList();
 
+
+
             // Bias frames can be matched with short Darks and short Flats
             // This logic is NOT COMPLETE
             mBiasFileList.Clear();
+            bool bAllBiasMatched = true;
 
             // Now build a list of nearest Bias files that match the actual flat files
             // This is a stub; to use biases to calibrate flats we need to look at exposure times to decide on using a bias or a dark
@@ -455,8 +459,8 @@ namespace XisfFileManager
                 file.SourceFileName = directoryName + @"\" + Path.GetFileName(file.SourceFileName);
                 XisfFileUpdate.UpdateTargetCalibrationFile(directoryName + @"\" + Path.GetFileName(file.SourceFileName), file, subFrameLists);
             }
-            return true;
 
+            return true;
         }
 
         // ******************************************************************************************************************
