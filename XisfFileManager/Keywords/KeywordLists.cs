@@ -509,6 +509,8 @@ namespace XisfFileManager
 
             if (node != null)
             {
+                node.Value = node.Value.Replace("'", "");
+
                 if (node.Value.Contains("Sequence"))
                 {
                     AddKeyword("CREATOR", "SGP", node.Value);
@@ -899,9 +901,15 @@ namespace XisfFileManager
             Keyword node = new Keyword();
 
             node = KeywordList.Find(i => i.Name == "POSANGLE");
-
             if (node == null)
+            { 
                 node = KeywordList.Find(i => i.Name == "ROTATANG");
+                if (node != null)
+                {
+                    RemoveKeyword("ROTATANG");
+                    AddKeyword("POSANGLE", node.Value, node.Comment);
+                }
+            }
 
             if (node == null) return string.Empty;
 
@@ -989,10 +997,17 @@ namespace XisfFileManager
         {
             Keyword node = new Keyword();
           
-            node = KeywordList.Find(i => i.Name == "Protected");
+            node = KeywordList.Find(i => i.Name == "PROTECTED");
             if (node != null)
             {
                 return  Convert.ToBoolean(node.Value);
+            }
+
+            // Unfortunate - Initially I didn't set this Keyword as uppercase (backups)
+            node = KeywordList.Find(i => i.Name == "Protected");
+            if (node != null)
+            {
+                return Convert.ToBoolean(node.Value);
             }
 
             return null;

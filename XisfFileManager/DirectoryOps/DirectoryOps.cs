@@ -6,8 +6,8 @@ namespace XisfFileManager
 {
     public class DirectoryOps
     {
-        private List<System.IO.FileInfo> mFileList;
-        private List<string> mExceptionLog;
+        private readonly List<System.IO.FileInfo> mFileList;
+        private readonly List<string> mExceptionLog;
         private System.IO.FileInfo mFileInfo;
 
         public enum CameraType { ALL, Z183, Z533, Q178, A144 }
@@ -38,7 +38,7 @@ namespace XisfFileManager
             // Process all the files directly under this folder 
             try
             {
-                if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing") && (rootDirectory.Name != "Masters"))
+                if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing") && (!rootDirectory.Name.ToLower().Contains("master")))
                 {
                     files = rootDirectory.GetFiles("*.xisf");
                 }

@@ -102,7 +102,7 @@
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords = new System.Windows.Forms.GroupBox();
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection = new System.Windows.Forms.GroupBox();
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All = new System.Windows.Forms.RadioButton();
             this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect = new System.Windows.Forms.CheckBox();
             this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords = new System.Windows.Forms.CheckBox();
@@ -1161,7 +1161,7 @@
             // 
             // GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection
             // 
-            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew);
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Location = new System.Drawing.Point(221, 57);
@@ -1171,18 +1171,18 @@
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabStop = false;
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Text = "Keyword Protection";
             // 
-            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew
             // 
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Checked = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Location = new System.Drawing.Point(111, 17);
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew";
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Size = new System.Drawing.Size(85, 17);
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.TabIndex = 24;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.TabStop = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Text = "Update New";
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Checked = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Location = new System.Drawing.Point(111, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Size = new System.Drawing.Size(85, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabIndex = 24;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Text = "Update New";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged);
             // 
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All
             // 
@@ -3880,7 +3880,7 @@
         private System.Windows.Forms.Label Label_CalibrationTab_TotalMatchedFiles;
         private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All;
     }
 }

@@ -25,15 +25,15 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        private ImageCalculations ImageParameterLists;
-        private List<XisfFile> mFileList;
+        private readonly ImageCalculations ImageParameterLists;
+        private readonly List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
-        private SubFrameLists SubFrameLists;
-        private SubFrameNumericLists SubFrameNumericLists;
-        private SubFrameNumericListsValidEnum eSubFrameValidListsValid;
+        private readonly SubFrameLists SubFrameLists;
+        private readonly SubFrameNumericLists SubFrameNumericLists;
+        private eSubFrameNumericListsValid eSubFrameValidListsValid;
         private XisfFile mFile;
-        private XisfFileRename mRenameFile;
+        private readonly XisfFileRename mRenameFile;
         private readonly XisfFileRead mFileReader = new XisfFileRead();
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
@@ -57,8 +57,8 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeLow;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-        private Calibration mCalibration;
-        private DirectoryOps mDirectoryOps;
+        private readonly Calibration mCalibration;
+        private readonly DirectoryOps mDirectoryOps;
         private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
 
 
@@ -67,10 +67,8 @@ namespace XisfFileManager
             InitializeComponent();
             CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
 
-            //mDelegateValues = new CalibrationPageValues();
             mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
-            TabControl_Update.Selected += new TabControlEventHandler(TabControl_Update_Selected);
 
             Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
@@ -112,24 +110,6 @@ namespace XisfFileManager
         // ****************************************************************************************************************
         // ************************ Event Handlers ************************************************************************
         // ****************************************************************************************************************
-
-        // Executes when TabControl_Updated is selected (changed)
-        private void TabControl_Update_Selected(object sender, TabControlEventArgs e)
-        {
-            /*
-            if (e.TabPage.Name == TabPage_Calibration.Name)
-            {
-                if (mFile != null)
-                {
-                    if (mFile.Camera.Contains("Z533")) mCalibration.Camera = DirectoryOps.CameraType.Z533;
-                    if (mFile.Camera.Contains("Z183")) mCalibration.Camera = DirectoryOps.CameraType.Z183;
-                    if (mFile.Camera.Contains("A144")) mCalibration.Camera = DirectoryOps.CameraType.A144;
-                    if (mFile.Camera.Contains("Q178")) mCalibration.Camera = DirectoryOps.CameraType.Q178;
-                }
-            }
-            */
-        }
-
         private void EventHandler_UpdateCalibrationPageForm(CalibrationTabPageValues data)
         {
             ProgressBar_CalibrationTab.Value = data.Progress;
@@ -158,12 +138,12 @@ namespace XisfFileManager
             data.MessageMode = CalibrationTabPageValues.eMessageMode.KEEP;
 
 
-            Label_CalibrationTab_TotalMatchedFiles.Text = "Matched " + data.TotalMatchedCalibrationFiles.ToString() + " Calibration Files: " + 
-                data.TotalUniqueDarkCalibrationFiles.ToString() + " Unique Darks, " + 
-                data.TotalUniqueFlatCalibrationFiles.ToString() + " Unique Flats and " + 
+            Label_CalibrationTab_TotalMatchedFiles.Text = "Matched " + data.TotalMatchedCalibrationFiles.ToString() + " Calibration Files: " +
+                data.TotalUniqueDarkCalibrationFiles.ToString() + " Unique Darks, " +
+                data.TotalUniqueFlatCalibrationFiles.ToString() + " Unique Flats and " +
                 data.TotalUniqueBiasCalibrationFiles.ToString() + " Unique Bias Files " +
                 "from " + mFileList.Count.ToString() + " Target Frames";
-            
+
             TabPage_Calibration.Update();
         }
 
@@ -424,7 +404,7 @@ namespace XisfFileManager
             SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
 
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
             {
                 // SubFrame data is valid
                 NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
@@ -657,38 +637,48 @@ namespace XisfFileManager
 
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked && RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked)
-            {
-                CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Red;
-                return;
-            }
-
             int iUnprotectedCount = 0;
             foreach (XisfFile file in mFileList)
             {
+                // First count all unprotected files. Unpotected means either the PROTECTED Keyword doesn't exist or is false.
                 if (file.KeywordData.Protected() != true)
                     iUnprotectedCount++;
             }
 
-            
+            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
+            {
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked)
+                {
+                    CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Red;
+                    Label_FileSelection_Statistics_Task.Text = "Keyword file updates disabled - All files are protected";
+                    return;
+                }
+                else
+                {
+                    if (iUnprotectedCount == 0)
+                    {
+                        Label_FileSelection_Statistics_Task.Text = "Keyword file updates aborted - No unprotected files found";
+                        return;
+                    }
+                }
+            }
 
             Label_FileSelection_Statistics_Task.Text = "Updating " + iUnprotectedCount.ToString() + "/" + mFileList.Count().ToString() + " File Keywords";
-            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = iUnprotectedCount;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked) ? iUnprotectedCount : mFileList.Count();
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
-            return;
 
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
             TabControl_Update.Enabled = false;
 
             // Only fill out the weight lists if in fact, we are actually updating them
-            if (XisfFileUpdate.Operation == XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS)
+            if (XisfFileUpdate.Operation == XisfFileUpdate.eOperation.CALCULATED_WEIGHTS)
             {
                 // If the data in at least one of the read source XISF files is bad or inconsistent, do not allow that data to be updated without
                 // re-reading a new PixInsight Subframe Selector generated CSV file (to either initially fill out or to correct bogus data)
                 eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.INVALD)
+                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.INVALD)
                 {
                     var result = MessageBox.Show(
                         "SubFrame Numerical Weight List is Invalid.\n\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
@@ -704,7 +694,7 @@ namespace XisfFileManager
                 }
 
                 // If we've got good consistent file and SubFrame data, then update the numerical lists 
-                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
                 {
                     // Fisrt calculate a new WEIGHT Keyword (not SSWEIGHT yet) based on the current state of the UI and file/list contents
                     SubFrameNumericLists.CalculateNewSubFrameWeights(mFileList.Count);
@@ -716,13 +706,17 @@ namespace XisfFileManager
 
             XisfFileUpdate.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", "");
 
+            // File Protection
+            // We get here under two conditions: 1. Protect is not checked and 2. We are updating only unprotected files
             int count = 0;
             foreach (XisfFile file in mFileList)
             {
                 // Don't update existing files that have the Protected Keyword set unless the UI overrides this setting
-                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked && RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked && (file.KeywordData.Protected() == true))
+                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 {
-                    break;
+                    if (file.KeywordData.Protected() == true)
+                    // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
+                    continue;
                 }
 
                 file.KeywordData.SetObservationSite();
@@ -735,12 +729,17 @@ namespace XisfFileManager
                 if (file.Master)
                     file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
+
+                // For each file: Add PROTECTED Keyword if CheckBox is checked or remove all PROTECTED Keyword
+                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
+                    file.KeywordData.AddKeyword("PROTECTED", true);
+
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
                 Application.DoEvents();
 
-                if ((bStatus == false) && (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked == false))
+                if (bStatus == false)
                 {
                     Label_FileSelection_Statistics_Task.Text = "File Write Error";
 
@@ -802,20 +801,20 @@ namespace XisfFileManager
 
             switch (eSubFrameValidListsValid)
             {
-                case SubFrameNumericListsValidEnum.EMPTY:
+                case eSubFrameNumericListsValid.EMPTY:
                     MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
-                case SubFrameNumericListsValidEnum.MISMATCH:
+                case eSubFrameNumericListsValid.MISMATCH:
                     MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
-                case SubFrameNumericListsValidEnum.INVALD:
+                case eSubFrameNumericListsValid.INVALD:
                     MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
                     return;
             }
 
-            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
             {
                 // SubFrame data is valid
                 NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
@@ -830,7 +829,7 @@ namespace XisfFileManager
 
             SetUISubFrameGroupBoxState();
 
-            XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.NEW_WEIGHTS;
+            XisfFileUpdate.Operation = XisfFileUpdate.eOperation.NEW_WEIGHTS;
         }
 
         private void TextBox_FwhmRangeHigh_TextChanged(object sender, EventArgs e)
@@ -968,7 +967,7 @@ namespace XisfFileManager
 
         private void SetUISubFrameGroupBoxState()
         {
-            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == SubFrameNumericListsValidEnum.VALID)
+            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == eSubFrameNumericListsValid.VALID)
             {
                 RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
                 RadioButton_SetImageStatistics_RescaleWeights.Enabled = true;
@@ -985,13 +984,13 @@ namespace XisfFileManager
 
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid != eSubFrameNumericListsValid.VALID)
             {
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
             }
 
-            if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
             {
                 // SubFrame data is valid
                 TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
@@ -1029,7 +1028,7 @@ namespace XisfFileManager
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == SubFrameNumericListsValidEnum.VALID)
+                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
@@ -1058,7 +1057,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.KEEP_WEIGHTS;
+                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.KEEP_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1067,7 +1066,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_RescaleWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.RESCALE_WEIGHTS;
+                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.RESCALE_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1076,7 +1075,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_CalculateWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.OperationEnum.CALCULATED_WEIGHTS;
+                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.CALCULATED_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1123,8 +1122,8 @@ namespace XisfFileManager
 
         private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
         {
-            SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != SubFrameNumericListsValidEnum.VALID)
+            eSubFrameNumericListsValid valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != eSubFrameNumericListsValid.VALID)
             {
                 return;
             }
@@ -1141,8 +1140,8 @@ namespace XisfFileManager
 
         private void UpdateWeightCalculations()
         {
-            SubFrameNumericListsValidEnum valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != SubFrameNumericListsValidEnum.VALID)
+            eSubFrameNumericListsValid valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != eSubFrameNumericListsValid.VALID)
             {
                 return;
             }
@@ -3453,12 +3452,13 @@ namespace XisfFileManager
             if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
             {
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = true;
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Enabled = true;
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = true;
             }
             else
             {
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = false;
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtectionUpdateNew.Enabled = false;
+                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = false;
+                Label_FileSelection_Statistics_Task.Text = "Updates are enabled.";
             }
         }
 

@@ -16,7 +16,7 @@ namespace XisfFileManager
     // ******************************************************************************************************************
     public class Calibration
     {
-        private DirectoryOps mDirectoryOps;
+        private readonly DirectoryOps mDirectoryOps;
         private List<XisfFile> mBiasFileList;
         private List<XisfFile> mCalibrationLibraryFileList;
         private List<XisfFile> mDarkFileList;
@@ -345,7 +345,8 @@ namespace XisfFileManager
                 XisfFile nearestDarkCalibrationFile = MatchCalibrationFile("Dark", targetFile);
                 XisfFile nearestFlatCalibrationFile = MatchCalibrationFile("Flat", targetFile);
 
-                targetFile.KeywordData.AddKeyword("Protected", true);
+                // This needs to be moved
+                //targetFile.KeywordData.AddKeyword("Protected", true);
 
                 if (nearestDarkCalibrationFile != null)
                 {

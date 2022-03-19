@@ -4,8 +4,7 @@ namespace XisfFileManager.Keywords
 {
     public class SubFrame
     {
-        public enum ValidationEnum { EMPTY, INVALD, VALID, MISMATCH }
-
+        public enum eValidation { EMPTY, INVALD, VALID, MISMATCH }
         public List<Keyword> Approved { get; set; }
         public List<Keyword> AirMass { get; set; }
         public List<Keyword> Eccentricity { get; set; }
@@ -63,7 +62,7 @@ namespace XisfFileManager.Keywords
             Weight.Clear();
         }
 
-        public ValidationEnum Validate(int SubFrameCount)
+        public eValidation Validate(int SubFrameCount)
         {
             bool bStatus = true;
             bool bZero = true;
@@ -127,19 +126,19 @@ namespace XisfFileManager.Keywords
 
             if (!bFileExists)
             {
-                return ValidationEnum.MISMATCH;
+                return eValidation.MISMATCH;
             }
 
             if (bZero)
             {
-                return ValidationEnum.EMPTY;
+                return eValidation.EMPTY;
             }
             else
             {
                 if (bStatus)
-                    return ValidationEnum.VALID;
+                    return eValidation.VALID;
                 else
-                    return ValidationEnum.INVALD;
+                    return eValidation.INVALD;
             }
         }
     }

@@ -13,8 +13,8 @@ namespace XisfFileManager.FileOperations
 {
     public static class XisfFileUpdate
     {
-        public enum OperationEnum { NEW_WEIGHTS, KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
-        public static OperationEnum Operation { get; set; } = OperationEnum.KEEP_WEIGHTS;
+        public enum eOperation { NEW_WEIGHTS, KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
+        public static eOperation Operation { get; set; } = eOperation.KEEP_WEIGHTS;
         public static Buffer mBuffer;
         public static List<Buffer> mBufferList;
         public static string TargetName { get; set; }
@@ -268,7 +268,7 @@ namespace XisfFileManager.FileOperations
                 // If Operation != OperationEnum.KEEP_WEIGHTS, remove (if existing) and then add (i.e. replace) the keywords from PixInsight's SubFrame Selector.
                 // The "replaced" keywords are the orignal xisf file keywords and are replaced with the keywords stored in mFile.KeywordData.KeywordList.
                 // Existing Weights are kept by NOT replacing or adding new ones.
-                if (Operation != OperationEnum.KEEP_WEIGHTS)
+                if (Operation != eOperation.KEEP_WEIGHTS)
                 {
                     ReplaceSubFrameSelectorKeywords(SubFrameSelectorKeywordLists, mFile);
                 }
