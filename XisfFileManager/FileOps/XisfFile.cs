@@ -90,26 +90,29 @@ namespace XisfFileManager.FileOperations
             return 0;
         };
 
-        public void ParseRequiredKeywords()
+        public void SetRequiredKeywords()
         {
             Binning = KeywordData.Binning();
+            CBIAS = KeywordData.CBIAS();
+            CDARK = KeywordData.CDARK();
+            CFLAT = KeywordData.CFLAT();
             Camera = KeywordData.Camera();
             CaptureSoftware = KeywordData.CaptureSoftware();
             CaptureTime = KeywordData.CaptureDateTime();
             Exposure = KeywordData.ExposureSeconds();
+            FileName = KeywordData.FileName();
             Filter = KeywordData.FilterName();
             FocalLength = KeywordData.FocalLength();
             FrameType = KeywordData.FrameType();
             Gain = KeywordData.Gain();
-            Target = KeywordData.TargetName();
-            Master = Target.Contains("Master");
-            NarrowBand = Filter.Contains("Ha") || Filter.Contains("O3") || Filter.Contains("S2");
+            Master = KeywordData.TargetName().Contains("Master");
+            NarrowBand = KeywordData.FilterName().Contains("Ha") || KeywordData.FilterName().Contains("O3") || KeywordData.FilterName().Contains("S2");
             Offset = KeywordData.Offset();
-            FileName = KeywordData.FileName();
-            Telescope = KeywordData.Telescope();
-            RiccardiReducer = Telescope.EndsWith("R");
-            Temperature = KeywordData.SensorTemperature();
             Protected = KeywordData.Protected();
+            RiccardiReducer = KeywordData.Telescope().EndsWith("R");
+            Target = KeywordData.TargetName();
+            Telescope = KeywordData.Telescope();
+            Temperature = KeywordData.SensorTemperature();
         }
     }
 }

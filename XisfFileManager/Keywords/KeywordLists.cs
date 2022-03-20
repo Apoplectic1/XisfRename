@@ -13,7 +13,7 @@ namespace XisfFileManager
     public class KeywordLists
     {
         public List<Keyword> KeywordList;
-        enum rejectionType { NULL, LINEAR, STUDENT, WINSOR, SIGMA }
+        enum eRejectionType { NULL, LINEAR, STUDENT, WINSOR, SIGMA }
 
         public KeywordLists()
         {
@@ -90,6 +90,43 @@ namespace XisfFileManager
 
         }
 
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CDARK()
+        {
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "CDARK");
+            if (node == null) return string.Empty;
+
+            return node.Value.Replace("'", "");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CFLAT()
+        {
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "CFLAT");
+            if (node == null) return string.Empty;
+
+            return node.Value.Replace("'", "");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CBIAS()
+        {
+            Keyword node = new Keyword();
+
+            node = KeywordList.Find(i => i.Name == "CBIAS");
+            if (node == null) return string.Empty;
+
+            return node.Value.Replace("'", "");
+        }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Who and Where
@@ -105,12 +142,7 @@ namespace XisfFileManager
             RemoveKeyword("OBSGEO-L");
             RemoveKeyword("OBSGEO-B");
             RemoveKeyword("OBSGEO-H");
-            //AddKeyword("LONG-OBS", -74.997372, "Logitude of observation site Degrees East");
-            //AddKeyword("LAT-OBS", 40.282852, "Latitude of observation site Degrees North");
-            //AddKeyword("ALT-OBS", 80.0, "Altitude of observation site MSL Meters");
-            //AddKeyword("OBSGEO-L", -74.997372, "Logitude of observation site Degrees East");
-            //AddKeyword("OBSGEO-B", 40.282852, "Latitude of observation site Degrees North");
-            //AddKeyword("OBSGEO-H", 80.0, "Altitude of observation site MSL Meters");
+         
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
 
@@ -996,15 +1028,16 @@ namespace XisfFileManager
         public bool? Protected()
         {
             Keyword node = new Keyword();
-          
-            node = KeywordList.Find(i => i.Name == "PROTECTED");
-            if (node != null)
-            {
-                return  Convert.ToBoolean(node.Value);
-            }
 
             // Unfortunate - Initially I didn't set this Keyword as uppercase (backups)
             node = KeywordList.Find(i => i.Name == "Protected");
+            if (node != null)
+            {
+                RemoveKeyword("Protected");
+                AddKeyword("PROTECTED", node.Value);
+            }
+
+            node = KeywordList.Find(i => i.Name == "PROTECTED");
             if (node != null)
             {
                 return Convert.ToBoolean(node.Value);

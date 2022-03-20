@@ -22,7 +22,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile mFile, SubFrameLists SubFrameKeywordLists, bool bPreserveProtectedFiles)
+        public static bool UpdateFile(XisfFile xFile, SubFrameLists SubFrameKeywordLists, bool bPreserveProtectedFiles)
         {
             int xmlStart;
             int xisfStart;
@@ -31,18 +31,18 @@ namespace XisfFileManager.FileOperations
             mBufferList = new List<Buffer>();
             string sourceFilePath;
 
-            FileInfo fileInfo = new FileInfo(mFile.SourceFileName);
+            FileInfo xFileInfo = new FileInfo(xFile.SourceFileName);
 
-            while (IsFileLocked(fileInfo))
+            while (IsFileLocked(xFileInfo))
             {
                 Thread.Sleep(500);
-                fileInfo = new FileInfo(mFile.SourceFileName);
+                xFileInfo = new FileInfo(xFile.SourceFileName);
             }
 
 
             try
             {
-                using (Stream stream = new FileStream(mFile.SourceFileName, FileMode.Open))
+                using (Stream stream = new FileStream(xFile.SourceFileName, FileMode.Open))
                 {
                     mBufferList.Clear();
 
@@ -74,10 +74,10 @@ namespace XisfFileManager.FileOperations
                     //    2. Add keywords from CSV File
 
                     // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords  
-                    if (mFile.Master == false)
+                    if (xFile.Master == false)
                     {
-                        mFile.KeywordData.RemoveKeyword("COMMENT");
-                        mFile.KeywordData.RemoveKeyword("HISTORY");
+                        xFile.KeywordData.RemoveKeyword("COMMENT");
+                        xFile.KeywordData.RemoveKeyword("HISTORY");
                     }
                     else
                     {
@@ -85,20 +85,20 @@ namespace XisfFileManager.FileOperations
                         //mFile.KeywordData.RemoveKeyword("HISTORY");
                     }
 
-                    mFile.KeywordData.RemoveKeyword("ALIGNH");
+                    xFile.KeywordData.RemoveKeyword("ALIGNH");
                     //mFile.KeywordData.RemoveKeyword("NOISE");
-                    mFile.KeywordData.RemoveKeyword("Bandwidth setting");
-                    mFile.KeywordData.RemoveKeyword("BTP");
-                    mFile.KeywordData.RemoveKeyword("SBUUID");
-                    mFile.KeywordData.RemoveKeyword("READOUTM");
-                    mFile.KeywordData.RemoveKeyword("CDS");
-                    mFile.KeywordData.RemoveKeyword("DISPINCR");
-                    mFile.KeywordData.RemoveKeyword("EXTEND");
-                    mFile.KeywordData.RemoveKeyword("FOCTMPSC");
-                    mFile.KeywordData.RemoveKeyword("PICTTYPE");
+                    xFile.KeywordData.RemoveKeyword("Bandwidth setting");
+                    xFile.KeywordData.RemoveKeyword("BTP");
+                    xFile.KeywordData.RemoveKeyword("SBUUID");
+                    xFile.KeywordData.RemoveKeyword("READOUTM");
+                    xFile.KeywordData.RemoveKeyword("CDS");
+                    xFile.KeywordData.RemoveKeyword("DISPINCR");
+                    xFile.KeywordData.RemoveKeyword("EXTEND");
+                    xFile.KeywordData.RemoveKeyword("FOCTMPSC");
+                    xFile.KeywordData.RemoveKeyword("PICTTYPE");
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(xmlDoc, mFile, SubFrameKeywordLists);
+                    ReplaceAllFitsKeywords(xmlDoc, xFile, SubFrameKeywordLists);
 
 
                     // *******************************************************************************************************************************
@@ -106,9 +106,9 @@ namespace XisfFileManager.FileOperations
 
                     int imageStart = UpdateImageAttachmentLocationsXml(xmlDoc,
                         xmlDoc.OuterXml.Length + 16,
-                        mFile.ImageAttachmentLength,
-                        xmlDoc.OuterXml.Length + 16 + mFile.ImageAttachmentLength,
-                        mFile.ThumbnailAttachmentLength);
+                        xFile.ImageAttachmentLength,
+                        xmlDoc.OuterXml.Length + 16 + xFile.ImageAttachmentLength,
+                        xFile.ThumbnailAttachmentLength);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -155,20 +155,20 @@ namespace XisfFileManager.FileOperations
                     mBuffer = new Buffer
                     {
                         Type = Buffer.TypeEnum.BINARY,
-                        BinaryDataStart = mFile.ImageAttachmentStart,
-                        BinaryByteLength = mFile.ImageAttachmentLength,
+                        BinaryDataStart = xFile.ImageAttachmentStart,
+                        BinaryByteLength = xFile.ImageAttachmentLength,
                         BinaryData = rawFileData
                     };
                     mBufferList.Add(mBuffer);
 
-                    if (mFile.ThumbnailAttachmentLength > 0)
+                    if (xFile.ThumbnailAttachmentLength > 0)
                     {
                         // Add the binary thumbnail image data from rawFileData after image data and padding
                         mBuffer = new Buffer
                         {
                             Type = Buffer.TypeEnum.BINARY,
-                            BinaryDataStart = mFile.ThumbnailAttachmentStart,
-                            BinaryByteLength = mFile.ThumbnailAttachmentLength,
+                            BinaryDataStart = xFile.ThumbnailAttachmentStart,
+                            BinaryByteLength = xFile.ThumbnailAttachmentLength,
                             BinaryData = rawFileData
                         };
                         mBufferList.Add(mBuffer);
@@ -178,38 +178,29 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
 
                     // Now that the mBuffer List is done, write the XISF File
-                    bool bStatus = WriteBinaryFile(mFile.SourceFileName);
+                    bool bStatus = WriteBinaryFile(xFile.SourceFileName);
                     if (bStatus == false)
                         return false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + mFile.SourceFileName + ")");
+                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + xFile.SourceFileName + ")");
                 return false;
             }
 
 
             // After Keyword update, move rejected file (Approved = false) to the "Rejected" subdirectory
-            if (mFile.KeywordData.Approved() == false)
+            if (xFile.KeywordData.Approved() == false)
             {
-                sourceFilePath = Path.GetDirectoryName(mFile.SourceFileName);
+                sourceFilePath = Path.GetDirectoryName(xFile.SourceFileName);
                 Directory.CreateDirectory(sourceFilePath + "\\Rejected");
-                File.Move(mFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(mFile.SourceFileName));
+                File.Move(xFile.SourceFileName, sourceFilePath + "\\Rejected\\" + Path.GetFileName(xFile.SourceFileName));
             }
 
             return true;
         }
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
-
-        public static bool UpdateTargetCalibrationFile(string targetCalibationDirectoryPath, XisfFile mFile, SubFrameLists SubFrameKeywordLists)
-        {
-            UpdateFile(mFile, SubFrameKeywordLists, true);
-
-            return true;
-        }
-
+      
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 

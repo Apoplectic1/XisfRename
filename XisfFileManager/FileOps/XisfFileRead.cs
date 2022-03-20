@@ -64,7 +64,7 @@ namespace XisfFileManager.FileOperations
                     xFile.KeywordData.AddKeyword(element);
                 }
 
-                xFile.ParseRequiredKeywords();
+                xFile.SetRequiredKeywords();
 
                 return true;
             }

@@ -112,6 +112,7 @@ namespace XisfFileManager
         // ****************************************************************************************************************
         private void EventHandler_UpdateCalibrationPageForm(CalibrationTabPageValues data)
         {
+            ProgressBar_CalibrationTab.Maximum = data.ProgressMax;
             ProgressBar_CalibrationTab.Value = data.Progress;
             Label_CalibrationTab_ReadFileName.Text = data.FileName;
             Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
@@ -143,6 +144,12 @@ namespace XisfFileManager
                 data.TotalUniqueFlatCalibrationFiles.ToString() + " Unique Flats and " +
                 data.TotalUniqueBiasCalibrationFiles.ToString() + " Unique Bias Files " +
                 "from " + mFileList.Count.ToString() + " Target Frames";
+
+
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = mCalibration.OffsetTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = mCalibration.TemperatureTolerance.ToString();
 
             TabPage_Calibration.Update();
         }
@@ -1389,7 +1396,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("CREATOR", "SCP");
                 }
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             if (count == 0)
@@ -1725,7 +1732,7 @@ namespace XisfFileManager
             {
                 SetTelescopeUI(file);
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             FindTelescope();
@@ -1766,7 +1773,7 @@ namespace XisfFileManager
                     }
                 }
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             FindTelescope();
@@ -1806,7 +1813,7 @@ namespace XisfFileManager
                 }
 
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
 
@@ -1830,7 +1837,7 @@ namespace XisfFileManager
 
                 file.KeywordData.AddKeyword("FILTER", globalFilterText, "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
 
@@ -1895,7 +1902,7 @@ namespace XisfFileManager
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
                     file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             FindFrameType();
@@ -2708,7 +2715,7 @@ namespace XisfFileManager
                     file.KeywordData.SetEGain();
                 }
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             FindCamera();
@@ -3098,7 +3105,7 @@ namespace XisfFileManager
                     file.KeywordData.SetEGain();
                 }
 
-                file.ParseRequiredKeywords();
+                file.SetRequiredKeywords();
             }
 
             FindCamera();
@@ -3402,7 +3409,7 @@ namespace XisfFileManager
                 return;
             }
 
-            mCalibration.ExposureTolerance = value / 100.0;
+            mCalibration.ExposureTolerance = value;
         }
 
         private void TextBox_CalibrationTab_GainTolerance_TextChanged(object sender, EventArgs e)
@@ -3415,7 +3422,7 @@ namespace XisfFileManager
                 return;
             }
 
-            mCalibration.GainTolerance = value / 100.0;
+            mCalibration.GainTolerance = value;
         }
 
         private void TextBox_CalibrationTab_OffsetTolerance_TextChanged(object sender, EventArgs e)
@@ -3428,7 +3435,7 @@ namespace XisfFileManager
                 return;
             }
 
-            mCalibration.OffsetTolerance = value / 100.0;
+            mCalibration.OffsetTolerance = value;
 
         }
 
@@ -3442,7 +3449,7 @@ namespace XisfFileManager
                 return;
             }
 
-            mCalibration.TemperatureTolerance = value / 100.0;
+            mCalibration.TemperatureTolerance = value;
         }
 
         private void CheckBox_KeywordUpdate_SubFrameKeywords_Protect_CheckedChanged(object sender, EventArgs e)
@@ -3465,6 +3472,44 @@ namespace XisfFileManager
         private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Black;
+        }
+
+        private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
+        {
+            if (mFileList.Count == 0) return;
+            
+
+            string directoryName = Path.GetDirectoryName(mFileList[0].SourceFileName);
+            if (directoryName.Contains(@"Captures\"))
+                directoryName = directoryName.Substring(0, directoryName.IndexOf("Captures")) + @"Captures\Calibration";
+            else
+                directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..") + @"\Calibration");
+
+            if (Directory.Exists(directoryName))
+            {
+                Directory.Delete(directoryName, true);
+            }
+
+            foreach(var file in mFileList)
+            {
+                file.KeywordData.RemoveKeyword("CDARK");
+                file.CDARK = string.Empty;
+
+                file.KeywordData.RemoveKeyword("CFLAT");
+                file.CFLAT = string.Empty;
+
+                file.KeywordData.RemoveKeyword("CBIAS");
+                file.CBIAS = string.Empty;
+            }
+
+            mCalibration.ResetAll();
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = mCalibration.OffsetTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = mCalibration.TemperatureTolerance.ToString();
+
+            Label_CalibrationTab_TotalMatchedFiles.Text = "No Macthed Calibration Frames";
+
         }
     }
 }

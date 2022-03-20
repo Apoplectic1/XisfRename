@@ -12,6 +12,7 @@ namespace XisfFileManager
         public eMessageMode MessageMode { get; set; } = eMessageMode.KEEP;
         public string FileName { get; set; }
         public int Progress { get; set; }
+        public int ProgressMax { get; set; } = 100;
         public int TotalFiles { get; set; }
         public int TotalMatchedCalibrationFiles { get; set; }
         public int TotalUniqueDarkCalibrationFiles { get; set; }
