@@ -95,9 +95,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CDARK()
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "CDARK");
+            Keyword node = KeywordList.Find(i => i.Name == "CDARK");
             if (node == null) return string.Empty;
 
             return node.Value.Replace("'", "");
@@ -107,9 +105,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CFLAT()
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "CFLAT");
+            Keyword node = KeywordList.Find(i => i.Name == "CFLAT");
             if (node == null) return string.Empty;
 
             return node.Value.Replace("'", "");
@@ -119,9 +115,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CBIAS()
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "CBIAS");
+            Keyword node = KeywordList.Find(i => i.Name == "CBIAS");
             if (node == null) return string.Empty;
 
             return node.Value.Replace("'", "");
@@ -142,7 +136,7 @@ namespace XisfFileManager
             RemoveKeyword("OBSGEO-L");
             RemoveKeyword("OBSGEO-B");
             RemoveKeyword("OBSGEO-H");
-         
+
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
 
@@ -180,21 +174,16 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLatitude()
         {
-            string value;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "SITELAT");
+            Keyword node = KeywordList.Find(i => i.Name == "SITELAT");
             if (node == null) return;
 
-            value = node.Value;
-
-            if (value.Contains("N"))
+            if (node.Value.Contains("N"))
             {
-                value = Regex.Replace(value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+                node.Value = Regex.Replace(node.Value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
             }
 
-            node.Type = Keyword.EType.STRING;
-            node.Value = value;
+            node.Value = node.Value.Replace("'", "");
+            node.Type = Keyword.eType.STRING;
         }
 
         // *********************************************************************************************************
@@ -202,25 +191,19 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLongitude()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "SITELONG");
+            Keyword node = KeywordList.Find(i => i.Name == "SITELONG");
             if (node == null) return;
 
-            value = node.Value;
-
-            if (value.Contains("W"))
+            if (node.Value.Contains("W"))
             {
-                value = Regex.Replace(value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+                node.Value = Regex.Replace(node.Value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
 
                 Regex regReplace = new Regex("'");
 
-                value = regReplace.Replace(value, "'-", 1);
+                node.Value = regReplace.Replace(node.Value, "'-", 1);
             }
 
-            node.Type = Keyword.EType.STRING;
-            node.Value = value;
+            node.Type = Keyword.eType.STRING;
         }
 
         // *********************************************************************************************************
@@ -249,13 +232,14 @@ namespace XisfFileManager
             }
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public int TotalFrames(bool findMissingKeywords = false)
         {
             bool status;
-            int frames;
 
-            Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
+            Keyword node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
+            node.Type = Keyword.eType.INTEGER;
 
             if (node != null)
                 return Int32.Parse(node.Value);
@@ -272,7 +256,7 @@ namespace XisfFileManager
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = int.TryParse(returnValue.mTextBox, out frames);
+                status = int.TryParse(returnValue.mTextBox, out int frames);
                 if (status)
                 {
                     AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
@@ -324,27 +308,35 @@ namespace XisfFileManager
         public string AmbientTemperature()
         {
             string value = string.Empty;
-            Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "AOCAMBT");
+            Keyword node = KeywordList.Find(i => i.Name == "AOCAMBT");
 
             if (node == null)
+            {
                 node = KeywordList.Find(i => i.Name == "TEMPERAT");
+                RemoveKeyword("TEMPERAT");
+            }
 
             if (node == null)
+            {
                 node = KeywordList.Find(i => i.Name == "AMB-TEMP");
+                RemoveKeyword("AMB-TEMP");
+            }
 
             if (node == null)
+            {
                 node = KeywordList.Find(i => i.Name == "AMBTEMP");
+                RemoveKeyword("AMBTEMP");
+            }
 
             if (node == null)
             {
                 AddKeyword("AOCAMBT", FocuserTemperature());
                 node = KeywordList.Find(i => i.Name == "AOCAMBT");
-                node.Type = Keyword.EType.DOUBLE;
+                node.Type = Keyword.eType.DOUBLE;
             }
 
-            node.Type = Keyword.EType.DOUBLE;
+            node.Type = Keyword.eType.DOUBLE;
             value = node.Value;
 
             return FormatTemperatureString(value);
@@ -430,7 +422,7 @@ namespace XisfFileManager
 
             if (node != null)
             {
-                return node.Value.Replace("'","");
+                return node.Value.Replace("'", "");
             }
 
             while (findMissingKeywords)
@@ -463,7 +455,6 @@ namespace XisfFileManager
             Keyword node = new Keyword();
             bool status;
 
-            DateTime parsedDateTime;
 
 
             node = KeywordList.Find(i => i.Name == "LOCALTIM");
@@ -476,23 +467,22 @@ namespace XisfFileManager
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
 
             if (node == null)
-            { 
+            {
                 AddKeyword("DATE-OBS", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
 
                 node = KeywordList.Find(i => i.Name == "DATE-OBS");
             }
 
             value = node.Value.Replace("'", "");
-            node.Type = Keyword.EType.STRING;
+            node.Type = Keyword.eType.STRING;
 
             if (value.Contains("AM"))
             {
                 value = value.Remove(value.IndexOf('.') + 4) + " AM";
 
-                DateTime dt;
                 status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
+                          DateTimeStyles.None, out DateTime dt);
 
                 if (status) return dt;
 
@@ -506,10 +496,9 @@ namespace XisfFileManager
             {
                 value = value.Remove(value.IndexOf('.') + 4) + " PM";
 
-                DateTime dt;
                 status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
+                          DateTimeStyles.None, out DateTime dt);
 
                 if (status) return dt;
 
@@ -521,7 +510,7 @@ namespace XisfFileManager
 
             value = value.Replace("T", "  ").Replace("'", "");
 
-            status = DateTime.TryParse(value, out parsedDateTime);
+            status = DateTime.TryParse(value, out DateTime parsedDateTime);
 
             if (status)
             {
@@ -609,7 +598,6 @@ namespace XisfFileManager
         {
             double Seconds;
             bool status;
-            double seconds;
             Keyword node = new Keyword();
 
 
@@ -642,7 +630,7 @@ namespace XisfFileManager
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(returnData.mTextBox, out seconds);
+                status = double.TryParse(returnData.mTextBox, out double seconds);
                 if (status)
                 {
                     AddKeyword("EXPTIME", seconds, "Camera Exposure Time in Seconds");
@@ -793,7 +781,6 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int FocalLength(bool findMissingKeywords = false)
         {
-            int focalLength;
             bool status;
             string value = string.Empty;
             Keyword node = new Keyword();
@@ -817,7 +804,7 @@ namespace XisfFileManager
 
                 UserInputFormData formValue = OpenUIForm(formData);
 
-                status = int.TryParse(formValue.mTextBox, out focalLength);
+                status = int.TryParse(formValue.mTextBox, out int focalLength);
                 if (status)
                 {
                     AddKeyword("FOCALLEN", focalLength, "Focal Length");
@@ -834,22 +821,17 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FocuserPosition()
+        public object FocuserPosition(Keyword.eType eType)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object value = GetKeyword("FOCPOS", eType);
+            if (value != null)
+                return value;
 
-            node = KeywordList.Find(i => i.Name == "FOCPOS");
+            value = GetKeyword("FOCUSPOS", eType);
+            if (value == null) return null;
 
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "FOCUSPOS");
-
-            if (node == null) return string.Empty;
-
-            node.Type = Keyword.EType.INTEGER;
-
-            value = node.Value.Replace(".", "");
-
+            RemoveKeyword("FOCUSPOS");
+            AddKeyword("FOCPOS", (int)value);
 
             return value;
         }
@@ -858,19 +840,17 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string FocuserTemperature()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            string value = (string)GetKeyword("FOCTEMP", Keyword.eType.STRING);
+            if (value != null)
+                return FormatTemperatureString(value);
 
-            node = KeywordList.Find(i => i.Name == "FOCTEMP");
+            double? dValue = (double)GetKeyword("FOCUSTEM", Keyword.eType.DOUBLE);
+            if (dValue == null) return string.Empty;
 
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "FOCUSTEM");
+            RemoveKeyword("FOCUSTEM");
+            AddKeyword("FOCTEMP", (double)dValue);
 
-            if (node == null) return string.Empty;
-
-            node.Type = Keyword.EType.DOUBLE;
-            value = node.Value;
-
+            value = (string)GetKeyword("FOCTEMP");
             return FormatTemperatureString(value);
         }
 
@@ -878,25 +858,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int Gain(bool findMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-            bool status;
-            int gain;
-
-            node = KeywordList.Find(i => i.Name == "GAIN");
-            if (node != null)
-            {
-                value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
-                status = Int32.TryParse(value, out gain);
-                if (status)
-                {
-                    return gain;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
+            int? value = (int?)GetKeyword("GAIN");
+            if (value != null)
+                return (int)value;
 
             while (findMissingKeywords)
             {
@@ -910,10 +874,11 @@ namespace XisfFileManager
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = Int32.TryParse(returnValue.mTextBox, out gain);
-                if (status)
+                int gain;
+                bool bStatus = Int32.TryParse(returnValue.mTextBox, out gain);
+                if (bStatus)
                 {
-                    AddKeyword("GAIN", gain, "XISF File Manager");
+                    AddKeyword("GAIN", gain);
 
                     if (returnValue.mGlobalCheckBox)
                         return -gain;
@@ -930,11 +895,10 @@ namespace XisfFileManager
         public string ImageAngle()
         {
             string value = string.Empty;
-            Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "POSANGLE");
+            Keyword node = KeywordList.Find(i => i.Name == "POSANGLE");
             if (node == null)
-            { 
+            {
                 node = KeywordList.Find(i => i.Name == "ROTATANG");
                 if (node != null)
                 {
@@ -944,28 +908,19 @@ namespace XisfFileManager
             }
 
             if (node == null) return string.Empty;
+            node.Type = Keyword.eType.DOUBLE;
 
-            value = node.Value;
-            node.Type = Keyword.EType.DOUBLE;
-
-            return String.Format("{0:000.0}", Convert.ToDouble(value));
+            return String.Format("{0:000.0}", Convert.ToDouble(node.Value));
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public int Offset(bool findMissingKeywords = false)
         {
-            bool status;
-            int offset;
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            int? value = (int?)GetKeyword("OFFSET");
+            if (value != null)
+                return (int)value;
 
-            node = KeywordList.Find(i => i.Name == "OFFSET");
-            if (node != null)
-            {
-                value = node.Value.Replace("'", "").Replace(".", "").Replace(" ", "");
-                return Convert.ToInt32(value);
-            }
 
             while (findMissingKeywords)
             {
@@ -979,10 +934,10 @@ namespace XisfFileManager
 
                 UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = Int32.TryParse(returnValue.mTextBox, out offset);
+                bool status = Int32.TryParse(returnValue.mTextBox, out int offset);
                 if (status)
                 {
-                    AddKeyword("OFFSET", offset, "XISF File Manager");
+                    AddKeyword("OFFSET", offset);
 
                     if (returnValue.mGlobalCheckBox)
                         return -offset;
@@ -998,13 +953,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double PixelSize()
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "XPIXSZ");
-            if (node != null)
-            {
-                return Convert.ToDouble(node.Value);
-            }
+            double? value = (double?)GetKeyword("XPIXSZ");
+            if (value != null)
+                return (double)value;
 
 
             UserInputFormData formData = new UserInputFormData
@@ -1034,7 +985,7 @@ namespace XisfFileManager
             if (node != null)
             {
                 RemoveKeyword("Protected");
-                AddKeyword("PROTECTED", node.Value);
+                AddKeyword("PROTECTED", Convert.ToBoolean(node.Value));
             }
 
             node = KeywordList.Find(i => i.Name == "PROTECTED");
@@ -1050,13 +1001,14 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string SensorSetPointTemperature()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            string value = (string)GetKeyword("SET-TEMP");
+            if (value != null)
+                return (string)value;
 
-            node = KeywordList.Find(i => i.Name == "SET-TEMP");
+            Keyword node = KeywordList.Find(i => i.Name == "SET-TEMP");
             if (node != null)
             {
-                return FormatTemperatureString(value);
+                return FormatTemperatureString(node.Value);
             }
 
             UserInputFormData formData = new UserInputFormData
@@ -1079,10 +1031,8 @@ namespace XisfFileManager
         {
             string value = string.Empty;
             bool status;
-            Keyword node = new Keyword();
-            double temperature;
 
-            node = KeywordList.Find(i => i.Name == "CCD-TEMP");
+            Keyword node = KeywordList.Find(i => i.Name == "CCD-TEMP");
             if (node != null)
             {
                 return FormatTemperatureString(node.Value);
@@ -1100,7 +1050,7 @@ namespace XisfFileManager
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(returnData.mTextBox, out temperature);
+                status = double.TryParse(returnData.mTextBox, out double temperature);
                 if (status)
                 {
                     AddKeyword("CCD-TEMP", temperature);
@@ -1120,11 +1070,10 @@ namespace XisfFileManager
         public string SiteLocation()
         {
             string value = string.Empty;
-            Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "SITENAME");
+            Keyword node = KeywordList.Find(i => i.Name == "SITENAME");
             value = node.Value;
-            node.Type = Keyword.EType.STRING;
+            node.Type = Keyword.eType.STRING;
 
             return value.Replace("'", "");
         }
@@ -1134,9 +1083,8 @@ namespace XisfFileManager
         public double SSWeight()
         {
             string value = string.Empty;
-            Keyword node = new Keyword();
 
-            node = KeywordList.Find(i => i.Name == "SSWEIGHT");
+            Keyword node = KeywordList.Find(i => i.Name == "SSWEIGHT");
 
             if (node == null) return Double.NaN;
             double SSWeight = Convert.ToDouble(node.GetKeyword());
@@ -1150,15 +1098,10 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string TargetName(bool findMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "OBJECT");
-            if (node != null)
-            {
-                value = node.Value.Replace("'", "").Replace(" ", "").Replace("/", "");
+            string value = (string)GetKeyword("OBJECT");
+            if (value != null)
                 return value;
-            }
+
 
             while (findMissingKeywords)
             {
@@ -1187,10 +1130,7 @@ namespace XisfFileManager
         // #########################################################################################################
         public string Telescope(bool findMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "TELESCOP");
+            Keyword node = KeywordList.Find(i => i.Name == "TELESCOP");
             if (node != null)
             {
                 node.Value = node.Value.Replace(".", "").Replace("'", "");
@@ -1273,8 +1213,10 @@ namespace XisfFileManager
                 Name = name,
                 Value = value,
                 Comment = comment,
-                Type = Keyword.EType.STRING
+                Type = Keyword.eType.STRING
             };
+
+            keyword.SetKeyword(name, value, comment);
             KeywordList.Add(keyword);
         }
 
@@ -1289,8 +1231,11 @@ namespace XisfFileManager
                 Name = name,
                 Value = value.ToString("F6"),
                 Comment = comment,
-                Type = Keyword.EType.DOUBLE
+                Type = Keyword.eType.DOUBLE
             };
+
+
+            keyword.SetKeyword(name, value, comment);
             KeywordList.Add(keyword);
         }
 
@@ -1305,8 +1250,11 @@ namespace XisfFileManager
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.EType.INTEGER
+                Type = Keyword.eType.INTEGER
             };
+
+
+            keyword.SetKeyword(name, value, comment);
             KeywordList.Add(keyword);
         }
 
@@ -1321,8 +1269,11 @@ namespace XisfFileManager
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.EType.BOOL
+                Type = Keyword.eType.BOOL
             };
+
+            keyword.SetKeyword(name, value, comment);
+
             KeywordList.Add(keyword);
         }
 
@@ -1330,14 +1281,56 @@ namespace XisfFileManager
         // #########################################################################################################
         public void AddKeyword(XElement element)
         {
-            Keyword keyword = new Keyword
+            bool bStatus;
+
+            bool bBool;
+            bStatus = bool.TryParse(element.Attribute("value").Value, out bBool);
+            if (bStatus)
             {
-                Name = element.Attribute("name").Value,
-                Value = element.Attribute("value").Value,
-                Comment = element.Attribute("comment").Value,
-                Type = Keyword.EType.COPY
-            };
-            KeywordList.Add(keyword);
+                AddKeyword(element.Attribute("name").Value, bBool, element.Attribute("comment").Value);
+                return;
+            }
+
+            int iInt32;
+            bStatus = Int32.TryParse(element.Attribute("value").Value, out iInt32);
+            if (bStatus)
+            {
+                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
+                return;
+            }
+
+            double dDouble;
+            bStatus = double.TryParse(element.Attribute("value").Value, out dDouble);
+            if (bStatus)
+            {
+                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
+                return;
+            }
+
+            AddKeyword(element.Attribute("name").Value, (string)element.Attribute("value").Value, element.Attribute("comment").Value);
+
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public object GetKeyword(string sName)
+        {
+            Keyword node = KeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node.GetKeyword();
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        public object GetKeyword(string sName, Keyword.eType eType)
+        {
+            Keyword node = KeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node.GetKeyword(eType);
         }
 
         // #########################################################################################################

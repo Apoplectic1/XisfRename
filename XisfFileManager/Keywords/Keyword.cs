@@ -4,9 +4,9 @@ namespace XisfFileManager.Keywords
 {
     public class Keyword
     {
-        public enum EType  {NULL, COPY, STRING, INTEGER, DOUBLE, BOOL }
+        public enum eType  {NULL, COPY, STRING, INTEGER, DOUBLE, BOOL }
 
-        public EType Type { get; set; } = EType.NULL;
+        public eType Type { get; set; } = eType.NULL;
         public string Name { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         private string sValue { get; set; } = string.Empty;
@@ -15,55 +15,72 @@ namespace XisfFileManager.Keywords
         private bool bValue { get; set; } = false;
         public string Comment { get; set; } = string.Empty;
 
-        public bool SetKeyword(string sName, string sValue, string sComment = "XisfFile Manager")
+        public void SetKeyword(string sName, string sValue, string sComment = "XisfFile Manager")
         {
             Name = sName;
             this.sValue = sValue;
+            this.Value = sValue;
             Comment = sComment;
-            Type = EType.STRING;
-            return true;
+            Type = eType.STRING;
         }
 
-        public bool SetKeyword(string sName, int iValue, string sComment = "XisfFile Manager")
+        public void SetKeyword(string sName, int iValue, string sComment = "XisfFile Manager")
         {
             Name = sName;
             this.iValue = iValue;
+            this.Value = iValue.ToString();
             Comment = sComment;
-            Type = EType.INTEGER;
-            return true;
+            Type = eType.INTEGER;
         }
-        public bool SetKeyword(string sName, double dValue, string sComment = "XisfFile Manager")
+        public void SetKeyword(string sName, double dValue, string sComment = "XisfFile Manager")
         {
             Name = sName;
             this.dValue = dValue;
+            this.Value = dValue.ToString();
             Comment = sComment;
-            Type = EType.DOUBLE;
-            return true;
+            Type = eType.DOUBLE;
         }
 
-        public bool SetKeyword(string sName, bool bValue, string sComment = "XisfFile Manager")
+        public void SetKeyword(string sName, bool bValue, string sComment = "XisfFile Manager")
         {
             Name = sName;
             this.bValue = bValue;
+            this.Value = bValue.ToString();
             Comment = sComment;
-            Type = EType.BOOL;
-            return true;
+            Type = eType.BOOL;
         }
-
+        
         public object GetKeyword()
         {
             switch (Type)
             {
-                case EType.NULL:
+                case eType.NULL:
                     return null;
-                case EType.DOUBLE:
-                    return Convert.ToDouble(Value);
-                case EType.INTEGER:
-                    return Convert.ToInt32(Value);
-                case EType.BOOL:
-                    return Convert.ToBoolean(Value);
+                case eType.DOUBLE:
+                    return dValue;
+                case eType.INTEGER:
+                    return iValue;
+                case eType.BOOL:
+                    return bValue;
                 default:
-                    return Value.Replace("\"","").Replace("'","");
+                    return Value.Replace("'","");
+            }
+        }
+
+        public object GetKeyword(eType type)
+        {
+            switch (type)
+            { 
+                case eType.NULL:
+                    return null;
+                case eType.DOUBLE:
+                    return Convert.ToString(Value);
+                case eType.INTEGER:
+                    return Convert.ToString(Value);
+                case eType.BOOL:
+                    return Convert.ToString(Value);
+                default:
+                    return Value.Replace("\"", "").Replace("'", "");
             }
         }
     }

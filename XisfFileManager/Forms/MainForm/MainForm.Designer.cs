@@ -101,6 +101,7 @@
             this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords = new System.Windows.Forms.GroupBox();
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue = new System.Windows.Forms.ComboBox();
             this.Label_SubFrameKeywords_EditKeywords = new System.Windows.Forms.Label();
             this.GroupBox_SubFrameKeywords_CalibrationFiles = new System.Windows.Forms.GroupBox();
             this.Button_SubFrameKeywords_CalibrationFiles_ClearAll = new System.Windows.Forms.Button();
@@ -117,7 +118,6 @@
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords = new System.Windows.Forms.ComboBox();
             this.Button_KeywordUpdateTab_SubFrameKeywords_Delete = new System.Windows.Forms.Button();
             this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace = new System.Windows.Forms.Button();
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue = new System.Windows.Forms.TextBox();
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName = new System.Windows.Forms.ComboBox();
             this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName = new System.Windows.Forms.CheckBox();
             this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords = new System.Windows.Forms.Button();
@@ -1145,6 +1145,7 @@
             // 
             // GroupBox_KeywordUpdateTab_SubFrameKeywords
             // 
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Label_SubFrameKeywords_EditKeywords);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.GroupBox_SubFrameKeywords_CalibrationFiles);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection);
@@ -1152,7 +1153,6 @@
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_Delete);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace);
-            this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords);
@@ -1164,6 +1164,16 @@
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.TabIndex = 14;
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.TabStop = false;
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords.Text = "SubFrame Keywords";
+            // 
+            // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue
+            // 
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.FormattingEnabled = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Location = new System.Drawing.Point(443, 72);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue";
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Size = new System.Drawing.Size(217, 21);
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Sorted = true;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TabIndex = 27;
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "                              Value";
             // 
             // Label_SubFrameKeywords_EditKeywords
             // 
@@ -1326,6 +1336,7 @@
             this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.TabIndex = 21;
             this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Text = "Delete";
             this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.UseVisualStyleBackColor = true;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_Delete.Click += new System.EventHandler(this.Button_KeywordUpdateTab_SubFrameKeywords_Delete_Click);
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_AddReplace
             // 
@@ -1335,15 +1346,7 @@
             this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.TabIndex = 20;
             this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Text = "Add/Replace";
             this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.UseVisualStyleBackColor = true;
-            // 
-            // TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue
-            // 
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Location = new System.Drawing.Point(443, 72);
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Name = "TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue";
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Size = new System.Drawing.Size(217, 20);
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TabIndex = 19;
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
-            this.TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Click += new System.EventHandler(this.Button_KeywordUpdateTab_SubFrameKeywords_AddReplace_Click);
             // 
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName
             // 
@@ -1354,6 +1357,7 @@
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Sorted = true;
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.TabIndex = 18;
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "                            Keyword";
+            this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndexChanged += new System.EventHandler(this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged);
             // 
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName
             // 
@@ -3719,7 +3723,6 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Ha;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Red;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Luma;
-        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_FileName;
         private System.Windows.Forms.Label Label_FileSelection_BrowseFileName;
@@ -3923,5 +3926,6 @@
         private System.Windows.Forms.GroupBox GroupBox_SubFrameKeywords_CalibrationFiles;
         private System.Windows.Forms.Label Label_SubFrameKeywords_EditKeywords;
         private System.Windows.Forms.Button Button_SubFrameKeywords_CalibrationFiles_ClearAll;
+        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue;
     }
 }

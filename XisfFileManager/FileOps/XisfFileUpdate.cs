@@ -277,26 +277,26 @@ namespace XisfFileManager.FileOperations
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
                 foreach (Keyword keyword in keywords)
                 {
-                    if (keyword.Type != Keyword.EType.NULL)
+                    if (keyword.Type != Keyword.eType.NULL)
                     {
                         // Create a FITSKeyword under <Image
                         var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                         newElement.SetAttribute("name", keyword.Name);
                         switch (keyword.Type)
                         {
-                            case Keyword.EType.COPY:
+                            case Keyword.eType.COPY:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.EType.BOOL:
+                            case Keyword.eType.BOOL:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.EType.DOUBLE:
+                            case Keyword.eType.DOUBLE:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.EType.INTEGER:
+                            case Keyword.eType.INTEGER:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
-                            case Keyword.EType.STRING:
+                            case Keyword.eType.STRING:
                                 newElement.SetAttribute("value", keyword.Value);
                                 break;
                         }

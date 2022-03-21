@@ -54,12 +54,11 @@ namespace XisfFileManager.Calculations
 
             if ((imageType == "Light") || (imageType == "L"))
             {
-                var focusPosition = Keywords.FocuserPosition();
+                var focusPosition = Keywords.FocuserPosition(XisfFileManager.Keywords.Keyword.eType.STRING);
                 var focusTemperature = Keywords.FocuserTemperature();
-                var focusAmbientTemperature = Keywords.AmbientTemperature();
                 var ambientTemperature = Keywords.AmbientTemperature();
 
-                if (focusPosition != string.Empty && focusTemperature != string.Empty && ambientTemperature != string.Empty)
+                if ((string)focusPosition != string.Empty && focusTemperature != string.Empty && ambientTemperature != string.Empty)
                 {
                     FocuserPosition.Add(Convert.ToDouble(focusPosition));
                     FocuserTemperature.Add(Convert.ToDouble(focusTemperature));

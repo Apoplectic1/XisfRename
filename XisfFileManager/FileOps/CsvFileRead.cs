@@ -128,7 +128,7 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value,
                 Comment = comment,
-                Type = Keyword.EType.STRING
+                Type = Keyword.eType.STRING
             };
             return keyword;
         }
@@ -142,7 +142,7 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString("F6"),
                 Comment = comment,
-                Type = Keyword.EType.DOUBLE
+                Type = Keyword.eType.DOUBLE
             };
             return keyword;
         }
@@ -156,7 +156,7 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.EType.INTEGER
+                Type = Keyword.eType.INTEGER
             };
             return keyword;
         }
@@ -170,7 +170,7 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.EType.BOOL
+                Type = Keyword.eType.BOOL
             };
             return keyword;
         }

@@ -500,6 +500,29 @@ namespace XisfFileManager
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
                 Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
             }
+
+
+
+            // Now make a list of all Keywords found in all files. Sort and populate combobox
+            Keyword node = new Keyword();
+            List<string> keywordNamelist = new List<string>();
+
+            foreach (XisfFile file in mFileList)
+            {
+                foreach (var keywordName in file.KeywordData.KeywordList)
+                {
+                    keywordNamelist.Add(keywordName.Name);
+                }
+            }
+
+            keywordNamelist.Sort();
+            keywordNamelist = keywordNamelist.Distinct().ToList();
+
+            foreach (var name in keywordNamelist)
+            {
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+            }
+
             // **********************************************************************
 
 
@@ -519,10 +542,6 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
-            // **********************************************************************
-
-
-            // Need to add calculations for average capture duration/overhead
             // **********************************************************************
 
             SetUISubFrameGroupBoxState();
@@ -722,8 +741,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 {
                     if (file.KeywordData.Protected() == true)
-                    // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
-                    continue;
+                        // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
+                        continue;
                 }
 
                 file.KeywordData.SetObservationSite();
@@ -2918,7 +2937,7 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                    file.KeywordData.AddKeyword("OFFSET", (int)offsetValue, "Camera Offset");
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
@@ -3089,7 +3108,7 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                    file.KeywordData.AddKeyword("OFFSET", (int)offsetValue, "Camera Offset");
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
@@ -3477,7 +3496,7 @@ namespace XisfFileManager
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {
             if (mFileList.Count == 0) return;
-            
+
 
             string directoryName = Path.GetDirectoryName(mFileList[0].SourceFileName);
             if (directoryName.Contains(@"Captures\"))
@@ -3490,7 +3509,7 @@ namespace XisfFileManager
                 Directory.Delete(directoryName, true);
             }
 
-            foreach(var file in mFileList)
+            foreach (var file in mFileList)
             {
                 file.KeywordData.RemoveKeyword("CDARK");
                 file.CDARK = string.Empty;
@@ -3510,6 +3529,58 @@ namespace XisfFileManager
 
             Label_CalibrationTab_TotalMatchedFiles.Text = "No Macthed Calibration Frames";
 
+        }
+
+        private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Keyword node = new Keyword();
+            List<string> keywordValuelist = new List<string>();
+
+            if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
+                    return;
+
+            foreach (XisfFile file in mFileList)
+            {
+                foreach (var keyword in file.KeywordData.KeywordList)
+                {
+                    if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedItem))
+                        keywordValuelist.Add((string)keyword.GetKeyword());
+                }
+            }
+
+            keywordValuelist.Sort();
+            keywordValuelist = keywordValuelist.Distinct().ToList();
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
+            foreach (var value in keywordValuelist)
+            {
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value);
+            }
+        }
+
+        private void Button_KeywordUpdateTab_SubFrameKeywords_Delete_Click(object sender, EventArgs e)
+        {
+            foreach (XisfFile file in mFileList)
+            {
+                file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+            }
+
+            if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndex >= 0)
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.RemoveAt(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndex);
+        }
+
+        private void Button_KeywordUpdateTab_SubFrameKeywords_AddReplace_Click(object sender, EventArgs e)
+        {
+            foreach (XisfFile file in mFileList)
+            {
+                Keyword item = file.KeywordData.KeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                if (item != null)
+                {
+                    if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)
+                        file.KeywordData.AddKeyword(item.Name, item.Value);
+                }
+//                file.KeywordData.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+            }
         }
     }
 }

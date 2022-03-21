@@ -43,9 +43,13 @@ namespace XisfFileManager.FileOperations
                     newFileName = newFileName.Remove(lastParen);
                     newFileName += ").xisf";
 
-                    if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
+                    // Rename the file if its name actually changed and the new file name doen't already exist
+                    if (file.SourceFileName != sourceFilePath + "\\" + newFileName)
                     {
-                        File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
+                        if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
+                        {
+                            File.Move(file.SourceFileName, sourceFilePath + "\\" + newFileName);
+                        }
                     }
                     return new Tuple<int, string>(1, newFileName);
                 }
@@ -173,9 +177,9 @@ namespace XisfFileManager.FileOperations
                         newName += mFile.KeywordData.Telescope() + "@";
                         newName += mFile.KeywordData.FocalLength();
 
-                        if (mFile.KeywordData.FocuserPosition() != string.Empty)
+                        if ((string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != string.Empty)
                         {
-                            newName += "  F" + mFile.KeywordData.FocuserPosition();
+                            newName += "  F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
                         }
 
                         if (mFile.KeywordData.ImageAngle() != string.Empty)
@@ -250,7 +254,7 @@ namespace XisfFileManager.FileOperations
                 newName += mFile.KeywordData.FocalLength();
                 newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
-                newName += "F" + mFile.KeywordData.FocuserPosition() + "@" + mFile.KeywordData.FocuserTemperature() + "C";
+                newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
                     newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
                 else
@@ -313,7 +317,7 @@ namespace XisfFileManager.FileOperations
                 newName += mFile.KeywordData.FocalLength();
                 newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
-                newName += "F" + mFile.KeywordData.FocuserPosition() + "@" + mFile.KeywordData.FocuserTemperature() + "C";
+                newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
                     newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
                 else
