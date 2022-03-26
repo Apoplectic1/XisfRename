@@ -658,16 +658,14 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
-                if (value.ToLower().Contains("lum")) value = "Luma";
-                if (value.ToLower().Contains("ha")) value = "Ha";
-                if (value.ToLower().Contains("oiii")) value = "O3";
-                if (value.ToLower().Contains("o3")) value = "O3";
-                if (value.ToLower().Contains("sii")) value = "S2";
-                if (value.ToLower().Contains("s2")) value = "S2";
-                if (value.ToLower().Contains("red")) value = "Red";
-                if (value.ToLower().Contains("green")) value = "Green";
-                if (value.ToLower().Contains("blue")) value = "Blue";
-                if (value.ToLower().Contains("shutter")) value = "Shutter";
+                if (value.ToUpper().StartsWith("L")) value = "Luma";
+                if (value.ToUpper().StartsWith("H")) value = "Ha";
+                if (value.ToUpper().StartsWith("O")) value = "O3";
+                if (value.ToUpper().StartsWith("S")) value = "S2";
+                if (value.ToUpper().StartsWith("R")) value = "Red";
+                if (value.ToUpper().StartsWith("G")) value = "Green";
+                if (value.ToUpper().StartsWith("B")) value = "Blue";
+                if (value.ToUpper().StartsWith("SH")) value = "Shutter";
 
                 if (value == "Luma")
                     AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");

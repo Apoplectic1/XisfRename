@@ -313,6 +313,10 @@ namespace XisfFileManager
 
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
+                    // Don't include previously identified duplicates
+                    if (file.DirectoryName.Contains("Duplicates"))
+                        continue;
+
                     bool bStatus = false;
                     ProgressBar_FileSelection_ReadProgress.Value += 1;
                     Application.DoEvents();
@@ -323,7 +327,7 @@ namespace XisfFileManager
                         SourceFileName = file.FullName
                     };
 
-                    Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FullName) + "\n" + Path.GetFileName(file.FullName);
+                    Label_FileSelection_BrowseFileName.Text = file.DirectoryName + "\n" + file.Name;
 
                     // Get the keyword data contained within the current file (mFile)
                     // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
@@ -558,59 +562,123 @@ namespace XisfFileManager
 
         public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)
         {
-            int index = 0;
-            int lumaIndex = 0;
-            int redIndex = 0;
-            int greenIndex = 0;
-            int blueIndex = 0;
-            int haIndex = 0;
-            int o3Index = 0;
-            int s2Index = 0;
-
-            foreach (XisfFile file in fileList)
+            if (bNight)
             {
-                if (bTarget)
+                List<string> nightlist = new List<string>();
+
+                foreach (XisfFile file in fileList)
                 {
+                    string fileName = Directory.GetParent(file.SourceFileName).ToString();
+
+                    nightlist.Add(fileName.Substring(fileName.LastIndexOf('\\') + 1));
+                }
+
+                nightlist.Distinct().ToList();
+
+
+                foreach (string night in nightlist)
+                {
+                    // Take a look at the Unique test. Files should already be unique?
+                    int index = 0;
+                    int lumaIndex = 0;
+                    int redIndex = 0;
+                    int greenIndex = 0;
+                    int blueIndex = 0;
+                    int haIndex = 0;
+                    int o3Index = 0;
+                    int s2Index = 0;
+                    int shutterIndex = 0;
+
+                    foreach (XisfFile file in fileList)
+                    {
+                        if (!file.SourceFileName.Contains(night))
+                            continue;
+
+                        if (bFilter)
+                        {
+                            if (file.KeywordData.FilterName().Equals("Luma"))
+                                file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
+
+                            if (file.KeywordData.FilterName().Equals("Red"))
+                                file.Index = (file.Unique) ? ++redIndex : redIndex++;
+
+                            if (file.KeywordData.FilterName().Equals("Green"))
+                                file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
+
+                            if (file.KeywordData.FilterName().Equals("Blue"))
+                                file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
+
+                            if (file.KeywordData.FilterName().Equals("Ha"))
+                                file.Index = (file.Unique) ? ++haIndex : haIndex++;
+
+                            if (file.KeywordData.FilterName().Equals("O3"))
+                                file.Index = (file.Unique) ? ++o3Index : o3Index++;
+
+                            if (file.KeywordData.FilterName().Equals("S2"))
+                                file.Index = (file.Unique) ? ++s2Index : s2Index++;
+
+                            if (file.KeywordData.FilterName().Equals("Shutter"))
+                                file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
+                        }
+
+                        if (bTime)
+                        {
+                            // This works because fileList is already sorted by Time
+                            file.Index = (file.Unique) ? ++index : index++;
+                        }
+                    }
+                }
+            }
+
+            if (bTarget)
+            {
+                // Take a look at the Unique test. Files should already be unique?
+                int index = 0;
+                int lumaIndex = 0;
+                int redIndex = 0;
+                int greenIndex = 0;
+                int blueIndex = 0;
+                int haIndex = 0;
+                int o3Index = 0;
+                int s2Index = 0;
+                int shutterIndex = 0;
+
+                foreach (XisfFile file in fileList)
+                {
+                    if (file.SourceFileName.Contains("Duplicates"))
+                        continue;
+
                     if (bFilter)
                     {
                         if (file.KeywordData.FilterName().Equals("Luma"))
-                            file.Index = (file.Unique) ? ++lumaIndex : lumaIndex + 1;
+                            file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
                         if (file.KeywordData.FilterName().Equals("Red"))
-                            file.Index = (file.Unique) ? ++redIndex : redIndex + 1;
+                            file.Index = (file.Unique) ? ++redIndex : redIndex++;
 
                         if (file.KeywordData.FilterName().Equals("Green"))
-                            file.Index = (file.Unique) ? ++greenIndex : greenIndex + 1;
+                            file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
 
                         if (file.KeywordData.FilterName().Equals("Blue"))
-                            file.Index = (file.Unique) ? ++blueIndex : blueIndex + 1;
+                            file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
 
                         if (file.KeywordData.FilterName().Equals("Ha"))
-                            file.Index = (file.Unique) ? ++haIndex : haIndex + 1;
+                            file.Index = (file.Unique) ? ++haIndex : haIndex++;
 
                         if (file.KeywordData.FilterName().Equals("O3"))
-                            file.Index = (file.Unique) ? ++o3Index : o3Index + 1;
+                            file.Index = (file.Unique) ? ++o3Index : o3Index++;
 
                         if (file.KeywordData.FilterName().Equals("S2"))
-                            file.Index = (file.Unique) ? ++s2Index : s2Index + 1;
+                            file.Index = (file.Unique) ? ++s2Index : s2Index++;
+
+                        if (file.KeywordData.FilterName().Equals("Shutter"))
+                            file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
                     }
 
                     if (bTime)
                     {
-                        file.Index = (file.Unique) ? ++index : index + 1;
-                    }
-                }
-
-                if (bNight)
-                {
-                    if (bFilter)
-                    {
-
-                    }
-
-                    if (bTime)
-                    {
-
+                        // This works because fileList is already sorted by Time
+                        file.Index = (file.Unique) ? ++index : index++;
                     }
                 }
             }
@@ -3537,7 +3605,7 @@ namespace XisfFileManager
             List<string> keywordValuelist = new List<string>();
 
             if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
-                    return;
+                return;
 
             foreach (XisfFile file in mFileList)
             {
@@ -3579,7 +3647,7 @@ namespace XisfFileManager
                     if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)
                         file.KeywordData.AddKeyword(item.Name, item.Value);
                 }
-//                file.KeywordData.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                //                file.KeywordData.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
             }
         }
     }

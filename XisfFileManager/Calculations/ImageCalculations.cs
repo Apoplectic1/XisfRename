@@ -79,7 +79,6 @@ namespace XisfFileManager.Calculations
         public string CalculateOverhead(List<XisfFile> fileList)
         {
             int index;
-            bool status;
             double exposure;
             List<double> subFrameIntervalList;
             List<double> subFrameExposureList;
@@ -116,11 +115,8 @@ namespace XisfFileManager.Calculations
 
                 subFrameIntervalList.Add(delta);
 
-                status = Double.TryParse(file.KeywordData.ExposureSeconds(), out exposure);
-                if (status == false)
-                {
-                    return "SubFrame Overhead: Calculation Error";
-                }
+                exposure = (double)file.KeywordData.GetKeyword("EXPTIME", Keywords.Keyword.eType.DOUBLE);
+
                 subFrameExposureList.Add(exposure);
             }
 

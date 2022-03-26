@@ -10,7 +10,7 @@ namespace XisfFileManager.Keywords
         public string Name { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         private string sValue { get; set; } = string.Empty;
-        private int iValue { get; set; } = -1;
+        private int iValue { get; set; } = int.MinValue;
         private double dValue { get; set; } = double.NaN;
         private bool bValue { get; set; } = false;
         public string Comment { get; set; } = string.Empty;
@@ -28,6 +28,7 @@ namespace XisfFileManager.Keywords
         {
             Name = sName;
             this.iValue = iValue;
+            this.dValue = iValue;
             this.Value = iValue.ToString();
             Comment = sComment;
             Type = eType.INTEGER;
@@ -36,6 +37,7 @@ namespace XisfFileManager.Keywords
         {
             Name = sName;
             this.dValue = dValue;
+            this.iValue = (int)Math.Round(dValue);
             this.Value = dValue.ToString();
             Comment = sComment;
             Type = eType.DOUBLE;
@@ -70,17 +72,17 @@ namespace XisfFileManager.Keywords
         public object GetKeyword(eType type)
         {
             switch (type)
-            { 
+            {
                 case eType.NULL:
                     return null;
                 case eType.DOUBLE:
-                    return Convert.ToString(Value);
+                    return dValue;
                 case eType.INTEGER:
-                    return Convert.ToString(Value);
+                    return iValue;
                 case eType.BOOL:
-                    return Convert.ToString(Value);
+                    return bValue;
                 default:
-                    return Value.Replace("\"", "").Replace("'", "");
+                    return Value.Replace("'", "");
             }
         }
     }
