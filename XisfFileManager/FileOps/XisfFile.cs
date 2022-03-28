@@ -108,7 +108,6 @@ namespace XisfFileManager.FileOperations
             Master = KeywordData.TargetName().Contains("Master");
             NarrowBand = KeywordData.FilterName().Contains("Ha") || KeywordData.FilterName().Contains("O3") || KeywordData.FilterName().Contains("S2");
             Offset = KeywordData.Offset();
-            Protected = KeywordData.Protected();
             RiccardiReducer = KeywordData.Telescope().EndsWith("R");
             Target = KeywordData.TargetName();
             Telescope = KeywordData.Telescope();

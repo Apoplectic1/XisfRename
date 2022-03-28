@@ -974,29 +974,6 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public bool? Protected()
-        {
-            Keyword node = new Keyword();
-
-            // Unfortunate - Initially I didn't set this Keyword as uppercase (backups)
-            node = KeywordList.Find(i => i.Name == "Protected");
-            if (node != null)
-            {
-                RemoveKeyword("Protected");
-                AddKeyword("PROTECTED", Convert.ToBoolean(node.Value));
-            }
-
-            node = KeywordList.Find(i => i.Name == "PROTECTED");
-            if (node != null)
-            {
-                return Convert.ToBoolean(node.Value);
-            }
-
-            return null;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public string SensorSetPointTemperature()
         {
             string value = (string)GetKeyword("SET-TEMP");

@@ -26,7 +26,7 @@ namespace XisfFileManager
     public partial class MainForm : Form
     {
         private readonly ImageCalculations ImageParameterLists;
-        private readonly List<XisfFile> mFileList;
+        private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
         private readonly SubFrameLists SubFrameLists;
@@ -735,7 +735,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 // First count all unprotected files. Unpotected means either the PROTECTED Keyword doesn't exist or is false.
-                if (file.KeywordData.Protected() != true)
+                //if (file.KeywordData.Protected() != true)
                     iUnprotectedCount++;
             }
 
@@ -808,7 +808,7 @@ namespace XisfFileManager
                 // Don't update existing files that have the Protected Keyword set unless the UI overrides this setting
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 {
-                    if (file.KeywordData.Protected() == true)
+                    //if (file.KeywordData.Protected() == true)
                         // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
                         continue;
                 }
@@ -3470,15 +3470,18 @@ namespace XisfFileManager
         private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
-            mCalibration.CalibrationFileList.Clear();
             mCalibration.Frame = DirectoryOps.FrameType.ALL;
-            mCalibration.FindCalibrationFrames(mFileList);
+
+            bool bMatchedAllFiles = mCalibration.FindTargetCalibrationFrames(mFileList);
+
+            if (!bMatchedAllFiles)
+                mCalibration.FindLibraryCalibrationFrames(mFileList);
         }
 
         private void CalibrationTab_MatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
-            mCalibration.MatchCalibrationFrames(mFileList);
+            mCalibration.MatchLibraryCalibrationFrames(mFileList);
         }
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
