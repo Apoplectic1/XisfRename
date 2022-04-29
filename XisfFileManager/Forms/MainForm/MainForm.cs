@@ -272,7 +272,10 @@ namespace XisfFileManager
                 Title = "Select .xisf Folder",
                 //AutoUpgradeEnabled = true,
                 CheckPathExists = false,
-                InitialDirectory = mFolderBrowseState, // @"E:\Photography\Astro Photography\Processing",
+
+                InitialDirectory = mFolderBrowseState,
+                // InitialDirectory = @"E:\Temp\maste", // @"E:\Photography\Astro Photography\Processing",
+
                 Multiselect = false,
                 RestoreDirectory = true
             };
@@ -305,7 +308,7 @@ namespace XisfFileManager
 
                 if (mDirectoryOps.Files.Count == 0)
                 {
-                    MessageBox.Show("No .xisf Files Found", "Select .xisf Folder");
+                    MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
                     return;
                 }
 
@@ -736,7 +739,7 @@ namespace XisfFileManager
             {
                 // First count all unprotected files. Unpotected means either the PROTECTED Keyword doesn't exist or is false.
                 //if (file.KeywordData.Protected() != true)
-                    iUnprotectedCount++;
+                iUnprotectedCount++;
             }
 
             if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
@@ -809,8 +812,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 {
                     //if (file.KeywordData.Protected() == true)
-                        // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
-                        continue;
+                    // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
+                    continue;
                 }
 
                 file.KeywordData.SetObservationSite();
@@ -2746,6 +2749,10 @@ namespace XisfFileManager
                 if (status)
                 {
                     file.KeywordData.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
+                    if (value < 10)
+                        file.Exposure = value.ToString("F3");
+                    else
+                        file.Exposure = value.ToString("F1");
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)

@@ -65,7 +65,7 @@ namespace XisfFileManager.Keywords
                 case eType.BOOL:
                     return bValue;
                 default:
-                    return Value.Replace("'","");
+                    return Value.Replace("'","").Replace(" ", "");
             }
         }
 

@@ -177,12 +177,14 @@ namespace XisfFileManager.FileOperations
                         newName += mFile.KeywordData.Telescope() + "@";
                         newName += mFile.KeywordData.FocalLength();
 
-                        if ((string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != string.Empty)
+                        string focusPosition = (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
+                        if (!string.IsNullOrEmpty(focusPosition))
                         {
                             newName += "  F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
                         }
 
-                        if (mFile.KeywordData.ImageAngle() != string.Empty)
+                        string imageAngle = mFile.KeywordData.ImageAngle();
+                        if (!string.IsNullOrEmpty(imageAngle))
                         {
                             newName += "  R" + mFile.KeywordData.ImageAngle();
                         }

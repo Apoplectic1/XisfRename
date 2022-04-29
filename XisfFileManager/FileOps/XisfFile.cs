@@ -29,6 +29,7 @@ namespace XisfFileManager.FileOperations
         public string Exposure { get; set; }
         public bool NarrowBand { get; set; }
         public int Gain { get; set; }
+        public string FocuserTemperature { get; set; }
         public int Offset { get; set; }
         public string Temperature { get; set; } = string.Empty;
         public int Binning { get; set; }
@@ -103,6 +104,7 @@ namespace XisfFileManager.FileOperations
             FileName = KeywordData.FileName();
             Filter = KeywordData.FilterName();
             FocalLength = KeywordData.FocalLength();
+            FocuserTemperature = KeywordData.FocuserTemperature();
             FrameType = KeywordData.FrameType();
             Gain = KeywordData.Gain();
             Master = KeywordData.TargetName().Contains("Master");

@@ -210,10 +210,15 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public void IntegrationParamaters()
         {
-            foreach (Keyword node in KeywordList)
+            List<Keyword> keys = new List<Keyword>(KeywordList);
+
+            foreach (Keyword node in keys)
             {
                 if (node.Comment.ToLower().Contains("numberofimages"))
-                    AddKeyword("TOTALFRAMES", node.Value, "Number of Integrated SubFrames");
+                {
+                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
+                    AddKeyword("TOTALFRAMES", totalFrames, "Number of Integrated SubFrames");
+                }
 
                 if (node.Comment.ToLower().Contains("pixelrejection"))
                 {
@@ -237,6 +242,8 @@ namespace XisfFileManager
         public int TotalFrames(bool findMissingKeywords = false)
         {
             bool status;
+
+            IntegrationParamaters();
 
             Keyword node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
             node.Type = Keyword.eType.INTEGER;
@@ -734,10 +741,10 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
-                if (value.StartsWith("L")) value = "Light";
-                if (value.StartsWith("D")) value = "Dark";
-                if (value.StartsWith("F")) value = "Flat";
-                if (value.StartsWith("B")) value = "Bias";
+                if (value.Contains("ight")) value = "Light";
+                if (value.Contains("ark")) value = "Dark";
+                if (value.Contains("lat")) value = "Flat";
+                if (value.Contains("ias")) value = "Bias";
 
                 AddKeyword("IMAGETYP", value, node.Comment);
 
@@ -826,7 +833,8 @@ namespace XisfFileManager
                 return value;
 
             value = GetKeyword("FOCUSPOS", eType);
-            if (value == null) return null;
+            if (value == null) 
+                return null;
 
             RemoveKeyword("FOCUSPOS");
             AddKeyword("FOCPOS", (int)value);
@@ -842,11 +850,12 @@ namespace XisfFileManager
             if (value != null)
                 return FormatTemperatureString(value);
 
-            double? dValue = (double)GetKeyword("FOCUSTEM", Keyword.eType.DOUBLE);
-            if (dValue == null) return string.Empty;
+
+            value = (string)GetKeyword("FOCUSTEM", Keyword.eType.STRING);
+            if (value == null) return string.Empty;
 
             RemoveKeyword("FOCUSTEM");
-            AddKeyword("FOCTEMP", (double)dValue);
+            AddKeyword("FOCTEMP", value);
 
             value = (string)GetKeyword("FOCTEMP");
             return FormatTemperatureString(value);
@@ -1258,32 +1267,67 @@ namespace XisfFileManager
         {
             bool bStatus;
 
-            bool bBool;
-            bStatus = bool.TryParse(element.Attribute("value").Value, out bBool);
-            if (bStatus)
+            // First remove Keyword characteritics that interfere with later processing
+            // Get rid of extra spaces and "'"
+            string elementValue = element.Attribute("value").Value;
+            elementValue = elementValue.Replace(" ", "").Replace("'", "");
+
+            // Now get rid of an extra decimal point at the end of what should be integers
+            int decimalIndex = elementValue.LastIndexOf('.') + 1;
+            if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
             {
-                AddKeyword(element.Attribute("name").Value, bBool, element.Attribute("comment").Value);
-                return;
+                elementValue = elementValue.Replace(".", "");
             }
 
-            int iInt32;
-            bStatus = Int32.TryParse(element.Attribute("value").Value, out iInt32);
+            // Now actually parse the keywords into bools, integers, doubles and finally strings
+            bStatus = bool.TryParse(elementValue, out bool bBool);
+            if (bStatus)
+            {
+                if (elementValue == "T")
+                {
+                    AddKeyword("true", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+                if (elementValue == "F")
+                {
+                    AddKeyword("false", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+            }
+
+            bStatus = Int32.TryParse(elementValue, out int iInt32);
             if (bStatus)
             {
                 AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
                 return;
             }
 
-            double dDouble;
-            bStatus = double.TryParse(element.Attribute("value").Value, out dDouble);
+            bStatus = double.TryParse(elementValue, out double dDouble);
             if (bStatus)
             {
                 AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
                 return;
             }
 
-            AddKeyword(element.Attribute("name").Value, (string)element.Attribute("value").Value, element.Attribute("comment").Value);
+            // Pixinsight will add multiple Keywords using the same name
+            // Keep string Keyword Duplicates
+            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
+        }
 
+        // #########################################################################################################
+        // #########################################################################################################
+        public void AddKeywordKeepDuplicates(string name, string value, string comment = "XISF File Manager")
+        {
+            Keyword keyword = new Keyword
+            {
+                Name = name,
+                Value = value,
+                Comment = comment,
+                Type = Keyword.eType.STRING
+            };
+
+            keyword.SetKeyword(name, value, comment);
+            KeywordList.Add(keyword);
         }
 
         // #########################################################################################################
@@ -1335,7 +1379,7 @@ namespace XisfFileManager
         // #########################################################################################################
         public string FormatExposureSeconds(double seconds)
         {
-            if (seconds < 1.0)
+            if (seconds < 9.0)
             {
                 if (seconds <= 0.0001)
                 {

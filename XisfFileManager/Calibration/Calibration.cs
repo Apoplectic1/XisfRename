@@ -294,7 +294,7 @@ namespace XisfFileManager
             mUnmatchedBiasTargetFileList = targetFileList.Where(p => !mTargetCalibrationFileList.Any(p2 => p2.CBIAS == p.CBIAS)).ToList();
 
             // If all target frames have corresponding Darks, Flats and Biases, let us know and retun true
-            if (mUnmatchedDarkTargetFileList.Count == 0 && mUnmatchedFlatTargetFileList.Count == 0)
+            if ((mUnmatchedDarkTargetFileList.Count == 0) && (mUnmatchedFlatTargetFileList.Count == 0))
             {
                 mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
@@ -364,8 +364,8 @@ namespace XisfFileManager
             }
 
             // Sort and Remove all duplicate list elements
-            mDarkFileList.Sort(XisfFile.CaptureTimeComparison);
-            mFlatFileList.Sort(XisfFile.CaptureTimeComparison);
+            //mDarkFileList.Sort(XisfFile.CaptureTimeComparison);
+            //mFlatFileList.Sort(XisfFile.CaptureTimeComparison);
             mDarkFileList = mDarkFileList.Distinct().ToList();
             mFlatFileList = mFlatFileList.Distinct().ToList();
 

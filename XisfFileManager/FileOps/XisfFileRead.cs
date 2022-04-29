@@ -21,7 +21,11 @@ namespace XisfFileManager.FileOperations
 
                 mXmlString = new string(mBuffer);
                 // Skip first sixteen bytes that contain XISF0100xxxxxxxx 
+                // I've found at least two standards for the xml block surround: one is <?xml and the other is <xisf from N.I.N.A
+                // N.I.N.A also adds a ^M as xml line endings (nice in emacs but different than PixInsight
                 mXmlString = mXmlString.Substring(mXmlString.IndexOf("<?xml"));
+
+
                 // find closing </xisf>. set mXmlString to the entire xml text. Note that the size of mBuffer can be too small and cause this to fail
                 mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf("</xisf>") + "</xisf>".Length);
 
