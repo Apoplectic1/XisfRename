@@ -734,40 +734,11 @@ namespace XisfFileManager
 
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
-            int iUnprotectedCount = 0;
-            foreach (XisfFile file in mFileList)
-            {
-                // First count all unprotected files. Unpotected means either the PROTECTED Keyword doesn't exist or is false.
-                //if (file.KeywordData.Protected() != true)
-                iUnprotectedCount++;
-            }
-
-            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
-            {
-                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Checked)
-                {
-                    CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Red;
-                    Label_FileSelection_Statistics_Task.Text = "Keyword file updates disabled - All files are protected";
-                    return;
-                }
-                else
-                {
-                    if (iUnprotectedCount == 0)
-                    {
-                        Label_FileSelection_Statistics_Task.Text = "Keyword file updates aborted - No unprotected files found";
-                        return;
-                    }
-                }
-            }
-
-            Label_FileSelection_Statistics_Task.Text = "Updating " + iUnprotectedCount.ToString() + "/" + mFileList.Count().ToString() + " File Keywords";
-            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked) ? iUnprotectedCount : mFileList.Count();
-            ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
-
-
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
             TabControl_Update.Enabled = false;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
+            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
 
             // Only fill out the weight lists if in fact, we are actually updating them
             if (XisfFileUpdate.Operation == XisfFileUpdate.eOperation.CALCULATED_WEIGHTS)
@@ -1930,8 +1901,6 @@ namespace XisfFileManager
                 file.SetRequiredKeywords();
             }
 
-
-
             FindFrameType();
         }
 
@@ -1940,13 +1909,47 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked)
-                    file.KeywordData.AddKeyword("IMAGETYP", "Light", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                {
+                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Light", "Integration Master");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Light", "Sub Frame");
+                    }
+                }
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked)
-                    file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
+                {
+                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    {
+                        file.KeywordData.RemoveKeyword("ALT-OBS");
+                        file.KeywordData.RemoveKeyword("DATE-END");
+                        file.KeywordData.RemoveKeyword("LAT-OBS");
+                        file.KeywordData.RemoveKeyword("LONG-OBS");
+                        file.KeywordData.RemoveKeyword("OBSGEO-B");
+                        file.KeywordData.RemoveKeyword("OBSGEO-H");
+                        file.KeywordData.RemoveKeyword("OBSGEO-L");
+                        file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Integration Master");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Sub Frame");
+                    }
+                }
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked)
-                    file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                {
+                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Integration Master");
+                    }
+                    else
+                    {
+                        file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Sub Frame");
+                    }
+                }
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked)
                 {
@@ -2370,6 +2373,27 @@ namespace XisfFileManager
             }
         }
 
+
+        private void RadioButton_KeywordUpdateTab_Camera_Z533_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RadioButton_KeywordUpdateTab_Camera_Z183_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RadioButton_KeywordUpdateTab_Camera_Q178_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RadioButton_KeywordUpdateTab_Camera_A144_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
         public void FindCamera()
         {
             Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
@@ -2502,7 +2526,7 @@ namespace XisfFileManager
                     TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = file.Gain.ToString();
                 if (file.Camera.Equals("Z183"))
                     TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = file.Gain.ToString();
-                if (file.Camera.Equals("Z533"))
+                if (file.Camera.Equals("Q178"))
                     TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = file.Gain.ToString();
             }
 
@@ -2536,7 +2560,7 @@ namespace XisfFileManager
                     TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = file.Offset.ToString();
                 if (file.Camera.Equals("Z183"))
                     TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = file.Offset.ToString();
-                if (file.Camera.Equals("Z533"))
+                if (file.Camera.Equals("Q178"))
                     TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = file.Offset.ToString();
             }
 
@@ -2692,29 +2716,54 @@ namespace XisfFileManager
             // ****************************************************************
         }
 
-        private void CheckBox_CameraNarrowBand_CheckedChanged(object sender, EventArgs e)
-        {
-            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
+        private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
+        { 
+            if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
             {
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
-
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
-                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
-
-                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+                if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+                }
+                else
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+                }
             }
-            else
+
+            if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
             {
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+                if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
+                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
+                }
+                else
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
+                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
+                }
+            }
 
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
-                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
-
-                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+            if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
+            {
+                if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+                }
+                else
+                {
+                    Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
+                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+                }
             }
         }
 
@@ -3205,59 +3254,6 @@ namespace XisfFileManager
             FindCamera();
         }
 
-        private void RadioButton_KeywordCamera_Z533_CheckedChanged(object sender, EventArgs e)
-        {
-            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "-10";
-
-            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
-            {
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
-            }
-            else
-            {
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
-            }
-        }
-
-        private void RadioButton_KeywordCamera_Z183_CheckedChanged(object sender, EventArgs e)
-        {
-            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "-20";
-
-            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
-            {
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
-                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
-            }
-            else
-            {
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
-                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
-            }
-        }
-
-        private void RadioButton_KeywordCamera_Q178_CheckedChanged(object sender, EventArgs e)
-        {
-            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "";
-
-            if (CheckBox_KeywordUpdateTab_Camera_NarrowBand.Checked)
-            {
-                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
-            }
-            else
-            {
-                TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
-            }
-        }
-
-        private void RadioButton_KeywordCamera_A144_CheckedChanged(object sender, EventArgs e)
-        {
-            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = "";
-        }
-
 
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
@@ -3296,6 +3292,7 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("TOTALFRAMES", frames, "Number of Integrated SubFrames");
             }
         }
+
         private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
         {
             bool foundNumberOfImages = false;

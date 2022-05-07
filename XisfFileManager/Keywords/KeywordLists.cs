@@ -246,10 +246,11 @@ namespace XisfFileManager
             IntegrationParamaters();
 
             Keyword node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
-            node.Type = Keyword.eType.INTEGER;
-
             if (node != null)
+            {
+                node.Type = Keyword.eType.INTEGER;
                 return Int32.Parse(node.Value);
+            }
 
             while (findMissingKeywords)
             {
@@ -833,7 +834,7 @@ namespace XisfFileManager
                 return value;
 
             value = GetKeyword("FOCUSPOS", eType);
-            if (value == null) 
+            if (value == null)
                 return null;
 
             RemoveKeyword("FOCUSPOS");
