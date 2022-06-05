@@ -113,24 +113,24 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Light"))
                     {
-                        newName = targetName + " Integration L-" + mFile.KeywordData.FilterName() + " ";
+                        newName = targetName + "  Integration  L-" + mFile.KeywordData.FilterName() + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
 
                         if (mFile.KeywordData.Rejection() != string.Empty)
-                            newName += " (" + mFile.KeywordData.Rejection().Replace("'", "") + " " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
+                            newName += "  (" + mFile.KeywordData.Rejection().Replace("'", "") + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
                         else
-                            newName += " (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
+                            newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd");
 
                         if (mFile.KeywordData.CaptureSoftware() != string.Empty)
                         {
-                            newName += " " + mFile.KeywordData.CaptureSoftware();
+                            newName += "  " + mFile.KeywordData.CaptureSoftware();
                         }
 
                         newName += ")";
@@ -138,12 +138,12 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Dark"))
                     {
-                        newName += "Dark " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + " ";
+                        newName += "Dark  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
@@ -151,12 +151,12 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Bias"))
                     {
-                        newName += "Bias " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + " ";
+                        newName += "Bias  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                         newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
@@ -164,15 +164,15 @@ namespace XisfFileManager.FileOperations
 
                     if (frameType.Contains("Flat"))
                     {
-                        newName += "Flat " + mFile.KeywordData.FilterName() + " " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + " ";
+                        newName += "Flat " + mFile.KeywordData.FilterName() + "  " + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd") + "  ";
 
                         if (mFile.KeywordData.TotalFrames().ToString("D3") != string.Empty)
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "x" + mFile.KeywordData.TotalFrames() + "  ";
                         else
-                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                            newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
 
                         newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
-                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C ";
+                        newName += "@" + mFile.KeywordData.SensorTemperature() + "C  ";
 
                         newName += mFile.KeywordData.Telescope() + "@";
                         newName += mFile.KeywordData.FocalLength();
@@ -180,32 +180,32 @@ namespace XisfFileManager.FileOperations
                         string focusPosition = (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
                         if (!string.IsNullOrEmpty(focusPosition))
                         {
-                            newName += " F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
+                            newName += "  F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
                         }
 
                         string imageAngle = mFile.KeywordData.ImageAngle();
                         if (!string.IsNullOrEmpty(imageAngle))
                         {
-                            newName += " R" + mFile.KeywordData.ImageAngle();
+                            newName += "  R" + mFile.KeywordData.ImageAngle();
                         }
                     }
 
-                    newName += " (";
+                    newName += "  (";
 
                     if (mFile.KeywordData.Rejection() != string.Empty)
                     {
                         newName += mFile.KeywordData.Rejection().Replace("'", "");
 
                         if (mFile.KeywordData.CaptureSoftware() != string.Empty)
-                            newName += " " + mFile.KeywordData.CaptureSoftware();
+                            newName += "  " + mFile.KeywordData.CaptureSoftware();
                     }
                     else
                     {
                         if (mFile.KeywordData.CaptureSoftware() != string.Empty)
                             newName += mFile.KeywordData.CaptureSoftware();
                     }
-
-                    newName += ") ";
+                    
+                    newName += ")  ";
                 }
 
                 return newName;
@@ -216,12 +216,12 @@ namespace XisfFileManager.FileOperations
             if (mFile.KeywordData.FrameType() == "Dark")
             {
                 newName = index.ToString("D3") + " ";
-                newName += " Dark ";
-                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                newName += " Dark  ";
+                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
                 newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                 newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
 
-                newName += " (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd hh-mm-ss tt") + " ";
+                newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.KeywordData.CaptureSoftware();
                 newName += ")";
 
@@ -231,12 +231,12 @@ namespace XisfFileManager.FileOperations
             if (mFile.KeywordData.FrameType() == "Bias")
             {
                 newName = index.ToString("D3") + " ";
-                newName += " Bias ";
-                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                newName += " Bias  ";
+                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
                 newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
                 newName += "@" + mFile.KeywordData.SensorTemperature() + "C";
 
-                newName += " (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd hh-mm-ss tt") + " ";
+                newName += "  (" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.KeywordData.CaptureSoftware();
                 newName += ")";
 
@@ -246,23 +246,23 @@ namespace XisfFileManager.FileOperations
             if (mFile.KeywordData.FrameType() == "Flat")
             {
                 newName = index.ToString("D3") + " ";
-                newName += " F-" + mFile.KeywordData.FilterName() + " ";
+                newName += " F-" + mFile.KeywordData.FilterName() + "  ";
 
-                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
                 newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
-                newName += "@" + mFile.KeywordData.SensorTemperature() + "C ";
+                newName += "@" + mFile.KeywordData.SensorTemperature() + "C  ";
 
                 newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
-                newName += mFile.KeywordData.AmbientTemperature() + "C ";
+                newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
                 newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
-                    newName += " R" + mFile.KeywordData.ImageAngle() + " ";
+                    newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
                 else
-                    newName += " ";
+                    newName += "  ";
 
-                newName += "(" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd hh-mm-ss tt") + " ";
+                newName += "(" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.KeywordData.CaptureSoftware();
                 newName += ")";
 
@@ -309,23 +309,23 @@ namespace XisfFileManager.FileOperations
                         break;
                 }
 
-                newName += " " + mFile.KeywordData.TargetName() + " L-" + mFile.KeywordData.FilterName() + " ";
+                newName += " " + mFile.KeywordData.TargetName() + "  L-" + mFile.KeywordData.FilterName() + "  ";
 
-                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + " ";
+                newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
                 newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();
-                newName += "@" + mFile.KeywordData.SensorTemperature() + "C ";
+                newName += "@" + mFile.KeywordData.SensorTemperature() + "C  ";
 
                 newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
-                newName += mFile.KeywordData.AmbientTemperature() + "C ";
+                newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
                 newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
                 if (mFile.KeywordData.ImageAngle() != string.Empty)
-                    newName += " R" + mFile.KeywordData.ImageAngle() + " ";
+                    newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
                 else
-                    newName += " ";
+                    newName += "  ";
 
-                newName += "(" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd hh-mm-ss tt") + " ";
+                newName += "(" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.KeywordData.CaptureSoftware();
                 newName += ")";
 
