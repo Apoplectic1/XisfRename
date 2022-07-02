@@ -896,7 +896,6 @@
             this.RadioButton_KeywordUpdateTab_Camera_A144.TabIndex = 3;
             this.RadioButton_KeywordUpdateTab_Camera_A144.Text = "A144";
             this.RadioButton_KeywordUpdateTab_Camera_A144.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdateTab_Camera_A144.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_Camera_A144_CheckedChanged);
             // 
             // RadioButton_KeywordUpdateTab_Camera_Q178
             // 
@@ -907,7 +906,6 @@
             this.RadioButton_KeywordUpdateTab_Camera_Q178.TabIndex = 2;
             this.RadioButton_KeywordUpdateTab_Camera_Q178.Text = "Q178";
             this.RadioButton_KeywordUpdateTab_Camera_Q178.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_Camera_Q178_CheckedChanged);
             // 
             // RadioButton_KeywordUpdateTab_Camera_Z183
             // 
@@ -918,8 +916,7 @@
             this.RadioButton_KeywordUpdateTab_Camera_Z183.TabIndex = 1;
             this.RadioButton_KeywordUpdateTab_Camera_Z183.Text = "Z183";
             this.RadioButton_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_Camera_Z183_CheckedChanged);
-            // 
+           // 
             // RadioButton_KeywordUpdateTab_Camera_Z533
             // 
             this.RadioButton_KeywordUpdateTab_Camera_Z533.AutoSize = true;
@@ -929,7 +926,6 @@
             this.RadioButton_KeywordUpdateTab_Camera_Z533.TabIndex = 0;
             this.RadioButton_KeywordUpdateTab_Camera_Z533.Text = "Z533";
             this.RadioButton_KeywordUpdateTab_Camera_Z533.UseVisualStyleBackColor = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.CheckedChanged += new System.EventHandler(this.RadioButton_KeywordUpdateTab_Camera_Z533_CheckedChanged);
             // 
             // Label_KeywordUpdateTab_FileName
             // 

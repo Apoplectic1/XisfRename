@@ -2234,9 +2234,7 @@ namespace XisfFileManager
             frameTypeCount = 0;
             foreach (XisfFile file in mFileList)
             {
-                string frameType;
-
-                frameType = file.FrameType;
+                string frameType = file.FrameType;
 
                 if (frameType.Contains("Light"))
                 {
@@ -2264,8 +2262,8 @@ namespace XisfFileManager
 
                 if (file.KeywordData.TargetName().Contains("Master"))
                 {
-                    masterCount++;
                     foundMaster = true;
+                    masterCount++;
                 }
             }
 
@@ -2371,27 +2369,6 @@ namespace XisfFileManager
                 // Set "SetByFile" to red
                 Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
-        }
-
-
-        private void RadioButton_KeywordUpdateTab_Camera_Z533_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RadioButton_KeywordUpdateTab_Camera_Z183_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RadioButton_KeywordUpdateTab_Camera_Q178_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RadioButton_KeywordUpdateTab_Camera_A144_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
         public void FindCamera()
