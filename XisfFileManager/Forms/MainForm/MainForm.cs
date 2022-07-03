@@ -558,7 +558,6 @@ namespace XisfFileManager
             FindFrameType();
             FindTelescope();
             FindCamera();
-            FindFrameType();
             // **********************************************************************
             TabControl_Update.Enabled = true;
         }
@@ -599,6 +598,8 @@ namespace XisfFileManager
 
                         if (bFilter)
                         {
+                            int fileIndex = file.Index;
+
                             if (file.KeywordData.FilterName().Equals("Luma"))
                                 file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
@@ -622,6 +623,17 @@ namespace XisfFileManager
 
                             if (file.KeywordData.FilterName().Equals("Shutter"))
                                 file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
+
+                            if (fileIndex == file.Index)
+                            {
+                                DialogResult result = MessageBox.Show(
+                                "No Filter in source file:\n" + file.SourceFileName +
+                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                "File Update Failed",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                                Environment.Exit(-1);
+                            }
                         }
 
                         if (bTime)
@@ -653,6 +665,8 @@ namespace XisfFileManager
 
                     if (bFilter)
                     {
+                        int fileIndex = file.Index;
+
                         if (file.KeywordData.FilterName().Equals("Luma"))
                             file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
@@ -676,6 +690,17 @@ namespace XisfFileManager
 
                         if (file.KeywordData.FilterName().Equals("Shutter"))
                             file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
+
+                        if (fileIndex == file.Index)
+                        {
+                            DialogResult result = MessageBox.Show(
+                                "No Filter in source file:\n" + file.SourceFileName +
+                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                "File Update Failed",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            Environment.Exit(-1);
+                        }
                     }
 
                     if (bTime)
@@ -1854,7 +1879,7 @@ namespace XisfFileManager
                 if (globalFrameType)
                 {
                     if (file.KeywordData.FrameType() == string.Empty)
-                        file.KeywordData.AddKeyword("FRAMETYP", frameTypeText, "XISF File Manager");
+                        file.KeywordData.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
                 }
                 else
                 {
@@ -1867,12 +1892,11 @@ namespace XisfFileManager
                     }
                 }
 
-                file.KeywordData.AddKeyword("FRAMETYP", frameTypeText, "XISF File Manager");
-                if (frameTypeText.Equals("Dark"))
+                file.KeywordData.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
+                if (frameTypeText.Equals("Dark") || frameTypeText.Equals("Bias"))
                 {
                     file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
                 }
-
 
                 file.SetRequiredKeywords();
             }
@@ -2236,31 +2260,31 @@ namespace XisfFileManager
             {
                 string frameType = file.FrameType;
 
-                if (frameType.Contains("Light"))
+                if (frameType.Equals("Light"))
                 {
                     foundLight = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Contains("Dark"))
+                if (frameType.Equals("Dark"))
                 {
                     foundDark = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Contains("Flat"))
+                if (frameType.Equals("Flat"))
                 {
                     foundFlat = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Contains("Bias"))
+                if (frameType.Equals("Bias"))
                 {
                     foundBias = true;
                     frameTypeCount++;
                 }
 
-                if (file.KeywordData.TargetName().Contains("Master"))
+                if (file.KeywordData.TargetName().Equals("Master"))
                 {
                     foundMaster = true;
                     masterCount++;
@@ -2694,7 +2718,7 @@ namespace XisfFileManager
         }
 
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
-        { 
+        {
             if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
             {
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")

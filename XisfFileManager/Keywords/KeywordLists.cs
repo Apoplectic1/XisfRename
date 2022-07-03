@@ -666,14 +666,14 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
-                if (value.ToUpper().StartsWith("L")) value = "Luma";
-                if (value.ToUpper().StartsWith("H")) value = "Ha";
-                if (value.ToUpper().StartsWith("O")) value = "O3";
-                if (value.ToUpper().StartsWith("S")) value = "S2";
-                if (value.ToUpper().StartsWith("R")) value = "Red";
-                if (value.ToUpper().StartsWith("G")) value = "Green";
-                if (value.ToUpper().StartsWith("B")) value = "Blue";
-                if (value.ToUpper().StartsWith("SH")) value = "Shutter";
+                if (value.ToUpper().Equals("LUMA")) value = "Luma";
+                if (value.ToUpper().Equals("HA")) value = "Ha";
+                if (value.ToUpper().Equals("O3")) value = "O3";
+                if (value.ToUpper().Equals("S2")) value = "S2";
+                if (value.ToUpper().Equals("RED")) value = "Red";
+                if (value.ToUpper().Equals("GREEN")) value = "Green";
+                if (value.ToUpper().Equals("BLUE")) value = "Blue";
+                if (value.ToUpper().Equals("SHUTTER")) value = "Shutter";
 
                 if (value == "Luma")
                     AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -742,10 +742,10 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
-                if (value.Contains("ight")) value = "Light";
-                if (value.Contains("ark")) value = "Dark";
-                if (value.Contains("lat")) value = "Flat";
-                if (value.Contains("ias")) value = "Bias";
+                if (value.ToLower().Equals("light")) value = "Light";
+                if (value.ToLower().Equals("dark")) value = "Dark";
+                if (value.ToLower().Equals("flat")) value = "Flat";
+                if (value.ToLower().Equals("bias")) value = "Bias";
 
                 AddKeyword("IMAGETYP", value, node.Comment);
 
@@ -1380,11 +1380,11 @@ namespace XisfFileManager
         // #########################################################################################################
         public string FormatExposureSeconds(double seconds)
         {
-            if (seconds < 9.0)
+            if (seconds < 10.0)
             {
-                if (seconds <= 0.0001)
+                if (seconds < 0.001)
                 {
-                    return "0000";
+                    return "0.000";
                 }
 
                 return seconds.ToString("0.000");
