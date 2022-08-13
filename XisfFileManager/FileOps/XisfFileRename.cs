@@ -254,13 +254,20 @@ namespace XisfFileManager.FileOperations
 
                 newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
-                newName += mFile.KeywordData.AmbientTemperature() + "C  ";
 
-                newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
-                if (mFile.KeywordData.ImageAngle() != string.Empty)
-                    newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
+                if (mFile.KeywordData.AmbientTemperature() != null && mFile.KeywordData.AmbientTemperature() != "")
+                    newName += mFile.KeywordData.AmbientTemperature() + "C  ";
                 else
                     newName += "  ";
+
+                if (mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != null && (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != string.Empty)
+                {
+                    newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
+                    if (mFile.KeywordData.ImageAngle() != string.Empty)
+                        newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
+                    else
+                        newName += "  ";
+                }
 
                 newName += "(" + mFile.KeywordData.CaptureDateTime().ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.KeywordData.CaptureSoftware();

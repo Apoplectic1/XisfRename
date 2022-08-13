@@ -106,7 +106,7 @@ namespace XisfFileManager
 
                 if (mDirectoryOps.Files.Count == 0)
                 {
-                    MessageBox.Show("No Calibration Files Found", "Select Calibration Folder");
+                    MessageBox.Show("No Calibration Files Found under: " + diDirectoryTree.ToString(), "Select Calibration Folder");
                     return null;
                 }
 
@@ -187,7 +187,7 @@ namespace XisfFileManager
             // To cleanly reuse this code, we have to use the margin calculations when differentiating Flats from Darks from Biases. Unfortunate but not really a performance issue...
 
             XisfFile nearestCalibrationFile = (XisfFile)null;
-            long min = long.MaxValue;
+            long min = DateTime.MaxValue.Ticks;
 
             // To Do
             // Add code to test for Flat rotation angle
@@ -237,7 +237,7 @@ namespace XisfFileManager
                                             if (Math.Abs(calibrationFrameTemperture - targetFrameTemperature) <= TemperatureTolerance)
                                             {
                                                 long diff = Math.Abs(calibrationFile.KeywordData.CaptureDateTime().Ticks - targetFile.KeywordData.CaptureDateTime().Ticks);
-                                                if (diff < min)
+                                                if (diff <= min)
                                                 {
                                                     min = diff;
                                                     nearestCalibrationFile = calibrationFile;
@@ -276,7 +276,11 @@ namespace XisfFileManager
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
         {
             mLibraryCalibrationFileList.Clear();
+#if DEBUG
+            mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Temp\Calibration");
+#else
             mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Photography\Astro Photography\Calibration");
+#endif
 
             return MatchLibraryCalibrationFrames(targetFileList);
         }
@@ -327,7 +331,7 @@ namespace XisfFileManager
             mFlatFileList.Clear();
             bool bAllDarksMatched = true;
             bool bAllFlatsMatched = true;
-
+            
             // Build lists of all the nearest (by DateTime) Dark and Flat calibration files
             // These lists will initially be the same size as the target list (contains many duplicates) 
             foreach (var targetFile in mUnmatchedDarkTargetFileList.ToList())
@@ -363,8 +367,8 @@ namespace XisfFileManager
             }
 
             // Sort and Remove all duplicate list elements
-            //mDarkFileList.Sort(XisfFile.CaptureTimeComparison);
-            //mFlatFileList.Sort(XisfFile.CaptureTimeComparison);
+            mDarkFileList.Sort(XisfFile.CaptureTimeComparison);
+            mFlatFileList.Sort(XisfFile.CaptureTimeComparison);
             mDarkFileList = mDarkFileList.Distinct().ToList();
             mFlatFileList = mFlatFileList.Distinct().ToList();
 

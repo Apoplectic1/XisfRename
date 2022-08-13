@@ -742,10 +742,10 @@ namespace XisfFileManager
             {
                 value = node.Value.Replace("'", "").Replace(" ", "");
 
-                if (value.ToLower().Equals("light")) value = "Light";
-                if (value.ToLower().Equals("dark")) value = "Dark";
-                if (value.ToLower().Equals("flat")) value = "Flat";
-                if (value.ToLower().Equals("bias")) value = "Bias";
+                if (value.ToLower().Contains("light")) value = "Light";
+                if (value.ToLower().Contains("dark")) value = "Dark";
+                if (value.ToLower().Contains("flat")) value = "Flat";
+                if (value.ToLower().Contains("bias")) value = "Bias";
 
                 AddKeyword("IMAGETYP", value, node.Comment);
 
@@ -1179,6 +1179,36 @@ namespace XisfFileManager
             }
 
             node = KeywordList.Find(i => i.Name == "NWEIGHT");
+            if (node != null)
+            {
+                return node.Name;
+            }
+
+            node = KeywordList.Find(i => i.Name == "CBIAS");
+            if (node != null)
+            {
+                return node.Name;
+            }
+            
+            node = KeywordList.Find(i => i.Name == "CLIGHT");
+            if (node != null)
+            {
+                return node.Name;
+            }
+
+            node = KeywordList.Find(i => i.Name == "CDARK");
+            if (node != null)
+            {
+                return node.Name;
+            }
+
+            node = KeywordList.Find(i => i.Name == "CFLAT");
+            if (node != null)
+            {
+                return node.Name;
+            }
+
+            node = KeywordList.Find(i => i.Name == "CPANEL");
             if (node != null)
             {
                 return node.Name;

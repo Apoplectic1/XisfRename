@@ -319,6 +319,7 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration = new System.Windows.Forms.RadioButton();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -916,7 +917,7 @@
             this.RadioButton_KeywordUpdateTab_Camera_Z183.TabIndex = 1;
             this.RadioButton_KeywordUpdateTab_Camera_Z183.Text = "Z183";
             this.RadioButton_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
-           // 
+            // 
             // RadioButton_KeywordUpdateTab_Camera_Z533
             // 
             this.RadioButton_KeywordUpdateTab_Camera_Z533.AutoSize = true;
@@ -1265,6 +1266,7 @@
             // 
             // GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights
             // 
+            this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected);
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Controls.Add(this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All);
@@ -1290,7 +1292,7 @@
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected
             // 
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Location = new System.Drawing.Point(158, 62);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Location = new System.Drawing.Point(158, 79);
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected";
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Size = new System.Drawing.Size(67, 17);
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabIndex = 9;
@@ -3550,6 +3552,17 @@
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
             // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Location = new System.Drawing.Point(158, 57);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Size = new System.Drawing.Size(74, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabIndex = 21;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Text = "Calibration";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3927,5 +3940,6 @@
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue;
         private System.Windows.Forms.Button Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_ToggleNBPreset;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
     }
 }
