@@ -194,11 +194,11 @@ namespace XisfFileManager.Calculations
 
                 if (p.Item2 >= 0)
                 {
-                    return p.Item2.ToString("F0") + " Steps/Degree OUT over " + position.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
+                    return p.Item2.ToString("F0") + " Steps/Degree IN over " + position.Length + " positions from " + maxTemperature.ToString("F1") + " to " + minTemperature.ToString("F1") + " C";
                 }
                 else
                 {
-                    return p.Item2.ToString("F0") + " Steps/Degree IN over " + position.Length + " positions from " + minTemperature.ToString("F1") + " to " + maxTemperature.ToString("F1") + " C";
+                    return p.Item2.ToString("F0") + " Steps/Degree OUT over " + position.Length + " positions from " + maxTemperature.ToString("F1") + " to " + minTemperature.ToString("F1") + " C";
                 }
             }
             catch
