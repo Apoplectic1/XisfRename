@@ -276,11 +276,8 @@ namespace XisfFileManager
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
         {
             mLibraryCalibrationFileList.Clear();
-#if DEBUG
-            mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Temp\Calibration");
-#else
+
             mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Photography\Astro Photography\Calibration");
-#endif
 
             return MatchLibraryCalibrationFrames(targetFileList);
         }
