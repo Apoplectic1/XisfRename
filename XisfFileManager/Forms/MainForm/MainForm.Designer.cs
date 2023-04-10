@@ -782,11 +782,6 @@
             0,
             0,
             0});
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Name = "NumericUpDown_KeywordUpdateTab_Camera_Binning";
             this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(36, 20);
             this.NumericUpDown_KeywordUpdateTab_Camera_Binning.TabIndex = 17;

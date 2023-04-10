@@ -1528,7 +1528,7 @@ namespace XisfFileManager
             {
                 if (seconds < 0.001)
                 {
-                    return "0.000";
+                    return "0.000000";
                 }
 
                 return seconds.ToString("0.000");

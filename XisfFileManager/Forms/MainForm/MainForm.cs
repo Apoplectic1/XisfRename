@@ -13,6 +13,7 @@ using System.Drawing;
 using XisfFileManager.Calculations;
 using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace XisfFileManager
@@ -1006,7 +1007,7 @@ namespace XisfFileManager
             mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
         }
 
-        private double ValidateRangeValue(TextBox textBox)
+        private double ValidateRangeValue(System.Windows.Forms.TextBox textBox)
         {
             bool status;
             double value;
@@ -1610,10 +1611,10 @@ namespace XisfFileManager
             RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
             RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
 
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false; 
             CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
-            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
 
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "";
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
             Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
 
             Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
@@ -2017,7 +2018,7 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 or placeholder via Starlight Xpress USB 7 Position Wheel");
 
                 file.SetRequiredKeywords();
             }
@@ -2397,6 +2398,11 @@ namespace XisfFileManager
 
         public void FindCamera()
         {
+            // Color Key - Valid is item specific
+            // All items valid and unique are colored Black
+            // All items valid but not unique are colored DarkViolet
+            // At least one item is missing is colored Red
+
             Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
 
             RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
@@ -2420,7 +2426,21 @@ namespace XisfFileManager
             Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
             Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
 
+            // Clear Form Camera Text Boxes
+            TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
+            NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = 0;
 
+
+
+
+            // If no files, just return
             if (mFileList.Count == 0) return;
 
             bool foundZ533 = mFileList.Where(i => i.Camera.Equals("Z533")).Count() > 0;
@@ -2433,7 +2453,7 @@ namespace XisfFileManager
                 if (foundZ183 | foundQ178 | foundA144)
                 {
                     RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.DarkViolet;
                 }
                 else
                 {
@@ -2446,7 +2466,7 @@ namespace XisfFileManager
                 if (foundZ533 | foundQ178 | foundA144)
                 {
                     RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.DarkViolet;
                 }
                 else
                 {
@@ -2459,7 +2479,7 @@ namespace XisfFileManager
                 if (foundZ533 | foundZ183 | foundA144)
                 {
                     RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.DarkViolet;
                 }
                 else
                 {
@@ -2472,7 +2492,7 @@ namespace XisfFileManager
                 if (foundZ533 | foundZ183 | foundQ178)
                 {
                     RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
+                    RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.DarkViolet;
                 }
                 else
                 {
@@ -2482,20 +2502,18 @@ namespace XisfFileManager
 
             if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
             {
-                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
+                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
+                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
+                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
 
                 Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
                 Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
-
-                //return;
             }
 
             // ****************************************************************
@@ -2504,117 +2522,56 @@ namespace XisfFileManager
             bool uniqueGain = mFileList.Select(i => i.Gain).Distinct().Count() == 1;
 
             if (missingGain)
-            {
                 Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-            }
-            else
-            {
-                if (!uniqueGain)
-                {
-                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-                }
-            }
+            else if (!uniqueGain)
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
 
-            if (missingGain && !uniqueGain)
+            if (!missingGain && uniqueGain)
             {
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
-            }
-
-            foreach (XisfFile file in mFileList)
-            {
-                if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = file.Gain.ToString();
-                if (file.Camera.Equals("Z183"))
-                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = file.Gain.ToString();
-                if (file.Camera.Equals("Q178"))
-                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = file.Gain.ToString();
+                // All valid and unique so just pick the first one to display
+                if (foundZ533)
+                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = mFileList[0].Gain.ToString();
+                if (foundZ183)
+                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = mFileList[0].Gain.ToString();
+                if (foundQ178)
+                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = mFileList[0].Gain.ToString();
             }
 
             // ****************************************************************
 
-            bool hasOffset = mFileList.Exists(i => i.Offset != -1);
             bool missingOffset = mFileList.Exists(i => i.Offset == -1);
             bool uniqueOffset = mFileList.Select(i => i.Offset).Distinct().Count() == 1;
 
             if (missingOffset)
-            {
                 Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
-            }
-            else
-            {
-                if (!uniqueOffset)
-                {
-                    Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
-                }
-            }
+            else if (!uniqueOffset)
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.DarkViolet;
 
-            if ((missingOffset && !uniqueOffset) || !hasOffset)
+            if (!missingOffset && uniqueOffset)
             {
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
-            }
-
-            foreach (XisfFile file in mFileList)
-            {
-                if (file.Camera.Equals("Z533"))
-                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = file.Offset.ToString();
-                if (file.Camera.Equals("Z183"))
-                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = file.Offset.ToString();
-                if (file.Camera.Equals("Q178"))
-                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = file.Offset.ToString();
+                // All valid and unique so just pick the first one to display
+                if (foundZ533)
+                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = mFileList[0].Offset.ToString();
+                if (foundZ183)
+                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = mFileList[0].Offset.ToString();
+                if (foundQ178)
+                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = mFileList[0].Offset.ToString();
             }
 
             // ****************************************************************
 
-            bool hasTemperature = mFileList.Exists(i => i.Temperature != string.Empty);
             bool missingTemperature = mFileList.Exists(i => i.Temperature == string.Empty);
             bool uniqueTemperature = mFileList.Select(i => i.Temperature).Distinct().Count() == 1;
 
-            if (!hasTemperature)
-            {
-                // No temperatures for any file
+            if (missingTemperature)
                 Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
-                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
-            }
-            else
-            {
-                if (missingTemperature)
-                {
-                    // At least one, but not all, files have a missing temperature
-                    Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
+            else if (!uniqueTemperature)
+                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
 
-                    if (uniqueTemperature)
-                    {
-                        // Of the files that do have a temperature, this is the unique value
-                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
-                    }
-                    else
-                    {
-                        // At least two files have different temperatures
-                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
-                    }
-                }
-                else
-                {
-                    if (uniqueTemperature)
-                    {
-                        // All files contain the same temerature
-                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
-                    }
-                    else
-                    {
-                        // All files contain temperatures but at least two files contain different temperatures
-                        TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
-                    }
-                }
-            }
-
-            // Now set button colors
-            if ((missingTemperature && !uniqueTemperature) || !hasTemperature)
+            if (!missingTemperature && uniqueTemperature)
             {
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
+                // All valid and unique so just pick the first one to display
+                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
             }
 
             // ***************************************************************
@@ -2623,95 +2580,56 @@ namespace XisfFileManager
             bool uniqueBinning = mFileList.Select(i => i.Binning).Distinct().Count() == 1;
 
             if (missingBinning)
-            {
                 Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
-            }
-            else
-            {
-                if (!uniqueBinning)
-                {
-                    Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
-                }
-                else
-                {
-                    NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = mFileList[0].Binning;
-                }
-            }
+            else if (!uniqueBinning)
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.DarkViolet;
 
-            if (missingBinning && !uniqueBinning)
+            if (!missingBinning && uniqueBinning)
             {
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
+                NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = mFileList[0].Binning;
             }
 
             // ****************************************************************
 
-            bool hasExposure = mFileList.Exists(i => i.Exposure != string.Empty);
             bool missingExposure = mFileList.Exists(i => i.Exposure == string.Empty);
             bool uniqueExposure = mFileList.Select(i => i.Exposure).Distinct().Count() == 1;
 
-            if (!hasExposure)
-            {
-                // No exposure for any file
+            if (missingExposure)
                 Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
-                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-            }
-            else
+            else if (!uniqueExposure)
+                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
+
+            if (!missingExposure && uniqueExposure)
             {
+                // All valid and unique so just pick the first one to display
                 bool status;
-                double value;
-                status = Double.TryParse(mFileList[0].Exposure, out value);
+                status = double.TryParse(mFileList[0].Exposure, out double value);
 
-                if (missingExposure)
+                if (status)
                 {
-                    // At least one, but not all, files have a missing exposure
-                    Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
-
-                    if (uniqueExposure)
-                    {
-                        // Of the files that do have an exposure, this is the unique value
-                        if (status)
-                        {
-                            if (value < 10)
-                                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F3");
-                            else
-                                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
-                        }
-                        else
-                        {
-                            // Not a number
-                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-                        }
-                    }
+                    if (value < 10)
+                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F4");
                     else
-                    {
-                        // At least two files have different exposures
-                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-                    }
-                }
-                else
-                {
-                    if (uniqueExposure)
-                    {
-                        // All files contain the same exposure
-                        if (value < 10)
-                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F3");
-                        else
-                            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
-                    }
-                    else
-                    {
-                        // All files contain exposures but at least two files contain different exposures
-                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-                    }
+                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
                 }
             }
 
+            // ****************************************************************
+            // ****************************************************************
 
-            if ((missingExposure && !uniqueExposure) || !hasExposure)
+            // Now set button colors
+            if (missingGain || missingOffset || missingTemperature || missingExposure || missingBinning)
             {
                 Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
                 Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
+            }
+            else
+            {
+                if (!uniqueGain || !uniqueOffset || !uniqueTemperature || !uniqueExposure || !uniqueBinning)
+                {
+                    Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.DarkViolet;
+                    Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.DarkViolet;
+                }
             }
 
             // ****************************************************************
@@ -2771,6 +2689,7 @@ namespace XisfFileManager
         private void Button_KeywordCamera_SetAll_Click(object sender, EventArgs e)
         {
             double value;
+            int parseInt;
 
             if (mFileList.Count == 0)
             {
@@ -2827,8 +2746,15 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text), "Camera Offset");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text), "Camera Gain");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text), "Camera Offset");
+
                     file.KeywordData.SetEGain();
                 }
 
