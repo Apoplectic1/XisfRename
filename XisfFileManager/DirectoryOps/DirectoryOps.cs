@@ -35,10 +35,10 @@ namespace XisfFileManager
 
             System.IO.FileInfo[] files = null;
 
-            // Process all the files directly under this folder 
+            // Find and process all the files directly under this folder 
             try
             {
-                if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing") && (!rootDirectory.Name.ToLower().Contains("master")))
+                if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing"))
                 {
                     files = rootDirectory.GetFiles("*.xisf");
                 }

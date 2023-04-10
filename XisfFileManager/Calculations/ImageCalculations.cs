@@ -187,7 +187,7 @@ namespace XisfFileManager.Calculations
                     index++;
                 }
 
-                Tuple<double, double> p = Fit.Line(temperature, position);
+                Tuple<double, double> p = Fit.Line(temperature, position).ToTuple();
 
                 double maxTemperature = temperature.Max();
                 double minTemperature = temperature.Min();

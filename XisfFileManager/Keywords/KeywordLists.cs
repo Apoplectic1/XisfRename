@@ -570,10 +570,14 @@ namespace XisfFileManager
                 status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out DateTime dt);
-
                 if (status) return dt;
 
                 status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
+                          CultureInfo.InvariantCulture,
+                          DateTimeStyles.None, out dt);
+                if (status) return dt;
+
+                status = DateTime.TryParseExact(value, "M/d/yyyyhh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;

@@ -230,7 +230,7 @@ namespace XisfFileManager.FileOperations
 
             if (mFile.KeywordData.FrameType() == "Bias")
             {
-                newName = index.ToString("D3") + " ";
+                newName = index.ToString("D4") + " ";
                 newName += " Bias  ";
                 newName += mFile.KeywordData.ExposureSeconds() + "x" + mFile.KeywordData.Binning() + "  ";
                 newName += mFile.KeywordData.Camera() + "G" + mFile.KeywordData.Gain().ToString("D3") + "O" + mFile.KeywordData.Offset();

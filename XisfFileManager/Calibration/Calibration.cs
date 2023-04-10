@@ -16,16 +16,17 @@ namespace XisfFileManager
     // ******************************************************************************************************************
     public class Calibration
     {
-        private readonly DirectoryOps mDirectoryOps;
         private List<XisfFile> mBiasFileList;
-        private List<XisfFile> mLibraryCalibrationFileList;
         private List<XisfFile> mDarkFileList;
         private List<XisfFile> mFlatFileList;
+        private List<XisfFile> mLibraryCalibrationFileList;
+        private List<XisfFile> mTargetCalibrationFileList;
+        private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
-        private List<XisfFile> mUnmatchedBiasTargetFileList;
-        private List<XisfFile> mTargetCalibrationFileList;
+        private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
+        private readonly DirectoryOps mDirectoryOps;
         private readonly XisfFileRead mFileReader;
 
         public bool UpdateAll { get; set; }
@@ -82,6 +83,16 @@ namespace XisfFileManager
             GainTolerance = 10;
             OffsetTolerance = 10;
             TemperatureTolerance = 25;
+        }
+
+
+        // ******************************************************************************************************************
+        // ******************************************************************************************************************
+        public void PopulateDatesTree()
+        {
+            TreeNode node = new TreeNode("No Dates");
+            //TreeView_CalibrationTab_Dates.Nodes.Add(node);
+
         }
 
         // ******************************************************************************************************************
@@ -278,6 +289,7 @@ namespace XisfFileManager
             mLibraryCalibrationFileList.Clear();
 
             mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Photography\Astro Photography\Calibration");
+            //mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Temp");
 
             return MatchLibraryCalibrationFrames(targetFileList);
         }

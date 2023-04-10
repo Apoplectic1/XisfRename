@@ -112,6 +112,7 @@
             this.CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect = new System.Windows.Forms.CheckBox();
             this.CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords = new System.Windows.Forms.CheckBox();
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights = new System.Windows.Forms.GroupBox();
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration = new System.Windows.Forms.RadioButton();
             this.Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove = new System.Windows.Forms.Button();
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All = new System.Windows.Forms.RadioButton();
@@ -296,6 +297,7 @@
             this.TabControl_Update = new System.Windows.Forms.TabControl();
             this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             this.TabPage_Calibration = new System.Windows.Forms.TabPage();
+            this.TreeView_CalibrationTab_Dates = new System.Windows.Forms.TreeView();
             this.Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
             this.TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
             this.GroupBox_CalibrationTab_MatchingTolerance = new System.Windows.Forms.GroupBox();
@@ -319,7 +321,6 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration = new System.Windows.Forms.RadioButton();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -1278,6 +1279,17 @@
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabIndex = 7;
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabStop = false;
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Text = "Weights";
+            // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration
+            // 
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Location = new System.Drawing.Point(158, 57);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Size = new System.Drawing.Size(74, 17);
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabIndex = 21;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Text = "Calibration";
+            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.UseVisualStyleBackColor = true;
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove
             // 
@@ -3307,6 +3319,7 @@
             // TabPage_Calibration
             // 
             this.TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_Calibration.Controls.Add(this.TreeView_CalibrationTab_Dates);
             this.TabPage_Calibration.Controls.Add(this.Label_CalibrationTab_TotalMatchedFiles);
             this.TabPage_Calibration.Controls.Add(this.TextBox_CalibrationTab_Messgaes);
             this.TabPage_Calibration.Controls.Add(this.GroupBox_CalibrationTab_MatchingTolerance);
@@ -3322,6 +3335,13 @@
             this.TabPage_Calibration.Size = new System.Drawing.Size(975, 478);
             this.TabPage_Calibration.TabIndex = 1;
             this.TabPage_Calibration.Text = "Calibration";
+            // 
+            // TreeView_CalibrationTab_Dates
+            // 
+            this.TreeView_CalibrationTab_Dates.Location = new System.Drawing.Point(454, 6);
+            this.TreeView_CalibrationTab_Dates.Name = "TreeView_CalibrationTab_Dates";
+            this.TreeView_CalibrationTab_Dates.Size = new System.Drawing.Size(501, 223);
+            this.TreeView_CalibrationTab_Dates.TabIndex = 10;
             // 
             // Label_CalibrationTab_TotalMatchedFiles
             // 
@@ -3551,17 +3571,6 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
-            // 
-            // RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration
-            // 
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Location = new System.Drawing.Point(158, 57);
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration";
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Size = new System.Drawing.Size(74, 17);
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabIndex = 21;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabStop = true;
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Text = "Calibration";
-            this.RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -3941,5 +3950,6 @@
         private System.Windows.Forms.Button Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_ToggleNBPreset;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
+        private System.Windows.Forms.TreeView TreeView_CalibrationTab_Dates;
     }
 }

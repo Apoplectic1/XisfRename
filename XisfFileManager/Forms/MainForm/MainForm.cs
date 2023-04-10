@@ -276,7 +276,7 @@ namespace XisfFileManager
                 InitialDirectory = mFolderBrowseState,
                 // InitialDirectory = @"E:\Temp\maste", // @"E:\Photography\Astro Photography\Processing",
 
-                Multiselect = false,
+                Multiselect = true,
                 RestoreDirectory = true
             };
 
@@ -1528,7 +1528,7 @@ namespace XisfFileManager
         {
             if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
             {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
             }
             else
             {
@@ -1565,7 +1565,7 @@ namespace XisfFileManager
             if (RadioButton_KeywordUpdateTab_Telescope_APM107.Checked)
             {
                 if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
                 else
                     TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
             }
@@ -1693,7 +1693,7 @@ namespace XisfFileManager
                     RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = true;
 
                     if (foundRiccardi)
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "525";
+                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
                     else
                         TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
                 }
@@ -1774,7 +1774,7 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
                     file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 525, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    file.KeywordData.AddKeyword("FOCALLEN", 531, "APM107 Super ED with Riccardi 0.75 Reducer");
                 }
                 else
                 {
