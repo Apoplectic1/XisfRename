@@ -801,7 +801,7 @@ namespace XisfFileManager
             XisfFileUpdate.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", "");
 
             // File Protection
-            // We get here under two conditions: 1. Protect is not checked and 2. We are updating only unprotected files
+            // We get here under two conditions: 1. Protect is not checked or 2. We are updating only unprotected files
             int count = 0;
             foreach (XisfFile file in mFileList)
             {
