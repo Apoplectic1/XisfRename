@@ -321,6 +321,7 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
+            this.CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -3314,6 +3315,7 @@
             // TabPage_Calibration
             // 
             this.TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
+            this.TabPage_Calibration.Controls.Add(this.CheckBox_CalibrationTab_CreateNew);
             this.TabPage_Calibration.Controls.Add(this.TreeView_CalibrationTab_Dates);
             this.TabPage_Calibration.Controls.Add(this.Label_CalibrationTab_TotalMatchedFiles);
             this.TabPage_Calibration.Controls.Add(this.TextBox_CalibrationTab_Messgaes);
@@ -3333,9 +3335,9 @@
             // 
             // TreeView_CalibrationTab_Dates
             // 
-            this.TreeView_CalibrationTab_Dates.Location = new System.Drawing.Point(454, 6);
+            this.TreeView_CalibrationTab_Dates.Location = new System.Drawing.Point(496, 6);
             this.TreeView_CalibrationTab_Dates.Name = "TreeView_CalibrationTab_Dates";
-            this.TreeView_CalibrationTab_Dates.Size = new System.Drawing.Size(501, 223);
+            this.TreeView_CalibrationTab_Dates.Size = new System.Drawing.Size(459, 223);
             this.TreeView_CalibrationTab_Dates.TabIndex = 10;
             // 
             // Label_CalibrationTab_TotalMatchedFiles
@@ -3371,7 +3373,7 @@
             this.GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Gain);
             this.GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.Label_CalibrationTab_MatchingTolerance_Exposure);
             this.GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(this.TextBox_CalibrationTab_MatchingTolerance_Exposure);
-            this.GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(178, 42);
+            this.GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(217, 20);
             this.GroupBox_CalibrationTab_MatchingTolerance.Name = "GroupBox_CalibrationTab_MatchingTolerance";
             this.GroupBox_CalibrationTab_MatchingTolerance.Size = new System.Drawing.Size(260, 187);
             this.GroupBox_CalibrationTab_MatchingTolerance.TabIndex = 7;
@@ -3502,11 +3504,12 @@
             // Label_CalibrationTab_TotalFiles
             // 
             this.Label_CalibrationTab_TotalFiles.AutoSize = true;
-            this.Label_CalibrationTab_TotalFiles.Location = new System.Drawing.Point(25, 20);
+            this.Label_CalibrationTab_TotalFiles.Location = new System.Drawing.Point(27, 20);
             this.Label_CalibrationTab_TotalFiles.Name = "Label_CalibrationTab_TotalFiles";
             this.Label_CalibrationTab_TotalFiles.Size = new System.Drawing.Size(110, 13);
             this.Label_CalibrationTab_TotalFiles.TabIndex = 6;
             this.Label_CalibrationTab_TotalFiles.Text = "No Calibration Frames";
+            this.Label_CalibrationTab_TotalFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ProgressBar_CalibrationTab
             // 
@@ -3566,6 +3569,18 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
+            // 
+            // CheckBox_CalibrationTab_CreateNew
+            // 
+            this.CheckBox_CalibrationTab_CreateNew.AutoSize = true;
+            this.CheckBox_CalibrationTab_CreateNew.Checked = true;
+            this.CheckBox_CalibrationTab_CreateNew.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_CalibrationTab_CreateNew.Location = new System.Drawing.Point(126, 183);
+            this.CheckBox_CalibrationTab_CreateNew.Name = "CheckBox_CalibrationTab_CreateNew";
+            this.CheckBox_CalibrationTab_CreateNew.Size = new System.Drawing.Size(82, 17);
+            this.CheckBox_CalibrationTab_CreateNew.TabIndex = 11;
+            this.CheckBox_CalibrationTab_CreateNew.Text = "Create New";
+            this.CheckBox_CalibrationTab_CreateNew.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -3946,5 +3961,6 @@
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_ToggleNBPreset;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
         private System.Windows.Forms.TreeView TreeView_CalibrationTab_Dates;
+        private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_CreateNew;
     }
 }

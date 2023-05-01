@@ -116,7 +116,8 @@ namespace XisfFileManager
             ProgressBar_CalibrationTab.Maximum = data.ProgressMax;
             ProgressBar_CalibrationTab.Value = data.Progress;
             Label_CalibrationTab_ReadFileName.Text = data.FileName;
-            Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Files";
+            Label_CalibrationTab_TotalFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Calibration Library Files";
 
             switch (data.MessageMode)
             {
@@ -1611,7 +1612,7 @@ namespace XisfFileManager
             RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
             RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
 
-            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false; 
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
             CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
 
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
@@ -3417,6 +3418,16 @@ namespace XisfFileManager
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
+            if (CheckBox_CalibrationTab_CreateNew.Checked == true)
+            {
+                string targetCalibrationDirectory = mCalibration.GetTargetCalibrationFileDirectory(mFileList[0].SourceFileName);
+
+                if (Directory.Exists(targetCalibrationDirectory))
+                    Directory.Delete(targetCalibrationDirectory, true);
+
+                Directory.CreateDirectory(targetCalibrationDirectory);
+            }
+
             mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
         }
 

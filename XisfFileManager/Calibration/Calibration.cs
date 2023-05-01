@@ -275,8 +275,11 @@ namespace XisfFileManager
             mTargetCalibrationFileList.Clear();
 
             if (Directory.Exists(targetCalibrationDirectory))
-                // Build a list of existing Calibration Frames
-                mTargetCalibrationFileList = ReadCalibrationFrames(targetCalibrationDirectory);
+            {
+                if (Directory.GetFileSystemEntries(targetCalibrationDirectory).Length != 0)
+                    // Build a list of existing Calibration Frames
+                    mTargetCalibrationFileList = ReadCalibrationFrames(targetCalibrationDirectory);
+            }
 
             // Match each target file with any files found in the target "Calibration" directory to populate the mTargetxxTargetFiles Lists
             // If the Calibration Directpry does not exist or is empty, each mTargetxxxTargetFileList will contain the full target list
@@ -612,13 +615,6 @@ namespace XisfFileManager
         public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
         {
             string targetCalibrationDirectory = GetTargetCalibrationFileDirectory(targetFileList[0].SourceFileName);
-
-            if (Directory.Exists(targetCalibrationDirectory))
-            {
-                Directory.Delete(targetCalibrationDirectory, true);
-            }
-
-            Directory.CreateDirectory(targetCalibrationDirectory);
 
             mCalibrationTabValues.Progress = 0;
             mCalibrationTabValues.ProgressMax = mDarkFileList.Count + mFlatFileList.Count + mBiasFileList.Count;

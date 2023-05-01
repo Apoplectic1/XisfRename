@@ -144,9 +144,8 @@ namespace XisfFileManager.Calculations
             double overheadPercent = ((totalIntervalTime - totalExposureTime) / totalExposureTime) * 100.0;
             double overheadSeconds = (totalIntervalTime - totalExposureTime) / exposureList.Count();
 
-            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % with " + overheadSeconds.ToString("F0") +
-                   " Seconds/Frame Average Overhead\n                                   SubFrame Exposure: " + (totalExposureTime / exposureList.Count()).ToString("F0") + " Seconds" +
-                   " over " + exposureList.Count() + " Frames";
+            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % over " + overheadSeconds.ToString("F0") + " Seconds/Frame\n" +
+                   "Average Exposure:     " + (totalExposureTime / exposureList.Count()).ToString("F0") + " Seconds" + " over " + exposureList.Count() + " Frames";
         }
 
         public string CalculateFocuserTemperatureCompensationCoefficient()
