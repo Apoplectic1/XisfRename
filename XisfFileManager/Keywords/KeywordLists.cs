@@ -1524,12 +1524,15 @@ namespace XisfFileManager
         // #########################################################################################################
         public string FormatExposureSeconds(double seconds)
         {
-            if (seconds < 10.0)
+            if (seconds < 10)
             {
-                if (seconds < 0.001)
+                if (seconds < 0.00001)
                 {
-                    return "0.000000";
+                    return "0.000";
                 }
+
+                if (seconds < 1)
+                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString();
 
                 return seconds.ToString("0.000");
             }

@@ -264,6 +264,7 @@ namespace XisfFileManager
             ImageParameterLists.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
+            ClearForm();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
@@ -2397,13 +2398,8 @@ namespace XisfFileManager
             }
         }
 
-        public void FindCamera()
+        private void ClearForm()
         {
-            // Color Key - Valid is item specific
-            // All items valid and unique are colored Black
-            // All items valid but not unique are colored DarkViolet
-            // At least one item is missing is colored Red
-
             Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
 
             RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
@@ -2437,9 +2433,19 @@ namespace XisfFileManager
             TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
             TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
             TextBox_KeywordUpdateTab_Camera_Binning.Text = string.Empty;
+        }
 
+        public void FindCamera()
+        {
 
+            ClearForm();
 
+            // Color Key - Valid is item specific
+            // All items valid and unique are colored Black
+            // All items valid but not unique are colored DarkViolet
+            // At least one item is missing is colored Red
+            
+           
 
             // If no files, just return
             if (mFileList.Count == 0) return;
@@ -2605,13 +2611,9 @@ namespace XisfFileManager
                 // All valid and unique so just pick the first one to display
                 bool status;
                 status = double.TryParse(mFileList[0].Exposure, out double value);
-
                 if (status)
                 {
-                    if (value < 10)
-                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F4");
-                    else
-                        TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = value.ToString("F1");
+                    TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = ((decimal)value / 1.000000000000000000000000000000000m).ToString();
                 }
             }
 
@@ -2718,7 +2720,13 @@ namespace XisfFileManager
                 {
                     file.KeywordData.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
                     if (value < 10)
-                        file.Exposure = value.ToString("F3");
+                        if (value < 1)
+                            if (value == 0)
+                                file.Exposure = value.ToString("F4");
+                            else
+                                file.Exposure = value.ToString("F5");
+                        else
+                            file.Exposure = value.ToString("F4");
                     else
                         file.Exposure = value.ToString("F1");
                 }
@@ -2732,10 +2740,21 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
                     file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text), "Camera Offset");
-                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
-                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    if (status)
+                    {
+                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                    }
                     file.KeywordData.SetEGain();
                 }
 
@@ -2750,14 +2769,19 @@ namespace XisfFileManager
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text), "Camera Gain");
+                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text), "Camera Offset");
+                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
 
-                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
-                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    if (status)
+                    {
+                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                    }
+
                     file.KeywordData.SetEGain();
                 }
 
@@ -2769,10 +2793,20 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
                     file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
-                    file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text), "Camera Gain");
-                    file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text), "Camera Offset");
-                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
-                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
+
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
+                    if (status)
+                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    if (status)
+                    {
+                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                    }
                     file.KeywordData.SetEGain();
                 }
 
@@ -2787,8 +2821,12 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.KeywordData.AddKeyword("GAIN", 0.37);
                     file.KeywordData.RemoveKeyword("OFFSET");
-                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
-                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    if (status)
+                    {
+                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                    }
 
                     file.KeywordData.SetEGain();
                 }
