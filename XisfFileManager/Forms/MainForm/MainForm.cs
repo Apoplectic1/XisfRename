@@ -2436,7 +2436,7 @@ namespace XisfFileManager
             TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = string.Empty;
             TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
             TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-            NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = 0;
+            TextBox_KeywordUpdateTab_Camera_Binning.Text = string.Empty;
 
 
 
@@ -2510,8 +2510,8 @@ namespace XisfFileManager
                 Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
                 Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
                 Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
                 Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
 
                 Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
                 Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
@@ -2587,7 +2587,7 @@ namespace XisfFileManager
 
             if (!missingBinning && uniqueBinning)
             {
-                NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = mFileList[0].Binning;
+                TextBox_KeywordUpdateTab_Camera_Binning.Text = mFileList[0].Binning.ToString();
             }
 
             // ****************************************************************
@@ -2712,8 +2712,6 @@ namespace XisfFileManager
                 }
 
                 file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Horizontal Binning");
-                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Vertical Bining");
 
                 status = double.TryParse(TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text, out value);
                 if (status)
@@ -2736,6 +2734,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
+                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2756,6 +2756,8 @@ namespace XisfFileManager
                     if (status)
                         file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text), "Camera Offset");
 
+                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
+                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2769,6 +2771,8 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
                     file.KeywordData.AddKeyword("GAIN", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text), "Camera Gain");
                     file.KeywordData.AddKeyword("OFFSET", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text), "Camera Offset");
+                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
+                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
                     file.KeywordData.SetEGain();
                 }
 
@@ -2783,6 +2787,9 @@ namespace XisfFileManager
                     file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.KeywordData.AddKeyword("GAIN", 0.37);
                     file.KeywordData.RemoveKeyword("OFFSET");
+                    file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
+                    file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+
                     file.KeywordData.SetEGain();
                 }
 
@@ -2861,8 +2868,8 @@ namespace XisfFileManager
                 file.KeywordData.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
 
                 file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.KeywordData.AddKeyword("XBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Horizontal Binning");
-                file.KeywordData.AddKeyword("YBINNING", NumericUpDown_KeywordUpdateTab_Camera_Binning.Value.ToString(), "Vertical Bining");
+                file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
+                file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
                 string secondsTextUI = TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text;
 
                 string secondsText;

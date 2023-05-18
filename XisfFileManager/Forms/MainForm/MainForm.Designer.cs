@@ -66,7 +66,6 @@
             this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds = new System.Windows.Forms.TextBox();
             this.Label_CameraDivider = new System.Windows.Forms.Label();
             this.Label_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.Label();
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.NumericUpDown();
             this.TextBox_KeywordUpdateTab_Camera_SensorTemperature = new System.Windows.Forms.TextBox();
             this.Label_KeywordUpdateTab_Camera_SensorTemperature = new System.Windows.Forms.Label();
             this.Label_KeywordUpdateTab_Camera_A144Gain = new System.Windows.Forms.Label();
@@ -297,6 +296,7 @@
             this.TabControl_Update = new System.Windows.Forms.TabControl();
             this.TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             this.TabPage_Calibration = new System.Windows.Forms.TabPage();
+            this.CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
             this.TreeView_CalibrationTab_Dates = new System.Windows.Forms.TreeView();
             this.Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
             this.TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
@@ -321,12 +321,11 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
-            this.CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
+            this.TextBox_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.TextBox();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Camera.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordUpdateTab_Camera_Binning)).BeginInit();
             this.GroupBox_KeywordUpdateTab_ImageType.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
@@ -650,6 +649,7 @@
             // 
             // GroupBox_KeywordUpdateTab_Camera
             // 
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Binning);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_ToggleNBPreset);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Camera);
@@ -660,7 +660,6 @@
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_ExposureSeconds);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_CameraDivider);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_Binning);
-            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.NumericUpDown_KeywordUpdateTab_Camera_Binning);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_SensorTemperature);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_SensorTemperature);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_A144Gain);
@@ -774,24 +773,6 @@
             this.Label_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(42, 13);
             this.Label_KeywordUpdateTab_Camera_Binning.TabIndex = 18;
             this.Label_KeywordUpdateTab_Camera_Binning.Text = "Binning";
-            // 
-            // NumericUpDown_KeywordUpdateTab_Camera_Binning
-            // 
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(189, 120);
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Name = "NumericUpDown_KeywordUpdateTab_Camera_Binning";
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(36, 20);
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.TabIndex = 17;
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.NumericUpDown_KeywordUpdateTab_Camera_Binning.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // TextBox_KeywordUpdateTab_Camera_SensorTemperature
             // 
@@ -3333,6 +3314,18 @@
             this.TabPage_Calibration.TabIndex = 1;
             this.TabPage_Calibration.Text = "Calibration";
             // 
+            // CheckBox_CalibrationTab_CreateNew
+            // 
+            this.CheckBox_CalibrationTab_CreateNew.AutoSize = true;
+            this.CheckBox_CalibrationTab_CreateNew.Checked = true;
+            this.CheckBox_CalibrationTab_CreateNew.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_CalibrationTab_CreateNew.Location = new System.Drawing.Point(126, 183);
+            this.CheckBox_CalibrationTab_CreateNew.Name = "CheckBox_CalibrationTab_CreateNew";
+            this.CheckBox_CalibrationTab_CreateNew.Size = new System.Drawing.Size(82, 17);
+            this.CheckBox_CalibrationTab_CreateNew.TabIndex = 11;
+            this.CheckBox_CalibrationTab_CreateNew.Text = "Create New";
+            this.CheckBox_CalibrationTab_CreateNew.UseVisualStyleBackColor = true;
+            // 
             // TreeView_CalibrationTab_Dates
             // 
             this.TreeView_CalibrationTab_Dates.Location = new System.Drawing.Point(496, 6);
@@ -3570,17 +3563,13 @@
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
             // 
-            // CheckBox_CalibrationTab_CreateNew
+            // TextBox_KeywordUpdateTab_Camera_Binning
             // 
-            this.CheckBox_CalibrationTab_CreateNew.AutoSize = true;
-            this.CheckBox_CalibrationTab_CreateNew.Checked = true;
-            this.CheckBox_CalibrationTab_CreateNew.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckBox_CalibrationTab_CreateNew.Location = new System.Drawing.Point(126, 183);
-            this.CheckBox_CalibrationTab_CreateNew.Name = "CheckBox_CalibrationTab_CreateNew";
-            this.CheckBox_CalibrationTab_CreateNew.Size = new System.Drawing.Size(82, 17);
-            this.CheckBox_CalibrationTab_CreateNew.TabIndex = 11;
-            this.CheckBox_CalibrationTab_CreateNew.Text = "Create New";
-            this.CheckBox_CalibrationTab_CreateNew.UseVisualStyleBackColor = true;
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(183, 120);
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Name = "TextBox_KeywordUpdateTab_Camera_Binning";
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(48, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Binning.TabIndex = 26;
+            this.TextBox_KeywordUpdateTab_Camera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // MainForm
             // 
@@ -3603,7 +3592,6 @@
             this.GroupBox_KeywordUpdateTab_Telescope.PerformLayout();
             this.GroupBox_KeywordUpdateTab_Camera.ResumeLayout(false);
             this.GroupBox_KeywordUpdateTab_Camera.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_KeywordUpdateTab_Camera_Binning)).EndInit();
             this.GroupBox_KeywordUpdateTab_ImageType.ResumeLayout(false);
             this.GroupBox_KeywordUpdateTab_ImageType_Frame.ResumeLayout(false);
             this.GroupBox_KeywordUpdateTab_ImageType_Frame.PerformLayout();
@@ -3884,7 +3872,6 @@
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_SensorTemperature;
         private System.Windows.Forms.Label Label_CameraDivider;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Binning;
-        private System.Windows.Forms.NumericUpDown NumericUpDown_KeywordUpdateTab_Camera_Binning;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Filter;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Frame;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Bias;
@@ -3962,5 +3949,6 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
         private System.Windows.Forms.TreeView TreeView_CalibrationTab_Dates;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_CreateNew;
+        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Binning;
     }
 }
