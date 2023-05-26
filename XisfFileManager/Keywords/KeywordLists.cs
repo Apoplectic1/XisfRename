@@ -1,7 +1,10 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -1200,11 +1203,17 @@ namespace XisfFileManager
             string value = (string)GetKeyword("OBJECT");
             if (value != null)
             {
-                if (value.Contains("Panel"))
-                {
-                    value = value.Replace("Panel", " P");
-                }
-                return value;
+                // Replace a TargetName containing "Panel" with "P" in prep for the next Regex
+                value = value.Replace("Panel", "P");
+
+                // Replace a TargetName containing one or more letters, numbers, spaces, or a dash followed by "P" and
+                // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
+                // Return original string if replacement fails.
+                string pattern = @"([A-Za-z0-9\s-]+)P(\d+)$";
+                string replacement = "$1 P$2";
+                string newTargetName = Regex.Replace(value, pattern, replacement);
+
+                return newTargetName;
             }
 
 
