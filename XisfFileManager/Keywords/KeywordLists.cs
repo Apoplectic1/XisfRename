@@ -1199,7 +1199,13 @@ namespace XisfFileManager
         {
             string value = (string)GetKeyword("OBJECT");
             if (value != null)
+            {
+                if (value.Contains("Panel"))
+                {
+                    value = value.Replace("Panel", " P");
+                }
                 return value;
+            }
 
 
             while (findMissingKeywords)
