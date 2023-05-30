@@ -2567,8 +2567,8 @@ namespace XisfFileManager
 
             // ****************************************************************
 
-            bool missingTemperature = mFileList.Exists(i => i.Temperature == string.Empty);
-            bool uniqueTemperature = mFileList.Select(i => i.Temperature).Distinct().Count() == 1;
+            bool missingTemperature = mFileList.Exists(i => i.SensorTemperature == -273.0);
+            bool uniqueTemperature = mFileList.Select(i => i.SensorTemperature).Distinct().Count() == 1;
 
             if (missingTemperature)
                 Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
@@ -2578,7 +2578,7 @@ namespace XisfFileManager
             if (!missingTemperature && uniqueTemperature)
             {
                 // All valid and unique so just pick the first one to display
-                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].Temperature).ToString("F1");
+                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].SensorTemperature).ToString("F1");
             }
 
             // ***************************************************************
@@ -2872,7 +2872,7 @@ namespace XisfFileManager
                 string temperatureText;
                 if (globalTemperature)
                 {
-                    temperatureText = file.KeywordData.SensorTemperature();
+                    temperatureText = file.SensorTemperature.ToString();
                     if (temperatureText == string.Empty)
                     {
                         temperatureText = globalTemperatureText;
@@ -2882,7 +2882,7 @@ namespace XisfFileManager
                 {
                     if (temperatureTextUI == string.Empty)
                     {
-                        globalTemperatureText = file.KeywordData.SensorTemperature(true);
+                        globalTemperatureText = file.SensorTemperature.ToString();
                         if (globalTemperatureText.Contains("Global_"))
                         {
                             globalTemperature = true;
@@ -2893,7 +2893,7 @@ namespace XisfFileManager
                     }
                     else
                     {
-                        temperatureText = file.KeywordData.SensorTemperature();
+                        temperatureText = file.SensorTemperature.ToString();
                         if (temperatureText == string.Empty)
                         {
                             temperatureText = temperatureTextUI;
@@ -3446,10 +3446,26 @@ namespace XisfFileManager
 
         private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
+            bool bMatchedAllFiles = false;
+
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = DirectoryOps.FrameType.ALL;
 
-            bool bMatchedAllFiles = mCalibration.FindTargetCalibrationFrames(mFileList);
+            if (CheckBox_CalibrationTab_CreateNew.Checked == false)
+            {
+                // See if a local target "Calibration" directory already exists and if it's contents match all (including new) target farmes
+                bMatchedAllFiles = mCalibration.FindLocalTargetCalibrationFrames(mFileList);
+            }
+            else
+            {
+                // UI "Create New" was checked so delete and recreate the "Calibration" directory
+                string targetCalibrationDirectory = mCalibration.GetTargetCalibrationFileDirectory(mFileList[0].SourceFileName);
+
+                if (Directory.Exists(targetCalibrationDirectory))
+                    Directory.Delete(targetCalibrationDirectory, true);
+
+                Directory.CreateDirectory(targetCalibrationDirectory);
+            }
 
             if (!bMatchedAllFiles)
                 mCalibration.FindLibraryCalibrationFrames(mFileList);
@@ -3458,7 +3474,7 @@ namespace XisfFileManager
         private void CalibrationTab_MatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
-            mCalibration.MatchLibraryCalibrationFrames(mFileList);
+            mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)

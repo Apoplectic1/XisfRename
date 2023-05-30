@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using XisfFileManager.FileOperations;
 
 namespace XisfFileManager.FileOperations
 {
@@ -177,16 +178,14 @@ namespace XisfFileManager.FileOperations
                         newName += mFile.KeywordData.Telescope() + "@";
                         newName += mFile.KeywordData.FocalLength();
 
-                        string focusPosition = (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
-                        if (!string.IsNullOrEmpty(focusPosition))
+                        if (mFile.FocuserPosition != int.MinValue)
                         {
-                            newName += "  F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING);
+                            newName += "  F" + mFile.FocuserPosition.ToString("D5");
                         }
 
-                        string imageAngle = mFile.KeywordData.ImageAngle();
-                        if (!string.IsNullOrEmpty(imageAngle))
+                        if (mFile.RotatorAngle != double.MinValue)
                         {
-                            newName += "  R" + mFile.KeywordData.ImageAngle();
+                            newName += "  R" + mFile.RotatorAngle.FormatRotationAngle();
                         }
                     }
 
@@ -255,16 +254,16 @@ namespace XisfFileManager.FileOperations
                 newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
 
-                if (mFile.KeywordData.AmbientTemperature() != null && mFile.KeywordData.AmbientTemperature() != "")
-                    newName += mFile.KeywordData.AmbientTemperature() + "C  ";
+                if (mFile.AmbientTemperature != -273)
+                    newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
                 else
                     newName += "  ";
 
-                if (mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != null && (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) != string.Empty)
+                if ((mFile.FocuserPosition != int.MinValue) && mFile.FocuserTemperature != -273)
                 {
-                    newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
-                    if (mFile.KeywordData.ImageAngle() != string.Empty)
-                        newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
+                    newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
+                    if (mFile.RotatorAngle != int.MinValue)
+                        newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
                     else
                         newName += "  ";
                 }
@@ -324,11 +323,11 @@ namespace XisfFileManager.FileOperations
 
                 newName += mFile.KeywordData.Telescope() + "@";
                 newName += mFile.KeywordData.FocalLength();
-                newName += mFile.KeywordData.AmbientTemperature() + "C  ";
+                newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
 
-                newName += "F" + (string)mFile.KeywordData.FocuserPosition(Keywords.Keyword.eType.STRING) + "@" + mFile.KeywordData.FocuserTemperature() + "C";
-                if (mFile.KeywordData.ImageAngle() != string.Empty)
-                    newName += "  R" + mFile.KeywordData.ImageAngle() + "  ";
+                newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
+                if (mFile.RotatorAngle != double.MinValue)
+                    newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
                 else
                     newName += "  ";
 

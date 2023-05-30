@@ -56,6 +56,7 @@
             this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150 = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_Telescope_APM107 = new System.Windows.Forms.RadioButton();
             this.GroupBox_KeywordUpdateTab_Camera = new System.Windows.Forms.GroupBox();
+            this.TextBox_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.TextBox();
             this.Label_KeywordUpdateTab_Camera_ToggleNBPreset = new System.Windows.Forms.Label();
             this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB = new System.Windows.Forms.Button();
             this.Label_KeywordUpdateTab_Camera_Camera = new System.Windows.Forms.Label();
@@ -321,7 +322,6 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
-            this.TextBox_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.TextBox();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -681,6 +681,14 @@
             this.GroupBox_KeywordUpdateTab_Camera.TabIndex = 20;
             this.GroupBox_KeywordUpdateTab_Camera.TabStop = false;
             this.GroupBox_KeywordUpdateTab_Camera.Text = "Camera";
+            // 
+            // TextBox_KeywordUpdateTab_Camera_Binning
+            // 
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(183, 120);
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Name = "TextBox_KeywordUpdateTab_Camera_Binning";
+            this.TextBox_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(48, 20);
+            this.TextBox_KeywordUpdateTab_Camera_Binning.TabIndex = 26;
+            this.TextBox_KeywordUpdateTab_Camera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Label_KeywordUpdateTab_Camera_ToggleNBPreset
             // 
@@ -3562,14 +3570,6 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
-            // 
-            // TextBox_KeywordUpdateTab_Camera_Binning
-            // 
-            this.TextBox_KeywordUpdateTab_Camera_Binning.Location = new System.Drawing.Point(183, 120);
-            this.TextBox_KeywordUpdateTab_Camera_Binning.Name = "TextBox_KeywordUpdateTab_Camera_Binning";
-            this.TextBox_KeywordUpdateTab_Camera_Binning.Size = new System.Drawing.Size(48, 20);
-            this.TextBox_KeywordUpdateTab_Camera_Binning.TabIndex = 26;
-            this.TextBox_KeywordUpdateTab_Camera_Binning.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // MainForm
             // 

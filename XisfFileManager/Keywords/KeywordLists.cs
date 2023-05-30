@@ -8,6 +8,7 @@ using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using TimeZoneConverter;
 using XisfFileManager.Forms.UserInputForm;
 using XisfFileManager.Keywords;
 
@@ -151,6 +152,8 @@ namespace XisfFileManager
         // Various programs appear to screw this up - fix it
         public void SetEGain()
         {
+            // Use graphs found on manufacturer website
+
             double egain = -1.0;
             double gain = Gain(); ;
             string camera = Camera();
@@ -320,7 +323,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Find the ambient temerature as reported by a local weather station
-        public string AmbientTemperature(bool findMissingKeywords = false)
+        public double AmbientTemperature(bool findMissingKeywords = false)
         {
             Keyword node = KeywordList.Find(i => i.Name == "AMBTEMP");
 
@@ -334,7 +337,7 @@ namespace XisfFileManager
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
 
 
@@ -351,7 +354,7 @@ namespace XisfFileManager
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
 
             node = KeywordList.Find(i => i.Name == "AMB-TEMP");
@@ -365,21 +368,20 @@ namespace XisfFileManager
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
                 
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
 
             node = KeywordList.Find(i => i.Name == "AOCAMBT");
             if (node != null)
             {
                 // Found "AOCAMBT" so create "AMBTEMP", remove synonyms and return
-                node.Type = Keyword.eType.DOUBLE;
                 AddKeyword("AMBTEMP", node.Value);
                 
                 RemoveKeyword("TEMPERAT");
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
                 
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
 
             
@@ -406,14 +408,14 @@ namespace XisfFileManager
                 {
                     node.Type = Keyword.eType.DOUBLE;
                     AddKeyword("AMBTEMP", node.Value);
-                    return FormatTemperatureString(node.Value);
+                    return Convert.ToDouble(node.Value);
                 }
             }
 
             // Did not ask user to enter missing ambient temerature and did not find a valid keyword so default to absolute zero
 
-            AddKeyword("AMBTEMP", -273);
-            return FormatTemperatureString("-273");
+            AddKeyword("AMBTEMP", -273.0);
+            return -273.0;
         }
 
         // *********************************************************************************************************
@@ -897,55 +899,76 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public object FocuserPosition(Keyword.eType eType)
+        public int FocuserPosition(bool findMissingKeywords = false)
         {
-            object value = GetKeyword("FOCPOS", eType);
-            if (value != null)
-                return value;
+            Keyword node = KeywordList.Find(i => i.Name == "FOCPOS");
+            if (node != null)
+            {
+                node.Type = Keyword.eType.INTEGER;
+                return (Convert.ToInt32(node.Value));
+            }
 
-            value = GetKeyword("FOCUSPOS", eType);
-            if (value == null)
-                return null;
+            node = KeywordList.Find(i => i.Name == "FOCUSPOS");
+            if (node != null)
+            {
+                RemoveKeyword("FOCUSPOS");
+                AddKeyword("FOCPOS", Convert.ToInt32(node.Value));
+            }
 
-            RemoveKeyword("FOCUSPOS");
-            AddKeyword("FOCPOS", (int)value);
+            while (findMissingKeywords)
+            {
+                // Loop until user enters a numeric value then return
 
-            return value;
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Focuser Position",
+                    mFormText = "Focuser Position Not Set",
+                    mFormEntryText = "Enter Focuser Position: ",
+                    mFileName = FileName()
+                };
+
+                UserInputFormData FormValue = OpenUIForm(formData);
+
+                FormValue.mTextBox = FormValue.mTextBox.Trim();
+
+                // Make sure user entered a valid temerature
+                if (onlyNumerics.Match(FormValue.mTextBox).Success)
+                {
+                    node.Type = Keyword.eType.INTEGER;
+                    AddKeyword("FOCPOS", node.Value);
+                    return Convert.ToInt32(node.Value);
+                }
+            }
+
+            return -1;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FocuserTemperature(bool findMissingKeywords = false)
+        public double FocuserTemperature(bool findMissingKeywords = false)
         {
-
             Keyword node = KeywordList.Find(i => i.Name == "FOCTEMP");
 
             if (node != null)
             {
-                // Found the prefered focuser air temperature keyword 
-                node.Type = Keyword.eType.DOUBLE;
-
-                // Remove any other keyword synonyms
+                // Remove any other keyword synonyms                
                 RemoveKeyword("FOCUSTEM");
 
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
-
 
             // Did not find the prefered focuser temeprature keyword so look for other keyword synonyms
 
             node = KeywordList.Find(i => i.Name == "FOCUSTEM");
             if (node != null)
             {
-                // Found "TEMPERAT" so create "AMBTEMP", remove synonyms and return
-                node.Type = Keyword.eType.DOUBLE;
                 AddKeyword("FOCTEMP", node.Value);
-
+                
+                // Remove any other keyword synonyms
                 RemoveKeyword("FOCUSTEM");
-               
-                return FormatTemperatureString(node.Value);
-            }
 
+                return Convert.ToDouble(node.Value);
+            }
 
             // Did not find any air temeprature keywords so ask user to enter one
 
@@ -970,13 +993,14 @@ namespace XisfFileManager
                 {
                     node.Type = Keyword.eType.DOUBLE;
                     AddKeyword("FOCTEMP", node.Value);
-                    return FormatTemperatureString(node.Value);
+
+                    return Convert.ToDouble(node.Value);
                 }
             }
 
             // Did not ask user to enter missing focuser temerature and did not find a valid keyword so default to absolute zero
             AddKeyword("FOCTEMP", -273);
-            return FormatTemperatureString("-273");
+            return -273.0;
         }
 
         // *********************************************************************************************************
@@ -1017,7 +1041,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string ImageAngle()
+        public double RotatorAngle()
         {
             string value = string.Empty;
 
@@ -1030,12 +1054,12 @@ namespace XisfFileManager
                     RemoveKeyword("ROTATANG");
                     AddKeyword("POSANGLE", node.Value, node.Comment);
                 }
+                else
+                    return double.MinValue;
+
             }
 
-            if (node == null) return string.Empty;
-            node.Type = Keyword.eType.DOUBLE;
-
-            return String.Format("{0:000.0}", Convert.ToDouble(node.Value));
+            return Convert.ToDouble(node.Value);
         }
 
         // *********************************************************************************************************
@@ -1129,7 +1153,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string SensorTemperature(bool findMissingKeywords = false)
+        public double SensorTemperature(bool findMissingKeywords = false)
         {
             string value = string.Empty;
             bool status;
@@ -1137,7 +1161,7 @@ namespace XisfFileManager
             Keyword node = KeywordList.Find(i => i.Name == "CCD-TEMP");
             if (node != null)
             {
-                return FormatTemperatureString(node.Value);
+                return Convert.ToDouble(node.Value);
             }
 
             while (findMissingKeywords)
@@ -1157,14 +1181,11 @@ namespace XisfFileManager
                 {
                     AddKeyword("CCD-TEMP", temperature);
 
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + FormatTemperatureString(temperature.ToString());
-                    else
-                        return FormatTemperatureString(temperature.ToString());
+                    return Convert.ToDouble(node.Value);
                 }
             }
 
-            return string.Empty;
+            return -273.0;
         }
 
         // *********************************************************************************************************
