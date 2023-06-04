@@ -277,33 +277,11 @@ namespace XisfFileManager.FileOperations
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
                 foreach (Keyword keyword in keywords)
                 {
-                    if (keyword.Type != Keyword.eType.NULL)
-                    {
-                        // Create a FITSKeyword under <Image
-                        var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
-                        newElement.SetAttribute("name", keyword.Name);
-                        switch (keyword.Type)
-                        {
-                            case Keyword.eType.COPY:
-                                newElement.SetAttribute("value", keyword.Value);
-                                break;
-                            case Keyword.eType.BOOL:
-                                newElement.SetAttribute("value", keyword.Value);
-                                break;
-                            case Keyword.eType.DOUBLE:
-                                newElement.SetAttribute("value", keyword.Value);
-                                break;
-                            case Keyword.eType.INTEGER:
-                                newElement.SetAttribute("value", keyword.Value);
-                                break;
-                            case Keyword.eType.STRING:
-                                newElement.SetAttribute("value", keyword.Value);
-                                break;
-                        }
-                        newElement.SetAttribute("comment", keyword.Comment);
-
-                        item.AppendChild(newElement);
-                    }
+                    var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                    newElement.SetAttribute("name", keyword.Name);
+                    newElement.SetAttribute("comment", keyword.Comment);
+                    newElement.SetAttribute("value", keyword.Value.ToString());
+                    item.AppendChild(newElement);
                 }
             }
         }
@@ -314,7 +292,7 @@ namespace XisfFileManager.FileOperations
 
             foreach (double value in WeightLists.Weight)
             {
-                CsvWeightLists.SubFrameList.Weight[index].Value = WeightLists.Weight[index].ToString();
+                CsvWeightLists.SubFrameList.WeightList[index].Value = WeightLists.Weight[index].ToString();
                 index++;
             }
         }
@@ -325,30 +303,30 @@ namespace XisfFileManager.FileOperations
         private static void ReplaceSubFrameSelectorKeywords(SubFrameLists CsvWeightLists, XisfFile mFile)
         {
             int indexer;
-            List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileName;
+            List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileNameList;
 
             indexer = 0;
             foreach (Keyword file in fileNameList)
             {
-                string fileName = file.Value.Replace("\"", "").Replace("/", @"\");
+                string fileName = file.Value.ToString().Replace("\"", "").Replace("/", @"\");
 
                 // This equality check makes sure the correct data is used for the current file.
                 if (mFile.SourceFileName == fileName)
                 {
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Approved[indexer].Name, CsvWeightLists.SubFrameList.Approved[indexer].Value, CsvWeightLists.SubFrameList.Approved.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.ApprovedList[indexer].Name, CsvWeightLists.SubFrameList.ApprovedList[indexer].Value, CsvWeightLists.SubFrameList.ApprovedList.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Comment);
                     mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Fwhm.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Fwhm.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Fwhm.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.FwhmMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.FwhmMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.FwhmMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Median.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Median.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Median.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.MedianMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.MedianMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.MedianMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Noise.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Noise.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Noise.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.NoiseRatio.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.NoiseRatio.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.NoiseRatio.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.SnrWeight.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.SnrWeight.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.SnrWeight.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.StarResidual.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidual.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidual.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.StarResidualMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidualMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidualMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Stars.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Stars.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Stars.ElementAt(indexer).Comment);
-                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.Weight.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Weight.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Weight.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Comment);
+                    mFile.KeywordData.AddKeyword(CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Comment);
                 }
 
                 indexer++;

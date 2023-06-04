@@ -65,7 +65,7 @@ namespace XisfFileManager.FileOperations
                 // Find each keyword and add it to xFile
                 foreach (XElement element in elements)
                 {
-                    xFile.KeywordData.AddKeyword(element);
+                    xFile.KeywordData.AddXMLKeyword(element);
                 }
 
                 xFile.SetRequiredKeywords();

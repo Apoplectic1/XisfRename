@@ -1228,7 +1228,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 // Add keyword will remove all instances of the keyword to be added and then add it
-                SubFrameLists.SubFrameList.Approved[index].Value = SubFrameNumericLists.Approved[index].ToString();
+                SubFrameLists.SubFrameList.ApprovedList[index].Value = SubFrameNumericLists.Approved[index].ToString();
 
                 index++;
             }
@@ -2598,7 +2598,7 @@ namespace XisfFileManager
 
             // ****************************************************************
 
-            bool missingExposure = mFileList.Exists(i => i.Exposure == string.Empty);
+            bool missingExposure = mFileList.Exists(i => i.Exposure == double.MinValue);
             bool uniqueExposure = mFileList.Select(i => i.Exposure).Distinct().Count() == 1;
 
             if (missingExposure)
@@ -2608,13 +2608,8 @@ namespace XisfFileManager
 
             if (!missingExposure && uniqueExposure)
             {
-                // All valid and unique so just pick the first one to display
-                bool status;
-                status = double.TryParse(mFileList[0].Exposure, out double value);
-                if (status)
-                {
-                    TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = ((decimal)value / 1.000000000000000000000000000000000m).ToString();
-                }
+                // All valid and unique so just pick the first one to display and remove leading zeros from integers
+                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = Regex.Replace(mFileList[0].Exposure.FormatExposureTime(), @"\b0+(\d+)", match => match.Groups[1].Value);
             }
 
             // ****************************************************************
@@ -2719,16 +2714,7 @@ namespace XisfFileManager
                 if (status)
                 {
                     file.KeywordData.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
-                    if (value < 10)
-                        if (value < 1)
-                            if (value == 0)
-                                file.Exposure = value.ToString("F4");
-                            else
-                                file.Exposure = value.ToString("F5");
-                        else
-                            file.Exposure = value.ToString("F4");
-                    else
-                        file.Exposure = value.ToString("F1");
+                    file.Exposure = value;
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
@@ -2913,7 +2899,7 @@ namespace XisfFileManager
                 string secondsText;
                 if (globalSeconds)
                 {
-                    secondsText = file.KeywordData.ExposureSeconds();
+                    secondsText = file.KeywordData.ExposureTime().FormatExposureTime();
                     if (secondsText == string.Empty)
                     {
                         secondsText = globalSecondsText;
@@ -2923,7 +2909,7 @@ namespace XisfFileManager
                 {
                     if (secondsTextUI == string.Empty)
                     {
-                        globalSecondsText = file.KeywordData.ExposureSeconds(true);
+                        globalSecondsText = file.KeywordData.ExposureTime(true).FormatExposureTime();
                         if (globalSecondsText.Contains("Global_"))
                         {
                             globalSeconds = true;
@@ -2934,7 +2920,7 @@ namespace XisfFileManager
                     }
                     else
                     {
-                        secondsText = file.KeywordData.ExposureSeconds();
+                        secondsText = file.KeywordData.ExposureTime().FormatExposureTime();
                         if (secondsText == string.Empty)
                         {
                             secondsText = secondsTextUI;
@@ -3592,7 +3578,7 @@ namespace XisfFileManager
                 file.CFLAT = string.Empty;
 
                 file.KeywordData.RemoveKeyword("CBIAS");
-                file.CBIAS = string.Empty;
+                file.CBIAS = string.Empty;  
             }
 
             mCalibration.ResetAll();
@@ -3617,8 +3603,8 @@ namespace XisfFileManager
             {
                 foreach (var keyword in file.KeywordData.KeywordList)
                 {
-                    if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedItem))
-                        keywordValuelist.Add((string)keyword.GetKeyword());
+                    //if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedItem))
+                        // keywordValuelist.Add(GetKeywordValue());
                 }
             }
 

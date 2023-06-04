@@ -219,7 +219,7 @@ namespace XisfFileManager
             List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorAngle - targetFile.RotatorAngle) <= RotationTolerance).ToList();
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
-            List<XisfFile> ExposureList = bIgnoreExposure ? TemperatureList : TemperatureList.Where(exposure => Math.Abs(double.Parse(exposure.Exposure) - double.Parse(targetFile.Exposure)) <= ExposureTolerance).ToList();
+            List<XisfFile> ExposureList = bIgnoreExposure ? TemperatureList : TemperatureList.Where(exposure => Math.Abs(exposure.Exposure - targetFile.Exposure) <= ExposureTolerance).ToList();
 
             return ExposureList.OrderBy(nearest => Math.Abs((nearest.KeywordData.CaptureDateTime() - targetFile.KeywordData.CaptureDateTime()).TotalSeconds)).First();
         }

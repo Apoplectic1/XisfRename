@@ -128,7 +128,6 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value,
                 Comment = comment,
-                Type = Keyword.eType.STRING
             };
             return keyword;
         }
@@ -142,7 +141,6 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString("F6"),
                 Comment = comment,
-                Type = Keyword.eType.DOUBLE
             };
             return keyword;
         }
@@ -156,7 +154,6 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.eType.INTEGER
             };
             return keyword;
         }
@@ -170,7 +167,6 @@ namespace XisfFileManager.FileOperations
                 Name = name,
                 Value = value.ToString(),
                 Comment = comment,
-                Type = Keyword.eType.BOOL
             };
             return keyword;
         }
@@ -190,7 +186,7 @@ namespace XisfFileManager.FileOperations
             if (index == ApprovedCsvIndex)
             {
                 bool value = (field.ToLower().Equals("true")) ? true : false;
-                CsvSubFrameKeywordLists.SubFrameList.Approved.Add(BuildKeyword("Approved", value));
+                CsvSubFrameKeywordLists.SubFrameList.ApprovedList.Add(BuildKeyword("Approved", value));
             }
         }
 
@@ -251,7 +247,7 @@ namespace XisfFileManager.FileOperations
         {
             if (index == FileNameCsvIndex)
             {
-                CsvSubFrameKeywordLists.SubFrameList.FileName.Add(BuildKeyword("FileName", field));
+                CsvSubFrameKeywordLists.SubFrameList.FileNameList.Add(BuildKeyword("FileName", field));
             }
         }
 
@@ -272,7 +268,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.Fwhm.Add(BuildKeyword("Fwhm", value));
+                CsvSubFrameKeywordLists.SubFrameList.FwhmList.Add(BuildKeyword("Fwhm", value));
             }
         }
 
@@ -293,7 +289,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.FwhmMeanDeviation.Add(BuildKeyword("FwhmMeanDeviation", value));
+                CsvSubFrameKeywordLists.SubFrameList.FwhmMeanDeviationList.Add(BuildKeyword("FwhmMeanDeviation", value));
             }
         }
 
@@ -314,7 +310,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.Median.Add(BuildKeyword("Median", value));
+                CsvSubFrameKeywordLists.SubFrameList.MedianList.Add(BuildKeyword("Median", value));
             }
         }
 
@@ -335,7 +331,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.MedianMeanDeviation.Add(BuildKeyword("MedianMeanDeviation", value));
+                CsvSubFrameKeywordLists.SubFrameList.MedianMeanDeviationList.Add(BuildKeyword("MedianMeanDeviation", value));
             }
         }
 
@@ -355,7 +351,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.Noise.Add(BuildKeyword("Noise", value));
+                CsvSubFrameKeywordLists.SubFrameList.NoiseList.Add(BuildKeyword("Noise", value));
             }
         }
 
@@ -375,7 +371,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.NoiseRatio.Add(BuildKeyword("NoiseRatio", value));
+                CsvSubFrameKeywordLists.SubFrameList.NoiseRatioList.Add(BuildKeyword("NoiseRatio", value));
             }
         }
 
@@ -395,7 +391,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.SnrWeight.Add(BuildKeyword("SNRWeight", value));
+                CsvSubFrameKeywordLists.SubFrameList.SnrWeightList.Add(BuildKeyword("SNRWeight", value));
             }
         }
 
@@ -415,7 +411,7 @@ namespace XisfFileManager.FileOperations
             {
                 int value;
                 int.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.Stars.Add(BuildKeyword("Stars", value)); ;
+                CsvSubFrameKeywordLists.SubFrameList.StarsList.Add(BuildKeyword("Stars", value)); ;
             }
         }
 
@@ -435,7 +431,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.StarResidual.Add(BuildKeyword("StarResidual", value));
+                CsvSubFrameKeywordLists.SubFrameList.StarResidualList.Add(BuildKeyword("StarResidual", value));
             }
         }
 
@@ -455,7 +451,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.StarResidualMeanDeviation.Add(BuildKeyword("StarResidualMeanDeviation", value));
+                CsvSubFrameKeywordLists.SubFrameList.StarResidualMeanDeviationList.Add(BuildKeyword("StarResidualMeanDeviation", value));
             }
         }
 
@@ -475,7 +471,7 @@ namespace XisfFileManager.FileOperations
             {
                 double value;
                 double.TryParse(field, out value);
-                CsvSubFrameKeywordLists.SubFrameList.Weight.Add(BuildKeyword("WEIGHT", value));
+                CsvSubFrameKeywordLists.SubFrameList.WeightList.Add(BuildKeyword("WEIGHT", value));
             }
         }
 

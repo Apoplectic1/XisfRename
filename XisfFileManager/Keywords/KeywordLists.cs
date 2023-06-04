@@ -1,135 +1,281 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+using MathNet.Numerics.Optimization;
+using MathNet.Numerics.RootFinding;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using TimeZoneConverter;
 using XisfFileManager.Forms.UserInputForm;
 using XisfFileManager.Keywords;
-
+using static System.Windows.Forms.AxHost;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XisfFileManager
 {
+    public class Keyword
+    {
+        public string Name { get; set; } = string.Empty;
+        public object Value { get; set; }
+        public string Comment { get; set; } = string.Empty;
+    }
+
     public class KeywordLists
     {
         private static Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
-      
         public List<Keyword> KeywordList;
+
         enum eRejectionType { NULL, LINEAR, STUDENT, WINSOR, SIGMA }
+        enum eFrameType { LIGHT, DARK, FLAT, BIAS }
 
         public KeywordLists()
         {
             KeywordList = new List<Keyword>();
         }
-
-
-        // #########################################################################################################
-        // #########################################################################################################
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // Make sure FITS keyword DATE-LOC exists and is in local time (not UTC)
-        public void RepairDateLocation()
+        private Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
         {
-            Keyword node = new Keyword();
+            UserInputFormData nullFormData = new UserInputFormData();
 
-            node = KeywordList.Find(i => i.Name == "DATE-LOC");
-            if (node != null)
+            using (var UIForm = new UserInputForm())
             {
-                // DATE-LOC exists (and should already be local time) so do nothing and return
+                UIForm.Name = formData.mFormName;
+                UIForm.Text = formData.mFormText;
+                UIForm.Label_EntryText.Text = formData.mFormEntryText;
+                UIForm.Label_FileName.Text = formData.mFileName;
+
+                UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                UIForm.StartPosition = FormStartPosition.CenterScreen;
+
+
+                var result = UIForm.ShowDialog();
+                UIForm.TextBox_Text.Focus();
+
+                if (result == DialogResult.OK)
+                {
+                    formData.mGlobalCheckBox = UIForm.CheckBox_Global.Checked;
+                    return UIForm.mData;
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+
+            nullFormData.mTextBox = string.Empty;
+            nullFormData.mGlobalCheckBox = false;
+
+            return nullFormData;
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+        private Keyword NewKeyWord(string sName, object oValue, string sComment)
+        {
+            Keyword newKeyword = new Keyword
+            {
+                Name = sName,
+                Value = oValue,
+                Comment = sComment
+            };
+
+            return newKeyword;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+        public object GetKeywordName(string sName)
+        {
+            Keyword node = KeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node.Name;
+        }
+
+        public object GetKeyword(string sName)
+        {
+            Keyword node = KeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node.Value;
+        }
+        public object GetKeywordComment(string sName)
+        {
+            Keyword node = KeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node.Comment;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+        public void RemoveKeyword(string name)
+        {
+            KeywordList.RemoveAll(i => i.Name.Contains(name));
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+        public void AddKeyword(string sName, object value, string sComment = "XISF File Manager")
+        {
+            KeywordList.RemoveAll(i => i.Name == sName);
+
+            Keyword newKeyword = NewKeyWord(sName, value, sComment);
+
+            KeywordList.Add(newKeyword);
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+        public void AddXMLKeyword(XElement element)
+        {
+            bool bStatus;
+
+            // First remove Keyword characteritics that interfere with later processing
+            // Get rid of extra spaces and "'"
+            string elementValue = element.Attribute("value").Value;
+            elementValue = elementValue.Replace(" ", "").Replace("'", "");
+
+            // Now get rid of an extra decimal point at the end of what should be integers
+            elementValue = elementValue.TrimEnd('.');
+
+            //int decimalIndex = elementValue.LastIndexOf('.') + 1;
+            //if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
+            //{
+            //    elementValue = elementValue.Replace(".", "");
+            // }
+
+            // Now actually parse the keywords into bools, integers, doubles and finally strings
+            bStatus = bool.TryParse(elementValue, out bool bBool);
+            if (bStatus)
+            {
+                if (elementValue == "T")
+                {
+                    AddKeyword("true", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+                if (elementValue == "F")
+                {
+                    AddKeyword("false", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+            }
+
+            if (element.Attribute("name").Value == "EXPTIME")
+            {
+                bStatus = double.TryParse(elementValue, out double seconds);
+                if (bStatus)
+                {
+                    AddKeyword(element.Attribute("name").Value, seconds, element.Attribute("comment").Value);
+                    return;
+                }
+            }
+
+            bStatus = Int32.TryParse(elementValue, out int iInt32);
+            if (bStatus)
+            {
+                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
                 return;
             }
 
-            return;
-
-            /*
-            double latitude;
-            double longitude;
-            string value;
-            string[] array;
-            int position;
-
-            RepairSiteLatitude();
-            RepairSiteLongitude();
-
-            node = KeywordList.Find(i => i.Name == "SITELAT");
-            value = node.Value;
-            array = value.Split(' ');
-
-            double[] divisor = { 1.0, 60.0, 3600.0 };
-
-            latitude = 0.0;
-            position = 0;
-            foreach(string arrayValue in array)
+            bStatus = double.TryParse(elementValue, out double dDouble);
+            if (bStatus)
             {
-                latitude += Convert.ToDouble(arrayValue) / divisor[position++];
+                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
+                return;
             }
 
-            node = KeywordList.Find(i => i.Name == "SITELON");
-            value = node.Value;
-            array = value.Split(' ');
-
-            longitude = 0.0;
-            position = 0;
-            foreach (string arrayValue in array)
-            {
-                longitude += Convert.ToDouble(arrayValue) / divisor[position++];
-            }
-
-            node = KeywordList.Find(i => i.Name == "DATE-LOC");
-
-            DateTime utcDate = CaptureDateTime();
-            string tz1 = TimeZoneLookup.GetTimeZone(latitude, longitude).Result;
-            
-            var timeZoneDbUseCases = new TimeZoneDbUseCases();
-            var allTimeZones = timeZoneDbUseCases.GetAllTimeZones();
-            var timeZone = timeZoneDbUseCases.GetTimeZoneWithIanaId(tz1);
-
-            var timeZone1 = TimeZoneInfo.FindSystemTimeZoneById(timeZone.MicrosoftId);
-            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone1);
-
-            */
-
+            // Pixinsight will add multiple Keywords using the same name
+            // Keep string Keyword Duplicates
+            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
         }
 
+        // ----------------------------------------------------------------------------------------------------------
+        public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
+        {
+            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
+
+            KeywordList.Add(newKeyword);
+        }
+
+        // #########################################################################################################
+        // #########################################################################################################
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CBIAS()
+        {
+            object Object = GetKeyword("CBIAS");
+            if (Object != null)
+                return (string)Object;
+
+            return string.Empty;
+        }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CDARK()
         {
-            Keyword node = KeywordList.Find(i => i.Name == "CDARK");
-            if (node == null) return string.Empty;
+            object Object = GetKeyword("CDARK");
+            if (Object != null)
+                return (string)Object;
 
-            return node.Value.Replace("'", "");
+            return string.Empty;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CFLAT()
         {
-            Keyword node = KeywordList.Find(i => i.Name == "CFLAT");
-            if (node == null) return string.Empty;
+            object Object = GetKeyword("CFLAT");
+            if (Object != null)
+                return (string)Object;
 
-            return node.Value.Replace("'", "");
+            return string.Empty;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string CBIAS()
+        public int Gain(bool findMissingKeywords = false)
         {
-            Keyword node = KeywordList.Find(i => i.Name == "CBIAS");
-            if (node == null) return string.Empty;
+            object Object = GetKeyword("GAIN");
+            if (Object != null)
+            {
+                return (int)Object;
+            }
 
-            return node.Value.Replace("'", "");
+            while (findMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Cammera Gain",
+                    mFormText = "Camera Gain Not Set",
+                    mFormEntryText = "Enter Camera Gain: ",
+                    mFileName = FileName()
+                };
+
+                UserInputFormData returnValue = OpenUIForm(formData);
+
+                int gain;
+                bool bStatus = Int32.TryParse(returnValue.mTextBox, out gain);
+                if (bStatus)
+                {
+                    AddKeyword("GAIN", gain);
+
+                    if (returnValue.mGlobalCheckBox)
+                        return -gain;
+                    else
+                        return gain;
+                }
+            }
+
+            return -1;
         }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         // Who and Where
         public void SetObservationSite()
         {
@@ -155,7 +301,7 @@ namespace XisfFileManager
             // Use graphs found on manufacturer website
 
             double egain = -1.0;
-            double gain = Gain(); ;
+            double gain = Gain();
             string camera = Camera();
 
             if (camera == "Z183")
@@ -183,16 +329,14 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLatitude()
         {
-            Keyword node = KeywordList.Find(i => i.Name == "SITELAT");
-            if (node == null) return;
+            string latitude = (string)GetKeyword("SITELAT");
 
-            if (node.Value.Contains("N"))
+            if (latitude == null) return;
+
+            if (latitude.Contains("N"))
             {
-                node.Value = Regex.Replace(node.Value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+                latitude = Regex.Replace(latitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
             }
-
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.STRING;
         }
 
         // *********************************************************************************************************
@@ -200,24 +344,23 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLongitude()
         {
-            Keyword node = KeywordList.Find(i => i.Name == "SITELONG");
-            if (node == null) return;
+            string longitude = (string)GetKeyword("SITELONG");
 
-            if (node.Value.Contains("W"))
+            if (longitude == null) return;
+
+            if (longitude.Contains("W"))
             {
-                node.Value = Regex.Replace(node.Value, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+                longitude = Regex.Replace(longitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
 
                 Regex regReplace = new Regex("'");
 
-                node.Value = regReplace.Replace(node.Value, "'-", 1);
+                longitude = regReplace.Replace(longitude, "'-", 1);
             }
-
-            node.Type = Keyword.eType.STRING;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public void IntegrationParamaters()
+        public void SetIntegrationParamaters()
         {
             List<Keyword> keys = new List<Keyword>(KeywordList);
 
@@ -250,53 +393,46 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int TotalFrames(bool findMissingKeywords = false)
         {
-            bool status;
+            SetIntegrationParamaters();
 
-            IntegrationParamaters();
-
-            Keyword node = KeywordList.Find(i => i.Name == "TOTALFRAMES");
-            if (node != null)
+            object Object = GetKeyword("TOTALFRAMES");
+            if (Object == null)
             {
-                node.Type = Keyword.eType.INTEGER;
-                return Int32.Parse(node.Value);
-            }
-
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
+                while (findMissingKeywords)
                 {
-                    mFormName = "Master Frame Integration",
-                    mFormText = "Integrated SubFrames Not Set",
-                    mFormEntryText = "Enter Total Integration Frames:",
-                    mFileName = FileName()
-                };
+                    UserInputFormData formData = new UserInputFormData
+                    {
+                        mFormName = "Master Frame Integration",
+                        mFormText = "Integrated SubFrames Not Set",
+                        mFormEntryText = "Enter Total Integration Frames:",
+                        mFileName = FileName()
+                    };
 
-                UserInputFormData returnValue = OpenUIForm(formData);
+                    UserInputFormData returnValue = OpenUIForm(formData);
 
-                status = int.TryParse(returnValue.mTextBox, out int frames);
-                if (status)
-                {
-                    AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
+                    bool bStatus = int.TryParse(returnValue.mTextBox, out int frames);
+                    if (bStatus)
+                    {
+                        AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
 
-                    if (returnValue.mGlobalCheckBox)
-                        return -frames;
-                    else
-                        return frames;
+                        if (returnValue.mGlobalCheckBox)
+                            return -frames;
+                        else
+                            return frames;
+                    }
                 }
+                return -1;
             }
 
-            return -1;
+            return (int)Object;
         }
 
         public string Rejection(bool findMissingKeywords = false)
         {
-            Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "REJECTION");
+            object Object = GetKeyword("REJECTION");
+            if (Object != null)
+                return (string)Object;
 
-            if (node != null)
-            {
-                return node.Value;
-            }
 
             while (findMissingKeywords)
             {
@@ -315,76 +451,69 @@ namespace XisfFileManager
                     AddKeyword("REJECTION", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
                     return FormValue.mTextBox;
                 }
-
             }
+
 
             return string.Empty;
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Find the ambient temerature as reported by a local weather station
         public double AmbientTemperature(bool findMissingKeywords = false)
         {
-            Keyword node = KeywordList.Find(i => i.Name == "AMBTEMP");
-
-            if (node != null)
+            object Object = GetKeyword("AMBTEMP");
+            if (Object != null)
             {
-                // Found the prefered ambient air temperature keyword 
-                node.Type = Keyword.eType.DOUBLE;
-
                 // Remove any other keyword synonyms
                 RemoveKeyword("TEMPERAT");
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return Convert.ToDouble(node.Value);
+                return Convert.ToDouble(Object);
             }
-
 
             // Did not find the prefered air temeprature keyword so look for other keyword synonyms
-
-            node = KeywordList.Find(i => i.Name == "TEMPERAT");
-            if (node != null)
+            Object = GetKeyword("TEMPERAT");
+            if (Object != null)
             {
                 // Found "TEMPERAT" so create "AMBTEMP", remove synonyms and return
-                node.Type = Keyword.eType.DOUBLE;
-                AddKeyword("AMBTEMP", node.Value);
+                AddKeyword("AMBTEMP", (double)Object);
 
                 RemoveKeyword("TEMPERAT");
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return Convert.ToDouble(node.Value);
+                return Convert.ToDouble(Object);
             }
 
-            node = KeywordList.Find(i => i.Name == "AMB-TEMP");
-            if (node != null)
+            Object = GetKeyword("AMB-TEMP");
+            if (Object != null)
             {
                 // Found "AMB-TEMP" so create "AMBTEMP", remove synonyms and return
-                node.Type = Keyword.eType.DOUBLE;
-                AddKeyword("AMBTEMP", node.Value);
-                
+                AddKeyword("AMBTEMP", (double)Object);
+
                 RemoveKeyword("TEMPERAT");
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
-                
-                return Convert.ToDouble(node.Value);
+
+                return Convert.ToDouble(Object);
             }
 
-            node = KeywordList.Find(i => i.Name == "AOCAMBT");
-            if (node != null)
+            Object = GetKeyword("AOCAMBT");
+            if (Object != null)
             {
                 // Found "AOCAMBT" so create "AMBTEMP", remove synonyms and return
-                AddKeyword("AMBTEMP", node.Value);
-                
+                AddKeyword("AMBTEMP", (double)Object);
+
                 RemoveKeyword("TEMPERAT");
                 RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
-                
-                return Convert.ToDouble(node.Value);
+
+                return Convert.ToDouble(Object);
             }
 
-            
+
             // Did not find any air temeprature keywords so ask user to enter one
 
             while (findMissingKeywords)
@@ -402,13 +531,12 @@ namespace XisfFileManager
                 UserInputFormData FormValue = OpenUIForm(formData);
 
                 FormValue.mTextBox = FormValue.mTextBox.Trim();
-            
+
                 // Make sure user entered a valid temerature
                 if (onlyNumerics.Match(FormValue.mTextBox).Success)
                 {
-                    node.Type = Keyword.eType.DOUBLE;
-                    AddKeyword("AMBTEMP", node.Value);
-                    return Convert.ToDouble(node.Value);
+                    AddKeyword("AMBTEMP", Convert.ToDouble(FormValue.mTextBox), "Ambient Temperature provided by Internet Weather");
+                    return Convert.ToDouble(FormValue.mTextBox);
                 }
             }
 
@@ -422,18 +550,12 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public bool Approved()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object Object = GetKeyword("Approved");
+            if (Object != null)
+                return (bool)Object;
 
-            node = KeywordList.Find(i => i.Name == "Approved");
-            if (node == null)
-            {
-                AddKeyword("Approved", true);
-            }
-
-            node = KeywordList.Find(i => i.Name == "Approved");
-
-            return (node.Value == "True") ? true : false;
+            AddKeyword("Approved", true);
+            return true;
         }
 
         // *********************************************************************************************************
@@ -441,13 +563,9 @@ namespace XisfFileManager
         // This is the name of the File itself - Does not contain the path
         public string FileName()
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "FILENAME");
-            if (node != null)
-            {
-                return node.Comment;
-            }
+            object Object = GetKeyword("FILENAME");
+            if (Object != null)
+                return (string)GetKeywordComment("FILENAME");
 
             return string.Empty;
         }
@@ -455,14 +573,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int Binning(bool findMissingKeywords = false)
         {
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "XBINNING");
-            if (node != null)
-            {
-                node.Value = node.Value.Replace(".", "");
-                return Convert.ToInt32(node.Value);
-            }
+            object Object = GetKeyword("XBINNING");
+            if (Object != null)
+                return Convert.ToInt32(Object);
 
             while (findMissingKeywords)
             {
@@ -493,13 +606,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string Camera(bool findMissingKeywords = false)
         {
-            Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "INSTRUME");
-
-            if (node != null)
-            {
-                return node.Value.Replace("'", "");
-            }
+            object Object = GetKeyword("INSTRUME");
+            if (Object != null)
+                return (string)Object;
 
             while (findMissingKeywords)
             {
@@ -527,123 +636,134 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public DateTime CaptureDateTime()
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object Object = GetKeyword("LOCALTIM");
+            if (Object == null)
+            {
+                Object = GetKeyword("DATE-LOC");
+                if (Object == null)
+                {
+                    Object = GetKeyword("DATE-OBS");
+                    if (Object == null)
+                    {
+                        AddKeyword("LOCALTIM", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
+                        Object = GetKeyword("LOCALTIM");
+                    }
+                    else
+                    {
+                        AddKeyword("LOCALTIM", Object);
+                        RemoveKeyword("DATE-LOC");
+                        RemoveKeyword("DATE-OBS");
+                    }
+                }
+                else
+                {
+                    AddKeyword("LOCALTIM", Object);
+                    RemoveKeyword("DATE-LOC");
+                    RemoveKeyword("DATE-OBS");
+                }
+            }
+            else
+            {
+                RemoveKeyword("DATE-LOC");
+                RemoveKeyword("DATE-OBS");
+            }
+
+            string localTime = (string)Object;
+            localTime = localTime.ToString().Replace("'", "");
+
+
             bool status;
 
 
-
-            node = KeywordList.Find(i => i.Name == "LOCALTIM");
-
-            if (node == null)
-                node = KeywordList.Find(i => i.Name == "DATE-LOC");
-
-            if (node == null)
-                // DATE-OBS may is in UTC vs local time
-                node = KeywordList.Find(i => i.Name == "DATE-OBS");
-
-            if (node == null)
+            if (localTime.Contains("AM"))
             {
-                AddKeyword("DATE-OBS", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
+                localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " AM";
 
-                node = KeywordList.Find(i => i.Name == "DATE-OBS");
-            }
-
-            value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.STRING;
-
-            if (value.Contains("AM"))
-            {
-                value = value.Remove(value.IndexOf('.') + 4) + " AM";
-
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
+                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out DateTime dt);
 
                 if (status) return dt;
 
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
+                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
             }
 
-            if (value.Contains("PM"))
+            if (localTime.Contains("PM"))
             {
-                value = value.Remove(value.IndexOf('.') + 4) + " PM";
+                localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " PM";
 
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fffffff tt",
+                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out DateTime dt);
                 if (status) return dt;
 
-                status = DateTime.TryParseExact(value, "M/d/yyyy hh:mm:ss.fff tt",
+                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 if (status) return dt;
 
-                status = DateTime.TryParseExact(value, "M/d/yyyyhh:mm:ss.fff tt",
+                status = DateTime.TryParseExact(localTime, "M/d/yyyyhh:mm:ss.fff tt",
                           CultureInfo.InvariantCulture,
                           DateTimeStyles.None, out dt);
                 return dt;
             }
 
-            value = value.Replace("T", "  ").Replace("'", "");
+            localTime = localTime.Replace("T", "  ").Replace("'", "");
 
-            status = DateTime.TryParse(value, out DateTime parsedDateTime);
-
+            status = DateTime.TryParse(localTime, out DateTime parsedDateTime);
             if (status)
             {
                 return parsedDateTime;
             }
 
 
-            return DateTime.ParseExact(value, "yyyy-MM-dd  HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(localTime, "yyyy-MM-dd  HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CaptureSoftware(bool FindMissingKeywords = false)
         {
-            Keyword node = new Keyword();
-            node = KeywordList.Find(i => i.Name == "CREATOR");
+            object Object = GetKeyword("CREATOR");
+            string software = (string)Object;
 
-            if (node != null)
+            if (Object != null)
             {
-                node.Value = node.Value.Replace("'", "");
-
-                if (node.Value.Contains("Sequence"))
+                if (software.Contains("Sequence"))
                 {
-                    AddKeyword("CREATOR", "SGP", node.Value);
+                    AddKeyword("CREATOR", "SGP", software);
                     return "SGP";
                 }
 
-                if (node.Value.Contains("VOYAGER"))
+                if (software.Contains("VOYAGER"))
                 {
-                    AddKeyword("CREATOR", "VOY", node.Value);
+                    AddKeyword("CREATOR", "VOY", software);
                     return "VOY";
                 }
 
-                if (node.Value.Contains("Sky"))
+                if (software.Contains("Sky"))
                 {
-                    AddKeyword("CREATOR", "TSX", node.Value);
+                    AddKeyword("CREATOR", "TSX", software);
                     return "TSX";
                 }
 
-                if (node.Value.Contains("N.I.N.A."))
+                if (software.Contains("N.I.N.A."))
                 {
-                    AddKeyword("CREATOR", "NINA", node.Value);
+                    AddKeyword("CREATOR", "NINA", software);
                     return "NINA";
                 }
 
-                if (node.Value.Contains("Sharp"))
+                if (software.Contains("Sharp"))
                 {
-                    AddKeyword("CREATOR", "SCP", node.Value);
+                    AddKeyword("CREATOR", "SCP", software);
                     return "SCP";
                 }
 
-                if (node.Value.Equals("SGP") || node.Value.Equals("VOY") || node.Value.Equals("TSX") || node.Value.Equals("SCP") || node.Value.Equals("NINA"))
-                    return (node.Value);
+                if (software.Equals("SGP") || software.Equals("VOY") || software.Equals("TSX") || software.Equals("SCP") || software.Equals("NINA"))
+                    return (software);
             }
 
             while (FindMissingKeywords)
@@ -674,28 +794,21 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string ExposureSeconds(bool FindMissingKeywords = false)
+        public double ExposureTime(bool FindMissingKeywords = false)
         {
-            double Seconds;
-            bool status;
-            Keyword node = new Keyword();
-
-
-            node = KeywordList.Find(i => i.Name == "EXPTIME");
-            if (node != null)
+            object Object = GetKeyword("EXPTIME");
+            if (Object != null)
             {
                 RemoveKeyword("EXPOSURE");
-                Seconds = Convert.ToDouble(node.Value);
-                return FormatExposureSeconds(Seconds);
+                return Convert.ToDouble(Object);
             }
 
-            node = KeywordList.Find(i => i.Name == "EXPOSURE");
-            if (node != null)
+            Object = GetKeyword("EXPOSURE");
+            if (Object != null)
             {
                 RemoveKeyword("EXPOSURE");
-                Seconds = Convert.ToDouble(node.Value);
-                AddKeyword("EXPTIME", Seconds);
-                return FormatExposureSeconds(Seconds);
+                AddKeyword("EXPTIME", (double)Object, "Exposure Time in Seconds");
+                return Convert.ToDouble(Object);
             }
 
             while (FindMissingKeywords)
@@ -710,68 +823,62 @@ namespace XisfFileManager
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(returnData.mTextBox, out double seconds);
+                bool status = double.TryParse(returnData.mTextBox, out double seconds);
                 if (status)
                 {
-                    AddKeyword("EXPTIME", seconds, "Camera Exposure Time in Seconds");
-
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + FormatExposureSeconds(seconds);
-                    else
-                        return FormatExposureSeconds(seconds);
+                    AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
+                    return seconds;
                 }
             }
 
-            return string.Empty;
+            return double.MinValue;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string FilterName(bool FindMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object Object = GetKeyword("FILTER");
+            string filterName = (string)Object;
 
-            node = KeywordList.Find(i => i.Name == "FILTER");
-
-            if (node != null)
+            if (Object != null)
             {
-                value = node.Value.Replace("'", "").Replace(" ", "");
+                filterName = filterName.Replace("'", "").Replace(" ", "");
 
-                if (value.ToUpper().Equals("LUMA")) value = "Luma";
-                if (value.ToUpper().Equals("HA")) value = "Ha";
-                if (value.ToUpper().Equals("O3")) value = "O3";
-                if (value.ToUpper().Equals("S2")) value = "S2";
-                if (value.ToUpper().Equals("RED")) value = "Red";
-                if (value.ToUpper().Equals("GREEN")) value = "Green";
-                if (value.ToUpper().Equals("BLUE")) value = "Blue";
-                if (value.ToUpper().Equals("SHUTTER")) value = "Shutter";
+                if (filterName.ToUpper().Equals("LUMA")) filterName = "Luma";
+                if (filterName.ToUpper().Equals("HA")) filterName = "Ha";
+                if (filterName.ToUpper().Equals("O3")) filterName = "O3";
+                if (filterName.ToUpper().Equals("S2")) filterName = "S2";
+                if (filterName.ToUpper().Equals("RED")) filterName = "Red";
+                if (filterName.ToUpper().Equals("GREEN")) filterName = "Green";
+                if (filterName.ToUpper().Equals("BLUE")) filterName = "Blue";
+                if (filterName.ToUpper().Equals("SHUTTER")) filterName = "Shutter";
 
-                if (value == "Luma")
+                if (filterName == "Luma")
                     AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "Red")
+                if (filterName == "Red")
                     AddKeyword("FILTER", "Red", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "Green")
+                if (filterName == "Green")
                     AddKeyword("FILTER", "Green", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "Blue")
+                if (filterName == "Blue")
                     AddKeyword("FILTER", "Blue", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "Ha")
+                if (filterName == "Ha")
                     AddKeyword("FILTER", "Ha", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "O3")
+                if (filterName == "O3")
                     AddKeyword("FILTER", "O3", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "S2")
+                if (filterName == "S2")
                     AddKeyword("FILTER", "S2", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (value == "Shutter")
+                if (filterName == "Shutter")
                     AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                return value;
+                return filterName;
             }
 
             while (FindMissingKeywords)
@@ -805,23 +912,21 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string FrameType(bool FindMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object Object = GetKeyword("IMAGETYP");
+            string frameType = (string)Object;
 
-            node = KeywordList.Find(i => i.Name == "IMAGETYP");
-
-            if (node != null)
+            if (Object != null)
             {
-                value = node.Value.Replace("'", "").Replace(" ", "");
+                frameType = frameType.Replace("'", "").Replace(" ", "");
 
-                if (value.ToLower().Contains("light")) value = "Light";
-                if (value.ToLower().Contains("dark")) value = "Dark";
-                if (value.ToLower().Contains("flat")) value = "Flat";
-                if (value.ToLower().Contains("bias")) value = "Bias";
+                if (frameType.ToLower().Contains("light")) frameType = "Light";
+                if (frameType.ToLower().Contains("dark")) frameType = "Dark";
+                if (frameType.ToLower().Contains("flat")) frameType = "Flat";
+                if (frameType.ToLower().Contains("bias")) frameType = "Bias";
 
-                AddKeyword("IMAGETYP", value, node.Comment);
+                AddKeyword("IMAGETYP", frameType);
 
-                return value;
+                return frameType;
             }
 
             while (FindMissingKeywords)
@@ -838,12 +943,12 @@ namespace XisfFileManager
 
                 if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("D") || returnData.mTextBox.Equals("F") || returnData.mTextBox.Equals("B"))
                 {
-                    if (returnData.mTextBox.Equals("L")) value = "Light";
-                    if (returnData.mTextBox.Equals("D")) value = "Dark";
-                    if (returnData.mTextBox.Equals("F")) value = "Flat";
-                    if (returnData.mTextBox.Equals("B")) value = "Bias";
+                    if (returnData.mTextBox.Equals("L")) frameType = "Light";
+                    if (returnData.mTextBox.Equals("D")) frameType = "Dark";
+                    if (returnData.mTextBox.Equals("F")) frameType = "Flat";
+                    if (returnData.mTextBox.Equals("B")) frameType = "Bias";
 
-                    AddKeyword("IMAGETYP", returnData.mTextBox, "XISF File Manager");
+                    AddKeyword("IMAGETYP", frameType, "XISF File Manager");
 
                     if (returnData.mGlobalCheckBox)
                         return "Global_" + returnData.mTextBox;
@@ -859,15 +964,11 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int FocalLength(bool findMissingKeywords = false)
         {
-            bool status;
-            string value = string.Empty;
-            Keyword node = new Keyword();
+            object Object = GetKeyword("FOCALLEN");
 
-            node = KeywordList.Find(i => i.Name == "FOCALLEN");
-            if (node != null)
+            if (Object != null)
             {
-                node.Value = node.Value.Replace(".", "");
-                return (Convert.ToInt32(node.Value));
+                return (int)Object;
             }
 
             while (findMissingKeywords)
@@ -882,7 +983,7 @@ namespace XisfFileManager
 
                 UserInputFormData formValue = OpenUIForm(formData);
 
-                status = int.TryParse(formValue.mTextBox, out int focalLength);
+                bool status = int.TryParse(formValue.mTextBox, out int focalLength);
                 if (status)
                 {
                     AddKeyword("FOCALLEN", focalLength, "Focal Length");
@@ -901,18 +1002,18 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int FocuserPosition(bool findMissingKeywords = false)
         {
-            Keyword node = KeywordList.Find(i => i.Name == "FOCPOS");
-            if (node != null)
+            object Object = GetKeyword("FOCPOS");
+            if (Object != null)
             {
-                node.Type = Keyword.eType.INTEGER;
-                return (Convert.ToInt32(node.Value));
+                return (int)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "FOCUSPOS");
-            if (node != null)
+            Object = GetKeyword("FOCUSPOS");
+            if (Object != null)
             {
                 RemoveKeyword("FOCUSPOS");
-                AddKeyword("FOCPOS", Convert.ToInt32(node.Value));
+                AddKeyword("FOCPOS", (int)Object);
+                return (int)Object;
             }
 
             while (findMissingKeywords)
@@ -927,16 +1028,15 @@ namespace XisfFileManager
                     mFileName = FileName()
                 };
 
-                UserInputFormData FormValue = OpenUIForm(formData);
+                UserInputFormData returnValue = OpenUIForm(formData);
 
-                FormValue.mTextBox = FormValue.mTextBox.Trim();
-
+                int value;
                 // Make sure user entered a valid temerature
-                if (onlyNumerics.Match(FormValue.mTextBox).Success)
+                bool bStatus = Int32.TryParse(returnValue.mTextBox, out value);
+                if (bStatus)
                 {
-                    node.Type = Keyword.eType.INTEGER;
-                    AddKeyword("FOCPOS", node.Value);
-                    return Convert.ToInt32(node.Value);
+                    AddKeyword("FOCPOS", value);
+                    return value;
                 }
             }
 
@@ -947,27 +1047,26 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double FocuserTemperature(bool findMissingKeywords = false)
         {
-            Keyword node = KeywordList.Find(i => i.Name == "FOCTEMP");
-
-            if (node != null)
+            object Object = GetKeyword("FOCTEMP");
+            if (Object != null)
             {
                 // Remove any other keyword synonyms                
                 RemoveKeyword("FOCUSTEM");
 
-                return Convert.ToDouble(node.Value);
+                return Convert.ToDouble(Object);
             }
 
             // Did not find the prefered focuser temeprature keyword so look for other keyword synonyms
 
-            node = KeywordList.Find(i => i.Name == "FOCUSTEM");
-            if (node != null)
+            Object = GetKeyword("FOCUSTEM");
+            if (Object != null)
             {
-                AddKeyword("FOCTEMP", node.Value);
-                
+                AddKeyword("FOCTEMP", (double)Object);
+
                 // Remove any other keyword synonyms
                 RemoveKeyword("FOCUSTEM");
 
-                return Convert.ToDouble(node.Value);
+                return Convert.ToDouble(Object);
             }
 
             // Did not find any air temeprature keywords so ask user to enter one
@@ -984,92 +1083,51 @@ namespace XisfFileManager
                     mFileName = FileName()
                 };
 
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                FormValue.mTextBox = FormValue.mTextBox.Trim();
+                UserInputFormData returnValue = OpenUIForm(formData);
 
                 // Make sure user entered a valid temerature
-                if (onlyNumerics.Match(FormValue.mTextBox).Success)
-                {
-                    node.Type = Keyword.eType.DOUBLE;
-                    AddKeyword("FOCTEMP", node.Value);
+                double value;
+                // Make sure user entered a valid temerature
+                bool bStatus = double.TryParse(returnValue.mTextBox, out value);
+                if (bStatus)
+                    AddKeyword("FOCTEMP", value);
 
-                    return Convert.ToDouble(node.Value);
-                }
+                return value;
             }
 
             // Did not ask user to enter missing focuser temerature and did not find a valid keyword so default to absolute zero
-            AddKeyword("FOCTEMP", -273);
+            AddKeyword("FOCTEMP", -273.0);
             return -273.0;
         }
 
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int Gain(bool findMissingKeywords = false)
-        {
-            int? value = (int?)GetKeyword("GAIN");
-            if (value != null)
-                return (int)value;
-
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Cammera Gain",
-                    mFormText = "Camera Gain Not Set",
-                    mFormEntryText = "Enter Camera Gain: ",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnValue = OpenUIForm(formData);
-
-                int gain;
-                bool bStatus = Int32.TryParse(returnValue.mTextBox, out gain);
-                if (bStatus)
-                {
-                    AddKeyword("GAIN", gain);
-
-                    if (returnValue.mGlobalCheckBox)
-                        return -gain;
-                    else
-                        return gain;
-                }
-            }
-
-            return -1;
-        }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double RotatorAngle()
         {
-            string value = string.Empty;
-
-            Keyword node = KeywordList.Find(i => i.Name == "POSANGLE");
-            if (node == null)
+            object Object = GetKeyword("POSANGLE");
+            if (Object == null)
             {
-                node = KeywordList.Find(i => i.Name == "ROTATANG");
-                if (node != null)
+                Object = GetKeyword("ROTATANG");
+                if (Object != null)
                 {
                     RemoveKeyword("ROTATANG");
-                    AddKeyword("POSANGLE", node.Value, node.Comment);
+                    AddKeyword("POSANGLE", (double)Object, "360 Degree Rotator Mechanical Angle");
                 }
                 else
-                    return double.MinValue;
-
+                    return -1;
             }
 
-            return Convert.ToDouble(node.Value);
+            return Convert.ToDouble(Object);
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public int Offset(bool findMissingKeywords = false)
         {
-            int? value = (int?)GetKeyword("OFFSET");
-            if (value != null)
-                return (int)value;
-
+            object Object = GetKeyword("OFFSET");
+            if (Object != null)
+                return (int)Object;
 
             while (findMissingKeywords)
             {
@@ -1102,10 +1160,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double PixelSize()
         {
-            double? value = (double?)GetKeyword("XPIXSZ");
-            if (value != null)
-                return (double)value;
-
+            object Object = GetKeyword("XPIXSZ");
+            if (Object != null)
+                return Convert.ToDouble(Object);
 
             UserInputFormData formData = new UserInputFormData
             {
@@ -1125,44 +1182,43 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string SensorSetPointTemperature()
+        public double SensorSetPointTemperature(bool findMissingKeywords = false)
         {
-            string value = (string)GetKeyword("SET-TEMP");
-            if (value != null)
-                return (string)value;
+            object Object = GetKeyword("SET-TEMP");
+            if (Object != null)
+                return Convert.ToDouble(Object);
 
-            Keyword node = KeywordList.Find(i => i.Name == "SET-TEMP");
-            if (node != null)
+            while (findMissingKeywords)
             {
-                return FormatTemperatureString(node.Value);
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Cammera Temperature",
+                    mFormText = "Camera Temperature Not Set",
+                    mFormEntryText = "Enter Camera Temperature Setpoint:",
+                    mFileName = FileName()
+                };
+
+                UserInputFormData returnData = OpenUIForm(formData);
+
+                bool status = double.TryParse(returnData.mTextBox, out double temperature);
+                if (status)
+                {
+                    AddKeyword("SET-TEMP", temperature);
+
+                    return temperature;
+                }
             }
 
-            UserInputFormData formData = new UserInputFormData
-            {
-                mFormName = "Cammera Temperature",
-                mFormText = "Camera Temperature Not Set",
-                mFormEntryText = "Enter Camera Temperature Setpoint:",
-                mFileName = FileName()
-            };
-
-            UserInputFormData FormValue = OpenUIForm(formData);
-            AddKeyword("SET-TEMP", FormValue.mTextBox);
-
-            return FormatTemperatureString(FormValue.mTextBox);
+            return -273.0;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double SensorTemperature(bool findMissingKeywords = false)
         {
-            string value = string.Empty;
-            bool status;
-
-            Keyword node = KeywordList.Find(i => i.Name == "CCD-TEMP");
-            if (node != null)
-            {
-                return Convert.ToDouble(node.Value);
-            }
+            object Object = GetKeyword("CCD-TEMP");
+            if (Object != null)
+                return Convert.ToDouble(Object);
 
             while (findMissingKeywords)
             {
@@ -1176,12 +1232,12 @@ namespace XisfFileManager
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                status = double.TryParse(returnData.mTextBox, out double temperature);
+                bool status = double.TryParse(returnData.mTextBox, out double temperature);
                 if (status)
                 {
                     AddKeyword("CCD-TEMP", temperature);
 
-                    return Convert.ToDouble(node.Value);
+                    return temperature;
                 }
             }
 
@@ -1190,49 +1246,47 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string SiteLocation()
+        public string SiteName()
         {
-            string value = string.Empty;
+            object Object = GetKeyword("SITENAME");
+            if (Object != null)
+                return (string)Object;
 
-            Keyword node = KeywordList.Find(i => i.Name == "SITENAME");
-            value = node.Value;
-            node.Type = Keyword.eType.STRING;
-
-            return value.Replace("'", "");
+            AddKeyword("SITENAME", "Penns Park, PA");
+            return "Penns Park, PA";
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double SSWeight()
         {
-            string value = string.Empty;
+            object Object = GetKeyword("SSWEIGHT");
+            if (Object == null)
+                return 0.0;
 
-            Keyword node = KeywordList.Find(i => i.Name == "SSWEIGHT");
+            double sSWeight = Math.Round((double)Object, 3, MidpointRounding.AwayFromZero);
 
-            if (node == null) return Double.NaN;
-            double SSWeight = Convert.ToDouble(node.GetKeyword());
-
-            if (Double.IsNaN(SSWeight)) return Double.NaN;
-
-            return Convert.ToDouble(Math.Round(Convert.ToDecimal(SSWeight), 3, MidpointRounding.AwayFromZero));
+            return sSWeight;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string TargetName(bool findMissingKeywords = false)
         {
-            string value = (string)GetKeyword("OBJECT");
-            if (value != null)
+            object Object = GetKeyword("OBJECT");
+            string targetName = (string)Object;
+
+            if (Object != null)
             {
                 // Replace a TargetName containing "Panel" with "P" in prep for the next Regex
-                value = value.Replace("Panel", "P");
+                targetName = targetName.Replace("Panel", "P");
 
                 // Replace a TargetName containing one or more letters, numbers, spaces, or a dash followed by "P" and
                 // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
                 // Return original string if replacement fails.
                 string pattern = @"([A-Za-z0-9\s-]+)P(\d+)$";
                 string replacement = "$1 P$2";
-                string newTargetName = Regex.Replace(value, pattern, replacement);
+                string newTargetName = Regex.Replace(targetName, pattern, replacement);
 
                 return newTargetName;
             }
@@ -1265,12 +1319,9 @@ namespace XisfFileManager
         // #########################################################################################################
         public string Telescope(bool findMissingKeywords = false)
         {
-            Keyword node = KeywordList.Find(i => i.Name == "TELESCOP");
-            if (node != null)
-            {
-                node.Value = node.Value.Replace(".", "").Replace("'", "");
-                return node.Value;
-            }
+            object Object = GetKeyword("TELESCOP");
+            if (Object != null)
+                return (string)Object;
 
             while (findMissingKeywords)
             {
@@ -1319,49 +1370,46 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string WeightKeyword(bool findMissingKeywords = false)
         {
-            string value = string.Empty;
-            Keyword node = new Keyword();
-
-            node = KeywordList.Find(i => i.Name == "SSWEIGHT");
-            if (node != null)
+            object Object = GetKeyword("SSWEIGHT");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "NWEIGHT");
-            if (node != null)
+            Object = GetKeyword("NWEIGHT");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "CBIAS");
-            if (node != null)
+            Object = GetKeyword("CBIAS");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "CLIGHT");
-            if (node != null)
+            Object = GetKeyword("CLIGHT");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "CDARK");
-            if (node != null)
+            Object = GetKeyword("CDARK");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "CFLAT");
-            if (node != null)
+            Object = GetKeyword("CFLAT");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
-            node = KeywordList.Find(i => i.Name == "CPANEL");
-            if (node != null)
+            Object = GetKeyword("PANEL");
+            if (Object != null)
             {
-                return node.Name;
+                return (string)Object;
             }
 
             return string.Empty;
@@ -1369,250 +1417,6 @@ namespace XisfFileManager
 
         // #########################################################################################################
         // #########################################################################################################
-        public void AddKeyword(string name, string value, string comment = "XISF File Manager")
-        {
-            KeywordList.RemoveAll(i => i.Name == name);
 
-            Keyword keyword = new Keyword
-            {
-                Name = name,
-                Value = value,
-                Comment = comment,
-                Type = Keyword.eType.STRING
-            };
-
-            keyword.SetKeyword(name, value, comment);
-            KeywordList.Add(keyword);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void AddKeyword(string name, double value, string comment = "XISF File Manager")
-        {
-            KeywordList.RemoveAll(i => i.Name == name);
-
-            Keyword keyword = new Keyword
-            {
-                Name = name,
-                Value = value.ToString("F6"),
-                Comment = comment,
-                Type = Keyword.eType.DOUBLE
-            };
-
-
-            keyword.SetKeyword(name, value, comment);
-            KeywordList.Add(keyword);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void AddKeyword(string name, int value, string comment = "XISF File Manager")
-        {
-            KeywordList.RemoveAll(i => i.Name == name);
-
-            Keyword keyword = new Keyword
-            {
-                Name = name,
-                Value = value.ToString(),
-                Comment = comment,
-                Type = Keyword.eType.INTEGER
-            };
-
-
-            keyword.SetKeyword(name, value, comment);
-            KeywordList.Add(keyword);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void AddKeyword(string name, bool value, string comment = "XISF File Manager")
-        {
-            KeywordList.RemoveAll(i => i.Name == name);
-
-            Keyword keyword = new Keyword
-            {
-                Name = name,
-                Value = value.ToString(),
-                Comment = comment,
-                Type = Keyword.eType.BOOL
-            };
-
-            keyword.SetKeyword(name, value, comment);
-
-            KeywordList.Add(keyword);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void AddKeyword(XElement element)
-        {
-            bool bStatus;
-
-            // First remove Keyword characteritics that interfere with later processing
-            // Get rid of extra spaces and "'"
-            string elementValue = element.Attribute("value").Value;
-            elementValue = elementValue.Replace(" ", "").Replace("'", "");
-
-            // Now get rid of an extra decimal point at the end of what should be integers
-            int decimalIndex = elementValue.LastIndexOf('.') + 1;
-            if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
-            {
-                elementValue = elementValue.Replace(".", "");
-            }
-
-            // Now actually parse the keywords into bools, integers, doubles and finally strings
-            bStatus = bool.TryParse(elementValue, out bool bBool);
-            if (bStatus)
-            {
-                if (elementValue == "T")
-                {
-                    AddKeyword("true", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-                if (elementValue == "F")
-                {
-                    AddKeyword("false", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-            }
-
-            bStatus = Int32.TryParse(elementValue, out int iInt32);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
-                return;
-            }
-
-            bStatus = double.TryParse(elementValue, out double dDouble);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
-                return;
-            }
-
-            // Pixinsight will add multiple Keywords using the same name
-            // Keep string Keyword Duplicates
-            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void AddKeywordKeepDuplicates(string name, string value, string comment = "XISF File Manager")
-        {
-            Keyword keyword = new Keyword
-            {
-                Name = name,
-                Value = value,
-                Comment = comment,
-                Type = Keyword.eType.STRING
-            };
-
-            keyword.SetKeyword(name, value, comment);
-            KeywordList.Add(keyword);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public object GetKeyword(string sName)
-        {
-            Keyword node = KeywordList.Find(i => i.Name == sName);
-            if (node == null)
-                return null;
-
-            return node.GetKeyword();
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public object GetKeyword(string sName, Keyword.eType eType)
-        {
-            Keyword node = KeywordList.Find(i => i.Name == sName);
-            if (node == null)
-                return null;
-
-            return node.GetKeyword(eType);
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public void RemoveKeyword(string name)
-        {
-            KeywordList.RemoveAll(i => i.Name.Contains(name));
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        private string FormatTemperatureString(string temperatureString)
-        {
-            if (temperatureString == "") return "";
-
-            double temperature;
-            temperature = Convert.ToDouble(temperatureString.Replace("'", ""));
-            temperature = Math.Round(temperature, 1);
-
-            string fmt = "{00:+00.0;-00.0;+00.0}";
-            string value = string.Format(fmt, temperature);
-
-            return value;
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        public string FormatExposureSeconds(double seconds)
-        {
-            if (seconds < 10)
-            {
-                if (seconds < 0.00001)
-                {
-                    return "0.000";
-                }
-
-                if (seconds < 1)
-                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString();
-
-                return seconds.ToString("0.000");
-            }
-            else
-            {
-                return seconds.ToString("0000");
-            }
-        }
-
-        // #########################################################################################################
-        // #########################################################################################################
-        private Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
-        {
-            UserInputFormData nullFormData = new UserInputFormData();
-
-            using (var UIForm = new UserInputForm())
-            {
-                UIForm.Name = formData.mFormName;
-                UIForm.Text = formData.mFormText;
-                UIForm.Label_EntryText.Text = formData.mFormEntryText;
-                UIForm.Label_FileName.Text = formData.mFileName;
-
-                UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                UIForm.StartPosition = FormStartPosition.CenterScreen;
-
-
-                var result = UIForm.ShowDialog();
-                UIForm.TextBox_Text.Focus();
-
-                if (result == DialogResult.OK)
-                {
-                    formData.mGlobalCheckBox = UIForm.CheckBox_Global.Checked;
-                    return UIForm.mData;
-                }
-                else
-                {
-                    Environment.Exit(0);
-                }
-            }
-
-            nullFormData.mTextBox = string.Empty;
-            nullFormData.mGlobalCheckBox = false;
-
-            return nullFormData;
-        }
     }
 }

@@ -5,61 +5,61 @@ namespace XisfFileManager.Keywords
     public class SubFrame
     {
         public enum eValidation { EMPTY, INVALD, VALID, MISMATCH }
-        public List<Keyword> Approved { get; set; }
-        public List<Keyword> AirMass { get; set; }
+        public List<Keyword> ApprovedList { get; set; }
+        public List<Keyword> AirMassList { get; set; }
         public List<Keyword> Eccentricity { get; set; }
         public List<Keyword> EccentricityMeanDeviation { get; set; }
-        public List<Keyword> FileName { get; set; }
-        public List<Keyword> Fwhm { get; set; }
-        public List<Keyword> FwhmMeanDeviation { get; set; }
-        public List<Keyword> Median { get; set; }
-        public List<Keyword> MedianMeanDeviation { get; set; }
-        public List<Keyword> Noise { get; set; }
-        public List<Keyword> NoiseRatio { get; set; }
-        public List<Keyword> SnrWeight { get; set; }
-        public List<Keyword> StarResidual { get; set; }
-        public List<Keyword> StarResidualMeanDeviation { get; set; }
-        public List<Keyword> Stars { get; set; }
-        public List<Keyword> Weight { get; set; }
+        public List<Keyword> FileNameList { get; set; }
+        public List<Keyword> FwhmList { get; set; }
+        public List<Keyword> FwhmMeanDeviationList { get; set; }
+        public List<Keyword> MedianList { get; set; }
+        public List<Keyword> MedianMeanDeviationList { get; set; }
+        public List<Keyword> NoiseList { get; set; }
+        public List<Keyword> NoiseRatioList { get; set; }
+        public List<Keyword> SnrWeightList { get; set; }
+        public List<Keyword> StarResidualList { get; set; }
+        public List<Keyword> StarResidualMeanDeviationList { get; set; }
+        public List<Keyword> StarsList { get; set; }
+        public List<Keyword> WeightList { get; set; }
 
         public SubFrame()
         {
-            Approved = new List<Keyword>();
-            AirMass = new List<Keyword>();
+            ApprovedList = new List<Keyword>();
+            AirMassList = new List<Keyword>();
             Eccentricity = new List<Keyword>();
             EccentricityMeanDeviation = new List<Keyword>();
-            FileName = new List<Keyword>();
-            Fwhm = new List<Keyword>();
-            FwhmMeanDeviation = new List<Keyword>();
-            Median = new List<Keyword>();
-            MedianMeanDeviation = new List<Keyword>();
-            Noise = new List<Keyword>();
-            NoiseRatio = new List<Keyword>();
-            SnrWeight = new List<Keyword>();
-            StarResidual = new List<Keyword>();
-            StarResidualMeanDeviation = new List<Keyword>();
-            Stars = new List<Keyword>();
-            Weight = new List<Keyword>();
+            FileNameList = new List<Keyword>();
+            FwhmList = new List<Keyword>();
+            FwhmMeanDeviationList = new List<Keyword>();
+            MedianList = new List<Keyword>();
+            MedianMeanDeviationList = new List<Keyword>();
+            NoiseList = new List<Keyword>();
+            NoiseRatioList = new List<Keyword>();
+            SnrWeightList = new List<Keyword>();
+            StarResidualList = new List<Keyword>();
+            StarResidualMeanDeviationList = new List<Keyword>();
+            StarsList = new List<Keyword>();
+            WeightList = new List<Keyword>();
         }
 
         public void Clear()
         {
-            Approved.Clear();
-            AirMass.Clear();
+            ApprovedList.Clear();
+            AirMassList.Clear();
             Eccentricity.Clear();
             EccentricityMeanDeviation.Clear();
-            FileName.Clear();
-            Fwhm.Clear();
-            FwhmMeanDeviation.Clear();
-            Median.Clear();
-            MedianMeanDeviation.Clear();
-            Noise.Clear();
-            NoiseRatio.Clear();
-            SnrWeight.Clear();
-            StarResidual.Clear();
-            StarResidualMeanDeviation.Clear();
-            Stars.Clear();
-            Weight.Clear();
+            FileNameList.Clear();
+            FwhmList.Clear();
+            FwhmMeanDeviationList.Clear();
+            MedianList.Clear();
+            MedianMeanDeviationList.Clear();
+            NoiseList.Clear();
+            NoiseRatioList.Clear();
+            SnrWeightList.Clear();
+            StarResidualList.Clear();
+            StarResidualMeanDeviationList.Clear();
+            StarsList.Clear();
+            WeightList.Clear();
         }
 
         public eValidation Validate(int SubFrameCount)
@@ -68,11 +68,11 @@ namespace XisfFileManager.Keywords
             bool bZero = true;
             bool bFileExists = true;
 
-            bStatus = Approved.Count == SubFrameCount ? bStatus : false;
-            bZero = Approved.Count == 0 ? bZero : false;
+            bStatus = ApprovedList.Count == SubFrameCount ? bStatus : false;
+            bZero = ApprovedList.Count == 0 ? bZero : false;
 
-            bStatus = AirMass.Count == SubFrameCount ? bStatus : false;
-            bZero = AirMass.Count == 0 ? bZero : false;
+            bStatus = AirMassList.Count == SubFrameCount ? bStatus : false;
+            bZero = AirMassList.Count == 0 ? bZero : false;
 
             bStatus = Eccentricity.Count == SubFrameCount ? bStatus : false;
             bZero = Eccentricity.Count == 0 ? bZero : false;
@@ -80,47 +80,47 @@ namespace XisfFileManager.Keywords
             bStatus = EccentricityMeanDeviation.Count == SubFrameCount ? bStatus : false;
             bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
 
-            bStatus = FileName.Count == SubFrameCount ? bStatus : false;
-            bZero = FileName.Count == 0 ? bZero : false;
+            bStatus = FileNameList.Count == SubFrameCount ? bStatus : false;
+            bZero = FileNameList.Count == 0 ? bZero : false;
 
-            bStatus = Fwhm.Count == SubFrameCount ? bStatus : false;
-            bZero = Fwhm.Count == 0 ? bZero : false;
+            bStatus = FwhmList.Count == SubFrameCount ? bStatus : false;
+            bZero = FwhmList.Count == 0 ? bZero : false;
 
-            bStatus = FwhmMeanDeviation.Count == SubFrameCount ? bStatus : false;
+            bStatus = FwhmMeanDeviationList.Count == SubFrameCount ? bStatus : false;
             bZero = EccentricityMeanDeviation.Count == 0 ? bZero : false;
 
-            bStatus = Median.Count == SubFrameCount ? bStatus : false;
-            bZero = Median.Count == 0 ? bZero : false;
+            bStatus = MedianList.Count == SubFrameCount ? bStatus : false;
+            bZero = MedianList.Count == 0 ? bZero : false;
 
-            bStatus = MedianMeanDeviation.Count == SubFrameCount ? bStatus : false;
-            bZero = MedianMeanDeviation.Count == 0 ? bZero : false;
+            bStatus = MedianMeanDeviationList.Count == SubFrameCount ? bStatus : false;
+            bZero = MedianMeanDeviationList.Count == 0 ? bZero : false;
 
-            bStatus = Noise.Count == SubFrameCount ? bStatus : false;
-            bZero = Noise.Count == 0 ? bZero : false;
+            bStatus = NoiseList.Count == SubFrameCount ? bStatus : false;
+            bZero = NoiseList.Count == 0 ? bZero : false;
 
-            bStatus = NoiseRatio.Count == SubFrameCount ? bStatus : false;
-            bZero = NoiseRatio.Count == 0 ? bZero : false;
+            bStatus = NoiseRatioList.Count == SubFrameCount ? bStatus : false;
+            bZero = NoiseRatioList.Count == 0 ? bZero : false;
 
-            bStatus = SnrWeight.Count == SubFrameCount ? bStatus : false;
-            bZero = SnrWeight.Count == 0 ? bZero : false;
+            bStatus = SnrWeightList.Count == SubFrameCount ? bStatus : false;
+            bZero = SnrWeightList.Count == 0 ? bZero : false;
 
-            bStatus = StarResidual.Count == SubFrameCount ? bStatus : false;
-            bZero = StarResidual.Count == 0 ? bZero : false;
+            bStatus = StarResidualList.Count == SubFrameCount ? bStatus : false;
+            bZero = StarResidualList.Count == 0 ? bZero : false;
 
-            bStatus = StarResidualMeanDeviation.Count == SubFrameCount ? bStatus : false;
-            bZero = StarResidualMeanDeviation.Count == 0 ? bZero : false;
+            bStatus = StarResidualMeanDeviationList.Count == SubFrameCount ? bStatus : false;
+            bZero = StarResidualMeanDeviationList.Count == 0 ? bZero : false;
 
-            bStatus = Stars.Count == SubFrameCount ? bStatus : false;
-            bZero = Stars.Count == 0 ? bZero : false;
+            bStatus = StarsList.Count == SubFrameCount ? bStatus : false;
+            bZero = StarsList.Count == 0 ? bZero : false;
 
-            bStatus = Weight.Count == SubFrameCount ? bStatus : false;
-            bZero = Weight.Count == 0 ? bZero : false;
+            bStatus = WeightList.Count == SubFrameCount ? bStatus : false;
+            bZero = WeightList.Count == 0 ? bZero : false;
 
             if (bZero == false)
             {
-                foreach (Keyword filename in FileName)
+                foreach (Keyword filename in FileNameList)
                 {
-                    bFileExists = System.IO.File.Exists(filename.Value) ? bFileExists : false;
+                    bFileExists = System.IO.File.Exists(filename.Name) ? bFileExists : false;
                 }
             }
 

@@ -28,10 +28,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "Approved");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.BOOL;
-
-            SubFrameList.Approved.Add(node);
+            SubFrameList.ApprovedList.Add(node);
             keywords.KeywordList.Remove(node);
         }
 
@@ -41,10 +38,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "AIRMASS");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.AirMass.Add(node);
+            SubFrameList.AirMassList.Add(node);
             keywords.KeywordList.Remove(node);
         }
 
@@ -53,9 +47,6 @@
             Keyword node = new Keyword();
             node = keywords.KeywordList.Find(i => i.Name == "Eccentricity");
             if (node == null) return;
-
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
 
             SubFrameList.Eccentricity.Add(node);
             keywords.KeywordList.Remove(node);
@@ -67,9 +58,6 @@
             node = keywords.KeywordList.Find(i => i.Name == "EccentricityMeanDeviation");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
             SubFrameList.EccentricityMeanDeviation.Add(node);
             keywords.KeywordList.Remove(node);
         }
@@ -79,10 +67,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "Fwhm");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.Fwhm.Add(node);
+            SubFrameList.FwhmList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordFwhmMeanDeviation(KeywordLists keywords)
@@ -91,10 +76,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "FwhmMeanDeviation");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.FwhmMeanDeviation.Add(node);
+            SubFrameList.FwhmMeanDeviationList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordMedian(KeywordLists keywords)
@@ -103,10 +85,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "Median");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.Median.Add(node);
+            SubFrameList.MedianList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordMedianMeanDeviation(KeywordLists keywords)
@@ -115,10 +94,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "MedianMeanDeviation");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.MedianMeanDeviation.Add(node);
+            SubFrameList.MedianMeanDeviationList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordNoise(KeywordLists keywords)
@@ -127,10 +103,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "Noise");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.Noise.Add(node);
+            SubFrameList.NoiseList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordNoiseRatio(KeywordLists keywords)
@@ -139,10 +112,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "NoiseRatio");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.NoiseRatio.Add(node);
+            SubFrameList.NoiseRatioList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordSnrWeight(KeywordLists keywords)
@@ -151,10 +121,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "SNRWeight");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.SnrWeight.Add(node);
+            SubFrameList.SnrWeightList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordStarResidual(KeywordLists keywords)
@@ -163,10 +130,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "StarResidual");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.StarResidual.Add(node);
+            SubFrameList.StarResidualList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordStarResidualMeanDeviation(KeywordLists keywords)
@@ -175,10 +139,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "StarResidualMeanDeviation");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.StarResidualMeanDeviation.Add(node);
+            SubFrameList.StarResidualMeanDeviationList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordStars(KeywordLists keywords)
@@ -187,10 +148,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "Stars");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.INTEGER;
-
-            SubFrameList.Stars.Add(node);
+            SubFrameList.StarsList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordWeight(KeywordLists keywords)
@@ -199,10 +157,7 @@
             node = keywords.KeywordList.Find(i => i.Name == "WEIGHT");
             if (node == null) return;
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.DOUBLE;
-
-            SubFrameList.Weight.Add(node);
+            SubFrameList.WeightList.Add(node);
             keywords.KeywordList.Remove(node);
         }
         public void AddKeywordFileName(string fileName)
@@ -214,10 +169,7 @@
                 Comment = "XISF File Manager"
             };
 
-            node.Value = node.Value.Replace("'", "");
-            node.Type = Keyword.eType.STRING;
-
-            SubFrameList.FileName.Add(node);
+            SubFrameList.FileNameList.Add(node);
         }
     }
 }

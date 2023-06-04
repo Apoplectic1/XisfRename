@@ -175,7 +175,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FileOps\Buffer.cs" />
-    <Compile Include="Keywords\Keyword.cs" />
     <Compile Include="Keywords\KeywordLists.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

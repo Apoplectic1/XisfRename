@@ -33,7 +33,7 @@ namespace XisfFileManager.FileOperations
         public string CFLAT { get; set; } = string.Empty;
         public string Camera { get; set; }
         public string CaptureSoftware { get; set; }
-        public string Exposure { get; set; }
+        public double Exposure { get; set; }
         public string FileName { get; set; }
         public string Filter { get; set; }
         public string FrameType { get; set; }
@@ -92,7 +92,7 @@ namespace XisfFileManager.FileOperations
             Camera = KeywordData.Camera();
             CaptureSoftware = KeywordData.CaptureSoftware();
             CaptureTime = KeywordData.CaptureDateTime();
-            Exposure = KeywordData.ExposureSeconds();
+            Exposure = KeywordData.ExposureTime();
             FileName = KeywordData.FileName();
             Filter = KeywordData.FilterName();
             FocalLength = KeywordData.FocalLength();
@@ -132,6 +132,24 @@ namespace XisfFileManager.FileOperations
         public static string FormatRotationAngle(this double rotationAngle) 
         {
             return rotationAngle.ToString("+#000.0;-#000.0");
+        }
+
+        public static string FormatExposureTime(this double seconds)
+        {
+            if (seconds < 10)
+            {
+                if (seconds < 0.00001)
+                    return "0.000";
+
+                if (seconds < 1)
+                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString();
+
+                return seconds.ToString("0.000");
+            }
+            else
+            {
+                return seconds.ToString("0000");
+            }
         }
     }
 }
