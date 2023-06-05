@@ -603,28 +603,28 @@ namespace XisfFileManager
                         {
                             int fileIndex = file.Index;
 
-                            if (file.KeywordData.FilterName().Equals("Luma"))
+                            if (file.Filter.Equals("Luma"))
                                 file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
-                            if (file.KeywordData.FilterName().Equals("Red"))
+                            if (file.Filter.Equals("Red"))
                                 file.Index = (file.Unique) ? ++redIndex : redIndex++;
 
-                            if (file.KeywordData.FilterName().Equals("Green"))
+                            if (file.Filter.Equals("Green"))
                                 file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
 
-                            if (file.KeywordData.FilterName().Equals("Blue"))
+                            if (file.Filter.Equals("Blue"))
                                 file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
 
-                            if (file.KeywordData.FilterName().Equals("Ha"))
+                            if (file.Filter.Equals("Ha"))
                                 file.Index = (file.Unique) ? ++haIndex : haIndex++;
 
-                            if (file.KeywordData.FilterName().Equals("O3"))
+                            if (file.Filter.Equals("O3"))
                                 file.Index = (file.Unique) ? ++o3Index : o3Index++;
 
-                            if (file.KeywordData.FilterName().Equals("S2"))
+                            if (file.Filter.Equals("S2"))
                                 file.Index = (file.Unique) ? ++s2Index : s2Index++;
 
-                            if (file.KeywordData.FilterName().Equals("Shutter"))
+                            if (file.Filter.Equals("Shutter"))
                                 file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
 
                             if (fileIndex == file.Index)
@@ -670,28 +670,28 @@ namespace XisfFileManager
                     {
                         int fileIndex = file.Index;
 
-                        if (file.KeywordData.FilterName().Equals("Luma"))
+                        if (file.Filter.Equals("Luma"))
                             file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
-                        if (file.KeywordData.FilterName().Equals("Red"))
+                        if (file.Filter.Equals("Red"))
                             file.Index = (file.Unique) ? ++redIndex : redIndex++;
 
-                        if (file.KeywordData.FilterName().Equals("Green"))
+                        if (file.Filter.Equals("Green"))
                             file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
 
-                        if (file.KeywordData.FilterName().Equals("Blue"))
+                        if (file.Filter.Equals("Blue"))
                             file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
 
-                        if (file.KeywordData.FilterName().Equals("Ha"))
+                        if (file.Filter.Equals("Ha"))
                             file.Index = (file.Unique) ? ++haIndex : haIndex++;
 
-                        if (file.KeywordData.FilterName().Equals("O3"))
+                        if (file.Filter.Equals("O3"))
                             file.Index = (file.Unique) ? ++o3Index : o3Index++;
 
-                        if (file.KeywordData.FilterName().Equals("S2"))
+                        if (file.Filter.Equals("S2"))
                             file.Index = (file.Unique) ? ++s2Index : s2Index++;
 
-                        if (file.KeywordData.FilterName().Equals("Shutter"))
+                        if (file.Filter.Equals("Shutter"))
                             file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
 
                         if (fileIndex == file.Index)

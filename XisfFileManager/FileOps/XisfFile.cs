@@ -11,7 +11,7 @@ namespace XisfFileManager.FileOperations
         public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER }
 
 
-        public DateTime CaptureTime { get; set; }
+        public DateTime CaptureDateTime { get; set; }
         public KeywordLists KeywordData { get; set; }
         public bool Master { get; set; } = false;
         public bool NarrowBand { get; set; }
@@ -43,6 +43,7 @@ namespace XisfFileManager.FileOperations
         public string Telescope { get; set; }
         public double SensorTemperature { get; set; } = -273.0;
         public double AmbientTemperature { get; set; } = -273.0;
+        public double SSWeight { get; set; } = 0.0;
 
 
         public XisfFile()
@@ -91,7 +92,7 @@ namespace XisfFileManager.FileOperations
             CFLAT = KeywordData.CFLAT();
             Camera = KeywordData.Camera();
             CaptureSoftware = KeywordData.CaptureSoftware();
-            CaptureTime = KeywordData.CaptureDateTime();
+            CaptureDateTime = KeywordData.CaptureDateTime();
             Exposure = KeywordData.ExposureTime();
             FileName = KeywordData.FileName();
             Filter = KeywordData.FilterName();
@@ -109,6 +110,7 @@ namespace XisfFileManager.FileOperations
             Telescope = KeywordData.Telescope();
             SensorTemperature = KeywordData.SensorTemperature();
             AmbientTemperature = KeywordData.AmbientTemperature();
+            SSWeight = KeywordData.SSWeight();
          }
 
         public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
