@@ -26,16 +26,11 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        private readonly ImageCalculations ImageParameterLists;
+        private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
         private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private OpenFolderDialog mFolder;
-        private readonly SubFrameLists SubFrameLists;
-        private readonly SubFrameNumericLists SubFrameNumericLists;
-        private eSubFrameNumericListsValid eSubFrameValidListsValid;
         private XisfFile mFile;
-        private readonly XisfFileRename mRenameFile;
-        private readonly XisfFileRead mFileReader = new XisfFileRead();
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
         private double mFwhmPercent;
@@ -56,11 +51,17 @@ namespace XisfFileManager
         private double mStarsRangeLow;
         private double mUpdateStatisticsRangeHigh;
         private double mUpdateStatisticsRangeLow;
-        private string mFolderBrowseState;
-        private string mFolderCsvBrowseState;
+        private eSubFrameNumericListsValid eSubFrameValidListsValid;
         private readonly Calibration mCalibration;
         private readonly DirectoryOps mDirectoryOps;
-        private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
+        private readonly ImageCalculations ImageParameterLists;
+        private readonly SubFrameLists SubFrameLists;
+        private readonly SubFrameNumericLists SubFrameNumericLists;
+        private readonly XisfFileRead mFileReader = new XisfFileRead();
+        private readonly XisfFileRename mRenameFile;
+        private string mFolderBrowseState;
+        private string mFolderCsvBrowseState;
+
 
 
         public MainForm()
@@ -317,6 +318,9 @@ namespace XisfFileManager
 
                 ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
 
+                // Upate the UI with data from the .xisf recursive directory search
+                Application.DoEvents();
+
                 foreach (FileInfo file in mDirectoryOps.Files)
                 {
                     // Don't include previously identified duplicates
@@ -325,6 +329,8 @@ namespace XisfFileManager
 
                     bool bStatus = false;
                     ProgressBar_FileSelection_ReadProgress.Value += 1;
+
+                    // Upate the UI with the .xisf file name
                     Application.DoEvents();
 
                     // Create a new xisf file instance

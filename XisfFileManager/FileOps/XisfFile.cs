@@ -133,7 +133,7 @@ namespace XisfFileManager.FileOperations
 
         public static string FormatRotationAngle(this double rotationAngle) 
         {
-            return rotationAngle.ToString("+#000.0;-#000.0");
+            return rotationAngle.ToString("000.0");
         }
 
         public static string FormatExposureTime(this double seconds)

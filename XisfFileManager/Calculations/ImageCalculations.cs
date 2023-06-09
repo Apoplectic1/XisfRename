@@ -115,7 +115,7 @@ namespace XisfFileManager.Calculations
 
                 subFrameIntervalList.Add(delta);
 
-                exposure = (double)file.KeywordData.GetKeyword("EXPTIME");
+                exposure = (double)file.KeywordData.GetKeywordValue("EXPTIME");
 
                 subFrameExposureList.Add(exposure);
             }

@@ -165,9 +165,10 @@
       <DependentUpon>UserInputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\UserInputForm\UserInputFormData.cs" />
-    <Compile Include="Keywords\SubFrameNumericLists.cs" />
-    <Compile Include="Keywords\SubFrame.cs" />
-    <Compile Include="Keywords\SubFrameLists.cs" />
+    <Compile Include="Keywords\Keyword.cs" />
+    <Compile Include="SubFrames\SubFrameNumericLists.cs" />
+    <Compile Include="SubFrames\SubFrame.cs" />
+    <Compile Include="SubFrames\SubFrameLists.cs" />
     <Compile Include="Forms\MainForm\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

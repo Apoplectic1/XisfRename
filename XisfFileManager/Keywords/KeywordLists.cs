@@ -1,44 +1,24 @@
-﻿using MathNet.Numerics.LinearAlgebra.Factorization;
-using MathNet.Numerics.Optimization;
-using MathNet.Numerics.RootFinding;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using TimeZoneConverter;
 using XisfFileManager.Forms.UserInputForm;
-using XisfFileManager.Keywords;
-using static System.Windows.Forms.AxHost;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XisfFileManager
 {
-    public class Keyword
-    {
-        public string Name { get; set; } = string.Empty;
-        public object Value { get; set; }
-        public string Comment { get; set; } = string.Empty;
-    }
-
     public class KeywordLists
     {
         private static Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
         public List<Keyword> KeywordList;
 
-        enum eRejectionType { NULL, LINEAR, STUDENT, WINSOR, SIGMA }
-        enum eFrameType { LIGHT, DARK, FLAT, BIAS }
-
         public KeywordLists()
         {
             KeywordList = new List<Keyword>();
         }
+
         private Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
         {
             UserInputFormData nullFormData = new UserInputFormData();
@@ -74,8 +54,8 @@ namespace XisfFileManager
             return nullFormData;
         }
 
-        // #########################################################################################################
-        // #########################################################################################################
+        // ----------------------------------------------------------------------------------------------------------
+
         private Keyword NewKeyWord(string sName, object oValue, string sComment)
         {
             Keyword newKeyword = new Keyword
@@ -89,16 +69,8 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
-        public object GetKeywordName(string sName)
-        {
-            Keyword node = KeywordList.Find(i => i.Name == sName);
-            if (node == null)
-                return null;
-
-            return node.Name;
-        }
-
-        public object GetKeyword(string sName)
+      
+        public object GetKeywordValue(string sName)
         {
             Keyword node = KeywordList.Find(i => i.Name == sName);
             if (node == null)
@@ -116,12 +88,14 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void RemoveKeyword(string name)
         {
             KeywordList.RemoveAll(i => i.Name.Contains(name));
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void AddKeyword(string sName, object value, string sComment = "XISF File Manager")
         {
             KeywordList.RemoveAll(i => i.Name == sName);
@@ -132,6 +106,7 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void AddXMLKeyword(XElement element)
         {
             bool bStatus;
@@ -196,6 +171,7 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
         {
             Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
@@ -203,14 +179,12 @@ namespace XisfFileManager
             KeywordList.Add(newKeyword);
         }
 
-        // #########################################################################################################
-        // #########################################################################################################
-
         // *********************************************************************************************************
         // *********************************************************************************************************
+ 
         public string CBIAS()
         {
-            object Object = GetKeyword("CBIAS");
+            object Object = GetKeywordValue("CBIAS");
             if (Object != null)
                 return (string)Object;
 
@@ -221,7 +195,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CDARK()
         {
-            object Object = GetKeyword("CDARK");
+            object Object = GetKeywordValue("CDARK");
             if (Object != null)
                 return (string)Object;
 
@@ -232,7 +206,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CFLAT()
         {
-            object Object = GetKeyword("CFLAT");
+            object Object = GetKeywordValue("CFLAT");
             if (Object != null)
                 return (string)Object;
 
@@ -243,7 +217,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int Gain(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("GAIN");
+            object Object = GetKeywordValue("GAIN");
             if (Object != null)
             {
                 return (int)Object;
@@ -321,7 +295,7 @@ namespace XisfFileManager
             if (camera == "A144")
                 egain = 0.37;
 
-            AddKeyword("EGAIN", egain, "Calculated electrons per ADU");
+            AddKeyword("EGAIN", egain, "Electrons per ADU calculated using manufacturer graphs");
         }
 
         // *********************************************************************************************************
@@ -329,7 +303,7 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLatitude()
         {
-            string latitude = (string)GetKeyword("SITELAT");
+            string latitude = (string)GetKeywordValue("SITELAT");
 
             if (latitude == null) return;
 
@@ -344,7 +318,7 @@ namespace XisfFileManager
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
         public void RepairSiteLongitude()
         {
-            string longitude = (string)GetKeyword("SITELONG");
+            string longitude = (string)GetKeywordValue("SITELONG");
 
             if (longitude == null) return;
 
@@ -395,7 +369,7 @@ namespace XisfFileManager
         {
             SetIntegrationParamaters();
 
-            object Object = GetKeyword("TOTALFRAMES");
+            object Object = GetKeywordValue("TOTALFRAMES");
             if (Object == null)
             {
                 while (findMissingKeywords)
@@ -429,7 +403,7 @@ namespace XisfFileManager
 
         public string Rejection(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("REJECTION");
+            object Object = GetKeywordValue("REJECTION");
             if (Object != null)
                 return (string)Object;
 
@@ -462,7 +436,7 @@ namespace XisfFileManager
         // Find the ambient temerature as reported by a local weather station
         public double AmbientTemperature(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("AMBTEMP");
+            object Object = GetKeywordValue("AMBTEMP");
             if (Object != null)
             {
                 // Remove any other keyword synonyms
@@ -474,7 +448,7 @@ namespace XisfFileManager
             }
 
             // Did not find the prefered air temeprature keyword so look for other keyword synonyms
-            Object = GetKeyword("TEMPERAT");
+            Object = GetKeywordValue("TEMPERAT");
             if (Object != null)
             {
                 // Found "TEMPERAT" so create "AMBTEMP", remove synonyms and return
@@ -487,7 +461,7 @@ namespace XisfFileManager
                 return Convert.ToDouble(Object);
             }
 
-            Object = GetKeyword("AMB-TEMP");
+            Object = GetKeywordValue("AMB-TEMP");
             if (Object != null)
             {
                 // Found "AMB-TEMP" so create "AMBTEMP", remove synonyms and return
@@ -500,7 +474,7 @@ namespace XisfFileManager
                 return Convert.ToDouble(Object);
             }
 
-            Object = GetKeyword("AOCAMBT");
+            Object = GetKeywordValue("AOCAMBT");
             if (Object != null)
             {
                 // Found "AOCAMBT" so create "AMBTEMP", remove synonyms and return
@@ -550,7 +524,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public bool Approved()
         {
-            object Object = GetKeyword("Approved");
+            object Object = GetKeywordValue("Approved");
             if (Object != null)
                 return (bool)Object;
 
@@ -563,7 +537,7 @@ namespace XisfFileManager
         // This is the name of the File itself - Does not contain the path
         public string FileName()
         {
-            object Object = GetKeyword("FILENAME");
+            object Object = GetKeywordValue("FILENAME");
             if (Object != null)
                 return (string)GetKeywordComment("FILENAME");
 
@@ -573,7 +547,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int Binning(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("XBINNING");
+            object Object = GetKeywordValue("XBINNING");
             if (Object != null)
                 return Convert.ToInt32(Object);
 
@@ -606,7 +580,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string Camera(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("INSTRUME");
+            object Object = GetKeywordValue("INSTRUME");
             if (Object != null)
                 return (string)Object;
 
@@ -636,17 +610,17 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public DateTime CaptureDateTime()
         {
-            object Object = GetKeyword("LOCALTIM");
+            object Object = GetKeywordValue("LOCALTIM");
             if (Object == null)
             {
-                Object = GetKeyword("DATE-LOC");
+                Object = GetKeywordValue("DATE-LOC");
                 if (Object == null)
                 {
-                    Object = GetKeyword("DATE-OBS");
+                    Object = GetKeywordValue("DATE-OBS");
                     if (Object == null)
                     {
                         AddKeyword("LOCALTIM", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
-                        Object = GetKeyword("LOCALTIM");
+                        Object = GetKeywordValue("LOCALTIM");
                     }
                     else
                     {
@@ -727,7 +701,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CaptureSoftware(bool FindMissingKeywords = false)
         {
-            object Object = GetKeyword("CREATOR");
+            object Object = GetKeywordValue("CREATOR");
             string software = (string)Object;
 
             if (Object != null)
@@ -796,14 +770,14 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double ExposureTime(bool FindMissingKeywords = false)
         {
-            object Object = GetKeyword("EXPTIME");
+            object Object = GetKeywordValue("EXPTIME");
             if (Object != null)
             {
                 RemoveKeyword("EXPOSURE");
                 return Convert.ToDouble(Object);
             }
 
-            Object = GetKeyword("EXPOSURE");
+            Object = GetKeywordValue("EXPOSURE");
             if (Object != null)
             {
                 RemoveKeyword("EXPOSURE");
@@ -838,7 +812,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string FilterName(bool FindMissingKeywords = false)
         {
-            object Object = GetKeyword("FILTER");
+            object Object = GetKeywordValue("FILTER");
             string filterName = (string)Object;
 
             if (Object != null)
@@ -912,7 +886,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string FrameType(bool FindMissingKeywords = false)
         {
-            object Object = GetKeyword("IMAGETYP");
+            object Object = GetKeywordValue("IMAGETYP");
             string frameType = (string)Object;
 
             if (Object != null)
@@ -964,7 +938,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int FocalLength(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("FOCALLEN");
+            object Object = GetKeywordValue("FOCALLEN");
 
             if (Object != null)
             {
@@ -1002,13 +976,13 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int FocuserPosition(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("FOCPOS");
+            object Object = GetKeywordValue("FOCPOS");
             if (Object != null)
             {
                 return (int)Object;
             }
 
-            Object = GetKeyword("FOCUSPOS");
+            Object = GetKeywordValue("FOCUSPOS");
             if (Object != null)
             {
                 RemoveKeyword("FOCUSPOS");
@@ -1047,7 +1021,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double FocuserTemperature(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("FOCTEMP");
+            object Object = GetKeywordValue("FOCTEMP");
             if (Object != null)
             {
                 // Remove any other keyword synonyms                
@@ -1058,7 +1032,7 @@ namespace XisfFileManager
 
             // Did not find the prefered focuser temeprature keyword so look for other keyword synonyms
 
-            Object = GetKeyword("FOCUSTEM");
+            Object = GetKeywordValue("FOCUSTEM");
             if (Object != null)
             {
                 AddKeyword("FOCTEMP", (double)Object);
@@ -1105,10 +1079,10 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double RotatorAngle()
         {
-            object Object = GetKeyword("POSANGLE");
+            object Object = GetKeywordValue("POSANGLE");
             if (Object == null)
             {
-                Object = GetKeyword("ROTATANG");
+                Object = GetKeywordValue("ROTATANG");
                 if (Object != null)
                 {
                     RemoveKeyword("ROTATANG");
@@ -1125,7 +1099,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public int Offset(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("OFFSET");
+            object Object = GetKeywordValue("OFFSET");
             if (Object != null)
                 return (int)Object;
 
@@ -1160,7 +1134,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double PixelSize()
         {
-            object Object = GetKeyword("XPIXSZ");
+            object Object = GetKeywordValue("XPIXSZ");
             if (Object != null)
                 return Convert.ToDouble(Object);
 
@@ -1184,7 +1158,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double SensorSetPointTemperature(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("SET-TEMP");
+            object Object = GetKeywordValue("SET-TEMP");
             if (Object != null)
                 return Convert.ToDouble(Object);
 
@@ -1216,7 +1190,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double SensorTemperature(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("CCD-TEMP");
+            object Object = GetKeywordValue("CCD-TEMP");
             if (Object != null)
                 return Convert.ToDouble(Object);
 
@@ -1248,7 +1222,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string SiteName()
         {
-            object Object = GetKeyword("SITENAME");
+            object Object = GetKeywordValue("SITENAME");
             if (Object != null)
                 return (string)Object;
 
@@ -1260,7 +1234,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double SSWeight()
         {
-            object Object = GetKeyword("SSWEIGHT");
+            object Object = GetKeywordValue("SSWEIGHT");
             if (Object == null)
                 return 0.0;
 
@@ -1273,7 +1247,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string TargetName(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("OBJECT");
+            object Object = GetKeywordValue("OBJECT");
             string targetName = (string)Object;
 
             if (Object != null)
@@ -1319,7 +1293,7 @@ namespace XisfFileManager
         // #########################################################################################################
         public string Telescope(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("TELESCOP");
+            object Object = GetKeywordValue("TELESCOP");
             if (Object != null)
                 return (string)Object;
 
@@ -1370,43 +1344,43 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string WeightKeyword(bool findMissingKeywords = false)
         {
-            object Object = GetKeyword("SSWEIGHT");
+            object Object = GetKeywordValue("SSWEIGHT");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("NWEIGHT");
+            Object = GetKeywordValue("NWEIGHT");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("CBIAS");
+            Object = GetKeywordValue("CBIAS");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("CLIGHT");
+            Object = GetKeywordValue("CLIGHT");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("CDARK");
+            Object = GetKeywordValue("CDARK");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("CFLAT");
+            Object = GetKeywordValue("CFLAT");
             if (Object != null)
             {
                 return (string)Object;
             }
 
-            Object = GetKeyword("PANEL");
+            Object = GetKeywordValue("PANEL");
             if (Object != null)
             {
                 return (string)Object;
