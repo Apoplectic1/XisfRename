@@ -155,7 +155,7 @@
     <Compile Include="Calibration\Calibration.cs" />
     <Compile Include="DirectoryOps\DirectoryOps.cs" />
     <Compile Include="FileOps\CsvFileRead.cs" />
-    <Compile Include="FileOps\XisfFileRead.cs" />
+    <Compile Include="FileOps\XisfFileReader.cs" />
     <Compile Include="FileOps\XisfFileRename.cs" />
     <Compile Include="FileOps\XisfFileUpdate.cs" />
     <Compile Include="Forms\UserInputForm\UserInputForm.cs">

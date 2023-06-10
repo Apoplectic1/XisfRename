@@ -33,7 +33,7 @@ namespace XisfFileManager
         //private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
-        private readonly XisfFileRead mFileReader;
+        private readonly XisfFileReader mFileReader;
         public DirectoryOps.FileType File { get; set; } = DirectoryOps.FileType.MASTERS;
         public DirectoryOps.FilterType Filter { get; set; } = DirectoryOps.FilterType.ALL;
         public DirectoryOps.FrameType Frame { get; set; } = DirectoryOps.FrameType.ALL;
@@ -56,7 +56,7 @@ namespace XisfFileManager
             mDarkCalibrationFileList = new List<XisfFile>();
             mDirectoryOps = new DirectoryOps();
             mExistingTargetCalibrationFileList = new List<XisfFile>();
-            mFileReader = new XisfFileRead();
+            mFileReader = new XisfFileReader();
             mFlatCalibrationFileList = new List<XisfFile>();
             mLibraryCalibrationFileList = new List<XisfFile>();
             mMatchedDarkList = new List<(XisfFile, XisfFile)>();

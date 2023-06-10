@@ -6,11 +6,11 @@ using System.Xml.Linq;
 
 namespace XisfFileManager.FileOperations
 {
-    public class XisfFileRead
+    public class XisfFileReader
     {
-        private static char[] mBuffer;
-        private static string mXmlString;
-        private static XDocument mXDoc;
+        private char[] mBuffer;
+        private string mXmlString;
+        private XDocument mXDoc;
 
         public bool ReadXisfFile(XisfFile xFile)
         {

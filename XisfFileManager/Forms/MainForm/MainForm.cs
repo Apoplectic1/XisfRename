@@ -57,7 +57,7 @@ namespace XisfFileManager
         private readonly ImageCalculations ImageParameterLists;
         private readonly SubFrameLists SubFrameLists;
         private readonly SubFrameNumericLists SubFrameNumericLists;
-        private readonly XisfFileRead mFileReader = new XisfFileRead();
+        private readonly XisfFileReader mFileReader = new XisfFileReader();
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
