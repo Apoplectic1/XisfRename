@@ -69,7 +69,7 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
-      
+
         public object GetKeywordValue(string sName)
         {
             Keyword node = KeywordList.Find(i => i.Name == sName);
@@ -181,7 +181,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
- 
+
         public string CBIAS()
         {
             object Object = GetKeywordValue("CBIAS");
@@ -610,43 +610,35 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public DateTime CaptureDateTime()
         {
-            object Object = GetKeywordValue("LOCALTIM");
+            object Object = GetKeywordValue("DATE-LOC");
             if (Object == null)
             {
-                Object = GetKeywordValue("DATE-LOC");
+                // DATE-LOC does not exist
+                Object = GetKeywordValue("LOCALTIM");
                 if (Object == null)
                 {
-                    Object = GetKeywordValue("DATE-OBS");
-                    if (Object == null)
-                    {
-                        AddKeyword("LOCALTIM", "2019-01-01T12:00:00.0000000", "Missing DateTime XISF File Manager");
-                        Object = GetKeywordValue("LOCALTIM");
-                    }
-                    else
-                    {
-                        AddKeyword("LOCALTIM", Object);
-                        RemoveKeyword("DATE-LOC");
-                        RemoveKeyword("DATE-OBS");
-                    }
+                    // Completely missing the time of observation - Make one up
+                    AddKeyword("DATE-LOC", "2019-01-01T12:00:00.000", "Time of observation (local)");
+                    Object = GetKeywordValue("DATE-LOC");
+                    DateTime UTC = DateTime.ParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
+                    AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Time of observation (UTC))");
                 }
                 else
                 {
-                    AddKeyword("LOCALTIM", Object);
-                    RemoveKeyword("DATE-LOC");
-                    RemoveKeyword("DATE-OBS");
+                    // Found "LOCALTIM" - Create DATE-LOC and DATE-OBS
+                    AddKeyword("DATE-LOC", Object, "Time of observation (local)");
+                    DateTime UTC = DateTime.ParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
+                    AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Time of observation (UTC))");
+                    RemoveKeyword("LOCALTIME");
                 }
             }
-            else
-            {
-                RemoveKeyword("DATE-LOC");
-                RemoveKeyword("DATE-OBS");
-            }
+
+            bool status = DateTime.TryParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime localDateTime);
+            if (status) return localDateTime;
+
 
             string localTime = (string)Object;
-            localTime = localTime.ToString().Replace("'", "");
-
-
-            bool status;
+            localTime = localTime.Replace("'", "").Replace("T", " ");
 
 
             if (localTime.Contains("AM"))
@@ -685,14 +677,11 @@ namespace XisfFileManager
                 return dt;
             }
 
-            localTime = localTime.Replace("T", "  ").Replace("'", "");
-
             status = DateTime.TryParse(localTime, out DateTime parsedDateTime);
             if (status)
             {
                 return parsedDateTime;
             }
-
 
             return DateTime.ParseExact(localTime, "yyyy-MM-dd  HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
         }

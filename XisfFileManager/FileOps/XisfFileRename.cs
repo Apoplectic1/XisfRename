@@ -76,23 +76,23 @@ namespace XisfFileManager.FileOperations
                 return new Tuple<int, string>(-1, "");
             }
         }
-
+          
         public void MarkDuplicates(List<XisfFile> fileList)
         {
             // Duplicates are files with identical image capture times
-            DateTime entryDateTime = DateTime.Now;
+         DateTime entryDateTime = DateTime.Now;
 
-            foreach (var entry in fileList)
+            foreach (XisfFile entry in fileList)
             {
                 // Only mark a DateTime once
-                if (entry.CaptureDateTime == entryDateTime)
+                if (entry.KeywordData.CaptureDateTime() == entryDateTime)
                 {
                     entry.Unique = false;
                     continue;
                 }
 
                 entry.Unique = true;
-                entryDateTime = entry.CaptureDateTime;
+                entryDateTime = entry.KeywordData.CaptureDateTime();
             }
         }
 
