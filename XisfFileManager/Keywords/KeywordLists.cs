@@ -436,58 +436,62 @@ namespace XisfFileManager
         // Find the ambient temerature as reported by a local weather station
         public double AmbientTemperature(bool findMissingKeywords = false)
         {
-            object Object = GetKeywordValue("AMBTEMP");
+            object Object;
+
+            Object = GetKeywordValue("AMB-TEMP");
             if (Object != null)
             {
-                // Remove any other keyword synonyms
+                double ambientTemperture = Convert.ToDouble(Object);
+                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                RemoveKeyword("AMBTEMP");
                 RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return Convert.ToDouble(Object);
+                return ambientTemperture;
+            }
+
+            Object = GetKeywordValue("AOCAMBT");
+            if (Object != null)
+            {
+                double ambientTemperture = Convert.ToDouble(Object);
+                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                RemoveKeyword("AMBTEMP");
+                RemoveKeyword("TEMPERAT");
+                RemoveKeyword("AOCAMBT");
+
+                return ambientTemperture;
+            }
+
+            Object = GetKeywordValue("AMBTEMP");
+            if (Object != null)
+            {
+                double ambientTemperture = Convert.ToDouble(Object);
+                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                RemoveKeyword("AMBTEMP");
+                RemoveKeyword("TEMPERAT");
+                RemoveKeyword("AOCAMBT");
+
+                return ambientTemperture;
             }
 
             // Did not find the prefered air temeprature keyword so look for other keyword synonyms
             Object = GetKeywordValue("TEMPERAT");
             if (Object != null)
             {
-                // Found "TEMPERAT" so create "AMBTEMP", remove synonyms and return
-                AddKeyword("AMBTEMP", (double)Object);
+                double ambientTemperture = Convert.ToDouble(Object);
+                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
 
+                RemoveKeyword("AMBTEMP");
                 RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AMB-TEMP");
                 RemoveKeyword("AOCAMBT");
 
-                return Convert.ToDouble(Object);
+                return ambientTemperture;
             }
 
-            Object = GetKeywordValue("AMB-TEMP");
-            if (Object != null)
-            {
-                // Found "AMB-TEMP" so create "AMBTEMP", remove synonyms and return
-                AddKeyword("AMBTEMP", (double)Object);
-
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AMB-TEMP");
-                RemoveKeyword("AOCAMBT");
-
-                return Convert.ToDouble(Object);
-            }
-
-            Object = GetKeywordValue("AOCAMBT");
-            if (Object != null)
-            {
-                // Found "AOCAMBT" so create "AMBTEMP", remove synonyms and return
-                AddKeyword("AMBTEMP", (double)Object);
-
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AMB-TEMP");
-                RemoveKeyword("AOCAMBT");
-
-                return Convert.ToDouble(Object);
-            }
-
-
+            
             // Did not find any air temeprature keywords so ask user to enter one
 
             while (findMissingKeywords)
@@ -509,14 +513,14 @@ namespace XisfFileManager
                 // Make sure user entered a valid temerature
                 if (onlyNumerics.Match(FormValue.mTextBox).Success)
                 {
-                    AddKeyword("AMBTEMP", Convert.ToDouble(FormValue.mTextBox), "Ambient Temperature provided by Internet Weather");
+                    AddKeyword("AMB-TEMP", Convert.ToDouble(FormValue.mTextBox), "Local Temerature from Open Weather API");
                     return Convert.ToDouble(FormValue.mTextBox);
                 }
             }
 
             // Did not ask user to enter missing ambient temerature and did not find a valid keyword so default to absolute zero
 
-            AddKeyword("AMBTEMP", -273.0);
+            AddKeyword("AMB-TEMP", -273.0, "Missing Value");
             return -273.0;
         }
 
@@ -1331,19 +1335,58 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string WeightKeyword(bool findMissingKeywords = false)
+        public double WeightKeyword(bool findMissingKeywords = false)
         {
             object Object = GetKeywordValue("SSWEIGHT");
             if (Object != null)
             {
-                return (string)Object;
+                return (double)Object;
             }
 
             Object = GetKeywordValue("NWEIGHT");
             if (Object != null)
             {
-                return (string)Object;
+                return (double)Object;
             }
+
+            Object = GetKeywordValue("W_SNR");
+            if (Object != null)
+            {
+                return (double)Object;
+            }
+
+            Object = GetKeywordValue("W_FWHM");
+            if (Object != null)
+            {
+                return (double)Object;
+            }
+
+            Object = GetKeywordValue("W_ECC");
+            if (Object != null)
+            {
+                return (double)Object;
+            }
+
+            Object = GetKeywordValue("W_PSFSNR");
+            if (Object != null)
+            {
+                return (double)Object;
+            }
+
+            Object = GetKeywordValue("W_PSFSIGNAL");
+            if (Object != null)
+            {
+                return (double)Object;
+            }
+
+            return 1.0;
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string WBPPKeyword(bool findMissingKeywords = false)
+        {
+            object Object;
 
             Object = GetKeywordValue("CBIAS");
             if (Object != null)
@@ -1375,9 +1418,8 @@ namespace XisfFileManager
                 return (string)Object;
             }
 
-            return string.Empty;
+            return "NA";
         }
-
         // #########################################################################################################
         // #########################################################################################################
 

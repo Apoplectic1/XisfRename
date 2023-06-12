@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -11,35 +13,67 @@ namespace XisfFileManager.FileOperations
         private char[] mBuffer;
         private string mXmlString;
         private XDocument mXDoc;
+        private StreamReader streamReader;
+        private int mBufferSize = 10000;
+
+        public XisfFileReader()
+        {
+            mBuffer = new char[mBufferSize];
+        }
 
         public bool ReadXisfFile(XisfFile xFile)
         {
-            using (StreamReader reader = new StreamReader(xFile.SourceFileName))
+            using (StreamReader streamReader = new StreamReader(xFile.SourceFileName))
             {
-                mBuffer = new char[0x300000];
-                reader.Read(mBuffer, 0, mBuffer.Length);
+                string mXmlString;
+                int totalBytesRead = 0;
 
-                mXmlString = new string(mBuffer);
-                // Skip first sixteen bytes that contain XISF0100xxxxxxxx 
-                // I've found at least two standards for the xml block surround: one is <?xml and the other is <xisf from N.I.N.A
-                // N.I.N.A also adds a ^M as xml line endings (nice in emacs but different than PixInsight
-                mXmlString = mXmlString.Substring(mXmlString.IndexOf("<?xml"));
+                // Skip first sixteen bytes that contain XISF0100xxxxxxxx
+                streamReader.BaseStream.Seek(16, SeekOrigin.Begin); // Seek to the 17th character
+                int bytesRead = streamReader.Read(mBuffer, 0, mBufferSize);
+                int stringLength = FindStringLength(mBuffer, bytesRead);
+                totalBytesRead += bytesRead;
 
+                bool bExpandedBufferSize = false;
 
-                // find closing </xisf>. set mXmlString to the entire xml text. Note that the size of mBuffer can be too small and cause this to fail
-                mXmlString = mXmlString.Substring(0, mXmlString.LastIndexOf("</xisf>") + "</xisf>".Length);
+                // If the xml section if larger than mBufferSize, add 10000 charaters and reread
+                while (stringLength == bytesRead)
+                {
+                    mBufferSize += 10000;
+                    Array.Resize(ref mBuffer, mBufferSize); // Resize the buffer
+                    streamReader.BaseStream.Seek(16 + totalBytesRead, SeekOrigin.Begin); // Seek to the appropriate offset
+                    bytesRead = streamReader.Read(mBuffer, totalBytesRead, mBufferSize - totalBytesRead);
+                    stringLength = FindStringLength(mBuffer, bytesRead);
+                    totalBytesRead += bytesRead;
+                    bExpandedBufferSize = true;
+                }
+
+                // Let us know the buffer got expanded so we can potentailly change the default mBufferSize to match
+                if (bExpandedBufferSize)
+                {
+                    MessageBox.Show("Expanded mBufferSize to :\n\n" + mBufferSize.ToString() +
+                        " Bytes. Needed: " + stringLength.ToString() +
+                        " Bytes.\n\nXisfRead.cs ReadXisfFile() Line 34",
+                        "Parse XISF File",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                }
+
+                Console.WriteLine("Size: " + mBufferSize.ToString());
+           
+                mXmlString = new string(mBuffer, 0, stringLength);
 
                 try
                 {
                     mXDoc = XDocument.Parse(mXmlString);
                 }
-                catch
+                catch ( Exception ex )
                 {
-                    var selectedOption = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName + "\n\nXisfRead.cs ReadXisfFile() Line 34", "Parse XISF File Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
-                    if (selectedOption == DialogResult.Cancel)
-                    {
-                        Application.Exit();
-                    }
+                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName +
+                        "\n\nXisfRead.cs ReadXisfFile() Line 34\n" + ex.Message,
+                        "Parse XISF File",
+                        MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Error);
 
                     return false;
                 }
@@ -47,20 +81,20 @@ namespace XisfFileManager.FileOperations
                 XElement root = mXDoc.Root;
                 XNamespace ns = root.GetDefaultNamespace();
 
-                IEnumerable<XElement> image = from c in mXDoc.Descendants(ns + "Image") select c;
+                IEnumerable<XElement> image = mXDoc.Descendants(ns + "Image");
                 foreach (XElement element in image)
                 {
                     xFile.ImageAttachment(element);
                 }
 
 
-                IEnumerable<XElement> thumbnail = from c in mXDoc.Descendants(ns + "Thumbnail") select c;
+                IEnumerable<XElement> thumbnail = mXDoc.Descendants(ns + "Thumbnail");
                 foreach (XElement element in thumbnail)
                 {
                     xFile.ThumbnailAttachment(element);
                 }
 
-                IEnumerable<XElement> elements = from c in mXDoc.Descendants(ns + "FITSKeyword") select c;
+                IEnumerable<XElement> elements = mXDoc.Descendants(ns + "FITSKeyword");
 
                 // Find each keyword and add it to xFile
                 foreach (XElement element in elements)
@@ -72,6 +106,19 @@ namespace XisfFileManager.FileOperations
 
                 return true;
             }
-        }        
+        }
+
+        private int FindStringLength(char[] buffer, int bytesRead)
+        {
+            for (int i = 0; i < bytesRead; i++)
+            {
+                if (buffer[i] == '\0')
+                {
+                    return i;
+                }
+            }
+
+            return bytesRead;
+        }
     }
 }

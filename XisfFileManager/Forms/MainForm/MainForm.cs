@@ -352,11 +352,17 @@ namespace XisfFileManager
                         {
                             SourceFileName = file.FullName
                         };
+                        // }
 
+                        //lock (mFileReader)
+                        //{
                         // Get the keyword data contained within the current file (mFile)
                         // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
                         bStatus = mFileReader.ReadXisfFile(mFile);
+                        //}
 
+                        //lock (mFileList)
+                        //{
                         // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                         if (bStatus)
                         {
@@ -451,7 +457,7 @@ namespace XisfFileManager
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
             List<string> TargetNames = new List<string>();
-            List<string> WeightKeywords = new List<string>();
+            List<double> WeightKeywords = new List<double>();
 
             foreach (XisfFile file in mFileList)
             {
@@ -490,6 +496,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 WeightKeywords.Add(file.KeywordData.WeightKeyword());
+                //WeightKeywords.Add(file.KeywordData.WBPPKeyword());
             }
 
             if (WeightKeywords.Count > 0)
@@ -497,7 +504,7 @@ namespace XisfFileManager
                 WeightKeywords = WeightKeywords.Distinct().ToList();
                 WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
 
-                foreach (string item in WeightKeywords)
+                foreach (var item in WeightKeywords)
                 {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
@@ -556,7 +563,10 @@ namespace XisfFileManager
 
                 ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
             }
-
+            if (mDirectoryOps.Files.Count == mFileList.Count)
+                Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
+            else
+                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + mDirectoryOps.Files.Count + " Image Files";
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
@@ -3346,7 +3356,7 @@ namespace XisfFileManager
             // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
             {
-                WeightKeywords.Add(file.KeywordData.WeightKeyword());
+                WeightKeywords.Add(file.KeywordData.WeightKeyword().ToString());
             }
 
             if (WeightKeywords.Count > 0)
@@ -3354,9 +3364,9 @@ namespace XisfFileManager
                 WeightKeywords = WeightKeywords.Distinct().ToList();
                 WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
 
-                foreach (string item in WeightKeywords)
+                foreach (var item in WeightKeywords)
                 {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
                 }
 
                 if (WeightKeywords.Count > 1)
