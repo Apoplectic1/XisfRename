@@ -491,7 +491,7 @@ namespace XisfFileManager
                 return ambientTemperture;
             }
 
-            
+
             // Did not find any air temeprature keywords so ask user to enter one
 
             while (findMissingKeywords)
@@ -621,29 +621,31 @@ namespace XisfFileManager
                 Object = GetKeywordValue("LOCALTIM");
                 if (Object == null)
                 {
-                    // Completely missing the time of observation - Make one up
-                    AddKeyword("DATE-LOC", "2019-01-01T12:00:00.000", "Time of observation (local)");
-                    Object = GetKeywordValue("DATE-LOC");
-                    DateTime UTC = DateTime.ParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
-                    AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Time of observation (UTC))");
-                }
-                else
-                {
-                    // Found "LOCALTIM" - Create DATE-LOC and DATE-OBS
-                    AddKeyword("DATE-LOC", Object, "Time of observation (local)");
-                    DateTime UTC = DateTime.ParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
-                    AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Time of observation (UTC))");
-                    RemoveKeyword("LOCALTIME");
+                    // Local Time does not exist
+                    Object = GetKeywordValue("DATE-OBS");
+                    if (Object == null)
+                    {   
+                        // No LOC, No OBS and No LOCALTIME - Make a time up
+                        Object = "2000-01-01T12:00:00.000";
+                    }
                 }
             }
 
-            bool status = DateTime.TryParseExact((string)Object, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime localDateTime);
-            if (status) return localDateTime;
+            // Build LOC from OBS or made up Object
+            DateTime Local = DateTime.Parse(Object.ToString());
+            AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
+            DateTime UTC = DateTime.Parse(Object.ToString()).ToUniversalTime(); //, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
+            AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
+            RemoveKeyword("LOCALTIM");
 
+            // Keywords are now correct
+            // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
 
             string localTime = (string)Object;
             localTime = localTime.Replace("'", "").Replace("T", " ");
 
+            bool status;
+            DateTime dt;
 
             if (localTime.Contains("AM"))
             {
@@ -651,7 +653,7 @@ namespace XisfFileManager
 
                 status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out DateTime dt);
+                          DateTimeStyles.None, out dt);
 
                 if (status) return dt;
 
@@ -667,7 +669,7 @@ namespace XisfFileManager
 
                 status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
                           CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out DateTime dt);
+                          DateTimeStyles.None, out dt);
                 if (status) return dt;
 
                 status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
@@ -681,13 +683,16 @@ namespace XisfFileManager
                 return dt;
             }
 
-            status = DateTime.TryParse(localTime, out DateTime parsedDateTime);
+            status = DateTime.TryParseExact(localTime, "yyyy-MM-dd HH:mm:ss.fffffff",
+                          CultureInfo.InvariantCulture,
+                          DateTimeStyles.None, out dt);
             if (status)
             {
-                return parsedDateTime;
+                return DateTime.ParseExact(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             }
 
-            return DateTime.ParseExact(localTime, "yyyy-MM-dd  HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
+            Local = DateTime.Parse(Object.ToString());
+            return DateTime.ParseExact(Local.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
 
         // *********************************************************************************************************
@@ -929,13 +934,13 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int FocalLength(bool findMissingKeywords = false)
+        public double FocalLength(bool findMissingKeywords = false)
         {
             object Object = GetKeywordValue("FOCALLEN");
 
             if (Object != null)
             {
-                return (int)Object;
+                return Convert.ToDouble(Object);
             }
 
             while (findMissingKeywords)
@@ -950,7 +955,7 @@ namespace XisfFileManager
 
                 UserInputFormData formValue = OpenUIForm(formData);
 
-                bool status = int.TryParse(formValue.mTextBox, out int focalLength);
+                bool status = double.TryParse(formValue.mTextBox, out double focalLength);
                 if (status)
                 {
                     AddKeyword("FOCALLEN", focalLength, "Focal Length");
@@ -962,7 +967,7 @@ namespace XisfFileManager
                 }
             }
 
-            return -1;
+            return -1.0;
         }
 
         // *********************************************************************************************************
@@ -1082,7 +1087,7 @@ namespace XisfFileManager
                     AddKeyword("POSANGLE", (double)Object, "360 Degree Rotator Mechanical Angle");
                 }
                 else
-                    return -1;
+                    return double.MinValue;
             }
 
             return Convert.ToDouble(Object);

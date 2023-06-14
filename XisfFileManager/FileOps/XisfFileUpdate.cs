@@ -73,18 +73,9 @@ namespace XisfFileManager.FileOperations
                     //       This is all the keywords found in the original file
                     //    2. Add keywords from CSV File
 
-                    // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords  
-                    if (xFile.Master == false)
-                    {
-                        xFile.KeywordData.RemoveKeyword("COMMENT");
-                        xFile.KeywordData.RemoveKeyword("HISTORY");
-                    }
-                    else
-                    {
-                        //mFile.KeywordData.RemoveKeyword("COMMENT");
-                        //mFile.KeywordData.RemoveKeyword("HISTORY");
-                    }
-
+                    // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords
+                    xFile.KeywordData.RemoveKeyword("COMMENT");
+                    xFile.KeywordData.RemoveKeyword("HISTORY");
                     xFile.KeywordData.RemoveKeyword("ALIGNH");
                     //mFile.KeywordData.RemoveKeyword("NOISE");
                     xFile.KeywordData.RemoveKeyword("Bandwidth setting");

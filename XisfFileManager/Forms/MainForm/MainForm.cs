@@ -1611,7 +1611,7 @@ namespace XisfFileManager
         private void FindTelescope()
         {
             string telescope;
-            int focalLength;
+            double focalLength;
             int telescopeCount = 0;
             int riccardiCount = 0;
             int focalCount = 0;
@@ -3463,12 +3463,13 @@ namespace XisfFileManager
             else
             {
                 // UI "Create New" was checked so delete and recreate the "Calibration" directory
-                string targetCalibrationDirectory = mCalibration.GetTargetCalibrationFileDirectory(mFileList[0].SourceFileName);
+                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].SourceFileName);
 
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);
 
                 Directory.CreateDirectory(targetCalibrationDirectory);
+                bMatchedAllFiles = false;
             }
 
             if (!bMatchedAllFiles)
@@ -3485,7 +3486,7 @@ namespace XisfFileManager
         {
             if (CheckBox_CalibrationTab_CreateNew.Checked == true)
             {
-                string targetCalibrationDirectory = mCalibration.GetTargetCalibrationFileDirectory(mFileList[0].SourceFileName);
+                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].SourceFileName);
 
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);

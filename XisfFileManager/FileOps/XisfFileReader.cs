@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -10,71 +13,121 @@ namespace XisfFileManager.FileOperations
 {
     public class XisfFileReader
     {
-        private char[] mBuffer;
-        private string mXmlString;
+        private byte[] mBuffer;
         private XDocument mXDoc;
-        private StreamReader streamReader;
-        private int mBufferSize = 10000;
-
-        public XisfFileReader()
-        {
-            mBuffer = new char[mBufferSize];
-        }
+        private int mBufferSize;
+        private int bytesRead;
+        private Match keywordBlock;
+        private string keywordMatch = @"<xisf.*?</xisf>";
 
         public bool ReadXisfFile(XisfFile xFile)
         {
-            using (StreamReader streamReader = new StreamReader(xFile.SourceFileName))
+            using (FileStream fileStream = new FileStream(xFile.SourceFileName, FileMode.Open, FileAccess.Read))
             {
-                string mXmlString;
-                int totalBytesRead = 0;
+                mBufferSize = 10000;
+                mBuffer = new byte[mBufferSize];
+                keywordBlock = Match.Empty;
+                bytesRead = 0;
 
                 // Skip first sixteen bytes that contain XISF0100xxxxxxxx
-                streamReader.BaseStream.Seek(16, SeekOrigin.Begin); // Seek to the 17th character
-                int bytesRead = streamReader.Read(mBuffer, 0, mBufferSize);
-                int stringLength = FindStringLength(mBuffer, bytesRead);
-                totalBytesRead += bytesRead;
 
-                bool bExpandedBufferSize = false;
-
-                // If the xml section if larger than mBufferSize, add 10000 charaters and reread
-                while (stringLength == bytesRead)
+                // If the xml section is larger than mBufferSize, repeatedly double the buffer size and reread
+                while (!keywordBlock.Success)
                 {
-                    mBufferSize += 10000;
-                    Array.Resize(ref mBuffer, mBufferSize); // Resize the buffer
-                    streamReader.BaseStream.Seek(16 + totalBytesRead, SeekOrigin.Begin); // Seek to the appropriate offset
-                    bytesRead = streamReader.Read(mBuffer, totalBytesRead, mBufferSize - totalBytesRead);
-                    stringLength = FindStringLength(mBuffer, bytesRead);
-                    totalBytesRead += bytesRead;
-                    bExpandedBufferSize = true;
+                    bytesRead = fileStream.Read(mBuffer, bytesRead, mBufferSize - bytesRead);
+                    keywordBlock = Regex.Match(Encoding.UTF8.GetString(mBuffer), keywordMatch, RegexOptions.Singleline);
+
+                    if (!keywordBlock.Success)
+                    {
+                        mBufferSize += mBufferSize;
+                        Array.Resize(ref mBuffer, mBufferSize);
+                    }
                 }
 
-                // Let us know the buffer got expanded so we can potentailly change the default mBufferSize to match
-                if (bExpandedBufferSize)
-                {
-                    MessageBox.Show("Expanded mBufferSize to :\n\n" + mBufferSize.ToString() +
-                        " Bytes. Needed: " + stringLength.ToString() +
-                        " Bytes.\n\nXisfRead.cs ReadXisfFile() Line 34",
-                        "Parse XISF File",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation);
-                }
+                string modifiedString = keywordBlock.ToString();
 
-                Console.WriteLine("Size: " + mBufferSize.ToString());
-           
-                mXmlString = new string(mBuffer, 0, stringLength);
+                if (false)
+                {
+                    string startTag;
+                    string stopTag;
+                    string pattern;
+                    string mSearch;
+                    
+
+                    mSearch = "BlockAlignmentSize";
+                    pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
+                    MatchCollection BlockAlignmentSize = Regex.Matches(modifiedString, pattern);
+
+                    mSearch = "MaxInlineBlockSize";
+                    pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
+                    MatchCollection MaxInlineBlockSize = Regex.Matches(modifiedString, pattern);
+
+                    startTag = "<Property";
+                    stopTag = "/>";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+                    startTag = "<Property";
+                    stopTag = "/Property>";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
+
+                    startTag = "<ICCProfile";
+                    stopTag = "</ICCProfile>";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+                    startTag = "<FITSKeyword name=\"HISTORY\" val";
+                    stopTag = "/>";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+                    startTag = "<FITSKeyword name=\"COMMENT\" val";
+                    stopTag = "/>";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+                    //Add <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
+                    startTag = "</Metadata>";
+                    int startIndex = modifiedString.IndexOf(startTag);
+                    int stopIndex = startIndex + startTag.Length;
+
+                    if (startIndex != -1 && stopIndex != -1)
+                    {
+                        modifiedString = modifiedString.Remove(startIndex, startTag.Length);
+                        modifiedString = modifiedString.Insert(startIndex, BlockAlignmentSize[0].ToString() + "</Metadata>");
+                    }
+                    else
+                        modifiedString += $"<Property id=\"XISF:BlockAlignmentSize\" type=\"UInt16\" value=\"4096\"/></Metadata>";
+
+
+                    //Add <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
+                    startTag = "</Metadata>";
+                    startIndex = modifiedString.IndexOf(startTag);
+                    stopIndex = startIndex + startTag.Length;
+
+                    if (startIndex != -1 && stopIndex != -1)
+                    {
+                        modifiedString = modifiedString.Remove(startIndex, startTag.Length);
+                        modifiedString = modifiedString.Insert(startIndex, MaxInlineBlockSize[0].ToString() + "</Metadata>");
+                    }
+                    else
+                        modifiedString = Regex.Replace(modifiedString, pattern, "<Property id=\"XISF:MaxInlineBlockSize\" type=\"UInt16\" value=\"3072\"/></Metadata>");
+                }
 
                 try
                 {
-                    mXDoc = XDocument.Parse(mXmlString);
+                    mXDoc = XDocument.Parse(modifiedString);
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
                     MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName +
-                        "\n\nXisfRead.cs ReadXisfFile() Line 34\n" + ex.Message,
+                        "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
                         "Parse XISF File",
                         MessageBoxButtons.OKCancel,
                         MessageBoxIcon.Error);
 
+                    Application.Exit();
                     return false;
                 }
 
@@ -106,19 +159,6 @@ namespace XisfFileManager.FileOperations
 
                 return true;
             }
-        }
-
-        private int FindStringLength(char[] buffer, int bytesRead)
-        {
-            for (int i = 0; i < bytesRead; i++)
-            {
-                if (buffer[i] == '\0')
-                {
-                    return i;
-                }
-            }
-
-            return bytesRead;
         }
     }
 }

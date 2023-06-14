@@ -322,6 +322,7 @@
             this.Button_CalibrationTab_MatchCalibrationFrames = new System.Windows.Forms.Button();
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -3278,6 +3279,7 @@
             this.TabControl_Update.Controls.Add(this.TabPage_KeywordUpdate);
             this.TabControl_Update.Controls.Add(this.TabPage_Calibration);
             this.TabControl_Update.Controls.Add(this.TabPage_SubFrameWeights);
+            this.TabControl_Update.Controls.Add(this.tabPage1);
             this.TabControl_Update.Location = new System.Drawing.Point(12, 198);
             this.TabControl_Update.Name = "TabControl_Update";
             this.TabControl_Update.SelectedIndex = 0;
@@ -3570,6 +3572,16 @@
             this.TabPage_SubFrameWeights.Size = new System.Drawing.Size(975, 478);
             this.TabPage_SubFrameWeights.TabIndex = 2;
             this.TabPage_SubFrameWeights.Text = "SubFrame Weights";
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(975, 478);
+            this.tabPage1.TabIndex = 3;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -3950,5 +3962,6 @@
         private System.Windows.Forms.TreeView TreeView_CalibrationTab_Dates;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_CreateNew;
         private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Camera_Binning;
+        private System.Windows.Forms.TabPage tabPage1;
     }
 }

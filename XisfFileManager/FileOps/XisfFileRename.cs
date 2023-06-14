@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using XisfFileManager.FileOperations;
 
@@ -76,23 +78,26 @@ namespace XisfFileManager.FileOperations
                 return new Tuple<int, string>(-1, "");
             }
         }
-          
+
         public void MarkDuplicates(List<XisfFile> fileList)
         {
             // Duplicates are files with identical image capture times
-         DateTime entryDateTime = DateTime.Now;
+            // Added fileExposureTime Time to further refine duplicates. This is due manually setting capture time to make old files process properly
 
-            foreach (XisfFile entry in fileList)
+            foreach (var item in fileList)
             {
-                // Only mark a DateTime once
-                if (entry.KeywordData.CaptureDateTime() == entryDateTime)
-                {
-                    entry.Unique = false;
-                    continue;
-                }
+                item.Unique = true;
+            }
 
-                entry.Unique = true;
-                entryDateTime = entry.KeywordData.CaptureDateTime();
+            // Group the list by mExposure and mDateTime
+            var duplicates = fileList.GroupBy(item => new { item.Exposure, item.CaptureDateTime, item.FrameType, item.Binning, item.Filter, item.Camera })
+                                  .Where(group => group.Count() > 1)
+                                  .SelectMany(group => group);
+
+            // Mark duplicate items
+            foreach (var item in duplicates)
+            {
+                item.Unique = false;
             }
         }
 
@@ -176,9 +181,9 @@ namespace XisfFileManager.FileOperations
                         newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C  ";
 
                         newName += mFile.Telescope + "@";
-                        newName += mFile.FocalLength;
+                        newName += mFile.FocalLength.ToString("F0");
 
-                        if (mFile.FocuserPosition != int.MinValue)
+                        if (mFile.FocuserPosition != -1.0)
                         {
                             newName += "  F" + mFile.FocuserPosition.ToString("D5");
                         }
@@ -203,7 +208,7 @@ namespace XisfFileManager.FileOperations
                         if (mFile.CaptureSoftware != string.Empty)
                             newName += mFile.CaptureSoftware;
                     }
-                    
+
                     newName += ")  ";
                 }
 
@@ -252,21 +257,23 @@ namespace XisfFileManager.FileOperations
                 newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C  ";
 
                 newName += mFile.Telescope + "@";
-                newName += mFile.FocalLength;
+                newName += mFile.FocalLength.ToString("F0");
 
                 if (mFile.AmbientTemperature != -273)
                     newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
                 else
                     newName += "  ";
 
-                if ((mFile.FocuserPosition != int.MinValue) && mFile.FocuserTemperature != -273)
+                if ((mFile.FocuserPosition != int.MinValue) && mFile.FocuserTemperature != -273.0)
                 {
                     newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
-                    if (mFile.RotatorAngle != int.MinValue)
-                        newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
-                    else
-                        newName += "  ";
                 }
+
+                if (mFile.RotatorAngle != int.MinValue)
+                    newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
+                else
+                    newName += "  ";
+
 
                 newName += "(" + mFile.CaptureDateTime.ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.CaptureSoftware;
@@ -322,7 +329,7 @@ namespace XisfFileManager.FileOperations
                 newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C  ";
 
                 newName += mFile.Telescope + "@";
-                newName += mFile.FocalLength;
+                newName += mFile.FocalLength.ToString("F0");
                 newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
 
                 newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";

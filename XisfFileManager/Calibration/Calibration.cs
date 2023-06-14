@@ -30,6 +30,8 @@ namespace XisfFileManager
         private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
+        private List<XisfFile> mTargetCalibrationDirectoryList;
+
         //private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
@@ -66,6 +68,7 @@ namespace XisfFileManager
             mUnmatchedBiasTargetFileList = new List<XisfFile>();
             mUnmatchedDarkTargetFileList = new List<XisfFile>();
             mUnmatchedFlatTargetFileList = new List<XisfFile>();
+            mTargetCalibrationDirectoryList = new List<XisfFile>();
         }
 
         // ******************************************************************************************************************
@@ -133,14 +136,14 @@ namespace XisfFileManager
                     bool bStatus = false;
 
                     // Create a new xisf file instance for reads
-                    XisfFile readFile = new XisfFile
+                    XisfFile calibrationFile = new XisfFile
                     {
                         SourceFileName = file.FullName
                     };
 
                     mCalibrationTabValues.ProgressMax = mDirectoryOps.Files.Count;
                     mCalibrationTabValues.Progress += 1;
-                    mCalibrationTabValues.FileName = Path.GetDirectoryName(readFile.SourceFileName) + "\n" + Path.GetFileName(readFile.SourceFileName);
+                    mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.SourceFileName) + "\n" + Path.GetFileName(calibrationFile.SourceFileName);
                     CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
 
@@ -159,12 +162,12 @@ namespace XisfFileManager
                     // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
 
-                    bStatus = mFileReader.ReadXisfFile(readFile);
+                    bStatus = mFileReader.ReadXisfFile(calibrationFile);
 
                     // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
                     if (bStatus)
                     {
-                        calibrationFileList.Add(readFile);
+                        calibrationFileList.Add(calibrationFile);
                     }
                 }
 
@@ -236,7 +239,7 @@ namespace XisfFileManager
 
             mExistingTargetCalibrationFileList.Clear();
 
-            string localCalibrationDirectory = GetTargetCalibrationFileDirectory(targetFileList[0].SourceFileName);
+            string localCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].SourceFileName);
 
             // Does a local "Calibration" directory exist?
             if (Directory.Exists(localCalibrationDirectory))
@@ -250,7 +253,7 @@ namespace XisfFileManager
                 {
                     // So we found valid calibration files 
                     // Check to see if they still match the LIGHT frames
-                    
+
                     bAllExistingDarksMatched = MatchCalibrationDarkFrames(mExistingTargetCalibrationFileList, bSilent);
                     bAllExistingFlatsMatched = MatchCalibrationFlatFrames(mExistingTargetCalibrationFileList, bSilent);
 
@@ -382,9 +385,9 @@ namespace XisfFileManager
             // Targets that don't match any existing DARK calibration file will be flagged later
 
             bool bAllDarksMatched = MatchCalibrationDarkFrames(mUnmatchedDarkTargetFileList, false);
-           
+
             mUniqueDarkCalibrationFileList = mMatchedDarkList.Select(item => item.CalibrationFile).Distinct().ToList();
-            
+
             // Sorting the list by CaptureTime guarantees a consistent File order from run to run.
             mUniqueDarkCalibrationFileList.Sort(XisfFile.CaptureTimeComparison);
 
@@ -399,7 +402,7 @@ namespace XisfFileManager
             bool bAllFlatsMatched = MatchCalibrationFlatFrames(mUnmatchedFlatTargetFileList, false);
 
             mUniqueFlatCalibrationFileList = mMatchedFlatList.Select(item => item.CalibrationFile).Distinct().ToList();
-            
+
             // Sorting the list by CaptureTime guarantees a consistent File order from run to run.
             mUniqueFlatCalibrationFileList.Sort(XisfFile.CaptureTimeComparison);
 
@@ -453,7 +456,7 @@ namespace XisfFileManager
                         flatFile.CalibrationFile.CFLAT = "F" + flatIndex.ToString();
                         flatFile.CalibrationFile.KeywordData.AddKeyword("CFLAT", flatFile.CalibrationFile.CFLAT);
                     }
-               }
+                }
 
                 flatIndex++;
             }
@@ -543,7 +546,7 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
         {
-            string targetCalibrationDirectory = GetTargetCalibrationFileDirectory(targetFileList[0].SourceFileName);
+            string targetCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].SourceFileName);
 
             mCalibrationTabValues.Progress = 0;
             mCalibrationTabValues.ProgressMax = mUniqueDarkCalibrationFileList.Count + mUniqueFlatCalibrationFileList.Count + mBiasFileList.Count;
@@ -602,17 +605,49 @@ namespace XisfFileManager
             return true;
         }
 
-        public string GetTargetCalibrationFileDirectory(string targetFilePath)
+        public string GetTargetCalibrationFileDirectories(string targetFilePath)
         {
             string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath);
 
             // Can we find a "Captures" directory?
             if (targetCalibrationDirectory.Contains(@"Captures\"))
-                // Yes - so set the calibration library under Captures in the Target directory
-                targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+            {
+                // Yup - Now check if this Target contains Mosaic panels
+                if (targetCalibrationDirectory.Contains(@"Panel"))
+                {
+                    // We found Mosaic Panels
+                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                }
+                else
+                    // Not a Mosaic so put the Calibration directory under "Captures"
+                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+            }
             else
                 // No - so set just add "Calibration" under the target path
-                // What is this for?
+                targetCalibrationDirectory = Path.GetFullPath(Path.Combine(targetCalibrationDirectory, @"..") + @"\Calibration");
+
+            return targetCalibrationDirectory;
+        }
+
+        public string SetTargetCalibrationFileDirectories(string targetFilePath)
+        {
+            string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath);
+
+            // Can we find a "Captures" directory?
+            if (targetCalibrationDirectory.Contains(@"Captures\"))
+            {
+                // Yup - Now check if this Target contains Mosaic panels
+                if (targetCalibrationDirectory.Contains(@"Panel"))
+                {
+                    // We found Mosaic Panels
+                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                }
+                else
+                    // Not a Mosaic so put the Calibration directory under "Captures"
+                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+            }
+            else
+                // No - so set just add "Calibration" under the target path
                 targetCalibrationDirectory = Path.GetFullPath(Path.Combine(targetCalibrationDirectory, @"..") + @"\Calibration");
 
             return targetCalibrationDirectory;

@@ -19,7 +19,7 @@ namespace XisfFileManager.FileOperations
         public bool Unique { get; set; } = false;
         public double FocuserTemperature { get; set; }
         public int Binning { get; set; }
-        public int FocalLength { get; set; }
+        public double FocalLength { get; set; }
         public int FocuserPosition { get; set; } = int.MinValue;
         public int Gain { get; set; }
         public int ImageAttachmentLength { get; set; } = 0;
@@ -144,7 +144,7 @@ namespace XisfFileManager.FileOperations
                     return "0.000";
 
                 if (seconds < 1)
-                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString();
+                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.000");
 
                 return seconds.ToString("0.000");
             }
