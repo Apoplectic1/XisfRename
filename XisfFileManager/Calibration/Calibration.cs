@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using XisfFileManager;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
+using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager
 {
@@ -18,24 +19,23 @@ namespace XisfFileManager
     // ******************************************************************************************************************
     public class Calibration
     {
+        public enum CalibrationDirectory { LOCAL, LIBRARY }
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedDarkList;
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedFlatList;
-        private List<XisfFile> mBiasFileList;
+        private List<XisfFile> mBiasCalibrationFileList;
         private List<XisfFile> mDarkCalibrationFileList;
-        private List<XisfFile> mExistingTargetCalibrationFileList;
         private List<XisfFile> mFlatCalibrationFileList;
         private List<XisfFile> mLibraryCalibrationFileList;
+        private List<XisfFile> mLocalCalibrationFileList;
         private List<XisfFile> mUniqueDarkCalibrationFileList;
         private List<XisfFile> mUniqueFlatCalibrationFileList;
         private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
-        private List<XisfFile> mTargetCalibrationDirectoryList;
 
         //private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
-        private readonly XisfFileReader mFileReader;
         public DirectoryOps.FileType File { get; set; } = DirectoryOps.FileType.MASTERS;
         public DirectoryOps.FilterType Filter { get; set; } = DirectoryOps.FilterType.ALL;
         public DirectoryOps.FrameType Frame { get; set; } = DirectoryOps.FrameType.ALL;
@@ -53,14 +53,13 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         public Calibration()
         {
-            mBiasFileList = new List<XisfFile>();
+            mBiasCalibrationFileList = new List<XisfFile>();
             mCalibrationTabValues = new CalibrationTabPageValues();
             mDarkCalibrationFileList = new List<XisfFile>();
             mDirectoryOps = new DirectoryOps();
-            mExistingTargetCalibrationFileList = new List<XisfFile>();
-            mFileReader = new XisfFileReader();
             mFlatCalibrationFileList = new List<XisfFile>();
             mLibraryCalibrationFileList = new List<XisfFile>();
+            mLocalCalibrationFileList = new List<XisfFile>();
             mMatchedDarkList = new List<(XisfFile, XisfFile)>();
             mMatchedFlatList = new List<(XisfFile, XisfFile)>();
             mUniqueDarkCalibrationFileList = new List<XisfFile>();
@@ -68,7 +67,6 @@ namespace XisfFileManager
             mUnmatchedBiasTargetFileList = new List<XisfFile>();
             mUnmatchedDarkTargetFileList = new List<XisfFile>();
             mUnmatchedFlatTargetFileList = new List<XisfFile>();
-            mTargetCalibrationDirectoryList = new List<XisfFile>();
         }
 
         // ******************************************************************************************************************
@@ -82,112 +80,98 @@ namespace XisfFileManager
             GainTolerance = 10;
             OffsetTolerance = 10;
             TemperatureTolerance = 25;
-            mBiasFileList.Clear();
+            mBiasCalibrationFileList.Clear();
             mDarkCalibrationFileList.Clear();
-            mExistingTargetCalibrationFileList.Clear();
+            mLocalCalibrationFileList.Clear();
             mFlatCalibrationFileList.Clear();
             mLibraryCalibrationFileList.Clear();
+            mLocalCalibrationFileList.Clear();
             mUnmatchedBiasTargetFileList.Clear();
             mUnmatchedDarkTargetFileList.Clear();
             mUnmatchedFlatTargetFileList.Clear();
         }
 
-
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        public void PopulateDatesTree()
+        private void ReadCalibrationFrames(Calibration.CalibrationDirectory location, string sCalibrationFrameDirectory)
         {
-            // TreeNode node = new TreeNode("No Dates");
-            // TreeView_CalibrationTab_Dates.Nodes.Add(node);
-        }
+            // Recursively search sCalibrationFrameDirectory to find calibration frames
+            // Add the frames to either mLocalCalibrationFileList or mLibraryCalibrationFileList
 
-        // ******************************************************************************************************************
-        // ******************************************************************************************************************
-        public List<XisfFile> ReadCalibrationFrames(string sCalibrationFrameDirectory)
-        {
             List<XisfFile> calibrationFileList = new List<XisfFile>();
+            XisfFileReader fileReader = new XisfFileReader();
 
             mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
             mCalibrationTabValues.Progress = 0;
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
-            try
+
+            DirectoryInfo diDirectoryTree = new DirectoryInfo(sCalibrationFrameDirectory);
+            mDirectoryOps.ClearFileList();
+            mDirectoryOps.Filter = Filter;
+            mDirectoryOps.File = File;
+            mDirectoryOps.Frame = Frame;
+            mDirectoryOps.Recurse = Recurse;
+            mDirectoryOps.RecuseDirectories(diDirectoryTree);
+
+            if (mDirectoryOps.Files.Count == 0)
             {
-                DirectoryInfo diDirectoryTree = new DirectoryInfo(sCalibrationFrameDirectory);
-                mDirectoryOps.ClearFileList();
-                mDirectoryOps.Filter = Filter;
-                mDirectoryOps.File = File;
-                mDirectoryOps.Frame = Frame;
-                mDirectoryOps.Recurse = Recurse;
-                mDirectoryOps.RecuseDirectories(diDirectoryTree);
+                MessageBox.Show("No Calibration Files Found under: " + diDirectoryTree.ToString(), "Select Calibration Folder");
+                return;
+            }
 
-                if (mDirectoryOps.Files.Count == 0)
+            mCalibrationTabValues.TotalFiles = mDirectoryOps.Files.Count;
+
+            foreach (FileInfo file in mDirectoryOps.Files)
+            {
+                Application.DoEvents();
+
+                // Create a new xisf file instance for reads
+                XisfFile calibrationFile = new XisfFile
                 {
-                    MessageBox.Show("No Calibration Files Found under: " + diDirectoryTree.ToString(), "Select Calibration Folder");
-                    return null;
-                }
+                    SourceFileName = file.FullName
+                };
 
-                mCalibrationTabValues.TotalFiles = mDirectoryOps.Files.Count;
-
-                foreach (FileInfo file in mDirectoryOps.Files)
-                {
-                    Application.DoEvents();
-
-                    bool bStatus = false;
-
-                    // Create a new xisf file instance for reads
-                    XisfFile calibrationFile = new XisfFile
-                    {
-                        SourceFileName = file.FullName
-                    };
-
-                    mCalibrationTabValues.ProgressMax = mDirectoryOps.Files.Count;
-                    mCalibrationTabValues.Progress += 1;
-                    mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.SourceFileName) + "\n" + Path.GetFileName(calibrationFile.SourceFileName);
-                    CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
-
-
-                    // Get the keyword data contained within the current file (mFile)
-                    // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
-                    //
-                    // FileSubFrameKeywordLists
-                    // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
-                    // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
-                    // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
-                    // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
-                    // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
-                    // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
-                    //
-                    // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
-                    // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
-
-
-                    bStatus = mFileReader.ReadXisfFile(calibrationFile);
-
-                    // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
-                    if (bStatus)
-                    {
-                        calibrationFileList.Add(calibrationFile);
-                    }
-                }
-
-                calibrationFileList.Sort(XisfFile.CaptureTimeComparison);
-                calibrationFileList = calibrationFileList.Distinct().ToList();
-
-                mCalibrationTabValues.TotalFiles = calibrationFileList.Count;
+                mCalibrationTabValues.ProgressMax = mDirectoryOps.Files.Count;
+                mCalibrationTabValues.Progress += 1;
+                mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.SourceFileName) + "\n" + Path.GetFileName(calibrationFile.SourceFileName);
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
-                return calibrationFileList;
+
+                // Get the keyword data contained within the current file (mFile)
+                // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
+                //
+                // FileSubFrameKeywordLists
+                // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
+                // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
+                // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
+                // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
+                // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
+                // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
+                //
+                // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
+                // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
+
+                fileReader.ReadXisfFile(calibrationFile);
+                /*
+                await Task.Run(async () =>
+                {
+                    await fileReader.ReadXisfFile(calibrationFile);
+                });
+                */
+
+                calibrationFileList.Add(calibrationFile);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                         "An exception occured during file Browse/Read.\n\n" + ex.ToString(),
-                         "\nCalibration.cs Button_Browse_Click()",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Error);
-                return null;
-            }
+
+            calibrationFileList.Sort(XisfFile.CaptureTimeComparison);
+
+            if (location == CalibrationDirectory.LIBRARY)
+                mLibraryCalibrationFileList = calibrationFileList.Distinct().ToList();
+            else
+                mLocalCalibrationFileList = calibrationFileList.Distinct().ToList();
+
+            mCalibrationTabValues.TotalFiles = calibrationFileList.Count;
+            CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
         }
 
         // ******************************************************************************************************************
@@ -222,9 +206,23 @@ namespace XisfFileManager
             List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorAngle - targetFile.RotatorAngle) <= RotationTolerance).ToList();
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
-            List<XisfFile> ExposureList = bIgnoreExposure ? TemperatureList : TemperatureList.Where(exposure => Math.Abs(exposure.Exposure - targetFile.Exposure) <= ExposureTolerance).ToList();
 
-            return ExposureList.OrderBy(nearest => Math.Abs((nearest.KeywordData.CaptureDateTime() - targetFile.KeywordData.CaptureDateTime()).TotalSeconds)).First();
+
+            List<XisfFile> ExposureList = TemperatureList.Where(exposure => Math.Abs(exposure.Exposure - targetFile.Exposure) <= ExposureTolerance).ToList();
+            List<XisfFile> ExposureToleranceList = ExposureList.Where(value => value.Exposure >= targetFile.Exposure).ToList();
+            if (!bIgnoreExposure)
+            {
+                if (ExposureToleranceList.Count == 0)
+                {
+                    ExposureToleranceList = ExposureList;
+                }
+            }
+            else
+            {
+                ExposureToleranceList = TemperatureList;
+            }
+
+            return ExposureToleranceList.OrderBy(nearest => Math.Abs((nearest.KeywordData.CaptureDateTime() - targetFile.KeywordData.CaptureDateTime()).TotalSeconds)).FirstOrDefault();
         }
 
         // ******************************************************************************************************************
@@ -237,7 +235,7 @@ namespace XisfFileManager
             bool bAllExistingDarksMatched = false;
             bool bAllExistingFlatsMatched = false;
 
-            mExistingTargetCalibrationFileList.Clear();
+            mLocalCalibrationFileList.Clear();
 
             string localCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].SourceFileName);
 
@@ -247,15 +245,14 @@ namespace XisfFileManager
                 // Yes - so see if it's empty
                 if (Directory.GetFileSystemEntries(localCalibrationDirectory).Length != 0)
                     // It has calibration files so build a list of existing Calibration Frames
-                    mExistingTargetCalibrationFileList = ReadCalibrationFrames(localCalibrationDirectory);
+                    ReadCalibrationFrames(Calibration.CalibrationDirectory.LOCAL, localCalibrationDirectory);
 
-                if (mExistingTargetCalibrationFileList.Count != 0)
+                if (mLocalCalibrationFileList.Count != 0)
                 {
                     // So we found valid calibration files 
                     // Check to see if they still match the LIGHT frames
 
-                    bAllExistingDarksMatched = MatchCalibrationDarkFrames(mExistingTargetCalibrationFileList, bSilent);
-                    bAllExistingFlatsMatched = MatchCalibrationFlatFrames(mExistingTargetCalibrationFileList, bSilent);
+                    bAllExistingDarksMatched = MatchCalibrationDarkFrames(CalibrationDirectory.LOCAL, mLocalCalibrationFileList, bSilent);
 
                     // If all target frames have corresponding Darks and Flats, let us know and return true
                     if (bAllExistingDarksMatched && bAllExistingFlatsMatched)
@@ -278,7 +275,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private bool MatchCalibrationDarkFrames(List<XisfFile> targetFrameList, bool bSilent)
+        private bool MatchCalibrationDarkFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
         {
             int errorMessageLimit = 4;
             bool bAllDarksMatched = true;
@@ -296,7 +293,11 @@ namespace XisfFileManager
             // Now we add to mDarkDictionary for all the Dark calibration files that match/do not match the target
             foreach (var targetFile in mUnmatchedDarkTargetFileList)
             {
-                mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile("Dark", targetFile, mLibraryCalibrationFileList)));
+                if (location == CalibrationDirectory.LIBRARY)
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile("Dark", targetFile, mLibraryCalibrationFileList)));
+                else
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile("Dark", targetFile, mLocalCalibrationFileList)));
+
 
                 if (mMatchedDarkList[mMatchedDarkList.Count - 1].CalibrationFile == null && errorMessageLimit > 0)
                 {
@@ -316,7 +317,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private bool MatchCalibrationFlatFrames(List<XisfFile> targetFrameList, bool bSilent)
+        private bool MatchCalibrationFlatFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
         {
             int errorMessageLimit = 4;
             bool bAllFlatsMatched = true;
@@ -334,7 +335,10 @@ namespace XisfFileManager
             // Now we add to mFlatDictionary for all the Flat calibration files that match/do not match the target
             foreach (var targetFile in mUnmatchedFlatTargetFileList)
             {
-                mMatchedFlatList.Add((targetFile, MatchNearestCalibrationFile("Flat", targetFile, mLibraryCalibrationFileList)));
+                if (location == CalibrationDirectory.LIBRARY)
+                    mMatchedFlatList.Add((targetFile, MatchNearestCalibrationFile("Flat", targetFile, mLibraryCalibrationFileList)));
+                else
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile("Dark", targetFile, mLocalCalibrationFileList)));
 
                 if (mMatchedFlatList[mMatchedFlatList.Count - 1].CalibrationFile == null && errorMessageLimit > 0)
                 {
@@ -353,13 +357,8 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
         {
-            mUnmatchedDarkTargetFileList.Clear();
-            mUnmatchedFlatTargetFileList.Clear();
-
-            mUnmatchedDarkTargetFileList.AddRange(targetFileList);
-            mUnmatchedFlatTargetFileList.AddRange(targetFileList);
-
-            mLibraryCalibrationFileList = ReadCalibrationFrames(@"E:\Photography\Astro Photography\Calibration");
+            //ReadCalibrationFrames(CalibrationDirectory.LIBRARY, @"D:\Temp\CalibrationLibrary");
+            ReadCalibrationFrames(CalibrationDirectory.LIBRARY, @"E:\Photography\Astro Photography\Calibration");
 
             return MatchCalibrationLibraryFrames(targetFileList);
         }
@@ -368,6 +367,15 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         public bool MatchCalibrationLibraryFrames(List<XisfFile> targetFileList)
         {
+
+            mUnmatchedDarkTargetFileList.Clear();
+            mUnmatchedFlatTargetFileList.Clear();
+            mUnmatchedBiasTargetFileList.Clear();
+
+            mUnmatchedDarkTargetFileList.AddRange(targetFileList);
+            mUnmatchedFlatTargetFileList.AddRange(targetFileList);
+            mUnmatchedBiasTargetFileList.AddRange(targetFileList);
+
             // At this point, we have lists of target frames (lights, darks and flats) as well as a list of all Library calibration frames (darks, flats and bias) 
 
             // Now we need to assign numbered CDARK, CLIGHT and CBIAS values:
@@ -384,7 +392,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing DARK calibration file will be flagged later
 
-            bool bAllDarksMatched = MatchCalibrationDarkFrames(mUnmatchedDarkTargetFileList, false);
+            bool bAllDarksMatched = MatchCalibrationDarkFrames(CalibrationDirectory.LIBRARY, mUnmatchedDarkTargetFileList, false);
 
             mUniqueDarkCalibrationFileList = mMatchedDarkList.Select(item => item.CalibrationFile).Distinct().ToList();
 
@@ -399,7 +407,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing FLAT calibration file will be flagged later
 
-            bool bAllFlatsMatched = MatchCalibrationFlatFrames(mUnmatchedFlatTargetFileList, false);
+            bool bAllFlatsMatched = MatchCalibrationFlatFrames(CalibrationDirectory.LIBRARY, mUnmatchedFlatTargetFileList, false);
 
             mUniqueFlatCalibrationFileList = mMatchedFlatList.Select(item => item.CalibrationFile).Distinct().ToList();
 
@@ -523,8 +531,8 @@ namespace XisfFileManager
 
             mCalibrationTabValues.TotalUniqueFlatCalibrationFiles = mFlatCalibrationFileList.Count;
             mCalibrationTabValues.TotalUniqueDarkCalibrationFiles = mDarkCalibrationFileList.Count;
-            mCalibrationTabValues.TotalUniqueBiasCalibrationFiles = mBiasFileList.Count;
-            mCalibrationTabValues.TotalMatchedCalibrationFiles = mDarkCalibrationFileList.Count + mFlatCalibrationFileList.Count + mBiasFileList.Count;
+            mCalibrationTabValues.TotalUniqueBiasCalibrationFiles = mBiasCalibrationFileList.Count;
+            mCalibrationTabValues.TotalMatchedCalibrationFiles = mDarkCalibrationFileList.Count + mFlatCalibrationFileList.Count + mBiasCalibrationFileList.Count;
 
             if (bAllDarksMatched && bAllFlatsMatched)
             {
@@ -549,7 +557,7 @@ namespace XisfFileManager
             string targetCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].SourceFileName);
 
             mCalibrationTabValues.Progress = 0;
-            mCalibrationTabValues.ProgressMax = mUniqueDarkCalibrationFileList.Count + mUniqueFlatCalibrationFileList.Count + mBiasFileList.Count;
+            mCalibrationTabValues.ProgressMax = mUniqueDarkCalibrationFileList.Count + mUniqueFlatCalibrationFileList.Count + mBiasCalibrationFileList.Count;
 
             foreach (var darkFile in mUniqueDarkCalibrationFileList)
             {
@@ -585,7 +593,7 @@ namespace XisfFileManager
                 flatFile.SourceFileName = fileNameHolder;
             }
 
-            foreach (var biasFile in mBiasFileList)
+            foreach (var biasFile in mBiasCalibrationFileList)
             {
                 mCalibrationTabValues.Progress += 1;
                 mCalibrationTabValues.FileName = targetCalibrationDirectory + "\n" + Path.GetFileName(biasFile.SourceFileName);

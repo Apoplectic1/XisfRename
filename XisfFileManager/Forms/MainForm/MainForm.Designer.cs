@@ -3546,9 +3546,9 @@
             this.Button_CalibrationTab_MatchCalibrationFrames.Name = "Button_CalibrationTab_MatchCalibrationFrames";
             this.Button_CalibrationTab_MatchCalibrationFrames.Size = new System.Drawing.Size(75, 50);
             this.Button_CalibrationTab_MatchCalibrationFrames.TabIndex = 1;
-            this.Button_CalibrationTab_MatchCalibrationFrames.Text = "Match Calibration Frames";
+            this.Button_CalibrationTab_MatchCalibrationFrames.Text = "ReMatch Calibration Frames";
             this.Button_CalibrationTab_MatchCalibrationFrames.UseVisualStyleBackColor = true;
-            this.Button_CalibrationTab_MatchCalibrationFrames.Click += new System.EventHandler(this.CalibrationTab_MatchCalibrationFrames_Click);
+            this.Button_CalibrationTab_MatchCalibrationFrames.Click += new System.EventHandler(this.CalibrationTab_ReMatchCalibrationFrames_Click);
             // 
             // Button_CalibrationTab_FindCalibrationFrames
             // 

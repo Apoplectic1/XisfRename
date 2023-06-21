@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -14,13 +16,13 @@ namespace XisfFileManager.FileOperations
     public class XisfFileReader
     {
         private byte[] mBuffer;
-        private XDocument mXDoc;
         private int mBufferSize;
         private int bytesRead;
         private Match keywordBlock;
         private string keywordMatch = @"<xisf.*?</xisf>";
+        private string modifiedString;
 
-        public bool ReadXisfFile(XisfFile xFile)
+        public async Task ReadXisfFile(XisfFile xFile)
         {
             using (FileStream fileStream = new FileStream(xFile.SourceFileName, FileMode.Open, FileAccess.Read))
             {
@@ -28,6 +30,7 @@ namespace XisfFileManager.FileOperations
                 mBuffer = new byte[mBufferSize];
                 keywordBlock = Match.Empty;
                 bytesRead = 0;
+
 
                 // Skip first sixteen bytes that contain XISF0100xxxxxxxx
 
@@ -39,85 +42,53 @@ namespace XisfFileManager.FileOperations
 
                     if (!keywordBlock.Success)
                     {
-                        mBufferSize += mBufferSize;
-                        Array.Resize(ref mBuffer, mBufferSize);
+                        if (bytesRead == mBufferSize)
+                        {
+                            // Expand the buffer size if it has been filled
+                            mBufferSize += mBufferSize;
+                            Array.Resize(ref mBuffer, mBufferSize);
+                        }
+                        else
+                        {
+                            // Process the bytes read and exit the loop
+                            modifiedString = Encoding.UTF8.GetString(mBuffer, 0, bytesRead);
+                        }
                     }
                 }
 
-                string modifiedString = keywordBlock.ToString();
+                modifiedString = keywordBlock.ToString();
 
-                if (false)
+                /*
+                string startTag = "<Property";
+                string stopTag = "/>";
+                string pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+                startTag = "<Property";
+                stopTag = "/Property>";
+                pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
+
+                startTag = "<Image";
+                stopTag = "</Image>";
+                int first = modifiedString.IndexOf(startTag);
+                int last = modifiedString.IndexOf(stopTag);
+                if (last <= first)
                 {
-                    string startTag;
-                    string stopTag;
-                    string pattern;
-                    string mSearch;
-                    
-
-                    mSearch = "BlockAlignmentSize";
-                    pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
-                    MatchCollection BlockAlignmentSize = Regex.Matches(modifiedString, pattern);
-
-                    mSearch = "MaxInlineBlockSize";
-                    pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
-                    MatchCollection MaxInlineBlockSize = Regex.Matches(modifiedString, pattern);
-
-                    startTag = "<Property";
-                    stopTag = "/>";
+                    startTag = "/><Display";
+                    stopTag = "/xisf>";
                     pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-                    startTag = "<Property";
-                    stopTag = "/Property>";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
-
-                    startTag = "<ICCProfile";
-                    stopTag = "</ICCProfile>";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-                    startTag = "<FITSKeyword name=\"HISTORY\" val";
-                    stopTag = "/>";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-                    startTag = "<FITSKeyword name=\"COMMENT\" val";
-                    stopTag = "/>";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-                    //Add <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
-                    startTag = "</Metadata>";
-                    int startIndex = modifiedString.IndexOf(startTag);
-                    int stopIndex = startIndex + startTag.Length;
-
-                    if (startIndex != -1 && stopIndex != -1)
-                    {
-                        modifiedString = modifiedString.Remove(startIndex, startTag.Length);
-                        modifiedString = modifiedString.Insert(startIndex, BlockAlignmentSize[0].ToString() + "</Metadata>");
-                    }
-                    else
-                        modifiedString += $"<Property id=\"XISF:BlockAlignmentSize\" type=\"UInt16\" value=\"4096\"/></Metadata>";
-
-
-                    //Add <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
-                    startTag = "</Metadata>";
-                    startIndex = modifiedString.IndexOf(startTag);
-                    stopIndex = startIndex + startTag.Length;
-
-                    if (startIndex != -1 && stopIndex != -1)
-                    {
-                        modifiedString = modifiedString.Remove(startIndex, startTag.Length);
-                        modifiedString = modifiedString.Insert(startIndex, MaxInlineBlockSize[0].ToString() + "</Metadata>");
-                    }
-                    else
-                        modifiedString = Regex.Replace(modifiedString, pattern, "<Property id=\"XISF:MaxInlineBlockSize\" type=\"UInt16\" value=\"3072\"/></Metadata>");
+                    modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "/></Image></xisf>");
                 }
+                */
+                //PruneXisfFile();
+
+
+                xFile.mXDoc = new XDocument();
 
                 try
                 {
-                    mXDoc = XDocument.Parse(modifiedString);
+                    xFile.mXDoc = XDocument.Parse(modifiedString);
                 }
                 catch (Exception ex)
                 {
@@ -128,26 +99,26 @@ namespace XisfFileManager.FileOperations
                         MessageBoxIcon.Error);
 
                     Application.Exit();
-                    return false;
+                    return;
                 }
 
-                XElement root = mXDoc.Root;
+                XElement root = xFile.mXDoc.Root;
                 XNamespace ns = root.GetDefaultNamespace();
 
-                IEnumerable<XElement> image = mXDoc.Descendants(ns + "Image");
+                IEnumerable<XElement> image = xFile.mXDoc.Descendants(ns + "Image");
                 foreach (XElement element in image)
                 {
                     xFile.ImageAttachment(element);
                 }
 
 
-                IEnumerable<XElement> thumbnail = mXDoc.Descendants(ns + "Thumbnail");
+                IEnumerable<XElement> thumbnail = xFile.mXDoc.Descendants(ns + "Thumbnail");
                 foreach (XElement element in thumbnail)
                 {
                     xFile.ThumbnailAttachment(element);
                 }
 
-                IEnumerable<XElement> elements = mXDoc.Descendants(ns + "FITSKeyword");
+                IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
 
                 // Find each keyword and add it to xFile
                 foreach (XElement element in elements)
@@ -156,9 +127,88 @@ namespace XisfFileManager.FileOperations
                 }
 
                 xFile.SetRequiredKeywords();
-
-                return true;
             }
+        }
+
+        private void PruneXisfFile()
+        {
+            string startTag;
+            string stopTag;
+            string pattern;
+            string mSearch;
+
+
+            mSearch = "BlockAlignmentSize";
+            pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
+            MatchCollection BlockAlignmentSize = Regex.Matches(modifiedString, pattern);
+
+            mSearch = "MaxInlineBlockSize";
+            pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
+            MatchCollection MaxInlineBlockSize = Regex.Matches(modifiedString, pattern);
+
+            startTag = "<Property";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            startTag = "<Property";
+            stopTag = "/Property>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
+
+            startTag = "<ICCProfile";
+            stopTag = "</ICCProfile>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            startTag = "<FITSKeyword name=\"HISTORY\" val";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            startTag = "<FITSKeyword name=\"COMMENT\" val";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            startTag = "<Image";
+            stopTag = "</Image>";
+            int first = modifiedString.IndexOf(startTag);
+            int last  = modifiedString.IndexOf(stopTag);
+            if (last < first)
+            {
+                ;
+            }
+
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            //Add <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
+            startTag = "</Metadata>";
+            int startIndex = modifiedString.IndexOf(startTag);
+            int stopIndex = startIndex + startTag.Length;
+
+            if (startIndex != -1 && stopIndex != -1)
+            {
+                modifiedString = modifiedString.Remove(startIndex, startTag.Length);
+                modifiedString = modifiedString.Insert(startIndex, BlockAlignmentSize[0].ToString() + "</Metadata>");
+            }
+            else
+                modifiedString += $"<Property id=\"XISF:BlockAlignmentSize\" type=\"UInt16\" value=\"4096\"/></Metadata>";
+
+
+            //Add <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
+            startTag = "</Metadata>";
+            startIndex = modifiedString.IndexOf(startTag);
+            stopIndex = startIndex + startTag.Length;
+
+            if (startIndex != -1 && stopIndex != -1)
+            {
+                modifiedString = modifiedString.Remove(startIndex, startTag.Length);
+                modifiedString = modifiedString.Insert(startIndex, MaxInlineBlockSize[0].ToString() + "</Metadata>");
+            }
+            else
+                modifiedString = Regex.Replace(modifiedString, pattern, "<Property id=\"XISF:MaxInlineBlockSize\" type=\"UInt16\" value=\"3072\"/></Metadata>");
         }
     }
 }

@@ -624,7 +624,7 @@ namespace XisfFileManager
                     // Local Time does not exist
                     Object = GetKeywordValue("DATE-OBS");
                     if (Object == null)
-                    {   
+                    {
                         // No LOC, No OBS and No LOCALTIME - Make a time up
                         Object = "2000-01-01T12:00:00.000";
                     }
@@ -1221,7 +1221,7 @@ namespace XisfFileManager
         public string SiteName()
         {
             object Object = GetKeywordValue("SITENAME");
-            if (Object != null)
+            if (Object != (object)null)
                 return (string)Object;
 
             AddKeyword("SITENAME", "Penns Park, PA");
@@ -1232,13 +1232,11 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double SSWeight()
         {
-            object Object = GetKeywordValue("SSWEIGHT");
-            if (Object == null)
-                return 0.0;
+            object Obj = GetKeywordValue("SSWEIGHT");
+            if (Obj == (object)null)
+                return (double)0.0;
 
-            double sSWeight = Math.Round((double)Object, 3, MidpointRounding.AwayFromZero);
-
-            return sSWeight;
+            return Math.Round(Convert.ToDouble(Obj), 3, MidpointRounding.AwayFromZero);
         }
 
         // *********************************************************************************************************
@@ -1342,46 +1340,46 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double WeightKeyword(bool findMissingKeywords = false)
         {
-            object Object = GetKeywordValue("SSWEIGHT");
-            if (Object != null)
+            object Obj = GetKeywordValue("SSWEIGHT");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("NWEIGHT");
-            if (Object != null)
+            Obj = GetKeywordValue("NWEIGHT");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("W_SNR");
-            if (Object != null)
+            Obj = GetKeywordValue("W_SNR");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("W_FWHM");
-            if (Object != null)
+            Obj = GetKeywordValue("W_FWHM");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("W_ECC");
-            if (Object != null)
+            Obj = GetKeywordValue("W_ECC");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("W_PSFSNR");
-            if (Object != null)
+            Obj = GetKeywordValue("W_PSFSNR");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
-            Object = GetKeywordValue("W_PSFSIGNAL");
-            if (Object != null)
+            Obj = GetKeywordValue("W_PSFSIGNAL");
+            if (Obj != null)
             {
-                return (double)Object;
+                return (double)Obj;
             }
 
             return 1.0;

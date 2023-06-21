@@ -16,6 +16,8 @@ using MathNet.Numerics.Statistics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager
 {
@@ -53,7 +55,7 @@ namespace XisfFileManager
         private double mUpdateStatisticsRangeHigh;
         private double mUpdateStatisticsRangeLow;
         private eSubFrameNumericListsValid eSubFrameValidListsValid;
-        private readonly Calibration mCalibration;
+        private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private readonly ImageCalculations ImageParameterLists;
         private readonly SubFrameLists SubFrameLists;
@@ -104,7 +106,7 @@ namespace XisfFileManager
             }
             else
             {
-                Text = "XISF File Manager - Version: " + File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+                Text = "XISF File Manager - Version: " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             }
 
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
@@ -205,8 +207,6 @@ namespace XisfFileManager
             TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
             TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
             TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
-
-            //this.Size = new Size(1019, 750);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -260,8 +260,7 @@ namespace XisfFileManager
         // ##########################################################################################################################
         private async void Button_Browse_Click(object sender, EventArgs e)
         {
-            bool bStatus;
-            XisfFileReader mFileReader = new XisfFileReader();
+            XisfFileReader fileReader = new XisfFileReader();
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
             mFileList.Clear();
             SubFrameLists.Clear();
@@ -321,56 +320,42 @@ namespace XisfFileManager
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
             Application.DoEvents();
 
-            object fileLock = new object(); // Lock object for accessing the shared mFileList
-
-            // Store the synchronization context of the UI thread
-            var uiSyncContext = SynchronizationContext.Current;
-
-            await Task.Run(() =>
+            foreach (var file in mDirectoryOps.Files)
             {
-                foreach (var file in mDirectoryOps.Files)
+                Label_FileSelection_BrowseFileName.Text = file.DirectoryName + "\n" + file.Name;
+                ProgressBar_FileSelection_ReadProgress.Value += 1;
+
+                // Create a new xisf file instance
+                mFile = new XisfFile
                 {
-                    // Update file name on the UI thread
-                    uiSyncContext.Post(_ =>
-                    {
-                        Label_FileSelection_BrowseFileName.Text = file.DirectoryName + "\n" + file.Name;
-                    }, null);
+                    SourceFileName = file.FullName
+                };
 
-                    // Update the progress bar on the UI thread
-                    uiSyncContext.Post(_ =>
-                    {
-                        ProgressBar_FileSelection_ReadProgress.Invoke(new Action(() =>
-                        {
-                            ProgressBar_FileSelection_ReadProgress.Value += 1;
-                        }));
-                    }, null);
+                await Task.Run(async () =>
+                {
+                    await fileReader.ReadXisfFile(mFile);
+                });
 
-                    lock (fileLock)
-                    {
-                        // Create a new xisf file instance
-                        mFile = new XisfFile
-                        {
-                            SourceFileName = file.FullName
-                        };
-                        // }
+                mFileList.Add(mFile);
+            }
 
-                        //lock (mFileReader)
-                        //{
-                        // Get the keyword data contained within the current file (mFile)
-                        // The keyword data is copied to and fills out the Keyword Class. The Keyword Class is an instance in mFile and specific to that file.
-                        bStatus = mFileReader.ReadXisfFile(mFile);
-                        //}
+            /*
+            foreach (var xFile in mFileList)
+            {
+                XElement root = xFile.mXDoc.Root;
+                XNamespace ns = root.GetDefaultNamespace();
 
-                        //lock (mFileList)
-                        //{
-                        // If data was able to be properly read from our current .xisf file, add the current mFile instance to our master list mFileList.
-                        if (bStatus)
-                        {
-                            mFileList.Add(mFile);
-                        }
-                    }
+                IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
+
+                // Find each keyword and add it to xFile
+                foreach (XElement element in elements)
+                {
+                    xFile.KeywordData.AddXMLKeyword(element);
                 }
-            });
+
+                xFile.SetRequiredKeywords();
+            }
+            */
 
             // Sort Image File Lists by Capture Time
             // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
@@ -3455,28 +3440,11 @@ namespace XisfFileManager
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = DirectoryOps.FrameType.ALL;
 
-            if (CheckBox_CalibrationTab_CreateNew.Checked == false)
-            {
-                // See if a local target "Calibration" directory already exists and if it's contents match all (including new) target farmes
-                bMatchedAllFiles = mCalibration.FindLocalTargetCalibrationFrames(mFileList);
-            }
-            else
-            {
-                // UI "Create New" was checked so delete and recreate the "Calibration" directory
-                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].SourceFileName);
-
-                if (Directory.Exists(targetCalibrationDirectory))
-                    Directory.Delete(targetCalibrationDirectory, true);
-
-                Directory.CreateDirectory(targetCalibrationDirectory);
-                bMatchedAllFiles = false;
-            }
-
             if (!bMatchedAllFiles)
                 mCalibration.FindLibraryCalibrationFrames(mFileList);
         }
 
-        private void CalibrationTab_MatchCalibrationFrames_Click(object sender, EventArgs e)
+        private void CalibrationTab_ReMatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.MatchCalibrationLibraryFrames(mFileList);
