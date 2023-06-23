@@ -196,16 +196,87 @@ namespace XisfFileManager
             bool bIgnoreFocuser = calibrationFrameMatchType == "Dark" || calibrationFrameMatchType == "Bias";
 
             List<XisfFile> CameraList = calibrationFileList.Where(camera => camera.Camera == targetFile.Camera).ToList();
+            if (CameraList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Camera for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> FrameTypeList = CameraList.Where(frameType => frameType.FrameType == calibrationFrameMatchType).ToList();
+            if (FrameTypeList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " FrameType for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> BinningList = FrameTypeList.Where(binning => binning.Binning == targetFile.Binning).ToList();
+            if (BinningList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Binning for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+            
             List<XisfFile> FilterList = bIgnoreFilter ? BinningList : BinningList.Where(filter => filter.Filter == targetFile.Filter).ToList();
+            if (FilterList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Filter for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> GainList = FilterList.Where(gain => Math.Abs(gain.Gain - targetFile.Gain) <= GainTolerance).ToList();
+            if (GainList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Gain for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> OffsetList = GainList.Where(offset => Math.Abs(offset.Offset - targetFile.Offset) <= OffsetTolerance).ToList();
+            if (OffsetList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Offset for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> FocuserList = bIgnoreFocuser ? OffsetList : OffsetList.Where(focus => Math.Abs(focus.FocuserPosition - targetFile.FocuserPosition) <= FocuserTolerance).ToList();
             if (FocuserList.Count == 0) FocuserList.AddRange(OffsetList); // Deal with old Masters that don't incude the Focus position
+            if (FocuserList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Focus Position for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+
             List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorAngle - targetFile.RotatorAngle) <= RotationTolerance).ToList();
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
+            if (RotatorList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Rotator Position for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
+            
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
+            if (TemperatureList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Temperature for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
+            }
 
 
             List<XisfFile> ExposureList = TemperatureList.Where(exposure => Math.Abs(exposure.Exposure - targetFile.Exposure) <= ExposureTolerance).ToList();
@@ -220,6 +291,13 @@ namespace XisfFileManager
             else
             {
                 ExposureToleranceList = TemperatureList;
+            }
+            if (ExposureToleranceList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Exposure for:\r\n    " + targetFile.SourceFileName + "\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return null;
             }
 
             return ExposureToleranceList.OrderBy(nearest => Math.Abs((nearest.KeywordData.CaptureDateTime() - targetFile.KeywordData.CaptureDateTime()).TotalSeconds)).FirstOrDefault();

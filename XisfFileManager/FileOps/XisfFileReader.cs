@@ -32,7 +32,7 @@ namespace XisfFileManager.FileOperations
                 bytesRead = 0;
 
 
-                // Skip first sixteen bytes that contain XISF0100xxxxxxxx
+                // Skip first sixteen bytes that contain XISF0100xxxxxxxx with keywordMatch = @"<xisf.*?</xisf>";
 
                 // If the xml section is larger than mBufferSize, repeatedly double the buffer size and reread
                 while (!keywordBlock.Success)
@@ -58,31 +58,7 @@ namespace XisfFileManager.FileOperations
 
                 modifiedString = keywordBlock.ToString();
 
-                /*
-                string startTag = "<Property";
-                string stopTag = "/>";
-                string pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-                startTag = "<Property";
-                stopTag = "/Property>";
-                pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
-
-                startTag = "<Image";
-                stopTag = "</Image>";
-                int first = modifiedString.IndexOf(startTag);
-                int last = modifiedString.IndexOf(stopTag);
-                if (last <= first)
-                {
-                    startTag = "/><Display";
-                    stopTag = "/xisf>";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "/></Image></xisf>");
-                }
-                */
                 //PruneXisfFile();
-
 
                 xFile.mXDoc = new XDocument();
 
@@ -174,10 +150,13 @@ namespace XisfFileManager.FileOperations
             startTag = "<Image";
             stopTag = "</Image>";
             int first = modifiedString.IndexOf(startTag);
-            int last  = modifiedString.IndexOf(stopTag);
-            if (last < first)
+            int last = modifiedString.IndexOf(stopTag);
+            if (last <= first)
             {
-                ;
+                startTag = "/><Display";
+                stopTag = "/xisf>";
+                pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "/></Image></xisf>");
             }
 
             pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
