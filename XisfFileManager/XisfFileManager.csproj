@@ -153,11 +153,11 @@
     <Compile Include="Calculations\PositionTemperature.cs" />
     <Compile Include="Calibration\CalibrationTabPageEvent.cs" />
     <Compile Include="Calibration\Calibration.cs" />
-    <Compile Include="DirectoryOps\DirectoryOps.cs" />
+    <Compile Include="FileOps\DirectoryOps.cs" />
     <Compile Include="FileOps\CsvFileRead.cs" />
-    <Compile Include="FileOps\XisfFileReader.cs" />
-    <Compile Include="FileOps\XisfFileRename.cs" />
-    <Compile Include="FileOps\XisfFileUpdate.cs" />
+    <Compile Include="XisfFile\XisfFileReader.cs" />
+    <Compile Include="XisfFile\XisfFileRename.cs" />
+    <Compile Include="XisfFile\XisfFileUpdate.cs" />
     <Compile Include="Forms\UserInputForm\UserInputForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,7 +165,6 @@
       <DependentUpon>UserInputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\UserInputForm\UserInputFormData.cs" />
-    <Compile Include="Keywords\Keyword.cs" />
     <Compile Include="SubFrames\SubFrameNumericLists.cs" />
     <Compile Include="SubFrames\SubFrame.cs" />
     <Compile Include="SubFrames\SubFrameLists.cs" />
@@ -179,7 +178,7 @@
     <Compile Include="Keywords\KeywordLists.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileOps\XisfFile.cs" />
+    <Compile Include="XisfFile\XisfFile.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utility\ToolTip.cs" />
     <EmbeddedResource Include="Forms\MainForm\MainForm.resx">

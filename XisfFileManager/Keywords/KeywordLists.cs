@@ -9,14 +9,40 @@ using XisfFileManager.Forms.UserInputForm;
 
 namespace XisfFileManager
 {
+    public class FitsKeyword
+    {
+        public string Name { get; set; } = string.Empty;
+        public object Value { get; set; } = null;
+        public string Comment { get; set; } = string.Empty;
+    }
+
+    public class CalibrationTypeKeyword
+    {
+        public string CDARK { get; set; }
+        public string CFLAT { get; set; }
+        public string CBIAS { get; set; }
+
+        public List<PanelKeyword> CPanel { get; set; }
+        }
+
+    public class PanelKeyword
+    {
+        public List<string> Panel { get; set; }
+
+        public PanelKeyword()
+        {
+            Panel = new List<string>();
+        }
+    }
+
     public class KeywordLists
     {
         private static Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
-        public List<Keyword> KeywordList;
+        public List<FitsKeyword> KeywordList;
 
         public KeywordLists()
         {
-            KeywordList = new List<Keyword>();
+            KeywordList = new List<FitsKeyword>();
         }
 
         private Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
@@ -56,9 +82,9 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
-        private Keyword NewKeyWord(string sName, object oValue, string sComment)
+        private FitsKeyword NewKeyWord(string sName, object oValue, string sComment)
         {
-            Keyword newKeyword = new Keyword
+            FitsKeyword newKeyword = new FitsKeyword
             {
                 Name = sName,
                 Value = oValue,
@@ -72,7 +98,7 @@ namespace XisfFileManager
 
         public object GetKeywordValue(string sName)
         {
-            Keyword node = KeywordList.Find(i => i.Name == sName);
+            FitsKeyword node = KeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return null;
 
@@ -80,7 +106,7 @@ namespace XisfFileManager
         }
         public object GetKeywordComment(string sName)
         {
-            Keyword node = KeywordList.Find(i => i.Name == sName);
+            FitsKeyword node = KeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return null;
 
@@ -100,7 +126,7 @@ namespace XisfFileManager
         {
             KeywordList.RemoveAll(i => i.Name == sName);
 
-            Keyword newKeyword = NewKeyWord(sName, value, sComment);
+            FitsKeyword newKeyword = NewKeyWord(sName, value, sComment);
 
             KeywordList.Add(newKeyword);
         }
@@ -174,7 +200,7 @@ namespace XisfFileManager
 
         public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
+            FitsKeyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
             KeywordList.Add(newKeyword);
         }
@@ -336,9 +362,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public void SetIntegrationParamaters()
         {
-            List<Keyword> keys = new List<Keyword>(KeywordList);
+            List<FitsKeyword> keys = new List<FitsKeyword>(KeywordList);
 
-            foreach (Keyword node in keys)
+            foreach (FitsKeyword node in keys)
             {
                 if (node.Comment.ToLower().Contains("numberofimages"))
                 {
@@ -1376,53 +1402,18 @@ namespace XisfFileManager
                 return (double)Obj;
             }
 
-            Obj = GetKeywordValue("W_PSFSIGNAL");
+            Obj = GetKeywordValue("W_PSF");
             if (Obj != null)
             {
                 return (double)Obj;
             }
 
-            return 1.0;
+            return -1.0;
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string WBPPKeyword(bool findMissingKeywords = false)
-        {
-            object Object;
-
-            Object = GetKeywordValue("CBIAS");
-            if (Object != null)
-            {
-                return (string)Object;
-            }
-
-            Object = GetKeywordValue("CLIGHT");
-            if (Object != null)
-            {
-                return (string)Object;
-            }
-
-            Object = GetKeywordValue("CDARK");
-            if (Object != null)
-            {
-                return (string)Object;
-            }
-
-            Object = GetKeywordValue("CFLAT");
-            if (Object != null)
-            {
-                return (string)Object;
-            }
-
-            Object = GetKeywordValue("PANEL");
-            if (Object != null)
-            {
-                return (string)Object;
-            }
-
-            return "NA";
-        }
+        
         // #########################################################################################################
         // #########################################################################################################
 

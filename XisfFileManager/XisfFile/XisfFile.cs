@@ -10,9 +10,12 @@ namespace XisfFileManager.FileOperations
         public enum eFrameType { LIGHT, DARK, FLAT, BIAS }
         public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER }
 
+        // Member Strutures
         public XDocument mXDoc;
-        public DateTime CaptureDateTime { get; set; }
         public KeywordLists KeywordData { get; set; }
+
+        // Properties
+        public DateTime CaptureDateTime { get; set; }
         public bool Master { get; set; } = false;
         public bool NarrowBand { get; set; }
         public bool RiccardiReducer { get; set; }

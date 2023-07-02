@@ -514,7 +514,7 @@ namespace XisfFileManager
 
 
             // Now make a list of all Keywords found in all files. Sort and populate combobox
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             List<string> keywordNamelist = new List<string>();
 
             foreach (XisfFile file in mFileList)
@@ -3268,7 +3268,7 @@ namespace XisfFileManager
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    foreach (Keyword node in file.KeywordData.KeywordList)
+                    foreach (FitsKeyword node in file.KeywordData.KeywordList)
                     {
                         if (node.Comment.ToLower().Contains("numberofimages"))
                         {
@@ -3580,7 +3580,7 @@ namespace XisfFileManager
 
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             List<string> keywordValuelist = new List<string>();
 
             if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
@@ -3620,7 +3620,7 @@ namespace XisfFileManager
         {
             foreach (XisfFile file in mFileList)
             {
-                Keyword item = file.KeywordData.KeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                FitsKeyword item = file.KeywordData.KeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
                 if (item != null)
                 {
                     if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)

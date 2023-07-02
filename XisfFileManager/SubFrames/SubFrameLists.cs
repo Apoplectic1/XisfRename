@@ -24,7 +24,7 @@
 
         public void AddKeywordApproved(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Approved");
             if (node == null) return;
 
@@ -34,7 +34,7 @@
 
         public void AddKeywordAirMass(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "AIRMASS");
             if (node == null) return;
 
@@ -44,7 +44,7 @@
 
         public void AddKeywordEccentricity(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Eccentricity");
             if (node == null) return;
 
@@ -54,7 +54,7 @@
 
         public void AddKeywordEccentricityMeanDeviation(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "EccentricityMeanDeviation");
             if (node == null) return;
 
@@ -63,7 +63,7 @@
         }
         public void AddKeywordFwhm(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Fwhm");
             if (node == null) return;
 
@@ -72,7 +72,7 @@
         }
         public void AddKeywordFwhmMeanDeviation(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "FwhmMeanDeviation");
             if (node == null) return;
 
@@ -81,7 +81,7 @@
         }
         public void AddKeywordMedian(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Median");
             if (node == null) return;
 
@@ -90,7 +90,7 @@
         }
         public void AddKeywordMedianMeanDeviation(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "MedianMeanDeviation");
             if (node == null) return;
 
@@ -99,7 +99,7 @@
         }
         public void AddKeywordNoise(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Noise");
             if (node == null) return;
 
@@ -108,7 +108,7 @@
         }
         public void AddKeywordNoiseRatio(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "NoiseRatio");
             if (node == null) return;
 
@@ -117,7 +117,7 @@
         }
         public void AddKeywordSnrWeight(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "SNRWeight");
             if (node == null) return;
 
@@ -126,7 +126,7 @@
         }
         public void AddKeywordStarResidual(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "StarResidual");
             if (node == null) return;
 
@@ -135,7 +135,7 @@
         }
         public void AddKeywordStarResidualMeanDeviation(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "StarResidualMeanDeviation");
             if (node == null) return;
 
@@ -144,7 +144,7 @@
         }
         public void AddKeywordStars(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "Stars");
             if (node == null) return;
 
@@ -153,7 +153,7 @@
         }
         public void AddKeywordWeight(KeywordLists keywords)
         {
-            Keyword node = new Keyword();
+            FitsKeyword node = new FitsKeyword();
             node = keywords.KeywordList.Find(i => i.Name == "WEIGHT");
             if (node == null) return;
 
@@ -162,7 +162,7 @@
         }
         public void AddKeywordFileName(string fileName)
         {
-            Keyword node = new Keyword
+            FitsKeyword node = new FitsKeyword
             {
                 Name = "FileName",
                 Value = fileName,

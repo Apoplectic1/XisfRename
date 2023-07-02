@@ -121,9 +121,9 @@ namespace XisfFileManager.FileOperations
 
         // #########################################################################################################
         // #########################################################################################################
-        public static Keyword BuildKeyword(string name, string value, string comment = "XISF File Manager - CSV")
+        public static FitsKeyword BuildKeyword(string name, string value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword
+            FitsKeyword keyword = new FitsKeyword
             {
                 Name = name,
                 Value = value,
@@ -134,9 +134,9 @@ namespace XisfFileManager.FileOperations
 
         // #########################################################################################################
         // #########################################################################################################
-        public static Keyword BuildKeyword(string name, double value, string comment = "XISF File Manager - CSV")
+        public static FitsKeyword BuildKeyword(string name, double value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword
+            FitsKeyword keyword = new FitsKeyword
             {
                 Name = name,
                 Value = value.ToString("F6"),
@@ -147,9 +147,9 @@ namespace XisfFileManager.FileOperations
 
         // #########################################################################################################
         // #########################################################################################################
-        public static Keyword BuildKeyword(string name, int value, string comment = "XISF File Manager - CSV")
+        public static FitsKeyword BuildKeyword(string name, int value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword
+            FitsKeyword keyword = new FitsKeyword
             {
                 Name = name,
                 Value = value.ToString(),
@@ -160,9 +160,9 @@ namespace XisfFileManager.FileOperations
 
         // #########################################################################################################
         // #########################################################################################################
-        public static Keyword BuildKeyword(string name, bool value, string comment = "XISF File Manager - CSV")
+        public static FitsKeyword BuildKeyword(string name, bool value, string comment = "XISF File Manager - CSV")
         {
-            Keyword keyword = new Keyword
+            FitsKeyword keyword = new FitsKeyword
             {
                 Name = name,
                 Value = value.ToString(),
