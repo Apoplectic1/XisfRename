@@ -68,7 +68,6 @@ namespace XisfFileManager
             mKeywordList.Clear();
         }
         // ***********************************************************************************************************************************
-
         public Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
         {
             UserInputFormData nullFormData = new UserInputFormData();
@@ -144,6 +143,7 @@ namespace XisfFileManager
             mKeywordList.RemoveAll(i => i.Name.Contains(name));
         }
 
+  
         // ----------------------------------------------------------------------------------------------------------
 
         public void AddKeyword(string sName, object oValue, string sComment = "XISF File Manager")
@@ -156,68 +156,9 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
-
-        public void AddXMLKeyword(XElement element)
+        public void AddKeywordKeepDuplicates(Keyword newKeyword)
         {
-            bool bStatus;
-
-            // First remove Keyword characteritics that interfere with later processing
-            // Get rid of extra spaces and "'"
-            string elementValue = element.Attribute("value").Value;
-            elementValue = elementValue.Replace(" ", "").Replace("'", "");
-
-            // Now get rid of an extra decimal point at the end of what should be integers
-            elementValue = elementValue.TrimEnd('.');
-
-            //int decimalIndex = elementValue.LastIndexOf('.') + 1;
-            //if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
-            //{
-            //    elementValue = elementValue.Replace(".", "");
-            // }
-
-            // Now actually parse the keywords into bools, integers, doubles and finally strings
-            bStatus = bool.TryParse(elementValue, out bool bBool);
-            if (bStatus)
-            {
-                if (elementValue == "T")
-                {
-                    AddKeyword("true", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-                if (elementValue == "F")
-                {
-                    AddKeyword("false", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-            }
-
-            if (element.Attribute("name").Value == "EXPTIME")
-            {
-                bStatus = double.TryParse(elementValue, out double seconds);
-                if (bStatus)
-                {
-                    AddKeyword(element.Attribute("name").Value, seconds, element.Attribute("comment").Value);
-                    return;
-                }
-            }
-
-            bStatus = Int32.TryParse(elementValue, out int iInt32);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
-                return;
-            }
-
-            bStatus = double.TryParse(elementValue, out double dDouble);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
-                return;
-            }
-
-            // Pixinsight will add multiple Keywords using the same name
-            // Keep string Keyword Duplicates
-            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
+            mKeywordList.Add(newKeyword);
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -226,23 +167,6 @@ namespace XisfFileManager
             Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
             mKeywordList.Add(newKeyword);
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public bool Approved
-        {
-            get
-            {
-                object Object = GetKeywordValue("Approved");
-                if (Object != null)
-                    return (bool)Object;
-                return false;
-            }
-            set
-            {
-                AddKeyword("Approved", value, "This file has been approved for subframe calculations");
-            }
         }
 
         // *********************************************************************************************************
@@ -260,332 +184,6 @@ namespace XisfFileManager
             {
                 AddKeyword("AIRMASS", value, "Number of atmospheres this image is looking through");
             }
-        }
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CBIAS
-        {
-            get
-            {
-                object Object = GetKeywordValue("CBIAS");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CBIAS", value, "Match this file with other CBIAS" + CBIAS + " files");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CDARK
-        {
-            get
-            {
-                object Object = GetKeywordValue("CDARK");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CDARK", value, "Match this file with other CDARK" + CDARK + " files");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CFLAT
-        {
-            get
-            {
-                object Object = GetKeywordValue("CFLAT");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CFLAT", value, "Match this file with other CFLAT" + CFLAT + " files");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CPANEL
-        {
-            get
-            {
-                object Object = GetKeywordValue("CPANEL");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CPANEL", value, "Match this file with other CPANEL" + CPANEL + " files");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double Eccentricity
-        {
-            get
-            {
-                object Object = GetKeywordValue("AIRMASS");
-                if (Object != null)
-                    return (double)Object;
-                return -1;
-            }
-            set
-            {
-                AddKeyword("ECCENTRICITY", value, "Number of atmospheres this image is looking through");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double FWHM
-        {
-            get
-            {
-                object Object = GetKeywordValue("FWHM");
-                if (Object != null)
-                    return (double)Object;
-                return -1;
-            }
-            set
-            {
-                AddKeyword("FWHM", value, "Average FWHM in this image");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int Gain
-        {
-            get
-            {
-                object Object = GetKeywordValue("GAIN");
-                if (Object != null)
-                    return (int)Object;
-                return -1;
-            }
-            set
-            {
-                AddKeyword("GAIN", value, "Camera Gain");
-                SetEGain();
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // Set Who and Where
-        public void SetObservationSite()
-        {
-            AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
-            AddKeyword("SITELONG", -74.997372, "Logitude of observation site - Degrees East");
-            AddKeyword("SITELAT", 40.282852, "Latitude of observation site - Degrees North");
-            AddKeyword("SITEELEV", 80.0, "Altitude of observation site - MSL Meters");
-            RemoveKeyword("LONG-OBS");
-            RemoveKeyword("LAT-OBS");
-            RemoveKeyword("ALT-OBS");
-            RemoveKeyword("OBSGEO-L");
-            RemoveKeyword("OBSGEO-B");
-            RemoveKeyword("OBSGEO-H");
-
-            AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // Various programs appear to screw this up - fix it
-        private void SetEGain()
-        {
-            // Use graphs found on manufacturer website
-
-            double egain = -1.0;
-            double gain = Gain;
-            string camera = Camera;
-
-            if (camera == "Z183")
-                egain = 3.6059 * Math.Exp(-0.011 * gain);
-
-            if (camera == "Z533")
-                egain = (-7e-13 * Math.Pow(gain, 5)) + (1e-9 * Math.Pow(gain, 4)) - (6e-7 * Math.Pow(gain, 3)) + (0.0002 * Math.Pow(gain, 2)) - (0.0356 * gain) + 3.1338;
-
-            if (camera == "Q178")
-            {
-                if (gain < 4.0)
-                    egain = 2.6;
-                else
-                    egain = 3.8018 * Math.Exp(-0.0117 * gain);
-            }
-
-            if (camera == "A144")
-                egain = 0.37;
-
-            AddKeyword("EGAIN", egain, "Electrons per ADU calculated using manufacturer graphs");
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
-        public void RepairSiteLatitude()
-        {
-            string latitude = (string)GetKeywordValue("SITELAT");
-
-            if (latitude == null) return;
-
-            if (latitude.Contains("N"))
-            {
-                latitude = Regex.Replace(latitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
-        public void RepairSiteLongitude()
-        {
-            string longitude = (string)GetKeywordValue("SITELONG");
-
-            if (longitude == null) return;
-
-            if (longitude.Contains("W"))
-            {
-                longitude = Regex.Replace(longitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-
-                Regex regReplace = new Regex("'");
-
-                longitude = regReplace.Replace(longitude, "'-", 1);
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public void SetIntegrationParamaters()
-        {
-            List<Keyword> keys = new List<Keyword>(mKeywordList);
-
-            foreach (Keyword node in keys)
-            {
-                if (node.Comment.ToLower().Contains("numberofimages"))
-                {
-                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
-                    AddKeyword("TOTALFRAMES", totalFrames, "Number of Integrated SubFrames");
-                }
-
-                if (node.Comment.ToLower().Contains("pixelrejection"))
-                {
-                    if (node.Comment.ToLower().Contains("linear"))
-                        AddKeyword("REJECTION", "LFC", "PixInsight Linear Fit Clipping");
-
-                    if (node.Comment.ToLower().Contains("student"))
-                        AddKeyword("REJECTION", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
-
-                    if (node.Comment.ToLower().Contains("sigma"))
-                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
-
-                    if (node.Comment.ToLower().Contains("winsor"))
-                        AddKeyword("REJECTION", "WSC", "PixInsight Winsorized Sigma Clipping");
-                }
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int TotalFrames
-        {
-            get
-            {
-                object Object = GetKeywordValue("TOTALFRAMES");
-                if (Object != null)
-                    return (int)Object;
-                return 0;
-            }
-            set
-            {
-                SetIntegrationParamaters();
-                AddKeyword("TOTALFRAMES", value, "");
-            }
-            /*
-                
-
-            object Object = GetKeywordValue("TOTALFRAMES");
-            if (Object == null)
-            {
-                while (findMissingKeywords)
-                {
-                    UserInputFormData formData = new UserInputFormData
-                    {
-                        mFormName = "Master Frame Integration",
-                        mFormText = "Integrated SubFrames Not Set",
-                        mFormEntryText = "Enter Total Integration Frames:",
-                        mFileName = FileName()
-                    };
-
-                    UserInputFormData returnValue = OpenUIForm(formData);
-
-                    bool bStatus = int.TryParse(returnValue.mTextBox, out int frames);
-                    if (bStatus)
-                    {
-                        AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
-
-                        if (returnValue.mGlobalCheckBox)
-                            return -frames;
-                        else
-                            return frames;
-                    }
-                }
-                return -1;
-            }
-
-            return (int)Object;
-            */
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string Rejection
-        {
-            get
-            {
-                object Object = GetKeywordValue("REJECTION");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("REJECTION", value, "Rejection Integration Method");
-            }
-
-           /*
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Master Frame Rejection Method",
-                    mFormText = "Master Frame Rejection Method Not Set",
-                    mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                if (FormValue.mTextBox.Equals("SC") || FormValue.mTextBox.Equals("WSC") || FormValue.mTextBox.Equals("LFC") || FormValue.mTextBox.Equals("ESD"))
-                {
-                    AddKeyword("REJECTION", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
-                    return FormValue.mTextBox;
-                }
-            }
-
-            return string.Empty;
-           */
         }
 
         // *********************************************************************************************************
@@ -689,22 +287,21 @@ namespace XisfFileManager
             return -273.0;
             */
         }
-
+     
         // *********************************************************************************************************
         // *********************************************************************************************************
-        // This is the name of the File itself - Does not contain the path
-        public string FileName
+        public bool Approved
         {
             get
             {
-                object Object = GetKeywordValue("FILENAME");
+                object Object = GetKeywordValue("Approved");
                 if (Object != null)
-                    return (string)GetKeywordComment("FILENAME");
-                return string.Empty;
+                    return (bool)Object;
+                return false;
             }
             set
             {
-                AddKeyword("FILENAME", value, "Original Filename");
+                AddKeyword("Approved", value, "This file has been approved for subframe calculations");
             }
         }
         // *********************************************************************************************************
@@ -962,6 +559,91 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+        public string CBIAS
+        {
+            get
+            {
+                object Object = GetKeywordValue("CBIAS");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CBIAS", value, "Match this file with other CBIAS" + CBIAS + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CDARK
+        {
+            get
+            {
+                object Object = GetKeywordValue("CDARK");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CDARK", value, "Match this file with other CDARK" + CDARK + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CFLAT
+        {
+            get
+            {
+                object Object = GetKeywordValue("CFLAT");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CFLAT", value, "Match this file with other CFLAT" + CFLAT + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CPANEL
+        {
+            get
+            {
+                object Object = GetKeywordValue("CPANEL");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CPANEL", value, "Match this file with other CPANEL" + CPANEL + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double Eccentricity
+        {
+            get
+            {
+                object Object = GetKeywordValue("AIRMASS");
+                if (Object != null)
+                    return (double)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("ECCENTRICITY", value, "Number of atmospheres this image is looking through");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public double ExposureSeconds
         {
             get
@@ -1011,6 +693,24 @@ namespace XisfFileManager
 
             return double.MinValue;
             */
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // This is the name of the File itself - Does not contain the path
+        public string FileName
+        {
+            get
+            {
+                object Object = GetKeywordValue("FILENAME");
+                if (Object != null)
+                    return (string)GetKeywordComment("FILENAME");
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("FILENAME", value, "Original Filename");
+            }
         }
 
         // *********************************************************************************************************
@@ -1093,59 +793,6 @@ namespace XisfFileManager
 
     return string.Empty;
         */
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public eFrameType FrameType
-        {
-            get
-            {
-                object Object = GetKeywordValue("IMAGETYP");
-                if (Object != null)
-                {
-                    if (Object.ToString().ToLower().Contains("light")) return eFrameType.LIGHT;
-                    if (Object.ToString().ToLower().Contains("dark")) return eFrameType.DARK;
-                    if (Object.ToString().ToLower().Contains("flat")) return eFrameType.FLAT;
-                    if (Object.ToString().ToLower().Contains("bias")) return eFrameType.BIAS;
-                }
-                return eFrameType.EMPTY;
-            }
-
-            set
-            {
-                AddKeyword("IMAGETYP", value, "Type of frame capture");
-            }
-            /*
-            while (FindMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Frame Type",
-                    mFormText = "Frame Type Not Set",
-                    mFormEntryText = "Enter Frame Type (L, D, F or B):",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnData = OpenUIForm(formData);
-
-                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("D") || returnData.mTextBox.Equals("F") || returnData.mTextBox.Equals("B"))
-                {
-                    if (returnData.mTextBox.Equals("L")) frameType = "Light";
-                    if (returnData.mTextBox.Equals("D")) frameType = "Dark";
-                    if (returnData.mTextBox.Equals("F")) frameType = "Flat";
-                    if (returnData.mTextBox.Equals("B")) frameType = "Bias";
-
-                    AddKeyword("IMAGETYP", frameType, "XISF File Manager");
-
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + returnData.mTextBox;
-                    else
-                        return returnData.mTextBox;
-                }
-            }
-        }
-            */
-        }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -1277,34 +924,92 @@ namespace XisfFileManager
             */
         }
 
-
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double RotatorAngle
+        public eFrameType FrameType
         {
             get
             {
-                object Object = GetKeywordValue("POSANGLE");
-                if (Object == null)
+                object Object = GetKeywordValue("IMAGETYP");
+                if (Object != null)
                 {
-                    Object = GetKeywordValue("ROTATANG");
-                    if (Object != null)
-                    {
-                        RemoveKeyword("ROTATANG");
-                        AddKeyword("POSANGLE", (double)Object, "MoonLite NightCrawler 360 Degree Rotator Mechanical Angle");
-                    }
-                    else
-                        return double.MinValue;
+                    if (Object.ToString().ToLower().Contains("light")) return eFrameType.LIGHT;
+                    if (Object.ToString().ToLower().Contains("dark")) return eFrameType.DARK;
+                    if (Object.ToString().ToLower().Contains("flat")) return eFrameType.FLAT;
+                    if (Object.ToString().ToLower().Contains("bias")) return eFrameType.BIAS;
                 }
-
-                return Convert.ToDouble(Object);
+                return eFrameType.EMPTY;
             }
 
             set
             {
-                AddKeyword("POSANGLE", value, "MoonLite NightCrawler Rotator Posistion");
+                AddKeyword("IMAGETYP", value, "Type of frame capture");
             }
+            /*
+            while (FindMissingKeywords)
+            {
+                UserInputFormData formData = new UserInputFormData
+                {
+                    mFormName = "Frame Type",
+                    mFormText = "Frame Type Not Set",
+                    mFormEntryText = "Enter Frame Type (L, D, F or B):",
+                    mFileName = FileName()
+                };
 
+                UserInputFormData returnData = OpenUIForm(formData);
+
+                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("D") || returnData.mTextBox.Equals("F") || returnData.mTextBox.Equals("B"))
+                {
+                    if (returnData.mTextBox.Equals("L")) frameType = "Light";
+                    if (returnData.mTextBox.Equals("D")) frameType = "Dark";
+                    if (returnData.mTextBox.Equals("F")) frameType = "Flat";
+                    if (returnData.mTextBox.Equals("B")) frameType = "Bias";
+
+                    AddKeyword("IMAGETYP", frameType, "XISF File Manager");
+
+                    if (returnData.mGlobalCheckBox)
+                        return "Global_" + returnData.mTextBox;
+                    else
+                        return returnData.mTextBox;
+                }
+            }
+        }
+            */
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double FWHM
+        {
+            get
+            {
+                object Object = GetKeywordValue("FWHM");
+                if (Object != null)
+                    return (double)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("FWHM", value, "Average FWHM in this image");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public int Gain
+        {
+            get
+            {
+                object Object = GetKeywordValue("GAIN");
+                if (Object != null)
+                    return (int)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("GAIN", value, "Camera Gain");
+                SetEGain();
+            }
         }
 
         // *********************************************************************************************************
@@ -1379,6 +1084,170 @@ namespace XisfFileManager
             AddKeyword("YPIXSZ", Convert.ToDouble(FormValue.mTextBox));
 
             return Convert.ToDouble(FormValue.mTextBox);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string Rejection
+        {
+            get
+            {
+                object Object = GetKeywordValue("REJECTION");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("REJECTION", value, "Rejection Integration Method");
+            }
+
+            /*
+             while (findMissingKeywords)
+             {
+                 UserInputFormData formData = new UserInputFormData
+                 {
+                     mFormName = "Master Frame Rejection Method",
+                     mFormText = "Master Frame Rejection Method Not Set",
+                     mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):",
+                     mFileName = FileName()
+                 };
+
+                 UserInputFormData FormValue = OpenUIForm(formData);
+
+                 if (FormValue.mTextBox.Equals("SC") || FormValue.mTextBox.Equals("WSC") || FormValue.mTextBox.Equals("LFC") || FormValue.mTextBox.Equals("ESD"))
+                 {
+                     AddKeyword("REJECTION", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
+                     return FormValue.mTextBox;
+                 }
+             }
+
+             return string.Empty;
+            */
+        }
+        
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
+        public void RepairSiteLatitude()
+        {
+            string latitude = (string)GetKeywordValue("SITELAT");
+
+            if (latitude == null) return;
+
+            if (latitude.Contains("N"))
+            {
+                latitude = Regex.Replace(latitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
+        public void RepairSiteLongitude()
+        {
+            string longitude = (string)GetKeywordValue("SITELONG");
+
+            if (longitude == null) return;
+
+            if (longitude.Contains("W"))
+            {
+                longitude = Regex.Replace(longitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
+
+                Regex regReplace = new Regex("'");
+
+                longitude = regReplace.Replace(longitude, "'-", 1);
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double RotatorAngle
+        {
+            get
+            {
+                object Object = GetKeywordValue("POSANGLE");
+                if (Object == null)
+                {
+                    Object = GetKeywordValue("ROTATANG");
+                    if (Object != null)
+                    {
+                        RemoveKeyword("ROTATANG");
+                        AddKeyword("POSANGLE", (double)Object, "MoonLite NightCrawler 360 Degree Rotator Mechanical Angle");
+                    }
+                    else
+                        return double.MinValue;
+                }
+
+                return Convert.ToDouble(Object);
+            }
+
+            set
+            {
+                AddKeyword("POSANGLE", value, "MoonLite NightCrawler Rotator Posistion");
+            }
+
+        }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Various programs appear to screw this up - fix it
+        private void SetEGain()
+        {
+            // Use graphs found on manufacturer website
+
+            double egain = -1.0;
+            double gain = Gain;
+            string camera = Camera;
+
+            if (camera == "Z183")
+                egain = 3.6059 * Math.Exp(-0.011 * gain);
+
+            if (camera == "Z533")
+                egain = (-7e-13 * Math.Pow(gain, 5)) + (1e-9 * Math.Pow(gain, 4)) - (6e-7 * Math.Pow(gain, 3)) + (0.0002 * Math.Pow(gain, 2)) - (0.0356 * gain) + 3.1338;
+
+            if (camera == "Q178")
+            {
+                if (gain < 4.0)
+                    egain = 2.6;
+                else
+                    egain = 3.8018 * Math.Exp(-0.0117 * gain);
+            }
+
+            if (camera == "A144")
+                egain = 0.37;
+
+            AddKeyword("EGAIN", egain, "Electrons per ADU calculated using manufacturer graphs");
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public void SetIntegrationParamaters()
+        {
+            List<Keyword> keys = new List<Keyword>(mKeywordList);
+
+            foreach (Keyword node in keys)
+            {
+                if (node.Comment.ToLower().Contains("numberofimages"))
+                {
+                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
+                    AddKeyword("TOTALFRAMES", totalFrames, "Number of Integrated SubFrames");
+                }
+
+                if (node.Comment.ToLower().Contains("pixelrejection"))
+                {
+                    if (node.Comment.ToLower().Contains("linear"))
+                        AddKeyword("REJECTION", "LFC", "PixInsight Linear Fit Clipping");
+
+                    if (node.Comment.ToLower().Contains("student"))
+                        AddKeyword("REJECTION", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+
+                    if (node.Comment.ToLower().Contains("sigma"))
+                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
+
+                    if (node.Comment.ToLower().Contains("winsor"))
+                        AddKeyword("REJECTION", "WSC", "PixInsight Winsorized Sigma Clipping");
+                }
+            }
         }
 
         // *********************************************************************************************************
@@ -1492,7 +1361,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string TargetObjectName
+        public string TargetName
         {
             get
             {
@@ -1611,51 +1480,106 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double WeightKeyword(bool findMissingKeywords = false)
+        public int TotalFrames
         {
-            object Obj = GetKeywordValue("SSWEIGHT");
-            if (Obj != null)
+            get
             {
-                return (double)Obj;
+                object Object = GetKeywordValue("TOTALFRAMES");
+                if (Object != null)
+                    return (int)Object;
+                return 0;
+            }
+            set
+            {
+                SetIntegrationParamaters();
+                AddKeyword("TOTALFRAMES", value, "");
+            }
+            /*
+                
+
+            object Object = GetKeywordValue("TOTALFRAMES");
+            if (Object == null)
+            {
+                while (findMissingKeywords)
+                {
+                    UserInputFormData formData = new UserInputFormData
+                    {
+                        mFormName = "Master Frame Integration",
+                        mFormText = "Integrated SubFrames Not Set",
+                        mFormEntryText = "Enter Total Integration Frames:",
+                        mFileName = FileName()
+                    };
+
+                    UserInputFormData returnValue = OpenUIForm(formData);
+
+                    bool bStatus = int.TryParse(returnValue.mTextBox, out int frames);
+                    if (bStatus)
+                    {
+                        AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
+
+                        if (returnValue.mGlobalCheckBox)
+                            return -frames;
+                        else
+                            return frames;
+                    }
+                }
+                return -1;
             }
 
-            Obj = GetKeywordValue("NWEIGHT");
-            if (Obj != null)
-            {
-                return (double)Obj;
-            }
+            return (int)Object;
+            */
+        }
 
-            Obj = GetKeywordValue("W_SNR");
-            if (Obj != null)
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double WeightKeyword
+        {
+            get
             {
-                return (double)Obj;
-            }
+                object Obj = GetKeywordValue("SSWEIGHT");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
 
-            Obj = GetKeywordValue("W_FWHM");
-            if (Obj != null)
-            {
-                return (double)Obj;
-            }
+                Obj = GetKeywordValue("NWEIGHT");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
 
-            Obj = GetKeywordValue("W_ECC");
-            if (Obj != null)
-            {
-                return (double)Obj;
-            }
+                Obj = GetKeywordValue("W_SNR");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
 
-            Obj = GetKeywordValue("W_PSFSNR");
-            if (Obj != null)
-            {
-                return (double)Obj;
-            }
+                Obj = GetKeywordValue("W_FWHM");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
 
-            Obj = GetKeywordValue("W_PSF");
-            if (Obj != null)
-            {
-                return (double)Obj;
-            }
+                Obj = GetKeywordValue("W_ECC");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
 
-            return -1.0;
+                Obj = GetKeywordValue("W_PSFSNR");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
+
+                Obj = GetKeywordValue("W_PSF");
+                if (Obj != null)
+                {
+                    return (double)Obj;
+                }
+
+                return -1.0;
+            }
         }
 
         // *********************************************************************************************************

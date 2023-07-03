@@ -31,18 +31,18 @@ namespace XisfFileManager.FileOperations
             mBufferList = new List<Buffer>();
             string sourceFilePath;
 
-            FileInfo xFileInfo = new FileInfo(xFile.TargetFilePath);
+            FileInfo xFileInfo = new FileInfo(xFile.FilePath);
 
             while (IsFileLocked(xFileInfo))
             {
                 Thread.Sleep(500);
-                xFileInfo = new FileInfo(xFile.TargetFilePath);
+                xFileInfo = new FileInfo(xFile.FilePath);
             }
 
 
             try
             {
-                using (Stream stream = new FileStream(xFile.TargetFilePath, FileMode.Open))
+                using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
                     mBufferList.Clear();
 
@@ -169,24 +169,24 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
 
                     // Now that the mBuffer List is done, write the XISF File
-                    bool bStatus = WriteBinaryFile(xFile.TargetFilePath);
+                    bool bStatus = WriteBinaryFile(xFile.FilePath);
                     if (bStatus == false)
                         return false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + xFile.TargetFilePath + ")");
+                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + xFile.FilePath + ")");
                 return false;
             }
 
 
             // After Keyword update, move rejected file (Approved = false) to the "Rejected" subdirectory
-            if (xFile.KeywordData.Approved() == false)
+            if (xFile.Approved == false)
             {
-                sourceFilePath = Path.GetDirectoryName(xFile.TargetFilePath);
+                sourceFilePath = Path.GetDirectoryName(xFile.FilePath);
                 Directory.CreateDirectory(sourceFilePath + "\\Rejected");
-                File.Move(xFile.TargetFilePath, sourceFilePath + "\\Rejected\\" + Path.GetFileName(xFile.TargetFilePath));
+                File.Move(xFile.FilePath, sourceFilePath + "\\Rejected\\" + Path.GetFileName(xFile.FilePath));
             }
 
             return true;
@@ -263,10 +263,10 @@ namespace XisfFileManager.FileOperations
 
                 // Alphabetize the KeywordData FITSKeywords
                 // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (minus explicit removals and changes)
-                List<FitsKeyword> keywords = mFile.KeywordList.OrderBy(p => p.Name).ToList();
+                List<Keyword> keywords = mFile.mKeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
 
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
-                foreach (FitsKeyword keyword in keywords)
+                foreach (Keyword keyword in keywords)
                 {
                     var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                     newElement.SetAttribute("name", keyword.Name);
@@ -294,15 +294,15 @@ namespace XisfFileManager.FileOperations
         private static void ReplaceSubFrameSelectorKeywords(SubFrameLists CsvWeightLists, XisfFile mFile)
         {
             int indexer;
-            List<FitsKeyword> fileNameList = CsvWeightLists.SubFrameList.FileNameList;
+            List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileNameList;
 
             indexer = 0;
-            foreach (FitsKeyword file in fileNameList)
+            foreach (Keyword file in fileNameList)
             {
                 string fileName = file.Value.ToString().Replace("\"", "").Replace("/", @"\");
 
                 // This equality check makes sure the correct data is used for the current file.
-                if (mFile.TargetFilePath == fileName)
+                if (mFile.FilePath == fileName)
                 {
                     mFile.AddKeyword(CsvWeightLists.SubFrameList.ApprovedList[indexer].Name, CsvWeightLists.SubFrameList.ApprovedList[indexer].Value, CsvWeightLists.SubFrameList.ApprovedList.ElementAt(indexer).Comment);
                     mFile.AddKeyword(CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Comment);

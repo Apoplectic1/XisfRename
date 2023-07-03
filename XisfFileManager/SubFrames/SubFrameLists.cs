@@ -6,7 +6,6 @@ namespace XisfFileManager.Keywords
     {
         public SubFrame SubFrameList;
 
-
         public SubFrameLists()
         {
             SubFrameList = new SubFrame();
@@ -27,7 +26,7 @@ namespace XisfFileManager.Keywords
 
         public void AddApproved(XisfFile xfile)
         {
-            SubFrameList.ApprovedList.Add(xfile.Approved);
+            //SubFrameList.ApprovedList.Add(xfile.Approved);
         }
 
         public void AddEccentricity(XisfFile xfile)

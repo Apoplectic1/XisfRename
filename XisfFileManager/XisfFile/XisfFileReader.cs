@@ -24,7 +24,7 @@ namespace XisfFileManager.FileOperations
 
         public async Task ReadXisfFile(XisfFile xFile)
         {
-            using (FileStream fileStream = new FileStream(xFile.TargetFilePath, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(xFile.FilePath, FileMode.Open, FileAccess.Read))
             {
                 mBufferSize = 10000;
                 mBuffer = new byte[mBufferSize];
@@ -68,7 +68,7 @@ namespace XisfFileManager.FileOperations
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.TargetFilePath +
+                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
                         "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
                         "Parse XISF File",
                         MessageBoxButtons.OKCancel,
@@ -99,7 +99,7 @@ namespace XisfFileManager.FileOperations
                 // Find each keyword and add it to xFile
                 foreach (XElement element in elements)
                 {
-                    xFile.KeywordData.AddXMLKeyword(element);
+                    xFile.AddXMLKeyword(element);
                 }
 
                 xFile.SetRequiredKeywords();

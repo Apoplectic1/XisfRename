@@ -9,7 +9,7 @@ namespace XisfFileManager.FileOperations
     {
         // Member Strutures
         public XDocument mXDoc;
-        private KeywordList mKeywordList;
+        public KeywordList mKeywordList;
 
         public XisfFile()
         {
@@ -29,6 +29,11 @@ namespace XisfFileManager.FileOperations
             mKeywordList.AddKeyword(keyword, value, comment);
         }
 
+        public void AddXMLKeyword(string keyword, object value, string comment = "Xisf File Manager")
+        {
+            mKeywordList.AddKeyword(keyword, value, comment);
+        }
+
         public void RemoveKeyword(string keyword)
         {
            mKeywordList.RemoveKeyword(keyword);
@@ -37,6 +42,11 @@ namespace XisfFileManager.FileOperations
         {
             get { return mKeywordList.AmbientTemperature; }
             set { mKeywordList.AmbientTemperature = value; }
+        }
+        public bool Approved
+        {
+            get { return mKeywordList.Approved; }
+            set { mKeywordList.Approved = value; }
         }
         public int Binning
         {
@@ -83,8 +93,8 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.ExposureSeconds; }
             set { mKeywordList.ExposureSeconds = value; }
         }
-        public string FileName { get; set; } = string.Empty;
-        public string Filter
+        public string FilePath { get; set; } = string.Empty;
+        public string FilterName
         {
             get { return mKeywordList.FilterName; }
             set { mKeywordList.AddKeyword("FILTER", value); }
@@ -125,6 +135,11 @@ namespace XisfFileManager.FileOperations
             set { mKeywordList.Offset = value; }
         }
         public bool RiccardiReducer { get; set; }
+        public string Rejection
+        {
+            get { return mKeywordList.Rejection; }
+            set { mKeywordList.Rejection = value; }
+        }
         public double RotatorAngle
         {
             get { return mKeywordList.RotatorAngle; }
@@ -138,22 +153,26 @@ namespace XisfFileManager.FileOperations
         public double SSWeight { get; set; } = 0.0;
         public int ThumbnailAttachmentLength { get; set; } = 0;
         public int ThumbnailAttachmentStart { get; set; } = 0;
-        public string TargetFilePath
-        {
-            get { return mKeywordList.TargetFilePath; }
-            set { mKeywordList.TargetFilePath = value; }
-        }
         public string TargetObjectName
         {
-            get { return mKeywordList.TargetObjectName; }
-            set { mKeywordList.TargetObjectName = value; }
+            get { return mKeywordList.TargetName; }
+            set { mKeywordList.TargetName = value; }
         }
         public string Telescope
         {
             get { return mKeywordList.Telescope; }
             set { mKeywordList.Telescope = value; }
         }
+        public int TotalFrames
+        {
+            get { return mKeywordList.TotalFrames; }
+            set { mKeywordList.TotalFrames = value; }
+        }
         public bool Unique { get; set; } = false;
+        public double WeightKeyword
+        {
+            get { return mKeywordList.WeightKeyword; }
+        }
 
         // ***********************************************************************************************************************************
 
@@ -195,10 +214,112 @@ namespace XisfFileManager.FileOperations
             }
         }
 
+        public Keyword NewKeyWord(string sName, object oValue, string sComment)
+        {
+            Keyword newKeyword = new Keyword
+            {
+                Name = sName,
+                Value = oValue,
+                Comment = sComment
+            };
+
+            return newKeyword;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+        public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
+        {
+            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
+
+            mKeywordList.AddKeywordKeepDuplicates(newKeyword);
+        }
+
+        public void AddXMLKeyword(XElement element)
+        {
+            bool bStatus;
+
+            // First remove Keyword characteritics that interfere with later processing
+            // Get rid of extra spaces and "'"
+            string elementValue = element.Attribute("value").Value;
+            elementValue = elementValue.Replace(" ", "").Replace("'", "");
+
+            // Now get rid of an extra decimal point at the end of what should be integers
+            elementValue = elementValue.TrimEnd('.');
+
+            //int decimalIndex = elementValue.LastIndexOf('.') + 1;
+            //if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
+            //{
+            //    elementValue = elementValue.Replace(".", "");
+            // }
+
+            // Now actually parse the keywords into bools, integers, doubles and finally strings
+            bStatus = bool.TryParse(elementValue, out bool bBool);
+            if (bStatus)
+            {
+                if (elementValue == "T")
+                {
+                    AddKeyword("true", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+                if (elementValue == "F")
+                {
+                    AddKeyword("false", bBool, element.Attribute("comment").Value);
+                    return;
+                }
+            }
+
+            if (element.Attribute("name").Value == "EXPTIME")
+            {
+                bStatus = double.TryParse(elementValue, out double seconds);
+                if (bStatus)
+                {
+                    AddKeyword(element.Attribute("name").Value, seconds, element.Attribute("comment").Value);
+                    return;
+                }
+            }
+
+            bStatus = Int32.TryParse(elementValue, out int iInt32);
+            if (bStatus)
+            {
+                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
+                return;
+            }
+
+            bStatus = double.TryParse(elementValue, out double dDouble);
+            if (bStatus)
+            {
+                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
+                return;
+            }
+
+            // Pixinsight will add multiple Keywords using the same name
+            // Keep string Keyword Duplicates
+            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Set Who and Where
+        public void SetObservationSite()
+        {
+            AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
+            AddKeyword("SITELONG", -74.997372, "Logitude of observation site - Degrees East");
+            AddKeyword("SITELAT", 40.282852, "Latitude of observation site - Degrees North");
+            AddKeyword("SITEELEV", 80.0, "Altitude of observation site - MSL Meters");
+            RemoveKeyword("LONG-OBS");
+            RemoveKeyword("LAT-OBS");
+            RemoveKeyword("ALT-OBS");
+            RemoveKeyword("OBSGEO-L");
+            RemoveKeyword("OBSGEO-B");
+            RemoveKeyword("OBSGEO-H");
+
+            AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
+        }
+
         public void SetRequiredKeywords()
         {
-            FileName = mKeywordList.FileName;
-            Master = mKeywordList.TargetObjectName.Contains("Master");
+            FilePath = mKeywordList.FileName;
+            Master = mKeywordList.TargetName.Contains("Master");
             NarrowBand = mKeywordList.FilterName.Contains("Ha") || mKeywordList.FilterName.Contains("O3") || mKeywordList.FilterName.Contains("S2");
             RiccardiReducer = mKeywordList.Telescope.EndsWith("R");
          }

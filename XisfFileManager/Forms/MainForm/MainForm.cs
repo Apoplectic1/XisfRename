@@ -21,9 +21,7 @@ using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager
 {
-
     public delegate void DataReceivedEventHandler(CalibrationTabPageValues data);
-
 
     public enum eFrameType { LIGHT, DARK, FLAT, BIAS, EMPTY }
     public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER, EMPTY }
@@ -331,7 +329,7 @@ namespace XisfFileManager
                 // Create a new xisf file instance
                 mFile = new XisfFile
                 {
-                    TargetFilePath = file.FullName
+                    FilePath = file.FullName
                 };
 
                 await Task.Run(async () =>
@@ -517,12 +515,11 @@ namespace XisfFileManager
 
 
             // Now make a list of all Keywords found in ALL files. Sort and populate comboBox
-            FitsKeyword node = new FitsKeyword();
             List<string> keywordNamelist = new List<string>();
 
             foreach (XisfFile xFile in mFileList)
             {
-                foreach (var keywordName in xFile.KeywordList)
+                foreach (var keywordName in xFile.mKeywordList.mKeywordList)
                 {
                     keywordNamelist.Add(keywordName.Name);
                 }
@@ -539,16 +536,13 @@ namespace XisfFileManager
             // **********************************************************************
 
 
-
-
-
             // **********************************************************************
             // Calculate Image paramters for UI
-            ClearImageParameterLists();
+            //ClearImageParameterLists();
             foreach (XisfFile xFile in mFileList)
             {
-                if (xFile.FileName == string.Empty)
-                    xFile.AddKeyword("FILENAME", "Original Name", Path.GetFileName(xFile.TargetFilePath));
+                if (xFile.FilePath == string.Empty)
+                    xFile.AddKeyword("FILENAME", "Original Name", Path.GetFileName(xFile.FilePath));
 
                 ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
@@ -580,7 +574,7 @@ namespace XisfFileManager
 
                 foreach (XisfFile file in fileList)
                 {
-                    string fileName = Directory.GetParent(file.TargetFilePath).ToString();
+                    string fileName = Directory.GetParent(file.FilePath).ToString();
 
                     nightlist.Add(fileName.Substring(fileName.LastIndexOf('\\') + 1));
                 }
@@ -603,41 +597,41 @@ namespace XisfFileManager
 
                     foreach (XisfFile file in fileList)
                     {
-                        if (!file.TargetFilePath.Contains(night))
+                        if (!file.FilePath.Contains(night))
                             continue;
 
                         if (bFilter)
                         {
                             int fileIndex = file.Index;
 
-                            if (file.Filter.Equals("Luma"))
+                            if (file.FilterName.Equals("Luma"))
                                 file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
-                            if (file.Filter.Equals("Red"))
+                            if (file.FilterName.Equals("Red"))
                                 file.Index = (file.Unique) ? ++redIndex : redIndex++;
 
-                            if (file.Filter.Equals("Green"))
+                            if (file.FilterName.Equals("Green"))
                                 file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
 
-                            if (file.Filter.Equals("Blue"))
+                            if (file.FilterName.Equals("Blue"))
                                 file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
 
-                            if (file.Filter.Equals("Ha"))
+                            if (file.FilterName.Equals("Ha"))
                                 file.Index = (file.Unique) ? ++haIndex : haIndex++;
 
-                            if (file.Filter.Equals("O3"))
+                            if (file.FilterName.Equals("O3"))
                                 file.Index = (file.Unique) ? ++o3Index : o3Index++;
 
-                            if (file.Filter.Equals("S2"))
+                            if (file.FilterName.Equals("S2"))
                                 file.Index = (file.Unique) ? ++s2Index : s2Index++;
 
-                            if (file.Filter.Equals("Shutter"))
+                            if (file.FilterName.Equals("Shutter"))
                                 file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
 
                             if (fileIndex == file.Index)
                             {
                                 DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.TargetFilePath +
+                                "No Filter in source file:\n" + file.FilePath +
                                 "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
                                 "File Update Failed",
                                 MessageBoxButtons.OK,
@@ -670,41 +664,41 @@ namespace XisfFileManager
 
                 foreach (XisfFile file in fileList)
                 {
-                    if (file.TargetFilePath.Contains("Duplicates"))
+                    if (file.FilePath.Contains("Duplicates"))
                         continue;
 
                     if (bFilter)
                     {
                         int fileIndex = file.Index;
 
-                        if (file.Filter.Equals("Luma"))
+                        if (file.FilterName.Equals("Luma"))
                             file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
 
-                        if (file.Filter.Equals("Red"))
+                        if (file.FilterName.Equals("Red"))
                             file.Index = (file.Unique) ? ++redIndex : redIndex++;
 
-                        if (file.Filter.Equals("Green"))
+                        if (file.FilterName.Equals("Green"))
                             file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
 
-                        if (file.Filter.Equals("Blue"))
+                        if (file.FilterName.Equals("Blue"))
                             file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
 
-                        if (file.Filter.Equals("Ha"))
+                        if (file.FilterName.Equals("Ha"))
                             file.Index = (file.Unique) ? ++haIndex : haIndex++;
 
-                        if (file.Filter.Equals("O3"))
+                        if (file.FilterName.Equals("O3"))
                             file.Index = (file.Unique) ? ++o3Index : o3Index++;
 
-                        if (file.Filter.Equals("S2"))
+                        if (file.FilterName.Equals("S2"))
                             file.Index = (file.Unique) ? ++s2Index : s2Index++;
 
-                        if (file.Filter.Equals("Shutter"))
+                        if (file.FilterName.Equals("Shutter"))
                             file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
 
                         if (fileIndex == file.Index)
                         {
                             DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.TargetFilePath +
+                                "No Filter in source file:\n" + file.FilePath +
                                 "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
                                 "File Update Failed",
                                 MessageBoxButtons.OK,
@@ -742,7 +736,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.TargetFilePath) + "\n" + Path.GetFileName(file.TargetFilePath);
+                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FilePath) + "\n" + Path.GetFileName(file.FilePath);
 
                 file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
@@ -839,7 +833,7 @@ namespace XisfFileManager
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
-                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.TargetFilePath) + "\n" + Path.GetFileName(file.TargetFilePath);
+                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.FilePath) + "\n" + Path.GetFileName(file.FilePath);
                 Application.DoEvents();
 
                 if (bStatus == false)
@@ -1888,12 +1882,12 @@ namespace XisfFileManager
             {   
                 if (globalFrameType)
                 {
-                    if (file.FrameType == string.Empty)
+                    if (file.FrameType == eFrameType.EMPTY)
                         file.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
                 }
                 else
                 {
-                    frameTypeText = file.FrameType;
+                    frameTypeText = string.Empty; // file.FrameType;
                     if (frameTypeText.Contains("Global_"))
                     {
                         globalFrameType = true;
@@ -1922,7 +1916,7 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    globalFilterText = file.FilterName(true);
+                    globalFilterText = file.FilterName;
                     if (globalFilterText.Contains("Global_"))
                     {
                         globalFilter = true;
@@ -2268,27 +2262,25 @@ namespace XisfFileManager
             frameTypeCount = 0;
             foreach (XisfFile file in mFileList)
             {
-                string frameType = file.FrameType;
-
-                if (frameType.Equals("Light"))
+                if (file.FrameType == eFrameType.LIGHT)
                 {
                     foundLight = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Equals("Dark"))
+                if (file.FrameType == eFrameType.DARK)
                 {
                     foundDark = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Equals("Flat"))
+                if (file.FrameType == eFrameType.FLAT)
                 {
                     foundFlat = true;
                     frameTypeCount++;
                 }
 
-                if (frameType.Equals("Bias"))
+                if (file.FrameType == eFrameType.BIAS)
                 {
                     foundBias = true;
                     frameTypeCount++;
@@ -3262,7 +3254,7 @@ namespace XisfFileManager
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    foreach (FitsKeyword node in file.KeywordData.KeywordList)
+                    foreach (Keyword node in file.mKeywordList.mKeywordList)
                     {
                         if (node.Comment.ToLower().Contains("numberofimages"))
                         {
@@ -3335,7 +3327,7 @@ namespace XisfFileManager
             // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile xFile in mFileList)
             {
-                WeightKeywords.Add(xFile.WeightKeyword().ToString());
+                WeightKeywords.Add(xFile.WeightKeyword.ToString());
             }
 
             if (WeightKeywords.Count > 0)
@@ -3371,7 +3363,7 @@ namespace XisfFileManager
                 {
                     foreach (XisfFile file in mFileList)
                     {
-                        file.KeywordData.RemoveKeyword(item);
+                        file.RemoveKeyword(item);
                     }
                 }
 
@@ -3386,7 +3378,7 @@ namespace XisfFileManager
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 }
 
                 WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
@@ -3448,7 +3440,7 @@ namespace XisfFileManager
         {
             if (CheckBox_CalibrationTab_CreateNew.Checked == true)
             {
-                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].TargetFilePath);
+                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].FilePath);
 
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);
@@ -3539,7 +3531,7 @@ namespace XisfFileManager
             if (mFileList.Count == 0) return;
 
 
-            string directoryName = Path.GetDirectoryName(mFileList[0].TargetFilePath);
+            string directoryName = Path.GetDirectoryName(mFileList[0].FilePath);
             if (directoryName.Contains(@"Captures\"))
                 directoryName = directoryName.Substring(0, directoryName.IndexOf("Captures")) + @"Captures\Calibration";
             else
@@ -3555,7 +3547,7 @@ namespace XisfFileManager
                 file.RemoveKeyword("CDARK");
                 file.CDARK = string.Empty;
 
-                file..RemoveKeyword("CFLAT");
+                file.RemoveKeyword("CFLAT");
                 file.CFLAT = string.Empty;
 
                 file.RemoveKeyword("CBIAS");
@@ -3574,7 +3566,6 @@ namespace XisfFileManager
 
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FitsKeyword node = new FitsKeyword();
             List<string> keywordValuelist = new List<string>();
 
             if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
@@ -3582,7 +3573,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                foreach (var keyword in file.KeywordData.KeywordList)
+                foreach (var keyword in file.mKeywordList.mKeywordList)
                 {
                     //if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedItem))
                     // keywordValuelist.Add(GetKeywordValue());
@@ -3614,7 +3605,7 @@ namespace XisfFileManager
         {
             foreach (XisfFile file in mFileList)
             {
-                FitsKeyword item = file.KeywordData.KeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                Keyword item = file.mKeywordList.mKeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
                 if (item != null)
                 {
                     if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)
