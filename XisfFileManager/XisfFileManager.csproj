@@ -155,6 +155,8 @@
     <Compile Include="Calibration\Calibration.cs" />
     <Compile Include="FileOps\DirectoryOps.cs" />
     <Compile Include="FileOps\CsvFileRead.cs" />
+    <Compile Include="Keyword\Keyword.cs" />
+    <Compile Include="Keyword\KeywordList.cs" />
     <Compile Include="XisfFile\XisfFileReader.cs" />
     <Compile Include="XisfFile\XisfFileRename.cs" />
     <Compile Include="XisfFile\XisfFileUpdate.cs" />
@@ -175,7 +177,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FileOps\Buffer.cs" />
-    <Compile Include="Keywords\KeywordLists.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XisfFile\XisfFile.cs" />

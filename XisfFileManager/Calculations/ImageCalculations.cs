@@ -9,66 +9,59 @@ namespace XisfFileManager.Calculations
 {
     public class ImageCalculations
     {
-        public List<double> FocuserPosition { get; set; }
-        public List<double> FocuserTemperature { get; set; }
-        public List<double> AmbientTemperature { get; set; }
-        public List<double> FileSSWeight { get; set; }
+        public List<double> mFocuserPositionList { get; set; }
+        public List<double> mFocuserTemperatureList { get; set; }
+        public List<double> mAmbientTemperatureList { get; set; }
+        public List<double> mFileSSWeightList { get; set; }
 
 
         public ImageCalculations()
         {
-            FocuserPosition = new List<double>();
-            FocuserTemperature = new List<double>();
-            AmbientTemperature = new List<double>();
-            FileSSWeight = new List<double>();
+            mFocuserPositionList = new List<double>();
+            mFocuserTemperatureList = new List<double>();
+            mAmbientTemperatureList = new List<double>();
+            mFileSSWeightList = new List<double>();
         }
 
         public void Clear()
         {
-            FocuserPosition.Clear();
-            FocuserTemperature.Clear();
-            AmbientTemperature.Clear();
-            FileSSWeight.Clear();
+            mFocuserPositionList.Clear();
+            mFocuserTemperatureList.Clear();
+            mAmbientTemperatureList.Clear();
+            mFileSSWeightList.Clear();
         }
 
         public double ReScaleFileSSWeight(double weight, double WeightRangeMin, double WeightRangeMax)
         {
             double WeightScaled;
 
-            WeightScaled = SubFrameNumericLists.Scale(weight, FileSSWeight.Min(), FileSSWeight.Max(), WeightRangeMin, WeightRangeMax);
+            WeightScaled = SubFrameNumericLists.Scale(weight, mFileSSWeightList.Min(), mFileSSWeightList.Max(), WeightRangeMin, WeightRangeMax);
 
             return WeightScaled;
         }
 
-        public void UpdateSSWeight(bool bUpdateWight, bool bUseCsvWeightList, KeywordLists Keywords, SubFrameNumericLists CsvSubFrameKeywordLists, SubFrameNumericLists FileSubFrameKeywordLists)
+        public void BuildImageParameterValueLists(XisfFile xFile)
         {
 
-        }
+            eFrameType imageType = xFile.FrameType;
 
-
-        public void BuildImageParameterValueLists(KeywordLists Keywords)
-        {
-            string imageType;
-
-            imageType = Keywords.FrameType();
-
-            if ((imageType == "Light") || (imageType == "L"))
+            if (imageType == eFrameType.LIGHT)
             {
-                int focusPosition = Keywords.FocuserPosition();
-                double focusTemperature = Keywords.FocuserTemperature();
-                double ambientTemperature = Keywords.AmbientTemperature();
+                int focusPosition = xFile.FocuserPosition;
+                double focusTemperature = xFile.FocuserTemperature;
+                double ambientTemperature = xFile.AmbientTemperature;
 
-                if ((focusPosition != int.MinValue) && (focusTemperature != -273) && (ambientTemperature != -273.0))
+                if ((focusPosition != int.MinValue) && (focusTemperature != -273.0) && (ambientTemperature != -273.0))
                 {
-                    FocuserPosition.Add(focusPosition);
-                    FocuserTemperature.Add(focusTemperature);
-                    AmbientTemperature.Add(ambientTemperature);
+                    mFocuserPositionList.Add(focusPosition);
+                    mFocuserTemperatureList.Add(focusTemperature);
+                    mAmbientTemperatureList.Add(ambientTemperature);
                 }
                 else
                 {
-                    FocuserPosition.Add(int.MinValue);
-                    FocuserTemperature.Add(-273);
-                    AmbientTemperature.Add(-273);
+                    mFocuserPositionList.Add(-1);
+                    mFocuserTemperatureList.Add(-273);
+                    mAmbientTemperatureList.Add(-273);
                 }
 
 
@@ -79,7 +72,6 @@ namespace XisfFileManager.Calculations
         public string CalculateOverhead(List<XisfFile> fileList)
         {
             int index;
-            double exposure;
             List<double> subFrameIntervalList;
             List<double> subFrameExposureList;
             List<double> exposureList;
@@ -104,7 +96,7 @@ namespace XisfFileManager.Calculations
 
             foreach (XisfFile file in fileList)
             {
-                secondInterval = file.KeywordData.CaptureDateTime();
+                secondInterval = file.CaptureDateTime;
                 double delta = secondInterval.Subtract(firstInterval).TotalSeconds;
                 firstInterval = secondInterval;
 
@@ -115,9 +107,7 @@ namespace XisfFileManager.Calculations
 
                 subFrameIntervalList.Add(delta);
 
-                exposure = (double)file.KeywordData.GetKeywordValue("EXPTIME");
-
-                subFrameExposureList.Add(exposure);
+                subFrameExposureList.Add(file.ExposureSeconds);
             }
 
             double sigma = subFrameIntervalList.StandardDeviation();
@@ -152,7 +142,7 @@ namespace XisfFileManager.Calculations
         {
             int index;
 
-            if ((FocuserPosition.Count != FocuserTemperature.Count) || (FocuserPosition.Count < 3) || FocuserTemperature.Contains(-273)) 
+            if ((mFocuserPositionList.Count != mFocuserTemperatureList.Count) || (mFocuserPositionList.Count < 3) || mFocuserTemperatureList.Contains(-273))
             {
                 return "No Focuser Position Data";
             }
@@ -161,12 +151,12 @@ namespace XisfFileManager.Calculations
             {
                 List<PositionTemperature> ptList = new List<PositionTemperature>();
 
-                for (index = 0; index < FocuserPosition.Count(); index++)
+                for (index = 0; index < mFocuserPositionList.Count(); index++)
                 {
                     PositionTemperature pt = new PositionTemperature
                     {
-                        Position = FocuserPosition[index],
-                        Temperature = FocuserTemperature[index]
+                        Position = mFocuserPositionList[index],
+                        Temperature = mFocuserTemperatureList[index]
                     };
                     ptList.Add(pt);
                 }

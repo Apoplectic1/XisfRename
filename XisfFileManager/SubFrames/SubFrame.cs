@@ -5,41 +5,41 @@ namespace XisfFileManager.Keywords
     public class SubFrame
     {
         public enum eValidation { EMPTY, INVALD, VALID, MISMATCH }
-        public List<FitsKeyword> ApprovedList { get; set; }
-        public List<FitsKeyword> AirMassList { get; set; }
-        public List<FitsKeyword> Eccentricity { get; set; }
-        public List<FitsKeyword> EccentricityMeanDeviation { get; set; }
-        public List<FitsKeyword> FileNameList { get; set; }
-        public List<FitsKeyword> FwhmList { get; set; }
-        public List<FitsKeyword> FwhmMeanDeviationList { get; set; }
-        public List<FitsKeyword> MedianList { get; set; }
-        public List<FitsKeyword> MedianMeanDeviationList { get; set; }
-        public List<FitsKeyword> NoiseList { get; set; }
-        public List<FitsKeyword> NoiseRatioList { get; set; }
-        public List<FitsKeyword> SnrWeightList { get; set; }
-        public List<FitsKeyword> StarResidualList { get; set; }
-        public List<FitsKeyword> StarResidualMeanDeviationList { get; set; }
-        public List<FitsKeyword> StarsList { get; set; }
-        public List<FitsKeyword> WeightList { get; set; }
+        public List<Keyword> ApprovedList { get; set; }
+        public List<Keyword> AirMassList { get; set; }
+        public List<Keyword> Eccentricity { get; set; }
+        public List<Keyword> EccentricityMeanDeviation { get; set; }
+        public List<Keyword> FileNameList { get; set; }
+        public List<Keyword> FwhmList { get; set; }
+        public List<Keyword> FwhmMeanDeviationList { get; set; }
+        public List<Keyword> MedianList { get; set; }
+        public List<Keyword> MedianMeanDeviationList { get; set; }
+        public List<Keyword> NoiseList { get; set; }
+        public List<Keyword> NoiseRatioList { get; set; }
+        public List<Keyword> SnrWeightList { get; set; }
+        public List<Keyword> StarResidualList { get; set; }
+        public List<Keyword> StarResidualMeanDeviationList { get; set; }
+        public List<Keyword> StarsList { get; set; }
+        public List<Keyword> WeightList { get; set; }
 
         public SubFrame()
         {
-            ApprovedList = new List<FitsKeyword>();
-            AirMassList = new List<FitsKeyword>();
-            Eccentricity = new List<FitsKeyword>();
-            EccentricityMeanDeviation = new List<FitsKeyword>();
-            FileNameList = new List<FitsKeyword>();
-            FwhmList = new List<FitsKeyword>();
-            FwhmMeanDeviationList = new List<FitsKeyword>();
-            MedianList = new List<FitsKeyword>();
-            MedianMeanDeviationList = new List<FitsKeyword>();
-            NoiseList = new List<FitsKeyword>();
-            NoiseRatioList = new List<FitsKeyword>();
-            SnrWeightList = new List<FitsKeyword>();
-            StarResidualList = new List<FitsKeyword>();
-            StarResidualMeanDeviationList = new List<FitsKeyword>();
-            StarsList = new List<FitsKeyword>();
-            WeightList = new List<FitsKeyword>();
+            ApprovedList = new List<Keyword>();
+            AirMassList = new List<Keyword>();
+            Eccentricity = new List<Keyword>();
+            EccentricityMeanDeviation = new List<Keyword>();
+            FileNameList = new List<Keyword>();
+            FwhmList = new List<Keyword>();
+            FwhmMeanDeviationList = new List<Keyword>();
+            MedianList = new List<Keyword>();
+            MedianMeanDeviationList = new List<Keyword>();
+            NoiseList = new List<Keyword>();
+            NoiseRatioList = new List<Keyword>();
+            SnrWeightList = new List<Keyword>();
+            StarResidualList = new List<Keyword>();
+            StarResidualMeanDeviationList = new List<Keyword>();
+            StarsList = new List<Keyword>();
+            WeightList = new List<Keyword>();
         }
 
         public void Clear()
@@ -118,7 +118,7 @@ namespace XisfFileManager.Keywords
 
             if (bZero == false)
             {
-                foreach (FitsKeyword filename in FileNameList)
+                foreach (Keyword filename in FileNameList)
                 {
                     bFileExists = System.IO.File.Exists(filename.Name) ? bFileExists : false;
                 }

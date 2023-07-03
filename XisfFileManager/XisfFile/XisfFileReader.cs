@@ -24,7 +24,7 @@ namespace XisfFileManager.FileOperations
 
         public async Task ReadXisfFile(XisfFile xFile)
         {
-            using (FileStream fileStream = new FileStream(xFile.SourceFileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(xFile.TargetFilePath, FileMode.Open, FileAccess.Read))
             {
                 mBufferSize = 10000;
                 mBuffer = new byte[mBufferSize];
@@ -68,7 +68,7 @@ namespace XisfFileManager.FileOperations
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.SourceFileName +
+                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.TargetFilePath +
                         "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
                         "Parse XISF File",
                         MessageBoxButtons.OKCancel,

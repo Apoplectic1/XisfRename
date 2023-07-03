@@ -1,51 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using XisfFileManager.Forms.UserInputForm;
+/*
+public class Keywords
+{
+    private static Keywords instance;
 
+    public static Keywords Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = new Keywords();
+            return instance;
+        }
+    }
+
+    public string Value1 { get; set; }
+    public int Value2 { get; set; }
+}
+
+public class ClassA
+{
+    private Keywords keywords = Keywords.Instance;
+
+    public void MethodA()
+    {
+        string value1 = keywords.Value1;
+        int value2 = keywords.Value2;
+
+        // Modify the values
+        keywords.Value1 = "New Value";
+        keywords.Value2 = 42;
+    }
+}
+
+public class ClassB
+{
+    private Keywords keywords = Keywords.Instance;
+
+    public void MethodB()
+    {
+        // Access the values
+        string value1 = keywords.Value1;
+        int value2 = keywords.Value2;
+    }
+}
+*/
 namespace XisfFileManager
 {
-    public class FitsKeyword
+    public class KeywordList
     {
-        public string Name { get; set; } = string.Empty;
-        public object Value { get; set; } = null;
-        public string Comment { get; set; } = string.Empty;
-    }
+        private Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
+        public List<Keyword> mKeywordList;
 
-    public class CalibrationTypeKeyword
-    {
-        public string CDARK { get; set; }
-        public string CFLAT { get; set; }
-        public string CBIAS { get; set; }
-
-        public List<PanelKeyword> CPanel { get; set; }
-        }
-
-    public class PanelKeyword
-    {
-        public List<string> Panel { get; set; }
-
-        public PanelKeyword()
+        public KeywordList()
         {
-            Panel = new List<string>();
+            mKeywordList = new List<Keyword>();
         }
-    }
 
-    public class KeywordLists
-    {
-        private static Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
-        public List<FitsKeyword> KeywordList;
-
-        public KeywordLists()
+        public void Clear()
         {
-            KeywordList = new List<FitsKeyword>();
+            mKeywordList.Clear();
         }
+        // ***********************************************************************************************************************************
 
-        private Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
+        public Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
         {
             UserInputFormData nullFormData = new UserInputFormData();
 
@@ -82,9 +106,9 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
-        private FitsKeyword NewKeyWord(string sName, object oValue, string sComment)
+        public Keyword NewKeyWord(string sName, object oValue, string sComment)
         {
-            FitsKeyword newKeyword = new FitsKeyword
+            Keyword newKeyword = new Keyword
             {
                 Name = sName,
                 Value = oValue,
@@ -98,7 +122,7 @@ namespace XisfFileManager
 
         public object GetKeywordValue(string sName)
         {
-            FitsKeyword node = KeywordList.Find(i => i.Name == sName);
+            Keyword node = mKeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return null;
 
@@ -106,7 +130,7 @@ namespace XisfFileManager
         }
         public object GetKeywordComment(string sName)
         {
-            FitsKeyword node = KeywordList.Find(i => i.Name == sName);
+            Keyword node = mKeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return null;
 
@@ -117,18 +141,18 @@ namespace XisfFileManager
 
         public void RemoveKeyword(string name)
         {
-            KeywordList.RemoveAll(i => i.Name.Contains(name));
+            mKeywordList.RemoveAll(i => i.Name.Contains(name));
         }
 
         // ----------------------------------------------------------------------------------------------------------
 
-        public void AddKeyword(string sName, object value, string sComment = "XISF File Manager")
+        public void AddKeyword(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            KeywordList.RemoveAll(i => i.Name == sName);
+            mKeywordList.RemoveAll(i => i.Name == sName);
 
-            FitsKeyword newKeyword = NewKeyWord(sName, value, sComment);
+            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
-            KeywordList.Add(newKeyword);
+            mKeywordList.Add(newKeyword);
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -197,86 +221,169 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
-
         public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            FitsKeyword newKeyword = NewKeyWord(sName, oValue, sComment);
+            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
-            KeywordList.Add(newKeyword);
+            mKeywordList.Add(newKeyword);
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-
-        public string CBIAS()
+        public bool Approved
         {
-            object Object = GetKeywordValue("CBIAS");
-            if (Object != null)
-                return (string)Object;
-
-            return string.Empty;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CDARK()
-        {
-            object Object = GetKeywordValue("CDARK");
-            if (Object != null)
-                return (string)Object;
-
-            return string.Empty;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CFLAT()
-        {
-            object Object = GetKeywordValue("CFLAT");
-            if (Object != null)
-                return (string)Object;
-
-            return string.Empty;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int Gain(bool findMissingKeywords = false)
-        {
-            object Object = GetKeywordValue("GAIN");
-            if (Object != null)
+            get
             {
-                return (int)Object;
+                object Object = GetKeywordValue("Approved");
+                if (Object != null)
+                    return (bool)Object;
+                return false;
             }
-
-            while (findMissingKeywords)
+            set
             {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Cammera Gain",
-                    mFormText = "Camera Gain Not Set",
-                    mFormEntryText = "Enter Camera Gain: ",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnValue = OpenUIForm(formData);
-
-                int gain;
-                bool bStatus = Int32.TryParse(returnValue.mTextBox, out gain);
-                if (bStatus)
-                {
-                    AddKeyword("GAIN", gain);
-
-                    if (returnValue.mGlobalCheckBox)
-                        return -gain;
-                    else
-                        return gain;
-                }
+                AddKeyword("Approved", value, "This file has been approved for subframe calculations");
             }
-
-            return -1;
         }
-        // Who and Where
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double Airmass
+        {
+            get
+            {
+                object Object = GetKeywordValue("AIRMASS");
+                if (Object != null)
+                    return (double)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("AIRMASS", value, "Number of atmospheres this image is looking through");
+            }
+        }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CBIAS
+        {
+            get
+            {
+                object Object = GetKeywordValue("CBIAS");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CBIAS", value, "Match this file with other CBIAS" + CBIAS + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CDARK
+        {
+            get
+            {
+                object Object = GetKeywordValue("CDARK");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CDARK", value, "Match this file with other CDARK" + CDARK + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CFLAT
+        {
+            get
+            {
+                object Object = GetKeywordValue("CFLAT");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CFLAT", value, "Match this file with other CFLAT" + CFLAT + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CPANEL
+        {
+            get
+            {
+                object Object = GetKeywordValue("CPANEL");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CPANEL", value, "Match this file with other CPANEL" + CPANEL + " files");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double Eccentricity
+        {
+            get
+            {
+                object Object = GetKeywordValue("AIRMASS");
+                if (Object != null)
+                    return (double)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("ECCENTRICITY", value, "Number of atmospheres this image is looking through");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double FWHM
+        {
+            get
+            {
+                object Object = GetKeywordValue("FWHM");
+                if (Object != null)
+                    return (double)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("FWHM", value, "Average FWHM in this image");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public int Gain
+        {
+            get
+            {
+                object Object = GetKeywordValue("GAIN");
+                if (Object != null)
+                    return (int)Object;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("GAIN", value, "Camera Gain");
+                SetEGain();
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        // Set Who and Where
         public void SetObservationSite()
         {
             AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
@@ -296,13 +403,13 @@ namespace XisfFileManager
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Various programs appear to screw this up - fix it
-        public void SetEGain()
+        private void SetEGain()
         {
             // Use graphs found on manufacturer website
 
             double egain = -1.0;
-            double gain = Gain();
-            string camera = Camera();
+            double gain = Gain;
+            string camera = Camera;
 
             if (camera == "Z183")
                 egain = 3.6059 * Math.Exp(-0.011 * gain);
@@ -362,9 +469,9 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public void SetIntegrationParamaters()
         {
-            List<FitsKeyword> keys = new List<FitsKeyword>(KeywordList);
+            List<Keyword> keys = new List<Keyword>(mKeywordList);
 
-            foreach (FitsKeyword node in keys)
+            foreach (Keyword node in keys)
             {
                 if (node.Comment.ToLower().Contains("numberofimages"))
                 {
@@ -391,9 +498,22 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int TotalFrames(bool findMissingKeywords = false)
+        public int TotalFrames
         {
-            SetIntegrationParamaters();
+            get
+            {
+                object Object = GetKeywordValue("TOTALFRAMES");
+                if (Object != null)
+                    return (int)Object;
+                return 0;
+            }
+            set
+            {
+                SetIntegrationParamaters();
+                AddKeyword("TOTALFRAMES", value, "");
+            }
+            /*
+                
 
             object Object = GetKeywordValue("TOTALFRAMES");
             if (Object == null)
@@ -425,15 +545,26 @@ namespace XisfFileManager
             }
 
             return (int)Object;
+            */
         }
 
-        public string Rejection(bool findMissingKeywords = false)
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string Rejection
         {
-            object Object = GetKeywordValue("REJECTION");
-            if (Object != null)
-                return (string)Object;
+            get
+            {
+                object Object = GetKeywordValue("REJECTION");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("REJECTION", value, "Rejection Integration Method");
+            }
 
-
+           /*
             while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -453,73 +584,81 @@ namespace XisfFileManager
                 }
             }
 
-
             return string.Empty;
+           */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         // Find the ambient temerature as reported by a local weather station
-        public double AmbientTemperature(bool findMissingKeywords = false)
+        public double AmbientTemperature
         {
-            object Object;
-
-            Object = GetKeywordValue("AMB-TEMP");
-            if (Object != null)
+            get
             {
-                double ambientTemperture = Convert.ToDouble(Object);
-                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+                object Object;
 
-                RemoveKeyword("AMBTEMP");
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AOCAMBT");
+                Object = GetKeywordValue("AMB-TEMP");
+                if (Object != null)
+                {
+                    double ambientTemperture = Convert.ToDouble(Object);
+                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
 
-                return ambientTemperture;
+                    RemoveKeyword("AMBTEMP");
+                    RemoveKeyword("TEMPERAT");
+                    RemoveKeyword("AOCAMBT");
+
+                    return ambientTemperture;
+                }
+
+                Object = GetKeywordValue("AOCAMBT");
+                if (Object != null)
+                {
+                    double ambientTemperture = Convert.ToDouble(Object);
+                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                    RemoveKeyword("AMBTEMP");
+                    RemoveKeyword("TEMPERAT");
+                    RemoveKeyword("AOCAMBT");
+
+                    return ambientTemperture;
+                }
+
+                Object = GetKeywordValue("AMBTEMP");
+                if (Object != null)
+                {
+                    double ambientTemperture = Convert.ToDouble(Object);
+                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                    RemoveKeyword("AMBTEMP");
+                    RemoveKeyword("TEMPERAT");
+                    RemoveKeyword("AOCAMBT");
+
+                    return ambientTemperture;
+                }
+
+                // Did not find the prefered air temeprature keyword so look for other keyword synonyms
+                Object = GetKeywordValue("TEMPERAT");
+                if (Object != null)
+                {
+                    double ambientTemperture = Convert.ToDouble(Object);
+                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+
+                    RemoveKeyword("AMBTEMP");
+                    RemoveKeyword("TEMPERAT");
+                    RemoveKeyword("AOCAMBT");
+
+                    return ambientTemperture;
+                }
+
+                return -273.0;
             }
 
-            Object = GetKeywordValue("AOCAMBT");
-            if (Object != null)
+            set
             {
-                double ambientTemperture = Convert.ToDouble(Object);
-                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
-
-                RemoveKeyword("AMBTEMP");
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AOCAMBT");
-
-                return ambientTemperture;
+                AddKeyword("AMB-TEMP", value, "Local Temerature from Open Weather API");
             }
-
-            Object = GetKeywordValue("AMBTEMP");
-            if (Object != null)
-            {
-                double ambientTemperture = Convert.ToDouble(Object);
-                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
-
-                RemoveKeyword("AMBTEMP");
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AOCAMBT");
-
-                return ambientTemperture;
-            }
-
-            // Did not find the prefered air temeprature keyword so look for other keyword synonyms
-            Object = GetKeywordValue("TEMPERAT");
-            if (Object != null)
-            {
-                double ambientTemperture = Convert.ToDouble(Object);
-                AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
-
-                RemoveKeyword("AMBTEMP");
-                RemoveKeyword("TEMPERAT");
-                RemoveKeyword("AOCAMBT");
-
-                return ambientTemperture;
-            }
-
-
             // Did not find any air temeprature keywords so ask user to enter one
-
+            /*
             while (findMissingKeywords)
             {
                 // Loop until user enters a numeric value then return
@@ -548,39 +687,43 @@ namespace XisfFileManager
 
             AddKeyword("AMB-TEMP", -273.0, "Missing Value");
             return -273.0;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public bool Approved()
-        {
-            object Object = GetKeywordValue("Approved");
-            if (Object != null)
-                return (bool)Object;
-
-            AddKeyword("Approved", true);
-            return true;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         // This is the name of the File itself - Does not contain the path
-        public string FileName()
+        public string FileName
         {
-            object Object = GetKeywordValue("FILENAME");
-            if (Object != null)
-                return (string)GetKeywordComment("FILENAME");
-
-            return string.Empty;
+            get
+            {
+                object Object = GetKeywordValue("FILENAME");
+                if (Object != null)
+                    return (string)GetKeywordComment("FILENAME");
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("FILENAME", value, "Original Filename");
+            }
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int Binning(bool findMissingKeywords = false)
+        public int Binning
         {
-            object Object = GetKeywordValue("XBINNING");
-            if (Object != null)
-                return Convert.ToInt32(Object);
-
+            get
+            {
+                object Object = GetKeywordValue("XBINNING");
+                if (Object != null)
+                    return Convert.ToInt32(Object);
+                return -1;
+            }
+            set
+            {
+                AddKeyword("XBINNING", value, "Camera Binning Mode 1-4 - Square modes only");
+                AddKeyword("YBINNING", value, "Camera Binning Mode 1-4 - Square modes only");
+            }
+            /*
             while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -604,16 +747,25 @@ namespace XisfFileManager
             }
 
             return -1;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string Camera(bool findMissingKeywords = false)
+        public string Camera
         {
-            object Object = GetKeywordValue("INSTRUME");
-            if (Object != null)
-                return (string)Object;
-
+            get
+            {
+                object Object = GetKeywordValue("INSTRUME");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("INSTRUME", value, "Camera used to take the exposure");
+            }
+            /* 
             while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -634,136 +786,153 @@ namespace XisfFileManager
             }
 
             return string.Empty;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public DateTime CaptureDateTime()
+        public DateTime CaptureDateTime
         {
-            object Object = GetKeywordValue("DATE-LOC");
-            if (Object == null)
+            get
             {
-                // DATE-LOC does not exist
-                Object = GetKeywordValue("LOCALTIM");
+                object Object = GetKeywordValue("DATE-LOC");
                 if (Object == null)
                 {
-                    // Local Time does not exist
-                    Object = GetKeywordValue("DATE-OBS");
+                    // DATE-LOC does not exist
+                    Object = GetKeywordValue("LOCALTIM");
                     if (Object == null)
                     {
-                        // No LOC, No OBS and No LOCALTIME - Make a time up
-                        Object = "2000-01-01T12:00:00.000";
+                        // Local Time does not exist
+                        Object = GetKeywordValue("DATE-OBS");
+                        if (Object == null)
+                        {
+                            // No LOC, No OBS and No LOCALTIME - Make a time up
+                            Object = "2000-01-01T12:00:00.000";
+                        }
                     }
                 }
+
+                // Build LOC from OBS or made up Object
+                DateTime Local = DateTime.Parse(Object.ToString());
+                AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
+                DateTime UTC = DateTime.Parse(Object.ToString()).ToUniversalTime(); //, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
+                AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
+                RemoveKeyword("LOCALTIM");
+
+                // Keywords are now correct
+                // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
+
+                string localTime = (string)Object;
+                localTime = localTime.Replace("'", "").Replace("T", " ");
+
+                bool status;
+                DateTime dt;
+
+                if (localTime.Contains("AM"))
+                {
+                    localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " AM";
+
+                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+
+                    if (status) return dt;
+
+                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+                    return dt;
+                }
+
+                if (localTime.Contains("PM"))
+                {
+                    localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " PM";
+
+                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+                    if (status) return dt;
+
+                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+                    if (status) return dt;
+
+                    status = DateTime.TryParseExact(localTime, "M/d/yyyyhh:mm:ss.fff tt",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+                    return dt;
+                }
+
+                status = DateTime.TryParseExact(localTime, "yyyy-MM-dd HH:mm:ss.fffffff",
+                              CultureInfo.InvariantCulture,
+                              DateTimeStyles.None, out dt);
+                if (status)
+                {
+                    return DateTime.ParseExact(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                }
+
+                Local = DateTime.Parse(Object.ToString());
+                return DateTime.ParseExact(Local.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             }
 
-            // Build LOC from OBS or made up Object
-            DateTime Local = DateTime.Parse(Object.ToString());
-            AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
-            DateTime UTC = DateTime.Parse(Object.ToString()).ToUniversalTime(); //, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
-            AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
-            RemoveKeyword("LOCALTIM");
-
-            // Keywords are now correct
-            // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
-
-            string localTime = (string)Object;
-            localTime = localTime.Replace("'", "").Replace("T", " ");
-
-            bool status;
-            DateTime dt;
-
-            if (localTime.Contains("AM"))
+            set
             {
-                localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " AM";
-
-                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-
-                if (status) return dt;
-
-                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-                return dt;
+                AddKeyword("DATE-LOC", value, "Local capture time");
             }
-
-            if (localTime.Contains("PM"))
-            {
-                localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " PM";
-
-                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-                if (status) return dt;
-
-                status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-                if (status) return dt;
-
-                status = DateTime.TryParseExact(localTime, "M/d/yyyyhh:mm:ss.fff tt",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-                return dt;
-            }
-
-            status = DateTime.TryParseExact(localTime, "yyyy-MM-dd HH:mm:ss.fffffff",
-                          CultureInfo.InvariantCulture,
-                          DateTimeStyles.None, out dt);
-            if (status)
-            {
-                return DateTime.ParseExact(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            }
-
-            Local = DateTime.Parse(Object.ToString());
-            return DateTime.ParseExact(Local.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string CaptureSoftware(bool FindMissingKeywords = false)
+        public string CaptureSoftware
         {
-            object Object = GetKeywordValue("CREATOR");
-            string software = (string)Object;
-
-            if (Object != null)
+            get
             {
-                if (software.Contains("Sequence"))
-                {
-                    AddKeyword("CREATOR", "SGP", software);
-                    return "SGP";
-                }
+                object Object = GetKeywordValue("CREATOR");
+                string software = (string)Object;
 
-                if (software.Contains("VOYAGER"))
+                if (Object != null)
                 {
-                    AddKeyword("CREATOR", "VOY", software);
-                    return "VOY";
-                }
+                    if (software.Contains("Sequence"))
+                    {
+                        AddKeyword("CREATOR", "SGP", software);
+                        return "SGP";
+                    }
 
-                if (software.Contains("Sky"))
-                {
-                    AddKeyword("CREATOR", "TSX", software);
-                    return "TSX";
-                }
+                    if (software.Contains("VOYAGER"))
+                    {
+                        AddKeyword("CREATOR", "VOY", software);
+                        return "VOY";
+                    }
 
-                if (software.Contains("N.I.N.A."))
-                {
-                    AddKeyword("CREATOR", "NINA", software);
-                    return "NINA";
-                }
+                    if (software.Contains("Sky"))
+                    {
+                        AddKeyword("CREATOR", "TSX", software);
+                        return "TSX";
+                    }
 
-                if (software.Contains("Sharp"))
-                {
-                    AddKeyword("CREATOR", "SCP", software);
-                    return "SCP";
-                }
+                    if (software.Contains("N.I.N.A."))
+                    {
+                        AddKeyword("CREATOR", "NINA", software);
+                        return "NINA";
+                    }
 
-                if (software.Equals("SGP") || software.Equals("VOY") || software.Equals("TSX") || software.Equals("SCP") || software.Equals("NINA"))
-                    return (software);
+                    if (software.Contains("Sharp"))
+                    {
+                        AddKeyword("CREATOR", "SCP", software);
+                        return "SCP";
+                    }
+
+                    if (software.Equals("SGP") || software.Equals("VOY") || software.Equals("TSX") || software.Equals("SCP") || software.Equals("NINA"))
+                        return (software);
+                }
+                return string.Empty;
             }
-
+            set
+            {
+                AddKeyword("CREATOR", value, "Software that captured this image");
+            }
+            /*
             while (FindMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -788,26 +957,37 @@ namespace XisfFileManager
             }
 
             return string.Empty;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double ExposureTime(bool FindMissingKeywords = false)
+        public double ExposureSeconds
         {
-            object Object = GetKeywordValue("EXPTIME");
-            if (Object != null)
+            get
             {
-                RemoveKeyword("EXPOSURE");
-                return Convert.ToDouble(Object);
-            }
+                object Object = GetKeywordValue("EXPTIME");
+                if (Object != null)
+                {
+                    RemoveKeyword("EXPOSURE");
+                    return Convert.ToDouble(Object);
+                }
 
-            Object = GetKeywordValue("EXPOSURE");
-            if (Object != null)
-            {
-                RemoveKeyword("EXPOSURE");
-                AddKeyword("EXPTIME", (double)Object, "Exposure Time in Seconds");
-                return Convert.ToDouble(Object);
+                Object = GetKeywordValue("EXPOSURE");
+                if (Object != null)
+                {
+                    RemoveKeyword("EXPOSURE");
+                    AddKeyword("EXPTIME", (double)Object, "Exposure Time in Seconds");
+                    return Convert.ToDouble(Object);
+                }
+                return -1;
             }
+            set
+            {
+                AddKeyword("EXPTIME", value, "Frame Exposure Time in Seconds");
+            }
+            /*
+
 
             while (FindMissingKeywords)
             {
@@ -830,27 +1010,35 @@ namespace XisfFileManager
             }
 
             return double.MinValue;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FilterName(bool FindMissingKeywords = false)
+        public string FilterName
         {
-            object Object = GetKeywordValue("FILTER");
-            string filterName = (string)Object;
-
-            if (Object != null)
+            get
             {
-                filterName = filterName.Replace("'", "").Replace(" ", "");
+                object Object = GetKeywordValue("FILTER");
+                if (Object != null)
+                {
+                    return (string)Object;
+                }
 
-                if (filterName.ToUpper().Equals("LUMA")) filterName = "Luma";
-                if (filterName.ToUpper().Equals("HA")) filterName = "Ha";
-                if (filterName.ToUpper().Equals("O3")) filterName = "O3";
-                if (filterName.ToUpper().Equals("S2")) filterName = "S2";
-                if (filterName.ToUpper().Equals("RED")) filterName = "Red";
-                if (filterName.ToUpper().Equals("GREEN")) filterName = "Green";
-                if (filterName.ToUpper().Equals("BLUE")) filterName = "Blue";
-                if (filterName.ToUpper().Equals("SHUTTER")) filterName = "Shutter";
+                return string.Empty;
+            }
+
+            set
+            {
+                string filterName = string.Empty;
+                if (value.ToUpper().Equals("LUMA")) filterName = "Luma";
+                if (value.ToUpper().Equals("HA")) filterName = "Ha";
+                if (value.ToUpper().Equals("O3")) filterName = "O3";
+                if (value.ToUpper().Equals("S2")) filterName = "S2";
+                if (value.ToUpper().Equals("RED")) filterName = "Red";
+                if (value.ToUpper().Equals("GREEN")) filterName = "Green";
+                if (value.ToUpper().Equals("BLUE")) filterName = "Blue";
+                if (value.ToUpper().Equals("SHUTTER")) filterName = "Shutter";
 
                 if (filterName == "Luma")
                     AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -875,58 +1063,59 @@ namespace XisfFileManager
 
                 if (filterName == "Shutter")
                     AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                return filterName;
             }
+        }
+        /*
 
             while (FindMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Filter Type",
-                    mFormText = "Filter Type Not Set",
-                    mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):",
-                    mFileName = FileName()
-                };
+    {
+    UserInputFormData formData = new UserInputFormData
+    {
+        mFormName = "Filter Type",
+        mFormText = "Filter Type Not Set",
+        mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):",
+        mFileName = FileName()
+    };
 
-                UserInputFormData returnData = OpenUIForm(formData);
+    UserInputFormData returnData = OpenUIForm(formData);
 
-                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("R") || returnData.mTextBox.Equals("G") || returnData.mTextBox.Equals("B") ||
-                    returnData.mTextBox.Equals("Ha") || returnData.mTextBox.Equals("O3") || returnData.mTextBox.Equals("S2") || returnData.mTextBox.Equals("S"))
-                {
-                    AddKeyword("FILTER", returnData.mTextBox, "XISF File Manager");
+    if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("R") || returnData.mTextBox.Equals("G") || returnData.mTextBox.Equals("B") ||
+        returnData.mTextBox.Equals("Ha") || returnData.mTextBox.Equals("O3") || returnData.mTextBox.Equals("S2") || returnData.mTextBox.Equals("S"))
+    {
+        AddKeyword("FILTER", returnData.mTextBox, "XISF File Manager");
 
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + returnData.mTextBox;
-                    else
-                        return returnData.mTextBox;
-                }
-            }
+        if (returnData.mGlobalCheckBox)
+            return "Global_" + returnData.mTextBox;
+        else
+            return returnData.mTextBox;
+    }
+    }
 
-            return string.Empty;
-        }
+    return string.Empty;
+        */
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string FrameType(bool FindMissingKeywords = false)
+        public eFrameType FrameType
         {
-            object Object = GetKeywordValue("IMAGETYP");
-            string frameType = (string)Object;
-
-            if (Object != null)
+            get
             {
-                frameType = frameType.Replace("'", "").Replace(" ", "");
-
-                if (frameType.ToLower().Contains("light")) frameType = "Light";
-                if (frameType.ToLower().Contains("dark")) frameType = "Dark";
-                if (frameType.ToLower().Contains("flat")) frameType = "Flat";
-                if (frameType.ToLower().Contains("bias")) frameType = "Bias";
-
-                AddKeyword("IMAGETYP", frameType);
-
-                return frameType;
+                object Object = GetKeywordValue("IMAGETYP");
+                if (Object != null)
+                {
+                    if (Object.ToString().ToLower().Contains("light")) return eFrameType.LIGHT;
+                    if (Object.ToString().ToLower().Contains("dark")) return eFrameType.DARK;
+                    if (Object.ToString().ToLower().Contains("flat")) return eFrameType.FLAT;
+                    if (Object.ToString().ToLower().Contains("bias")) return eFrameType.BIAS;
+                }
+                return eFrameType.EMPTY;
             }
 
+            set
+            {
+                AddKeyword("IMAGETYP", value, "Type of frame capture");
+            }
+            /*
             while (FindMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -954,179 +1143,192 @@ namespace XisfFileManager
                         return returnData.mTextBox;
                 }
             }
-
-            return string.Empty;
+        }
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double FocalLength(bool findMissingKeywords = false)
+        public double FocalLength
         {
-            object Object = GetKeywordValue("FOCALLEN");
-
-            if (Object != null)
+            get
             {
-                return Convert.ToDouble(Object);
+                object Object = GetKeywordValue("FOCALLEN");
+                if (Object != null)
+                    return Convert.ToDouble(Object);
+                return -1;
+            }
+            set
+            {
+                AddKeyword("FOCALLEN", value, Telescope + " Focal length in mm");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public int FocuserPosition
+        {
+            get
+            {
+                object Object = GetKeywordValue("FOCPOS");
+                if (Object != null)
+                    return (int)Object;
+                return -1;
             }
 
-            while (findMissingKeywords)
+            set
             {
-                UserInputFormData formData = new UserInputFormData
+                AddKeyword("FOCPOS", value, "MoonLite Focuser Posistion");
+            }
+            /*
+                while (findMissingKeywords)
                 {
-                    mFormName = "Focal Length",
-                    mFormText = "Focal Length Not Set",
-                    mFormEntryText = "Enter Focal Length in millimeters:",
-                    mFileName = FileName()
-                };
+                    // Loop until user enters a numeric value then return
 
-                UserInputFormData formValue = OpenUIForm(formData);
+                    UserInputFormData formData = new UserInputFormData
+                    {
+                        mFormName = "Focuser Position",
+                        mFormText = "Focuser Position Not Set",
+                        mFormEntryText = "Enter Focuser Position: ",
+                        mFileName = FileName()
+                    };
 
-                bool status = double.TryParse(formValue.mTextBox, out double focalLength);
-                if (status)
-                {
-                    AddKeyword("FOCALLEN", focalLength, "Focal Length");
+                    UserInputFormData returnValue = OpenUIForm(formData);
 
-                    if (formValue.mGlobalCheckBox)
-                        return -focalLength;
-                    else
-                        return focalLength;
+                    int value;
+                    // Make sure user entered a valid temerature
+                    bool bStatus = Int32.TryParse(returnValue.mTextBox, out value);
+                    if (bStatus)
+                    {
+                        AddKeyword("FOCPOS", value);
+                        return value;
+                    }
                 }
-            }
 
-            return -1.0;
+            }
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int FocuserPosition(bool findMissingKeywords = false)
+        public double FocuserTemperature
         {
-            object Object = GetKeywordValue("FOCPOS");
-            if (Object != null)
+            get
             {
-                return (int)Object;
-            }
-
-            Object = GetKeywordValue("FOCUSPOS");
-            if (Object != null)
-            {
-                RemoveKeyword("FOCUSPOS");
-                AddKeyword("FOCPOS", (int)Object);
-                return (int)Object;
-            }
-
-            while (findMissingKeywords)
-            {
-                // Loop until user enters a numeric value then return
-
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Focuser Position",
-                    mFormText = "Focuser Position Not Set",
-                    mFormEntryText = "Enter Focuser Position: ",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnValue = OpenUIForm(formData);
-
-                int value;
-                // Make sure user entered a valid temerature
-                bool bStatus = Int32.TryParse(returnValue.mTextBox, out value);
-                if (bStatus)
-                {
-                    AddKeyword("FOCPOS", value);
-                    return value;
-                }
-            }
-
-            return -1;
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double FocuserTemperature(bool findMissingKeywords = false)
-        {
-            object Object = GetKeywordValue("FOCTEMP");
-            if (Object != null)
-            {
-                // Remove any other keyword synonyms                
-                RemoveKeyword("FOCUSTEM");
-
-                return Convert.ToDouble(Object);
-            }
-
-            // Did not find the prefered focuser temeprature keyword so look for other keyword synonyms
-
-            Object = GetKeywordValue("FOCUSTEM");
-            if (Object != null)
-            {
-                AddKeyword("FOCTEMP", (double)Object);
-
-                // Remove any other keyword synonyms
-                RemoveKeyword("FOCUSTEM");
-
-                return Convert.ToDouble(Object);
-            }
-
-            // Did not find any air temeprature keywords so ask user to enter one
-
-            while (findMissingKeywords)
-            {
-                // Loop until user enters a numeric value then return
-
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Focuser Temperature",
-                    mFormText = "Focuser Temperature Not Set",
-                    mFormEntryText = "Enter Focuser Temperature: ",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnValue = OpenUIForm(formData);
-
-                // Make sure user entered a valid temerature
-                double value;
-                // Make sure user entered a valid temerature
-                bool bStatus = double.TryParse(returnValue.mTextBox, out value);
-                if (bStatus)
-                    AddKeyword("FOCTEMP", value);
-
-                return value;
-            }
-
-            // Did not ask user to enter missing focuser temerature and did not find a valid keyword so default to absolute zero
-            AddKeyword("FOCTEMP", -273.0);
-            return -273.0;
-        }
-
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double RotatorAngle()
-        {
-            object Object = GetKeywordValue("POSANGLE");
-            if (Object == null)
-            {
-                Object = GetKeywordValue("ROTATANG");
+                object Object = GetKeywordValue("FOCTEMP");
                 if (Object != null)
                 {
-                    RemoveKeyword("ROTATANG");
-                    AddKeyword("POSANGLE", (double)Object, "360 Degree Rotator Mechanical Angle");
+                    // Remove any other keyword synonyms                
+                    RemoveKeyword("FOCUSTEM");
+
+                    return Convert.ToDouble(Object);
                 }
-                else
-                    return double.MinValue;
+
+                // Did not find the prefered focuser temeprature keyword so look for other keyword synonyms
+
+                Object = GetKeywordValue("FOCUSTEM");
+                if (Object != null)
+                {
+                    AddKeyword("FOCTEMP", (double)Object);
+
+                    // Remove any other keyword synonyms
+                    RemoveKeyword("FOCUSTEM");
+
+                    return Convert.ToDouble(Object);
+                }
+
+                return -273.0;
             }
 
-            return Convert.ToDouble(Object);
+            set
+            {
+                AddKeyword("FOCTEMP", value, "MoonLite NightCrawler Focuser Temperature");
+            }
+            /*
+                // Did not find any air temeprature keywords so ask user to enter one
+
+                while (findMissingKeywords)
+                {
+                    // Loop until user enters a numeric value then return
+
+                    UserInputFormData formData = new UserInputFormData
+                    {
+                        mFormName = "Focuser Temperature",
+                        mFormText = "Focuser Temperature Not Set",
+                        mFormEntryText = "Enter Focuser Temperature: ",
+                        mFileName = FileName()
+                    };
+
+                    UserInputFormData returnValue = OpenUIForm(formData);
+
+                    // Make sure user entered a valid temerature
+                    double value;
+                    // Make sure user entered a valid temerature
+                    bool bStatus = double.TryParse(returnValue.mTextBox, out value);
+                    if (bStatus)
+                        AddKeyword("FOCTEMP", value);
+
+                    return value;
+                }
+
+                // Did not ask user to enter missing focuser temerature and did not find a valid keyword so default to absolute zero
+                AddKeyword("FOCTEMP", -273.0);
+                return -273.0;
+            */
+        }
+
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double RotatorAngle
+        {
+            get
+            {
+                object Object = GetKeywordValue("POSANGLE");
+                if (Object == null)
+                {
+                    Object = GetKeywordValue("ROTATANG");
+                    if (Object != null)
+                    {
+                        RemoveKeyword("ROTATANG");
+                        AddKeyword("POSANGLE", (double)Object, "MoonLite NightCrawler 360 Degree Rotator Mechanical Angle");
+                    }
+                    else
+                        return double.MinValue;
+                }
+
+                return Convert.ToDouble(Object);
+            }
+
+            set
+            {
+                AddKeyword("POSANGLE", value, "MoonLite NightCrawler Rotator Posistion");
+            }
+
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int Offset(bool findMissingKeywords = false)
+        public int Offset
         {
-            object Object = GetKeywordValue("OFFSET");
-            if (Object != null)
-                return (int)Object;
+            get
+            {
+                object Object = GetKeywordValue("OFFSET");
+                if (Object != null)
+                    return (int)Object;
 
+                return -1;
+            }
+
+            set
+            {
+                if (Camera.Contains("Z"))
+                    AddKeyword("OFFSET", value, "Actual Camera Offset is this value times 10");
+                else
+                    AddKeyword("OFFSET", value, "Camera Offset");
+            }
+
+            /*
             while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -1152,6 +1354,7 @@ namespace XisfFileManager
             }
 
             return -1;
+            */
         }
 
         // *********************************************************************************************************
@@ -1167,7 +1370,7 @@ namespace XisfFileManager
                 mFormName = "Cammera Pixel Size",
                 mFormText = "Camera Pixel Size Not Set (Assumes Square Pixels)",
                 mFormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):",
-                mFileName = FileName()
+                mFileName = FileName
             };
 
 
@@ -1193,7 +1396,7 @@ namespace XisfFileManager
                     mFormName = "Cammera Temperature",
                     mFormText = "Camera Temperature Not Set",
                     mFormEntryText = "Enter Camera Temperature Setpoint:",
-                    mFileName = FileName()
+                    mFileName = FileName
                 };
 
                 UserInputFormData returnData = OpenUIForm(formData);
@@ -1212,12 +1415,20 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double SensorTemperature(bool findMissingKeywords = false)
+        public double SensorTemperature
         {
-            object Object = GetKeywordValue("CCD-TEMP");
-            if (Object != null)
-                return Convert.ToDouble(Object);
-
+            get
+            {
+                object Object = GetKeywordValue("CCD-TEMP");
+                if (Object != null)
+                    return Convert.ToDouble(Object);
+                return -273.0;
+            }
+            set
+            {
+                AddKeyword("CCD-TEMP", value, "Actual sensor temperature");
+            }
+            /*
             while (findMissingKeywords)
             {
                 UserInputFormData formData = new UserInputFormData
@@ -1240,52 +1451,74 @@ namespace XisfFileManager
             }
 
             return -273.0;
+            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public string SiteName()
+        public string SiteName
         {
-            object Object = GetKeywordValue("SITENAME");
-            if (Object != (object)null)
-                return (string)Object;
-
-            AddKeyword("SITENAME", "Penns Park, PA");
-            return "Penns Park, PA";
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public double SSWeight()
-        {
-            object Obj = GetKeywordValue("SSWEIGHT");
-            if (Obj == (object)null)
-                return (double)0.0;
-
-            return Math.Round(Convert.ToDouble(Obj), 3, MidpointRounding.AwayFromZero);
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string TargetName(bool findMissingKeywords = false)
-        {
-            object Object = GetKeywordValue("OBJECT");
-            string targetName = (string)Object;
-
-            if (Object != null)
+            get 
             {
-                // Replace a TargetName containing "Panel" with "P" in prep for the next Regex
-                targetName = targetName.Replace("Panel", "P");
-
-                // Replace a TargetName containing one or more letters, numbers, spaces, or a dash followed by "P" and
-                // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
-                // Return original string if replacement fails.
-                string pattern = @"([A-Za-z0-9\s-]+)P(\d+)$";
-                string replacement = "$1 P$2";
-                string newTargetName = Regex.Replace(targetName, pattern, replacement);
-
-                return newTargetName;
+                object Object = GetKeywordValue("SITENAME");
+                if (Object != (object)null)
+                    return (string)Object;
+                return "Penns Park, PA";
             }
+            set
+            { 
+                AddKeyword("SITENAME", value, "Location name of observation site");
+            }
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public double SSWeight
+        {
+            get 
+            {
+                object Obj = GetKeywordValue("SSWEIGHT");
+                if (Obj == (object)null)
+                    return (double)0.0;
+                return -1;
+            }
+            set
+            {
+                AddKeyword("SSWEIGHT", value, "");
+            }
+            
+            //return Math.Round(Convert.ToDouble(Obj), 3, MidpointRounding.AwayFromZero);
+        }
+
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string TargetObjectName
+        {
+            get
+            {
+                object Object = GetKeywordValue("OBJECT");
+                if (Object != null)
+                {
+                    // Replace a TargetName containing "Panel" with "P" in prep for the next Regex
+                    string targetName = ((string)Object).Replace("Panel", "P");
+
+                    // Replace a TargetName containing one or more letters, numbers, spaces, or a dash followed by "P" and
+                    // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
+                    // Return original string if replacement fails.
+                    string pattern = @"([A-Za-z0-9\s-]+)P(\d+)$";
+                    string replacement = "$1 P$2";
+                    string newTargetName = Regex.Replace(targetName, pattern, replacement);
+
+                    return newTargetName;
+                }
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("OBJECT", value, "Target Object Name");
+            }
+            /*
+
 
 
             while (findMissingKeywords)
@@ -1309,57 +1542,71 @@ namespace XisfFileManager
             }
 
             return string.Empty;
+            */
         }
 
         // #########################################################################################################
         // #########################################################################################################
-        public string Telescope(bool findMissingKeywords = false)
+        public string Telescope
         {
-            object Object = GetKeywordValue("TELESCOP");
-            if (Object != null)
-                return (string)Object;
-
-            while (findMissingKeywords)
+            get
             {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Telescope",
-                    mFormText = "Telescope Not Set",
-                    mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):",
-                    mFileName = FileName()
-                };
+                object Object = GetKeywordValue("TELESCOP");
+                if (Object != null)
+                    return (string)Object;
 
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT") ||
-                    FormValue.mTextBox.Equals("APMR") || FormValue.mTextBox.Equals("EVOR") || FormValue.mTextBox.Equals("NWTR"))
-                {
-                    if (FormValue.mTextBox.Contains("APM"))
-                        if (FormValue.mTextBox.EndsWith("R"))
-                            AddKeyword("TELESCOP", "APM107R", "APM107 Super ED w/Riccardi 0.75 Reducer");
-                        else
-                            AddKeyword("TELESCOP", "APM107", "APM107 Super ED wo/Reducer");
-
-                    if (FormValue.mTextBox.Contains("EVO"))
-                        if (FormValue.mTextBox.EndsWith("R"))
-                            AddKeyword("TELESCOP", "EVO150R", "Skyhawtcher EvoStar w/Riccardi 0.75 Reducer");
-                        else
-                            AddKeyword("TELESCOP", "EVO150", "SkyWatcher EvoStar wo/Reducer");
-
-                    if (FormValue.mTextBox.Contains("NWT"))
-                        if (FormValue.mTextBox.EndsWith("R"))
-                            AddKeyword("TELESCOP", "NWT254R", "10 Inch Custom w/Riccardi 0.75 Reducer");
-                        else
-                            AddKeyword("TELESCOP", "NWT254", "10 Inch Custom Newtonian wo/Reducer");
-
-                    if (FormValue.mGlobalCheckBox)
-                        return "Global_" + FormValue.mTextBox;
-                    else
-                        return FormValue.mTextBox;
-                }
+                return string.Empty;
             }
 
-            return string.Empty;
+            set
+            {
+                AddKeyword("TELESCOP", value, "Telescope");
+            }
+
+            /*
+
+                while (findMissingKeywords)
+                {
+                    UserInputFormData formData = new UserInputFormData
+                    {
+                        mFormName = "Telescope",
+                        mFormText = "Telescope Not Set",
+                        mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):",
+                        mFileName = FileName()
+                    };
+
+                    UserInputFormData FormValue = OpenUIForm(formData);
+
+                    if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT") ||
+                        FormValue.mTextBox.Equals("APMR") || FormValue.mTextBox.Equals("EVOR") || FormValue.mTextBox.Equals("NWTR"))
+                    {
+                        if (FormValue.mTextBox.Contains("APM"))
+                            if (FormValue.mTextBox.EndsWith("R"))
+                                AddKeyword("TELESCOP", "APM107R", "APM107 Super ED w/Riccardi 0.75 Reducer");
+                            else
+                                AddKeyword("TELESCOP", "APM107", "APM107 Super ED wo/Reducer");
+
+                        if (FormValue.mTextBox.Contains("EVO"))
+                            if (FormValue.mTextBox.EndsWith("R"))
+                                AddKeyword("TELESCOP", "EVO150R", "Skyhawtcher EvoStar w/Riccardi 0.75 Reducer");
+                            else
+                                AddKeyword("TELESCOP", "EVO150", "SkyWatcher EvoStar wo/Reducer");
+
+                        if (FormValue.mTextBox.Contains("NWT"))
+                            if (FormValue.mTextBox.EndsWith("R"))
+                                AddKeyword("TELESCOP", "NWT254R", "10 Inch Custom w/Riccardi 0.75 Reducer");
+                            else
+                                AddKeyword("TELESCOP", "NWT254", "10 Inch Custom Newtonian wo/Reducer");
+
+                        if (FormValue.mGlobalCheckBox)
+                            return "Global_" + FormValue.mTextBox;
+                        else
+                            return FormValue.mTextBox;
+                    }
+                }
+            }
+            */
+
         }
 
         // *********************************************************************************************************
@@ -1413,7 +1660,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        
+
         // #########################################################################################################
         // #########################################################################################################
 

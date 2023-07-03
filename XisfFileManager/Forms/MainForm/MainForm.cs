@@ -25,6 +25,9 @@ namespace XisfFileManager
     public delegate void DataReceivedEventHandler(CalibrationTabPageValues data);
 
 
+    public enum eFrameType { LIGHT, DARK, FLAT, BIAS, EMPTY }
+    public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER, EMPTY }
+
     // ##########################################################################################################################
     // ##########################################################################################################################
     public partial class MainForm : Form
@@ -328,7 +331,7 @@ namespace XisfFileManager
                 // Create a new xisf file instance
                 mFile = new XisfFile
                 {
-                    SourceFileName = file.FullName
+                    TargetFilePath = file.FullName
                 };
 
                 await Task.Run(async () =>
@@ -446,7 +449,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                TargetNames.Add(file.KeywordData.TargetName());
+                TargetNames.Add(file.TargetObjectName);
             }
 
             if (TargetNames.Count > 0)
@@ -480,7 +483,7 @@ namespace XisfFileManager
             // Now find a list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
             {
-                WeightKeywords.Add(file.KeywordData.WeightKeyword());
+                WeightKeywords.Add(file.WeightKeyword);
                 //WeightKeywords.Add(file.KeywordData.WBPPKeyword());
             }
 
@@ -513,13 +516,13 @@ namespace XisfFileManager
 
 
 
-            // Now make a list of all Keywords found in all files. Sort and populate combobox
+            // Now make a list of all Keywords found in ALL files. Sort and populate comboBox
             FitsKeyword node = new FitsKeyword();
             List<string> keywordNamelist = new List<string>();
 
-            foreach (XisfFile file in mFileList)
+            foreach (XisfFile xFile in mFileList)
             {
-                foreach (var keywordName in file.KeywordData.KeywordList)
+                foreach (var keywordName in xFile.KeywordList)
                 {
                     keywordNamelist.Add(keywordName.Name);
                 }
@@ -541,12 +544,13 @@ namespace XisfFileManager
 
             // **********************************************************************
             // Calculate Image paramters for UI
-            foreach (XisfFile file in mFileList)
+            ClearImageParameterLists();
+            foreach (XisfFile xFile in mFileList)
             {
-                if (file.KeywordData.FileName() == string.Empty)
-                    file.KeywordData.AddKeyword("FILENAME", "Original Name", Path.GetFileName(file.SourceFileName));
+                if (xFile.FileName == string.Empty)
+                    xFile.AddKeyword("FILENAME", "Original Name", Path.GetFileName(xFile.TargetFilePath));
 
-                ImageParameterLists.BuildImageParameterValueLists(file.KeywordData);
+                ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
             if (mDirectoryOps.Files.Count == mFileList.Count)
                 Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
@@ -576,7 +580,7 @@ namespace XisfFileManager
 
                 foreach (XisfFile file in fileList)
                 {
-                    string fileName = Directory.GetParent(file.SourceFileName).ToString();
+                    string fileName = Directory.GetParent(file.TargetFilePath).ToString();
 
                     nightlist.Add(fileName.Substring(fileName.LastIndexOf('\\') + 1));
                 }
@@ -599,7 +603,7 @@ namespace XisfFileManager
 
                     foreach (XisfFile file in fileList)
                     {
-                        if (!file.SourceFileName.Contains(night))
+                        if (!file.TargetFilePath.Contains(night))
                             continue;
 
                         if (bFilter)
@@ -633,7 +637,7 @@ namespace XisfFileManager
                             if (fileIndex == file.Index)
                             {
                                 DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.SourceFileName +
+                                "No Filter in source file:\n" + file.TargetFilePath +
                                 "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
                                 "File Update Failed",
                                 MessageBoxButtons.OK,
@@ -666,7 +670,7 @@ namespace XisfFileManager
 
                 foreach (XisfFile file in fileList)
                 {
-                    if (file.SourceFileName.Contains("Duplicates"))
+                    if (file.TargetFilePath.Contains("Duplicates"))
                         continue;
 
                     if (bFilter)
@@ -700,7 +704,7 @@ namespace XisfFileManager
                         if (fileIndex == file.Index)
                         {
                             DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.SourceFileName +
+                                "No Filter in source file:\n" + file.TargetFilePath +
                                 "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
                                 "File Update Failed",
                                 MessageBoxButtons.OK,
@@ -738,7 +742,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
+                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.TargetFilePath) + "\n" + Path.GetFileName(file.TargetFilePath);
 
                 file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
@@ -818,24 +822,24 @@ namespace XisfFileManager
                     continue;
                 }
 
-                file.KeywordData.SetObservationSite();
+                file.SetObservationSite();
 
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked)
-                    file.KeywordData.AddKeyword("OBJECT", ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
+                    file.AddKeyword("OBJECT", ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text.Replace("'", "").Replace("\"", ""), "Imaging Target");
 
                 file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
                 if (file.Master)
-                    file.KeywordData.AddKeyword("OBJECT", "Master", "Master Integration Frame");
+                    file.AddKeyword("OBJECT", "Master", "Master Integration Frame");
 
 
                 // For each file: Add PROTECTED Keyword if CheckBox is checked or remove all PROTECTED Keyword
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
-                    file.KeywordData.AddKeyword("PROTECTED", true);
+                    file.AddKeyword("PROTECTED", true);
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
-                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.SourceFileName) + "\n" + Path.GetFileName(file.SourceFileName);
+                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(file.TargetFilePath) + "\n" + Path.GetFileName(file.TargetFilePath);
                 Application.DoEvents();
 
                 if (bStatus == false)
@@ -1461,31 +1465,31 @@ namespace XisfFileManager
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "TSX");
+                    file.AddKeyword("CREATOR", "TSX");
                 }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "NINA");
+                    file.AddKeyword("CREATOR", "NINA");
                 }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "SGP");
+                    file.AddKeyword("CREATOR", "SGP");
                 }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "VOY");
+                    file.AddKeyword("CREATOR", "VOY");
                 }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked)
                 {
                     count++;
-                    file.KeywordData.AddKeyword("CREATOR", "SCP");
+                    file.AddKeyword("CREATOR", "SCP");
                 }
 
                 file.SetRequiredKeywords();
@@ -1509,12 +1513,12 @@ namespace XisfFileManager
             {
                 if (global)
                 {
-                    if (file.KeywordData.CaptureSoftware() == string.Empty)
-                        file.KeywordData.AddKeyword("CREATOR", captureSoftware, "XISF File Manager");
+                    if (file.CaptureSoftware == string.Empty)
+                        file.AddKeyword("CREATOR", captureSoftware, "XISF File Manager");
                 }
                 else
                 {
-                    captureSoftware = file.KeywordData.CaptureSoftware(true);
+                    captureSoftware = file.CaptureSoftware;
                     if (captureSoftware.Contains("Global_"))
                     {
                         global = true;
@@ -1628,11 +1632,11 @@ namespace XisfFileManager
             if (mFileList.Count == 0)
                 return;
 
-            focalLength = mFileList[0].KeywordData.FocalLength();
+            focalLength = mFileList[0].FocalLength;
 
             foreach (XisfFile file in mFileList)
             {
-                telescope = file.KeywordData.Telescope();
+                telescope = file.Telescope;
                 if (telescope == string.Empty)
                     continue;
 
@@ -1660,12 +1664,12 @@ namespace XisfFileManager
                     foundNWT = true;
                 }
 
-                if (focalLength != file.KeywordData.FocalLength())
+                if (focalLength != file.FocalLength)
                 {
                     multipleFocalLengths = true;
                 }
 
-                focalLength = file.KeywordData.FocalLength();
+                focalLength = file.FocalLength;
                 if (focalLength != -1)
                 {
                     focalCount++;
@@ -1774,18 +1778,18 @@ namespace XisfFileManager
         {
             if (RadioButton_KeywordUpdateTab_Telescope_APM107.Checked)
             {
-                file.KeywordData.AddKeyword("APTDIA", 107.0, "Aperture Diameter in mm");
-                file.KeywordData.AddKeyword("APTAREA", 8992.02, "Aperture area in square mm minus obstructions");
+                file.AddKeyword("APTDIA", 107.0, "Aperture Diameter in mm");
+                file.AddKeyword("APTAREA", 8992.02, "Aperture area in square mm minus obstructions");
 
                 if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 531, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    file.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
+                    file.AddKeyword("FOCALLEN", 531, "APM107 Super ED with Riccardi 0.75 Reducer");
                 }
                 else
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 700, "APM107 Super ED without Reducer");
+                    file.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
+                    file.AddKeyword("FOCALLEN", 700, "APM107 Super ED without Reducer");
                 }
             }
 
@@ -1793,13 +1797,13 @@ namespace XisfFileManager
             {
                 if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 750, "EvoStar 150 with Riccardi 0.75 Reducer");
+                    file.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
+                    file.AddKeyword("FOCALLEN", 750, "EvoStar 150 with Riccardi 0.75 Reducer");
                 }
                 else
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "EVO150", "EvoStar 150 without Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 1000, "EvoStar 150 without Reducer");
+                    file.AddKeyword("TELESCOP", "EVO150", "EvoStar 150 without Reducer");
+                    file.AddKeyword("FOCALLEN", 1000, "EvoStar 150 without Reducer");
                 }
             }
 
@@ -1807,13 +1811,13 @@ namespace XisfFileManager
             {
                 if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 825, "10 inch Newtonian with Riccardi 0.75 Reducer");
+                    file.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
+                    file.AddKeyword("FOCALLEN", 825, "10 inch Newtonian with Riccardi 0.75 Reducer");
                 }
                 else
                 {
-                    file.KeywordData.AddKeyword("TELESCOP", "NWT254", "10 Inch Newtonian without Reducer");
-                    file.KeywordData.AddKeyword("FOCALLEN", 1100, "10 Inch Newtonian without Reducer");
+                    file.AddKeyword("TELESCOP", "NWT254", "10 Inch Newtonian without Reducer");
+                    file.AddKeyword("FOCALLEN", 1100, "10 Inch Newtonian without Reducer");
                 }
             }
         }
@@ -1838,14 +1842,14 @@ namespace XisfFileManager
             {
                 if (globalTelescope)
                 {
-                    if (file.KeywordData.Telescope() == string.Empty)
+                    if (file.Telescope == string.Empty)
                     {
                         SetTelescopeUI(file);
                     }
                 }
                 else
                 {
-                    string telescope = file.KeywordData.Telescope(true);
+                    string telescope = file.Telescope;
                     if (telescope.Contains("Global_"))
                     {
                         globalTelescope = true;
@@ -1881,15 +1885,15 @@ namespace XisfFileManager
             string globalFilterText = string.Empty;
 
             foreach (XisfFile file in mFileList)
-            {
+            {   
                 if (globalFrameType)
                 {
-                    if (file.KeywordData.FrameType() == string.Empty)
-                        file.KeywordData.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
+                    if (file.FrameType == string.Empty)
+                        file.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
                 }
                 else
                 {
-                    frameTypeText = file.KeywordData.FrameType(true);
+                    frameTypeText = file.FrameType;
                     if (frameTypeText.Contains("Global_"))
                     {
                         globalFrameType = true;
@@ -1898,10 +1902,10 @@ namespace XisfFileManager
                     }
                 }
 
-                file.KeywordData.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
+                file.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
                 if (frameTypeText.Equals("Dark") || frameTypeText.Equals("Bias"))
                 {
-                    file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
                 }
 
                 file.SetRequiredKeywords();
@@ -1913,12 +1917,12 @@ namespace XisfFileManager
             {
                 if (globalFilter)
                 {
-                    if (file.KeywordData.FilterName() == string.Empty)
-                        file.KeywordData.AddKeyword("FILTER", globalFilterText, "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    if (file.FilterName == string.Empty)
+                        file.AddKeyword("FILTER", globalFilterText, "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
                 }
                 else
                 {
-                    globalFilterText = file.KeywordData.FilterName(true);
+                    globalFilterText = file.FilterName(true);
                     if (globalFilterText.Contains("Global_"))
                     {
                         globalFilter = true;
@@ -1926,7 +1930,7 @@ namespace XisfFileManager
                     }
                 }
 
-                file.KeywordData.AddKeyword("FILTER", globalFilterText, "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                file.AddKeyword("FILTER", globalFilterText, "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 file.SetRequiredKeywords();
             }
@@ -1942,11 +1946,11 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Light", "Integration Master");
+                        file.AddKeyword("IMAGETYP", "Light", "Integration Master");
                     }
                     else
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Light", "Sub Frame");
+                        file.AddKeyword("IMAGETYP", "Light", "Sub Frame");
                     }
                 }
 
@@ -1954,18 +1958,18 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.KeywordData.RemoveKeyword("ALT-OBS");
-                        file.KeywordData.RemoveKeyword("DATE-END");
-                        file.KeywordData.RemoveKeyword("LAT-OBS");
-                        file.KeywordData.RemoveKeyword("LONG-OBS");
-                        file.KeywordData.RemoveKeyword("OBSGEO-B");
-                        file.KeywordData.RemoveKeyword("OBSGEO-H");
-                        file.KeywordData.RemoveKeyword("OBSGEO-L");
-                        file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Integration Master");
+                        file.RemoveKeyword("ALT-OBS");
+                        file.RemoveKeyword("DATE-END");
+                        file.RemoveKeyword("LAT-OBS");
+                        file.RemoveKeyword("LONG-OBS");
+                        file.RemoveKeyword("OBSGEO-B");
+                        file.RemoveKeyword("OBSGEO-H");
+                        file.RemoveKeyword("OBSGEO-L");
+                        file.AddKeyword("IMAGETYP", "Dark", "Integration Master");
                     }
                     else
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Dark", "Sub Frame");
+                        file.AddKeyword("IMAGETYP", "Dark", "Sub Frame");
                     }
                 }
 
@@ -1973,11 +1977,11 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Integration Master");
+                        file.AddKeyword("IMAGETYP", "Flat", "Integration Master");
                     }
                     else
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Flat", "Sub Frame");
+                        file.AddKeyword("IMAGETYP", "Flat", "Sub Frame");
                     }
                 }
 
@@ -1985,45 +1989,45 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.KeywordData.RemoveKeyword("ALT-OBS");
-                        file.KeywordData.RemoveKeyword("DATE-END");
-                        file.KeywordData.RemoveKeyword("LAT-OBS");
-                        file.KeywordData.RemoveKeyword("LONG-OBS");
-                        file.KeywordData.RemoveKeyword("OBSGEO-B");
-                        file.KeywordData.RemoveKeyword("OBSGEO-H");
-                        file.KeywordData.RemoveKeyword("OBSGEO-L");
-                        file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Integration Master");
+                        file.RemoveKeyword("ALT-OBS");
+                        file.RemoveKeyword("DATE-END");
+                        file.RemoveKeyword("LAT-OBS");
+                        file.RemoveKeyword("LONG-OBS");
+                        file.RemoveKeyword("OBSGEO-B");
+                        file.RemoveKeyword("OBSGEO-H");
+                        file.RemoveKeyword("OBSGEO-L");
+                        file.AddKeyword("IMAGETYP", "Bias", "Integration Master");
                     }
                     else
                     {
-                        file.KeywordData.AddKeyword("IMAGETYP", "Bias", "Sub Frame");
+                        file.AddKeyword("IMAGETYP", "Bias", "Sub Frame");
                     }
 
                 }
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Luma", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Luma", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Blue", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Blue", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Ha", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Ha", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "O3", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "O3", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
-                    file.KeywordData.AddKeyword("FILTER", "Shutter", "Opaque 1.25 or placeholder via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "Shutter", "Opaque 1.25 or placeholder via Starlight Xpress USB 7 Position Wheel");
 
                 file.SetRequiredKeywords();
             }
@@ -2083,7 +2087,7 @@ namespace XisfFileManager
             filterCount = 0;
             foreach (XisfFile file in mFileList)
             {
-                filter = file.KeywordData.FilterName();
+                filter = file.FilterName;
 
                 if (filter == "Luma")
                 {
@@ -2290,7 +2294,7 @@ namespace XisfFileManager
                     frameTypeCount++;
                 }
 
-                if (file.KeywordData.TargetName().Equals("Master"))
+                if (file.TargetObjectName.Equals("Master"))
                 {
                     foundMaster = true;
                     masterCount++;
@@ -2601,8 +2605,8 @@ namespace XisfFileManager
 
             // ****************************************************************
 
-            bool missingExposure = mFileList.Exists(i => i.Exposure == double.MinValue);
-            bool uniqueExposure = mFileList.Select(i => i.Exposure).Distinct().Count() == 1;
+            bool missingExposure = mFileList.Exists(i => i.ExposureSeconds == double.MinValue);
+            bool uniqueExposure = mFileList.Select(i => i.ExposureSeconds).Distinct().Count() == 1;
 
             if (missingExposure)
                 Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
@@ -2612,7 +2616,7 @@ namespace XisfFileManager
             if (!missingExposure && uniqueExposure)
             {
                 // All valid and unique so just pick the first one to display and remove leading zeros from integers
-                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = Regex.Replace(mFileList[0].Exposure.FormatExposureTime(), @"\b0+(\d+)", match => match.Groups[1].Value);
+                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = Regex.Replace(mFileList[0].ExposureSeconds.FormatExposureTime(), @"\b0+(\d+)", match => match.Groups[1].Value);
             }
 
             // ****************************************************************
@@ -2699,125 +2703,120 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                file.KeywordData.RemoveKeyword("NAXIS3");
+                file.RemoveKeyword("NAXIS3");
 
-                file.KeywordData.AddKeyword("BITPIX", 16, "Bits Per Pixel");
-                file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
-                file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
+                file.AddKeyword("BITPIX", 16, "Bits Per Pixel");
+                file.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
+                file.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
 
                 bool status = double.TryParse(TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text, out value);
                 if (status)
                 {
-                    file.KeywordData.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
+                    file.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
                 }
 
-                file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
+                file.AddKeyword("NAXIS", 2, "XISF File Manager");
 
                 status = double.TryParse(TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text, out value);
                 if (status)
                 {
-                    file.KeywordData.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
-                    file.Exposure = value;
+                    file.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
+                    file.ExposureSeconds = value;
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
-                    file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
-                    file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
+                    file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
+                    file.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("BAYERPAT", "RGGB");
+                    file.AddKeyword("COLORSPC", "Color", "Color Image");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
+                        file.Gain = parseInt;
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
+                        file.Offset = parseInt;
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
                     if (status)
                     {
-                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
                     }
-                    file.KeywordData.SetEGain();
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
-                    file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+                    file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
+                    file.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
+                        file.Gain = parseInt;
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
+                        file.Offset = parseInt;
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
                     if (status)
                     {
-                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
                     }
-
-                    file.KeywordData.SetEGain();
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
-                    file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+                    file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
+                    file.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("GAIN", parseInt, "Camera Gain");
+                        file.Gain = parseInt;
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
                     if (status)
-                        file.KeywordData.AddKeyword("OFFSET", parseInt, "Camera Offset");
+                        file.Offset = parseInt;
+
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
                     if (status)
                     {
-                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
                     }
-                    file.KeywordData.SetEGain();
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
-                    file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
-                    file.KeywordData.AddKeyword("COLORSPC", "Color", "Color Image");
-                    file.KeywordData.AddKeyword("GAIN", 0.37);
-                    file.KeywordData.RemoveKeyword("OFFSET");
+                    file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
+                    file.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("BAYERPAT", "RGGB");
+                    file.AddKeyword("COLORSPC", "Color", "Color Image");
+                    file.AddKeyword("GAIN", 0.37);
+                    file.RemoveKeyword("OFFSET");
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
                     if (status)
                     {
-                        file.KeywordData.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.KeywordData.AddKeyword("YBINNING", parseInt, "Vertical Binning");
+                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
+                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
                     }
-
-                    file.KeywordData.SetEGain();
                 }
 
                 file.SetRequiredKeywords();
@@ -2850,12 +2849,12 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                file.KeywordData.RemoveKeyword("NAXIS3");
-                file.KeywordData.RemoveKeyword("EXPOSURE");
+                file.RemoveKeyword("NAXIS3");
+                file.RemoveKeyword("EXPOSURE");
 
-                file.KeywordData.AddKeyword("BITPIX", 16, "Bits Per Pixel");
-                file.KeywordData.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
-                file.KeywordData.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
+                file.AddKeyword("BITPIX", 16, "Bits Per Pixel");
+                file.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
+                file.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
                 string temperatureTextUI = TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text;
 
                 string temperatureText;
@@ -2892,17 +2891,16 @@ namespace XisfFileManager
 
                 double temperature;
                 status = double.TryParse(temperatureText, out temperature);
-                file.KeywordData.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
+                file.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
 
-                file.KeywordData.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.KeywordData.AddKeyword("XBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Horizontal Binning");
-                file.KeywordData.AddKeyword("YBINNING", Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text), "Vertical Binning");
+                file.AddKeyword("NAXIS", 2, "XISF File Manager");
+                file.Binning = Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text);
                 string secondsTextUI = TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text;
 
                 string secondsText;
                 if (globalSeconds)
                 {
-                    secondsText = file.KeywordData.ExposureTime().FormatExposureTime();
+                    secondsText = file.ExposureSeconds.FormatExposureTime();
                     if (secondsText == string.Empty)
                     {
                         secondsText = globalSecondsText;
@@ -2912,7 +2910,7 @@ namespace XisfFileManager
                 {
                     if (secondsTextUI == string.Empty)
                     {
-                        globalSecondsText = file.KeywordData.ExposureTime(true).FormatExposureTime();
+                        globalSecondsText = file.ExposureSeconds.FormatExposureTime();
                         if (globalSecondsText.Contains("Global_"))
                         {
                             globalSeconds = true;
@@ -2923,7 +2921,7 @@ namespace XisfFileManager
                     }
                     else
                     {
-                        secondsText = file.KeywordData.ExposureTime().FormatExposureTime();
+                        secondsText = file.ExposureSeconds.FormatExposureTime();
                         if (secondsText == string.Empty)
                         {
                             secondsText = secondsTextUI;
@@ -2933,7 +2931,7 @@ namespace XisfFileManager
 
                 double seconds;
                 status = double.TryParse(secondsText, out seconds);
-                file.KeywordData.AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
+                file.AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
 
 
 
@@ -2944,19 +2942,19 @@ namespace XisfFileManager
                 int offsetValueUI;
                 if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
-                    file.KeywordData.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
+                    file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
+                    file.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 3008, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 3.76, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("BAYERPAT", "RGGB");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
                     {
-                        gainValue = file.KeywordData.Gain();
+                        gainValue = file.Gain;
                         if (gainValue < 0)
                         {
                             gainValue = globalGainValue;
@@ -2966,7 +2964,7 @@ namespace XisfFileManager
                     {
                         if (gainValueUI < 0)
                         {
-                            globalGainValue = file.KeywordData.Gain(true);
+                            globalGainValue = file.Gain;
                             if (globalGainValue < 0)
                             {
                                 globalGain = true;
@@ -2977,7 +2975,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            gainValue = file.KeywordData.Gain();
+                            gainValue = file.Gain;
                             if (gainValue < 0)
                             {
                                 gainValue = gainValueUI;
@@ -2985,8 +2983,7 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
-                    file.KeywordData.SetEGain();
+                    file.Gain = gainValue;
 
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out offsetValueUI);
@@ -2994,7 +2991,7 @@ namespace XisfFileManager
 
                     if (globalOffset)
                     {
-                        offsetValue = file.KeywordData.Offset();
+                        offsetValue = file.Offset;
                         if (offsetValue < 0)
                         {
                             offsetValue = globalOffsetValue;
@@ -3004,7 +3001,7 @@ namespace XisfFileManager
                     {
                         if (offsetValueUI < 0)
                         {
-                            globalOffsetValue = file.KeywordData.Offset(true);
+                            globalOffsetValue = file.Offset;
                             if (globalOffsetValue < 0)
                             {
                                 globalOffset = true;
@@ -3015,7 +3012,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            offsetValue = file.KeywordData.Offset();
+                            offsetValue = file.Offset;
                             if (offsetValue < 0)
                             {
                                 offsetValue = offsetValueUI;
@@ -3023,24 +3020,24 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("OFFSET", (int)offsetValue, "Camera Offset");
+                    file.Offset = offsetValue;
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
-                    file.KeywordData.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+                    file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
+                    file.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 3672, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
                     {
-                        gainValue = file.KeywordData.Gain();
+                        gainValue = file.Gain;
                         if (gainValue < 0)
                         {
                             gainValue = globalGainValue;
@@ -3050,7 +3047,7 @@ namespace XisfFileManager
                     {
                         if (gainValueUI < 0)
                         {
-                            globalGainValue = file.KeywordData.Gain(true);
+                            globalGainValue = file.Gain;
                             if (globalGainValue < 0)
                             {
                                 globalGain = true;
@@ -3061,7 +3058,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            gainValue = file.KeywordData.Gain();
+                            gainValue = file.Gain;
                             if (gainValue < 0)
                             {
                                 gainValue = gainValueUI;
@@ -3069,16 +3066,15 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
-                    file.KeywordData.SetEGain();
-
+                    file.Gain = gainValue;
+  
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
                     {
-                        offsetValue = file.KeywordData.Offset();
+                        offsetValue = file.Offset;
                         if (offsetValue < 0)
                         {
                             offsetValue = globalOffsetValue;
@@ -3088,7 +3084,7 @@ namespace XisfFileManager
                     {
                         if (offsetValueUI < 0)
                         {
-                            globalOffsetValue = file.KeywordData.Offset(true);
+                            globalOffsetValue = file.Offset;
                             if (globalOffsetValue < 0)
                             {
                                 globalOffset = true;
@@ -3099,7 +3095,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            offsetValue = file.KeywordData.Offset();
+                            offsetValue = file.Offset;
                             if (offsetValue < 0)
                             {
                                 offsetValue = offsetValueUI;
@@ -3107,7 +3103,7 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("OFFSET", offsetValue, "Camera Offset");
+                    file.AddKeyword("OFFSET", offsetValue, "Camera Offset");
                 }
 
 
@@ -3115,19 +3111,19 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
-                    file.KeywordData.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
+                    file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
+                    file.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 2048, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 2.4, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
                     {
-                        gainValue = file.KeywordData.Gain();
+                        gainValue = file.Gain;
                         if (gainValue < 0)
                         {
                             gainValue = globalGainValue;
@@ -3137,7 +3133,7 @@ namespace XisfFileManager
                     {
                         if (gainValueUI < 0)
                         {
-                            globalGainValue = file.KeywordData.Gain(true);
+                            globalGainValue = file.Gain;
                             if (globalGainValue < 0)
                             {
                                 globalGain = true;
@@ -3148,7 +3144,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            gainValue = file.KeywordData.Gain();
+                            gainValue = file.Gain;
                             if (gainValue < 0)
                             {
                                 gainValue = gainValueUI;
@@ -3156,8 +3152,7 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("GAIN", gainValue, "Camera Gain");
-                    file.KeywordData.SetEGain();
+                    file.Gain = gainValue;
 
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out offsetValueUI);
@@ -3165,7 +3160,7 @@ namespace XisfFileManager
 
                     if (globalOffset)
                     {
-                        offsetValue = file.KeywordData.Offset();
+                        offsetValue = file.Offset;
                         if (offsetValue < 0)
                         {
                             offsetValue = globalOffsetValue;
@@ -3175,7 +3170,7 @@ namespace XisfFileManager
                     {
                         if (offsetValueUI < 0)
                         {
-                            globalOffsetValue = file.KeywordData.Offset(true);
+                            globalOffsetValue = file.Offset;
                             if (globalOffsetValue < 0)
                             {
                                 globalOffset = true;
@@ -3186,7 +3181,7 @@ namespace XisfFileManager
                         }
                         else
                         {
-                            offsetValue = file.KeywordData.Offset();
+                            offsetValue = file.Offset;
                             if (offsetValue < 0)
                             {
                                 offsetValue = offsetValueUI;
@@ -3194,20 +3189,19 @@ namespace XisfFileManager
                         }
                     }
 
-                    file.KeywordData.AddKeyword("OFFSET", (int)offsetValue, "Camera Offset");
+                    file.Offset = offsetValue;
                 }
 
                 if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
                 {
-                    file.KeywordData.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
-                    file.KeywordData.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
-                    file.KeywordData.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
-                    file.KeywordData.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
-                    file.KeywordData.AddKeyword("BAYERPAT", "RGGB");
-                    file.KeywordData.RemoveKeyword("GAIN");
-                    file.KeywordData.RemoveKeyword("OFFSET");
-                    file.KeywordData.SetEGain();
+                    file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
+                    file.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", 1040, "Vertical Pixel Height");
+                    file.AddKeyword("XPIXSZ", 6.45, "Horizonal Pixel Size in Microns");
+                    file.AddKeyword("YPIXSZ", 6.45, "Vertical Pixel Size in Microns");
+                    file.AddKeyword("BAYERPAT", "RGGB");
+                    file.RemoveKeyword("GAIN");
+                    file.RemoveKeyword("OFFSET");
                 }
 
                 file.SetRequiredKeywords();
@@ -3233,7 +3227,7 @@ namespace XisfFileManager
                 if (globalTotalFrames)
                 {
 
-                    frames = file.KeywordData.TotalFrames();
+                    frames = file.TotalFrames;
                     if (frames < 0)
                     {
                         frames = globalFrames;
@@ -3242,7 +3236,7 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    frames = file.KeywordData.TotalFrames(true);
+                    frames = file.TotalFrames;
                     if (frames < 0)
                     {
                         globalTotalFrames = true;
@@ -3251,7 +3245,7 @@ namespace XisfFileManager
                     }
                 }
 
-                file.KeywordData.AddKeyword("TOTALFRAMES", frames, "Number of Integrated SubFrames");
+                file.AddKeyword("TOTALFRAMES", frames, "Number of Integrated SubFrames");
             }
         }
 
@@ -3324,10 +3318,10 @@ namespace XisfFileManager
                     }
 
                     if (foundNumberOfImages)
-                        file.KeywordData.AddKeyword("TOTALFRAMES", numberOfImages, "Number of Integrated SubFrames");
+                        file.AddKeyword("TOTALFRAMES", numberOfImages, "Number of Integrated SubFrames");
 
                     if (foundRejection)
-                        file.KeywordData.AddKeyword("REJECTION", rejection, comment);
+                        file.AddKeyword("REJECTION", rejection, comment);
                 }
             }
         }
@@ -3339,9 +3333,9 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
 
             // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
-            foreach (XisfFile file in mFileList)
+            foreach (XisfFile xFile in mFileList)
             {
-                WeightKeywords.Add(file.KeywordData.WeightKeyword().ToString());
+                WeightKeywords.Add(xFile.WeightKeyword().ToString());
             }
 
             if (WeightKeywords.Count > 0)
@@ -3454,7 +3448,7 @@ namespace XisfFileManager
         {
             if (CheckBox_CalibrationTab_CreateNew.Checked == true)
             {
-                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].SourceFileName);
+                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].TargetFilePath);
 
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);
@@ -3545,7 +3539,7 @@ namespace XisfFileManager
             if (mFileList.Count == 0) return;
 
 
-            string directoryName = Path.GetDirectoryName(mFileList[0].SourceFileName);
+            string directoryName = Path.GetDirectoryName(mFileList[0].TargetFilePath);
             if (directoryName.Contains(@"Captures\"))
                 directoryName = directoryName.Substring(0, directoryName.IndexOf("Captures")) + @"Captures\Calibration";
             else
@@ -3558,13 +3552,13 @@ namespace XisfFileManager
 
             foreach (var file in mFileList)
             {
-                file.KeywordData.RemoveKeyword("CDARK");
+                file.RemoveKeyword("CDARK");
                 file.CDARK = string.Empty;
 
-                file.KeywordData.RemoveKeyword("CFLAT");
+                file..RemoveKeyword("CFLAT");
                 file.CFLAT = string.Empty;
 
-                file.KeywordData.RemoveKeyword("CBIAS");
+                file.RemoveKeyword("CBIAS");
                 file.CBIAS = string.Empty;
             }
 
@@ -3609,7 +3603,7 @@ namespace XisfFileManager
         {
             foreach (XisfFile file in mFileList)
             {
-                file.KeywordData.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
             }
 
             if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndex >= 0)
@@ -3624,7 +3618,7 @@ namespace XisfFileManager
                 if (item != null)
                 {
                     if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)
-                        file.KeywordData.AddKeyword(item.Name, item.Value);
+                        file.AddKeyword(item.Name, item.Value);
                 }
                 //                file.KeywordData.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
             }

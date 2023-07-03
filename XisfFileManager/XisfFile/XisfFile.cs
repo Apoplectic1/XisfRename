@@ -7,52 +7,160 @@ namespace XisfFileManager.FileOperations
 {
     public class XisfFile
     {
-        public enum eFrameType { LIGHT, DARK, FLAT, BIAS }
-        public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER }
-
         // Member Strutures
         public XDocument mXDoc;
-        public KeywordLists KeywordData { get; set; }
-
-        // Properties
-        public DateTime CaptureDateTime { get; set; }
-        public bool Master { get; set; } = false;
-        public bool NarrowBand { get; set; }
-        public bool RiccardiReducer { get; set; }
-        public bool Unique { get; set; } = false;
-        public double FocuserTemperature { get; set; }
-        public int Binning { get; set; }
-        public double FocalLength { get; set; }
-        public int FocuserPosition { get; set; } = int.MinValue;
-        public int Gain { get; set; }
-        public int ImageAttachmentLength { get; set; } = 0;
-        public int ImageAttachmentStart { get; set; } = 0;
-        public int Index { get; set; } = 0;
-        public int Offset { get; set; }
-        public int ThumbnailAttachmentLength { get; set; } = 0;
-        public int ThumbnailAttachmentStart { get; set; } = 0;
-        public string CBIAS { get; set; } = string.Empty;
-        public string CDARK { get; set; } = string.Empty;
-        public string CFLAT { get; set; } = string.Empty;
-        public string Camera { get; set; }
-        public string CaptureSoftware { get; set; }
-        public double Exposure { get; set; }
-        public string FileName { get; set; }
-        public string Filter { get; set; }
-        public string FrameType { get; set; }
-        public double RotatorAngle { get; set; } = double.MinValue;
-        public string SourceFileName { get; set; }
-        public string Target { get; set; }
-        public string Telescope { get; set; }
-        public double SensorTemperature { get; set; } = -273.0;
-        public double AmbientTemperature { get; set; } = -273.0;
-        public double SSWeight { get; set; } = 0.0;
-
+        private KeywordList mKeywordList;
 
         public XisfFile()
         {
-            KeywordData = new KeywordLists();
+            mXDoc = new XDocument();    
+            mKeywordList = new KeywordList();
         }
+
+        // Properties
+        public void Clear()
+        {
+            mXDoc = new XDocument();
+            mKeywordList.Clear();
+        }
+
+        public void AddKeyword(string keyword, object value, string comment = "Xisf File Manager")
+        {
+            mKeywordList.AddKeyword(keyword, value, comment);
+        }
+
+        public void RemoveKeyword(string keyword)
+        {
+           mKeywordList.RemoveKeyword(keyword);
+        }
+        public double AmbientTemperature
+        {
+            get { return mKeywordList.AmbientTemperature; }
+            set { mKeywordList.AmbientTemperature = value; }
+        }
+        public int Binning
+        {
+            get { return mKeywordList.Binning; }
+            set { mKeywordList.Binning = value; }
+        }
+        public string Camera
+        {
+            get { return mKeywordList.Camera; }
+            set { mKeywordList.Camera = value; }
+        }
+        public DateTime CaptureDateTime
+        {
+            get { return mKeywordList.CaptureDateTime; }
+            set { mKeywordList.CaptureDateTime = value; }
+        }
+        public string CaptureSoftware
+        {
+            get { return mKeywordList.CaptureSoftware; }
+            set { mKeywordList.CaptureSoftware = value; }
+        }
+        public string CBIAS
+        {
+            get { return mKeywordList.CBIAS; }
+            set { mKeywordList.CBIAS = value; }
+        }
+        public string CDARK
+        {
+            get { return mKeywordList.CDARK; }
+            set { mKeywordList.CDARK = value; }
+        }
+        public string CFLAT
+        {
+            get { return mKeywordList.CFLAT; }
+            set { mKeywordList.CFLAT = value; }
+        }
+        public string CPANEL
+        {
+            get { return mKeywordList.CPANEL; }
+            set { mKeywordList.CPANEL = value; }
+        }
+        public double ExposureSeconds
+        {
+            get { return mKeywordList.ExposureSeconds; }
+            set { mKeywordList.ExposureSeconds = value; }
+        }
+        public string FileName { get; set; } = string.Empty;
+        public string Filter
+        {
+            get { return mKeywordList.FilterName; }
+            set { mKeywordList.AddKeyword("FILTER", value); }
+        }
+        public double FocalLength
+        {
+            get { return mKeywordList.FocalLength; }
+            set { mKeywordList.FocalLength = value; }
+        }
+        public int FocuserPosition
+        {
+            get { return mKeywordList.FocuserPosition; }
+            set { mKeywordList.FocuserPosition = value; }
+        }
+        public double FocuserTemperature
+        {
+            get { return mKeywordList.FocuserTemperature; }
+            set { mKeywordList.FocuserTemperature = value; }
+        }
+        public eFrameType FrameType
+        {
+            get { return mKeywordList.FrameType; }
+            set { mKeywordList.AddKeyword("IMAGETYP", value); }
+        }
+        public int Gain
+        {
+            get { return mKeywordList.Gain; }
+            set { mKeywordList.Gain = value; }
+        }
+        public int ImageAttachmentLength { get; set; } = 0;
+        public int ImageAttachmentStart { get; set; } = 0;
+        public int Index { get; set; } = 0;
+        public bool Master { get; set; } = false;
+        public bool NarrowBand { get; set; } = false;
+        public int Offset
+        {
+            get { return mKeywordList.Offset; }
+            set { mKeywordList.Offset = value; }
+        }
+        public bool RiccardiReducer { get; set; }
+        public double RotatorAngle
+        {
+            get { return mKeywordList.RotatorAngle; }
+            set { mKeywordList.RotatorAngle = value; }
+        }
+        public double SensorTemperature
+        {
+            get { return mKeywordList.SensorTemperature; }
+            set { mKeywordList.SensorTemperature = value; }
+        }
+        public double SSWeight { get; set; } = 0.0;
+        public int ThumbnailAttachmentLength { get; set; } = 0;
+        public int ThumbnailAttachmentStart { get; set; } = 0;
+        public string TargetFilePath
+        {
+            get { return mKeywordList.TargetFilePath; }
+            set { mKeywordList.TargetFilePath = value; }
+        }
+        public string TargetObjectName
+        {
+            get { return mKeywordList.TargetObjectName; }
+            set { mKeywordList.TargetObjectName = value; }
+        }
+        public string Telescope
+        {
+            get { return mKeywordList.Telescope; }
+            set { mKeywordList.Telescope = value; }
+        }
+        public bool Unique { get; set; } = false;
+
+        // ***********************************************************************************************************************************
+
+        // Access these properties from anything that instances the XifsFile class
+
+
+
 
         // ************************************************************************************************
         // ************************************************************************************************
@@ -89,39 +197,18 @@ namespace XisfFileManager.FileOperations
 
         public void SetRequiredKeywords()
         {
-            Binning = KeywordData.Binning();
-            CBIAS = KeywordData.CBIAS();
-            CDARK = KeywordData.CDARK();
-            CFLAT = KeywordData.CFLAT();
-            Camera = KeywordData.Camera();
-            CaptureSoftware = KeywordData.CaptureSoftware();
-            CaptureDateTime = KeywordData.CaptureDateTime();
-            Exposure = KeywordData.ExposureTime();
-            FileName = KeywordData.FileName();
-            Filter = KeywordData.FilterName();
-            FocalLength = KeywordData.FocalLength();
-            FocuserPosition = KeywordData.FocuserPosition();
-            FocuserTemperature = KeywordData.FocuserTemperature();
-            FrameType = KeywordData.FrameType();
-            Gain = KeywordData.Gain();
-            Master = KeywordData.TargetName().Contains("Master");
-            NarrowBand = KeywordData.FilterName().Contains("Ha") || KeywordData.FilterName().Contains("O3") || KeywordData.FilterName().Contains("S2");
-            Offset = KeywordData.Offset();
-            RiccardiReducer = KeywordData.Telescope().EndsWith("R");
-            RotatorAngle = KeywordData.RotatorAngle();
-            Target = KeywordData.TargetName();
-            Telescope = KeywordData.Telescope();
-            SensorTemperature = KeywordData.SensorTemperature();
-            AmbientTemperature = KeywordData.AmbientTemperature();
-            SSWeight = KeywordData.SSWeight();
+            FileName = mKeywordList.FileName;
+            Master = mKeywordList.TargetObjectName.Contains("Master");
+            NarrowBand = mKeywordList.FilterName.Contains("Ha") || mKeywordList.FilterName.Contains("O3") || mKeywordList.FilterName.Contains("S2");
+            RiccardiReducer = mKeywordList.Telescope.EndsWith("R");
          }
 
         public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
         {
                 if (object1 == null) return 1;
                 if (object2 == null) return 1;
-                if (object1.KeywordData.CaptureDateTime() > object2.KeywordData.CaptureDateTime()) return 1;
-                if (object1.KeywordData.CaptureDateTime() < object2.KeywordData.CaptureDateTime()) return -1;
+                if (object1.mKeywordList.CaptureDateTime > object2.mKeywordList.CaptureDateTime) return 1;
+                if (object1.mKeywordList.CaptureDateTime < object2.mKeywordList.CaptureDateTime) return -1;
                 return 0;
         };
     }
