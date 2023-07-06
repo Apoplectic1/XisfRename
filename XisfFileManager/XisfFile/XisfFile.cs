@@ -33,10 +33,25 @@ namespace XisfFileManager.FileOperations
         {
             mKeywordList.AddKeyword(keyword, value, comment);
         }
-
         public void RemoveKeyword(string keyword)
         {
            mKeywordList.RemoveKeyword(keyword);
+        }
+        public void RemoveKeyword(string keyword, object oValue)
+        {
+            mKeywordList.RemoveKeyword(keyword, oValue);
+        }
+        public Keyword GetKeyword(string keyword)
+        {
+            return mKeywordList.GetKeyword(keyword);
+        }
+        public object GetKeywordValue(string keyword)
+        {
+            return mKeywordList.GetKeywordValue(keyword);
+        }
+        public object GetKeywordComment(string keyword)
+        {
+            return mKeywordList.GetKeywordComment(keyword);
         }
         public double AmbientTemperature
         {
@@ -134,6 +149,11 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.Offset; }
             set { mKeywordList.Offset = value; }
         }
+        public bool Protect
+        {
+            get { return mKeywordList.Protect; }
+            set { mKeywordList.Protect = value; }
+        }
         public bool RiccardiReducer { get; set; }
         public string Rejection
         {
@@ -169,7 +189,7 @@ namespace XisfFileManager.FileOperations
             set { mKeywordList.TotalFrames = value; }
         }
         public bool Unique { get; set; } = false;
-        public double WeightKeyword
+        public List<string> WeightKeyword
         {
             get { return mKeywordList.WeightKeyword; }
         }
@@ -318,7 +338,6 @@ namespace XisfFileManager.FileOperations
 
         public void SetRequiredKeywords()
         {
-            FilePath = mKeywordList.FileName;
             Master = mKeywordList.TargetName.Contains("Master");
             NarrowBand = mKeywordList.FilterName.Contains("Ha") || mKeywordList.FilterName.Contains("O3") || mKeywordList.FilterName.Contains("S2");
             RiccardiReducer = mKeywordList.Telescope.EndsWith("R");

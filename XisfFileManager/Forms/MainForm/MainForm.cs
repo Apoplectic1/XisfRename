@@ -267,6 +267,10 @@ namespace XisfFileManager
             SubFrameLists.Clear();
             SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Keyword";
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
             ClearForm();
@@ -443,7 +447,7 @@ namespace XisfFileManager
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
             List<string> TargetNames = new List<string>();
-            List<double> WeightKeywords = new List<double>();
+            List<string> WeightKeywords = new List<string>();
 
             foreach (XisfFile file in mFileList)
             {
@@ -481,8 +485,7 @@ namespace XisfFileManager
             // Now find a list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
             {
-                WeightKeywords.Add(file.WeightKeyword);
-                //WeightKeywords.Add(file.KeywordData.WBPPKeyword());
+                WeightKeywords = file.WeightKeyword;
             }
 
             if (WeightKeywords.Count > 0)
@@ -808,13 +811,15 @@ namespace XisfFileManager
             int count = 0;
             foreach (XisfFile file in mFileList)
             {
+                // For each file: Add PROTECT Keyword if CheckBox is checked or remove all PROTECT Keywords
                 // Don't update existing files that have the Protected Keyword set unless the UI overrides this setting
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 {
-                    //if (file.KeywordData.Protected() == true)
-                    // An unprotected file wil1: 1. Not have a Proteted Keyword; 2. The Keyword is false  
+                    file.Protect = true;
                     continue;
                 }
+                else
+                    file.Protect = false;
 
                 file.SetObservationSite();
 
@@ -825,11 +830,6 @@ namespace XisfFileManager
 
                 if (file.Master)
                     file.AddKeyword("OBJECT", "Master", "Master Integration Frame");
-
-
-                // For each file: Add PROTECTED Keyword if CheckBox is checked or remove all PROTECTED Keyword
-                if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
-                    file.AddKeyword("PROTECTED", true);
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(file, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
@@ -1879,7 +1879,7 @@ namespace XisfFileManager
             string globalFilterText = string.Empty;
 
             foreach (XisfFile file in mFileList)
-            {   
+            {
                 if (globalFrameType)
                 {
                     if (file.FrameType == eFrameType.EMPTY)
@@ -3059,7 +3059,7 @@ namespace XisfFileManager
                     }
 
                     file.Gain = gainValue;
-  
+
 
                     status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
@@ -3564,54 +3564,144 @@ namespace XisfFileManager
 
         }
 
+        string mKeywordComboBox_SelectedKeywordName;
+        object mKeywordComboBox_SelectedKeywordValue;
+        string mKeywordComboBox_SelectedKeywordComment;
+
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            List<string> keywordValuelist = new List<string>();
-
             if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
                 return;
+
+            List<Keyword> keywordList = new List<Keyword>();
 
             foreach (XisfFile file in mFileList)
             {
                 foreach (var keyword in file.mKeywordList.mKeywordList)
                 {
-                    //if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedItem))
-                    // keywordValuelist.Add(GetKeywordValue());
+                    keywordList.Add(keyword);
                 }
             }
 
-            keywordValuelist.Sort();
-            keywordValuelist = keywordValuelist.Distinct().ToList();
+            // Uniquify the keywordList based on Keyword.Name and Keyword.Value while keeping associated Comment and FilePath
+            keywordList = keywordList
+                .GroupBy(k => new { k.Name, k.Value })
+                .Select(g => g.First())
+                .OrderBy(k => k.Name)
+                .ToList();
+
+            mKeywordComboBox_SelectedKeywordName = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text;
+            mKeywordComboBox_SelectedKeywordValue = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text;
+            mKeywordComboBox_SelectedKeywordComment = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text;
+
 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
-            foreach (var value in keywordValuelist)
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "";
+
+
+
+            foreach (var value in keywordList)
             {
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value);
+                if (mKeywordComboBox_SelectedKeywordName == value.Name)
+                {
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = value.Value.ToString();
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = value.Comment;
+                }
             }
+        }
+
+        private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue_SelectedValueChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void Button_KeywordUpdateTab_SubFrameKeywords_Delete_Click(object sender, EventArgs e)
         {
             foreach (XisfFile file in mFileList)
             {
-                file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
+                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
+                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
             }
 
-            if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndex >= 0)
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.RemoveAt(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndex);
+            RefreshComboBoxes();
         }
 
         private void Button_KeywordUpdateTab_SubFrameKeywords_AddReplace_Click(object sender, EventArgs e)
         {
             foreach (XisfFile file in mFileList)
             {
-                Keyword item = file.mKeywordList.mKeywordList.Find(i => i.Name == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
-                if (item != null)
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
+                    file.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
                 {
-                    if (item.Value.ToString() == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text)
-                        file.AddKeyword(item.Name, item.Value);
+                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    file.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
                 }
-                //                file.KeywordData.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+            }
+
+            RefreshComboBoxes();
+
+
+            foreach (XisfFile file in mFileList)
+            {
+                bool bFound = false;
+
+                string foundItem = file.mKeywordList.mKeywordList.OfType<string>().FirstOrDefault(item => item == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+
+
+                foreach (var keyword in file.mKeywordList.mKeywordList.ToList())
+                {
+                    if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text))
+                    {
+                        keyword.Value = (object)ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text;
+                        file.AddKeyword(keyword.Name, keyword.Value, keyword.Comment);
+                        bFound = true;
+                    }
+                }
+
+                if (!bFound)
+                    file.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+            }
+
+            RefreshComboBoxes();
+        }
+
+        private void RefreshComboBoxes()
+        {
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Name";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "Comment";
+
+
+            List<string> keywordNamelist = new List<string>();
+
+            foreach (XisfFile xFile in mFileList)
+            {
+                foreach (var keywordName in xFile.mKeywordList.mKeywordList)
+                {
+                    keywordNamelist.Add(keywordName.Name);
+                }
+            }
+
+            keywordNamelist.Sort();
+            keywordNamelist = keywordNamelist.Distinct().ToList();
+
+            foreach (var name in keywordNamelist)
+            {
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
         }
     }

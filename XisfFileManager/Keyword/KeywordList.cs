@@ -105,7 +105,7 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
-        public Keyword NewKeyWord(string sName, object oValue, string sComment)
+        public Keyword NewKeyword(string sName, object oValue, string sComment)
         {
             Keyword newKeyword = new Keyword
             {
@@ -115,6 +115,17 @@ namespace XisfFileManager
             };
 
             return newKeyword;
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+
+        public Keyword GetKeyword(string sName)
+        {
+            Keyword node = mKeywordList.Find(i => i.Name == sName);
+            if (node == null)
+                return null;
+
+            return node;
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -140,17 +151,23 @@ namespace XisfFileManager
 
         public void RemoveKeyword(string name)
         {
-            mKeywordList.RemoveAll(i => i.Name.Contains(name));
+            mKeywordList.RemoveAll(i => i.Name.Equals(name));
         }
 
-  
         // ----------------------------------------------------------------------------------------------------------
+        public void RemoveKeyword(string name, object oValue)
+        {
+            mKeywordList.RemoveAll(i => i.Name.Equals(name) && i.Value.Equals(oValue));
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+
 
         public void AddKeyword(string sName, object oValue, string sComment = "XISF File Manager")
         {
             mKeywordList.RemoveAll(i => i.Name == sName);
 
-            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
+            Keyword newKeyword = NewKeyword(sName, oValue, sComment);
 
             mKeywordList.Add(newKeyword);
         }
@@ -164,7 +181,7 @@ namespace XisfFileManager
         // ----------------------------------------------------------------------------------------------------------
         public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
+            Keyword newKeyword = NewKeyword(sName, oValue, sComment);
 
             mKeywordList.Add(newKeyword);
         }
@@ -297,7 +314,7 @@ namespace XisfFileManager
                 object Object = GetKeywordValue("Approved");
                 if (Object != null)
                     return (bool)Object;
-                return false;
+                return true;
             }
             set
             {
@@ -1061,6 +1078,24 @@ namespace XisfFileManager
             return -1;
             */
         }
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public bool Protect
+        {
+            get
+            {
+                object Object = GetKeywordValue("PROTECT");
+                if (Object != null)
+                    return (bool)Object;
+
+                return false;
+            }
+
+            set
+            {
+                    AddKeyword("PROTECT", value, "Xisf File Manager Protected File Status");
+            }
+        }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -1532,56 +1567,57 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double WeightKeyword
+        public List<string> WeightKeyword
         {
             get
             {
+                List<string> wList = new List<string>();
+
                 object Obj = GetKeywordValue("SSWEIGHT");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("SSWEIGHT");
                 }
 
                 Obj = GetKeywordValue("NWEIGHT");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("NWEIGHT");
                 }
 
                 Obj = GetKeywordValue("W_SNR");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("W_SNR");
                 }
 
                 Obj = GetKeywordValue("W_FWHM");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("W_FWHM");
                 }
 
                 Obj = GetKeywordValue("W_ECC");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("W_ECC");
                 }
 
                 Obj = GetKeywordValue("W_PSFSNR");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("W_PSFSNR");
                 }
 
-                Obj = GetKeywordValue("W_PSF");
+                Obj = GetKeywordValue("W_PSFS");
                 if (Obj != null)
                 {
-                    return (double)Obj;
+                    wList.Add("W_PSFS");
                 }
 
-                return -1.0;
+                return wList;
             }
         }
-
         // *********************************************************************************************************
         // *********************************************************************************************************
 
