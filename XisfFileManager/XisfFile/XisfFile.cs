@@ -98,6 +98,11 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.CFLAT; }
             set { mKeywordList.CFLAT = value; }
         }
+        public string CLIGHT
+        {
+            get { return mKeywordList.CLIGHT; }
+            set { mKeywordList.CLIGHT = value; }
+        }
         public string CPANEL
         {
             get { return mKeywordList.CPANEL; }
@@ -259,9 +264,10 @@ namespace XisfFileManager.FileOperations
             bool bStatus;
 
             // First remove Keyword characteritics that interfere with later processing
-            // Get rid of extra spaces and "'"
+            // Get rid of "'"
             string elementValue = element.Attribute("value").Value;
-            elementValue = elementValue.Replace(" ", "").Replace("'", "");
+            //elementValue = elementValue.Replace(" ", "").Replace("'", "");
+            elementValue = elementValue.Replace("'", "");
 
             // Now get rid of an extra decimal point at the end of what should be integers
             elementValue = elementValue.TrimEnd('.');

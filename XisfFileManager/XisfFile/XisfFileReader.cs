@@ -56,7 +56,8 @@ namespace XisfFileManager.FileOperations
                     }
                 }
 
-                modifiedString = keywordBlock.ToString();
+                modifiedString = keywordBlock.ToString().Replace("'", "");
+
 
                 //PruneXisfFile();
 
@@ -103,6 +104,15 @@ namespace XisfFileManager.FileOperations
                 }
 
                 xFile.SetRequiredKeywords();
+                /*
+                Keyword oType= xFile.GetKeyword("IMAGETYP");
+                Keyword oObject = xFile.GetKeyword("OBJECT");
+                if (oObject.Value.ToString().Contains("Master") && (oObject.Value.ToString().Contains("Flat") || oType.Value.ToString().Contains("Flat")))
+                {
+                    xFile.AddKeyword("REJECTION", "ESD", "PixInsight Statistical Rejection Method");
+                    xFile.AddKeyword("TOTALFRAMES", 64, "Number of Integrated SubFrames");
+                }
+                */
             }
         }
 
@@ -113,6 +123,13 @@ namespace XisfFileManager.FileOperations
             string pattern;
             string mSearch;
 
+            startTag = "<FITSKeyword name=\"HISTORY\"";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+
+            return;
 
             mSearch = "BlockAlignmentSize";
             pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";

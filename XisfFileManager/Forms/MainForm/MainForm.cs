@@ -562,7 +562,7 @@ namespace XisfFileManager
 
             // **********************************************************************
             FindCaptureSoftware();
-            FindFrameType();
+            FindFilterFrameType();
             FindTelescope();
             FindCamera();
             // **********************************************************************
@@ -1929,7 +1929,7 @@ namespace XisfFileManager
                 file.SetRequiredKeywords();
             }
 
-            FindFrameType();
+            FindFilterFrameType();
         }
 
         private void Button_KeywordImageTypeFrame_SetAll_Click(object sender, EventArgs e)
@@ -2005,7 +2005,7 @@ namespace XisfFileManager
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked)
                     file.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked)
+                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked)
                     file.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked)
@@ -2026,14 +2026,22 @@ namespace XisfFileManager
                 file.SetRequiredKeywords();
             }
 
-            FindFrameType();
+            FindFilterFrameType();
         }
 
-        public void FindFrameType()
+        public void FindFilterFrameType()
         {
             string filter;
             int filterCount;
             int masterCount;
+            int lumaCount;
+            int redCount;
+            int greenCount;
+            int blueCount;
+            int haCount;
+            int o3Count;
+            int s2Count;
+            int shutterCount;
 
             bool foundLuma = false;
             bool foundRed = false;
@@ -2047,7 +2055,7 @@ namespace XisfFileManager
 
             RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Black;
@@ -2056,7 +2064,7 @@ namespace XisfFileManager
 
             RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = false;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
@@ -2079,6 +2087,15 @@ namespace XisfFileManager
             // *****************************************************************************
 
             filterCount = 0;
+            lumaCount = 0;
+            redCount = 0;
+            greenCount = 0;
+            blueCount = 0;
+            haCount = 0;
+            o3Count = 0;
+            s2Count = 0;
+            shutterCount = 0;
+
             foreach (XisfFile file in mFileList)
             {
                 filter = file.FilterName;
@@ -2086,12 +2103,14 @@ namespace XisfFileManager
                 if (filter == "Luma")
                 {
                     foundLuma = true;
+                    lumaCount++;
                     filterCount++;
                 }
 
                 if (filter == "Red")
                 {
                     foundRed = true;
+                    redCount++;
                     filterCount++;
                 }
 
@@ -2104,12 +2123,14 @@ namespace XisfFileManager
                 if (filter == "Blue")
                 {
                     foundBlue = true;
+                    blueCount++;
                     filterCount++;
                 }
 
                 if (filter == "Ha")
                 {
                     foundHa = true;
+                    haCount++;
                     filterCount++;
                 }
 
@@ -2122,140 +2143,202 @@ namespace XisfFileManager
                 if (filter == "S2")
                 {
                     foundS2 = true;
+                    s2Count++;
                     filterCount++;
                 }
 
                 if (filter == "Shutter")
                 {
                     foundShutter = true;
+                    shutterCount++;
                     filterCount++;
                 }
             }
 
-            if (filterCount != mFileList.Count)
+            if (filterCount == mFileList.Count)
             {
-                RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.DarkViolet;
-            }
+                // Every source file has a filter.
 
-            if (foundLuma)
-            {
-                if (foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
-                }
-            }
+                // If one filter is used, check that filter's radio button and leave the radio button as black
+                // if more than one filter is used, make a found filter's radio button unchecked and color DarkGreen
+                // Do this for each filter
 
-            if (foundRed)
-            {
-                if (foundLuma || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
+                if (foundLuma)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
+                    if (lumaCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
                 }
-                else
+                if (foundRed)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
+                    if (redCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
                 }
-            }
-
-            if (foundGreen)
-            {
-                if (foundLuma || foundRed || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
+                if (foundGreen)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = false;
+                    if (greenCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = true;
                 }
-                else
+                if (foundBlue)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Checked = true;
+                    if (blueCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
                 }
-            }
-
-            if (foundBlue)
-            {
-                if (foundLuma || foundRed || foundGreen || foundHa || foundO3 || foundS2 || foundShutter)
+                if (foundHa)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
+                    if (haCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
                 }
-                else
+                if (foundO3)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
+                    if (o3Count != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
                 }
-            }
-
-            if (foundHa)
-            {
-                if (foundLuma || foundRed || foundGreen || foundBlue || foundO3 || foundS2 || foundShutter)
+                if (foundS2)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
+                    if (s2Count != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
                 }
-                else
+                if (foundShutter)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
+                    if (shutterCount != filterCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
                 }
             }
-
-            if (foundO3)
+            else
             {
-                if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundS2 || foundShutter)
+                // Some source files are missing filters
+
+                if (foundLuma)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
+                    if (foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
+                    }
                 }
-                else
+
+                if (foundRed)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
+                    if (foundLuma || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
+                    }
+                }
+
+                if (foundGreen)
+                {
+                    if (foundLuma || foundRed || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = true;
+                    }
+                }
+
+                if (foundBlue)
+                {
+                    if (foundLuma || foundRed || foundGreen || foundHa || foundO3 || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
+                    }
+                }
+
+                if (foundHa)
+                {
+                    if (foundLuma || foundRed || foundGreen || foundBlue || foundO3 || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
+                    }
+                }
+
+                if (foundO3)
+                {
+                    if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundS2 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
+                    }
+                }
+
+                if (foundS2)
+                {
+                    if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundShutter)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
+                    }
+                }
+
+                if (foundShutter)
+                {
+                    if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
+                    }
                 }
             }
 
-            if (foundS2)
-            {
-                if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundShutter)
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
-                }
-            }
 
-            if (foundShutter)
-            {
-                if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2)
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
-                }
-            }
-
-
-
-            // Now check each and every source file for different or the same frame type
-            // If identical, do nothing. If different, make all found UI labels red 
+            // Now check each and every source file for a valid frame type
             bool foundLight = false;
             bool foundDark = false;
             bool foundFlat = false;
             bool foundBias = false;
+            int lightCount = 0;
+            int darkCount = 0;
+            int flatCount = 0;
+            int biasCount = 0;
             int frameTypeCount;
 
             masterCount = 0;
@@ -2265,24 +2348,28 @@ namespace XisfFileManager
                 if (file.FrameType == eFrameType.LIGHT)
                 {
                     foundLight = true;
+                    lightCount++;
                     frameTypeCount++;
                 }
 
                 if (file.FrameType == eFrameType.DARK)
                 {
                     foundDark = true;
+                    darkCount++;
                     frameTypeCount++;
                 }
 
                 if (file.FrameType == eFrameType.FLAT)
                 {
                     foundFlat = true;
+                    flatCount++;
                     frameTypeCount++;
                 }
 
                 if (file.FrameType == eFrameType.BIAS)
                 {
                     foundBias = true;
+                    biasCount++;
                     frameTypeCount++;
                 }
 
@@ -2293,68 +2380,116 @@ namespace XisfFileManager
                 }
             }
 
-            if (foundLight)
+
+
+            if (frameTypeCount == mFileList.Count)
             {
-                if (foundDark || foundFlat || foundBias)
+                // Every source file has a frameType.
+
+                // If one filter is used, check that filter's radio button and leave the radio button as black
+                // if more than one filter is used, make a found filter's radio button unchecked and color DarkGreen
+                // Do this for each filter
+
+                if (foundLight)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
+                    if (lightCount != frameTypeCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
                 }
-                else
+                if (foundDark)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
+                    if (darkCount != frameTypeCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
+                }
+                if (foundFlat)
+                {
+                    if (flatCount != frameTypeCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
+                }
+                if (foundBias)
+                {
+                    if (biasCount != frameTypeCount)
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkGreen;
+                    else
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
                 }
             }
-
-            if (foundDark)
+            else
             {
-                if (foundLight || foundFlat || foundBias)
+                /*
+                if (frameTypeCount == mFileList.Count)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
+                    // Every source file has a FrameType. Make each found FrameType radio button DarkGreen
+                    if (foundLight) RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkGreen;
                 }
-                else
+                */
+                if (foundLight)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
+                    if (foundDark || foundFlat || foundBias)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
+                    }
+                }
+
+                if (foundDark)
+                {
+                    if (foundLight || foundFlat || foundBias)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
+                    }
+                }
+
+                if (foundFlat)
+                {
+                    if (foundLight || foundDark || foundBias)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
+                    }
+                }
+
+                if (foundBias)
+                {
+                    if (foundLight || foundDark || foundFlat)
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Red;
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+                    }
+                    else
+                    {
+                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
+                    }
+                }
+
+                if (!foundLight && !foundDark && !foundFlat && !foundBias)
+                {
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkViolet;
+
+                    return;
                 }
             }
-
-            if (foundFlat)
-            {
-                if (foundLight || foundDark || foundBias)
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
-                }
-            }
-
-            if (foundBias)
-            {
-                if (foundLight || foundDark || foundFlat)
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
-                }
-            }
-
-            if (!foundLight && !foundDark && !foundFlat && !foundBias)
-            {
-                RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkViolet;
-
-                return;
-            }
-
             if (foundMaster)
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
@@ -3552,6 +3687,12 @@ namespace XisfFileManager
 
                 file.RemoveKeyword("CBIAS");
                 file.CBIAS = string.Empty;
+
+                file.RemoveKeyword("CPANEL");
+                file.CPANEL = string.Empty;
+
+                file.RemoveKeyword("CLIGHT");
+                file.CLIGHT = string.Empty;
             }
 
             mCalibration.ResetAll();
@@ -3563,10 +3704,6 @@ namespace XisfFileManager
             Label_CalibrationTab_TotalMatchedFiles.Text = "No Macthed Calibration Frames";
 
         }
-
-        string mKeywordComboBox_SelectedKeywordName;
-        object mKeywordComboBox_SelectedKeywordValue;
-        string mKeywordComboBox_SelectedKeywordComment;
 
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3590,11 +3727,6 @@ namespace XisfFileManager
                 .OrderBy(k => k.Name)
                 .ToList();
 
-            mKeywordComboBox_SelectedKeywordName = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text;
-            mKeywordComboBox_SelectedKeywordValue = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text;
-            mKeywordComboBox_SelectedKeywordComment = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text;
-
-
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "";
 
@@ -3605,7 +3737,7 @@ namespace XisfFileManager
 
             foreach (var value in keywordList)
             {
-                if (mKeywordComboBox_SelectedKeywordName == value.Name)
+                if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == value.Name)
                 {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = value.Value.ToString();
@@ -3616,18 +3748,33 @@ namespace XisfFileManager
 
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue_SelectedValueChanged(object sender, EventArgs e)
         {
+            List<Keyword> keywordList = new List<Keyword>();
 
+            foreach (XisfFile file in mFileList)
+            {
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
+                    file.mKeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+
+                if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
+                {
+                    file.mKeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    file.mKeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+                }
+            }
         }
 
         private void Button_KeywordUpdateTab_SubFrameKeywords_Delete_Click(object sender, EventArgs e)
         {
-            foreach (XisfFile file in mFileList)
+            string name = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text;
+            string value = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text;
+
+            foreach (XisfFile xFile in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
-                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                    xFile.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
 
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
-                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    xFile.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
             }
 
             RefreshComboBoxes();
@@ -3635,21 +3782,21 @@ namespace XisfFileManager
 
         private void Button_KeywordUpdateTab_SubFrameKeywords_AddReplace_Click(object sender, EventArgs e)
         {
-            foreach (XisfFile file in mFileList)
+            foreach (XisfFile xFile in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
-                    file.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                    xFile.mKeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
 
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
                 {
-                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
-                    file.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
+                    xFile.mKeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    xFile.mKeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
                 }
             }
 
             RefreshComboBoxes();
 
-
+            /*
             foreach (XisfFile file in mFileList)
             {
                 bool bFound = false;
@@ -3672,6 +3819,7 @@ namespace XisfFileManager
             }
 
             RefreshComboBoxes();
+            */
         }
 
         private void RefreshComboBoxes()

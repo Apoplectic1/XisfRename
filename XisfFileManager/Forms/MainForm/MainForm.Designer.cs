@@ -99,7 +99,7 @@
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2 = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green = new System.Windows.Forms.RadioButton();
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             this.GroupBox_KeywordUpdateTab_SubFrameKeywords = new System.Windows.Forms.GroupBox();
             this.ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue = new System.Windows.Forms.ComboBox();
@@ -1035,7 +1035,7 @@
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_S2);
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Ha);
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Blue);
-            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green);
+            this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green);
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(this.RadioButton_KeywordUpdateTab_ImageType_Filter_O3);
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Location = new System.Drawing.Point(9, 17);
             this.GroupBox_KeywordUpdateTab_ImageType_Filter.Name = "GroupBox_KeywordUpdateTab_ImageType_Filter";
@@ -1112,14 +1112,14 @@
             // 
             // RadioButton_KeywordUpdateTab_ImageType_Filterr_Green
             // 
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Location = new System.Drawing.Point(83, 44);
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Name = "RadioButton_KeywordUpdateTab_ImageType_Filterr_Green";
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Size = new System.Drawing.Size(54, 17);
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.TabIndex = 3;
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.TabStop = true;
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.Text = "Green";
-            this.RadioButton_KeywordUpdateTab_ImageType_Filterr_Green.UseVisualStyleBackColor = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.AutoSize = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Location = new System.Drawing.Point(83, 44);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Name = "RadioButton_KeywordUpdateTab_ImageType_Filterr_Green";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Size = new System.Drawing.Size(54, 17);
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.TabIndex = 3;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.TabStop = true;
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Text = "Green";
+            this.RadioButton_KeywordUpdateTab_ImageType_Filter_Green.UseVisualStyleBackColor = true;
             // 
             // RadioButton_KeywordUpdateTab_ImageType_Filter_O3
             // 
@@ -3778,7 +3778,7 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_S2;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Blue;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filterr_Green;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Green;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Ha;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Red;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Luma;

@@ -149,15 +149,15 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
-        public void RemoveKeyword(string name)
+        public void RemoveKeyword(string sName)
         {
-            mKeywordList.RemoveAll(i => i.Name.Equals(name));
+            mKeywordList.RemoveAll(i => i.Name.Equals(sName));
         }
 
         // ----------------------------------------------------------------------------------------------------------
-        public void RemoveKeyword(string name, object oValue)
+        public void RemoveKeyword(string sName, object oValue)
         {
-            mKeywordList.RemoveAll(i => i.Name.Equals(name) && i.Value.Equals(oValue));
+            mKeywordList.RemoveAll(i => i.Name.Equals(sName) && i.Value.Equals(oValue));
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -587,7 +587,7 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("CBIAS", value, "Match this file with other CBIAS" + CBIAS + " files");
+                AddKeyword("CBIAS", value, "WBPP: Match this file with other CBIAS" + CBIAS + " files");
             }
         }
 
@@ -604,7 +604,7 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("CDARK", value, "Match this file with other CDARK" + CDARK + " files");
+                AddKeyword("CDARK", value, "WBPP: Match this file with other CDARK" + CDARK + " files");
             }
         }
 
@@ -621,10 +621,26 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("CFLAT", value, "Match this file with other CFLAT" + CFLAT + " files");
+                AddKeyword("CFLAT", value, "WBPP: Match this file with other CFLAT" + CFLAT + " files");
             }
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CLIGHT
+        {
+            get
+            {
+                object Object = GetKeywordValue("CLIGHT");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CLIGHT", value, "WBPP: Match this file with other CLIGHT" + CLIGHT + " files");
+            }
+        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CPANEL

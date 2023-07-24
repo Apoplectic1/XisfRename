@@ -22,6 +22,7 @@ namespace XisfFileManager
         public enum CalibrationDirectory { LOCAL, LIBRARY }
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedDarkList;
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedFlatList;
+        private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedPanelList;
         private List<XisfFile> mBiasCalibrationFileList;
         private List<XisfFile> mDarkCalibrationFileList;
         private List<XisfFile> mFlatCalibrationFileList;
@@ -32,6 +33,7 @@ namespace XisfFileManager
         private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
+        private List<XisfFile> mUnmatchedPanelTargetFileList;
 
         //private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
@@ -62,11 +64,13 @@ namespace XisfFileManager
             mLocalCalibrationFileList = new List<XisfFile>();
             mMatchedDarkList = new List<(XisfFile, XisfFile)>();
             mMatchedFlatList = new List<(XisfFile, XisfFile)>();
+            mMatchedPanelList = new List<(XisfFile, XisfFile)>();
             mUniqueDarkCalibrationFileList = new List<XisfFile>();
             mUniqueFlatCalibrationFileList = new List<XisfFile>();
             mUnmatchedBiasTargetFileList = new List<XisfFile>();
             mUnmatchedDarkTargetFileList = new List<XisfFile>();
             mUnmatchedFlatTargetFileList = new List<XisfFile>();
+            mUnmatchedPanelTargetFileList = new List<XisfFile>();
         }
 
         // ******************************************************************************************************************
@@ -221,7 +225,7 @@ namespace XisfFileManager
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
             }
-            
+
             List<XisfFile> FilterList = bIgnoreFilter ? BinningList : BinningList.Where(filter => filter.FilterName == targetFile.FilterName).ToList();
             if (FilterList.Count == 0)
             {
@@ -268,7 +272,7 @@ namespace XisfFileManager
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
             }
-            
+
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
             if (TemperatureList.Count == 0)
             {
@@ -431,6 +435,60 @@ namespace XisfFileManager
             return bAllFlatsMatched;
         }
 
+
+        // ******************************************************************************************************************
+        // ******************************************************************************************************************
+        private bool MatchCalibrationPanelFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
+        {
+            if (targetFrameList.Count == 0)
+            {
+                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            MatchCalibrationPanelFrames: No Target Frames Found\r\n";
+                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                return false;
+            }
+
+            List<string> targetNameList = new List<string>();
+            List<string> filterNameList = new List<string>();
+            List<int> binningList = new List<int>();
+
+            // Now we add to mDarkDictionary for all the Dark calibration files that match/do not match the target
+            foreach (var targetFile in mUnmatchedPanelTargetFileList)
+            {
+                // Find all Target and Filter Names
+                targetNameList.Add(targetFile.TargetObjectName);
+                filterNameList.Add(targetFile.FilterName);
+                binningList.Add(targetFile.Binning);
+            }
+
+            targetNameList = targetNameList.Distinct().OrderBy(x => x).ToList();
+            filterNameList = filterNameList.Distinct().OrderBy(x => x).ToList();
+            binningList = binningList.Distinct().OrderBy(x => x).ToList();
+
+            int panelNumber = 1;
+            foreach (var targetFile in mUnmatchedPanelTargetFileList)
+            {
+                int targetIndex = targetNameList.IndexOf(targetFile.TargetObjectName);
+                int filterIndex = filterNameList.IndexOf(targetFile.FilterName);
+                int binningIndex = binningList.IndexOf(targetFile.Binning);
+
+                if (targetIndex != -1 && filterIndex != -1 && binningIndex != -1)
+                {
+                    if (binningList.Count == 1)
+                    {
+                        panelNumber = (targetIndex * filterNameList.Count) + (filterIndex + 1);
+                    }
+                    else
+                    {
+                        panelNumber = (targetIndex * (filterNameList.Count + binningList.Count)) + (filterIndex + 1);
+                    }
+                    targetFile.AddKeyword("CPANEL", "P" + panelNumber, "Integrate these Panel numbers");
+                    targetFile.CPANEL = "P" + panelNumber.ToString();
+                }
+            }
+
+            return true;
+        }
         // ******************************************************************************************************************
         // ******************************************************************************************************************
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
@@ -449,10 +507,12 @@ namespace XisfFileManager
             mUnmatchedDarkTargetFileList.Clear();
             mUnmatchedFlatTargetFileList.Clear();
             mUnmatchedBiasTargetFileList.Clear();
+            mUnmatchedPanelTargetFileList.Clear();
 
             mUnmatchedDarkTargetFileList.AddRange(targetFileList);
             mUnmatchedFlatTargetFileList.AddRange(targetFileList);
             mUnmatchedBiasTargetFileList.AddRange(targetFileList);
+            mUnmatchedPanelTargetFileList.AddRange(targetFileList);
 
             // At this point, we have lists of target frames (lights, darks and flats) as well as a list of all Library calibration frames (darks, flats and bias) 
 
@@ -606,6 +666,9 @@ namespace XisfFileManager
                 }
             }
 
+            // Set CPANEL in Light Frames based only on TARGET name and FILTER name 
+            // Ignore all other parameters like EXPOSURE time, GAIN, OFFSET, TEMPERATURE etc.
+            MatchCalibrationPanelFrames(CalibrationDirectory.LIBRARY, mUnmatchedPanelTargetFileList, false);
 
             mCalibrationTabValues.TotalUniqueFlatCalibrationFiles = mFlatCalibrationFileList.Count;
             mCalibrationTabValues.TotalUniqueDarkCalibrationFiles = mDarkCalibrationFileList.Count;
