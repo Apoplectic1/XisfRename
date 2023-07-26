@@ -108,12 +108,12 @@ namespace XisfFileManager
                     break;
 
                 case FileType.MASTERS:
-                    if (!mFileInfo.Name.Contains("Master"))
+                    if (!mFileInfo.Name.ToLower().Contains("master"))
                         mFileInfo = null;
                     break;
 
                 case FileType.NO_MASTERS:
-                    if (mFileInfo.Name.Contains("Master"))
+                    if (mFileInfo.Name.ToLower().Contains("master"))
                         mFileInfo = null;
                     break;
 

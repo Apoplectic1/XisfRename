@@ -2571,15 +2571,12 @@ namespace XisfFileManager
 
         public void FindCamera()
         {
-
             ClearForm();
 
             // Color Key - Valid is item specific
             // All items valid and unique are colored Black
             // All items valid but not unique are colored DarkViolet
             // At least one item is missing is colored Red
-
-
 
             // If no files, just return
             if (mFileList.Count == 0) return;
@@ -3422,20 +3419,19 @@ namespace XisfFileManager
                                     break;
                             }
 
-                            if (node.Comment.ToLower().Contains("sigma"))
+                            if (node.Comment.ToLower().Contains("winsor"))
                             {
-                                rejection = "SC";
-                                comment = "PixInsight Sigma Clipping";
+                                rejection = "WSC";
+                                comment = "PixInsight Winsorized Sigma Clipping";
                                 foundRejection = true;
 
                                 if (foundNumberOfImages)
                                     break;
                             }
-
-                            if (node.Comment.ToLower().Contains("winsor"))
+                            if (node.Comment.ToLower().Contains("sigma"))
                             {
-                                rejection = "WSC";
-                                comment = "PixInsight Winsorized Sigma Clipping";
+                                rejection = "SC";
+                                comment = "PixInsight Sigma Clipping";
                                 foundRejection = true;
 
                                 if (foundNumberOfImages)

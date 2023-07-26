@@ -24,7 +24,6 @@ namespace XisfFileManager.FileOperations
 
         public static bool UpdateFile(XisfFile xFile, SubFrameLists SubFrameKeywordLists, bool bPreserveProtectedFiles)
         {
-            int xmlStart;
             int xisfStart;
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
@@ -53,13 +52,12 @@ namespace XisfFileManager.FileOperations
                     rawFileData = br.ReadBytes((int)1e9);
                     br.Close();
 
-                    // Set up some pointers to xml start and stop positions
-                    xmlStart = BinaryFind(rawFileData, "<?xml version"); // returns the position of '<'
+                    // Set up pointers to xisf start and stop positions
                     xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
                     xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
                     // convert (including) from <xisf to </xisf> to a string and then parse string as xml into a new doc
-                    string xisfString = Encoding.UTF8.GetString(rawFileData, xmlStart, xisfEnd);
+                    string xisfString = Encoding.UTF8.GetString(rawFileData, xisfStart, xisfEnd);
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(xisfString);
 

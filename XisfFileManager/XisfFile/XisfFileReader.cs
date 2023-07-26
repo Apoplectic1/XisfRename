@@ -59,7 +59,7 @@ namespace XisfFileManager.FileOperations
                 modifiedString = keywordBlock.ToString().Replace("'", "");
 
 
-                //PruneXisfFile();
+                PruneXisfFile();
 
                 xFile.mXDoc = new XDocument();
 
@@ -107,10 +107,10 @@ namespace XisfFileManager.FileOperations
                 /*
                 Keyword oType= xFile.GetKeyword("IMAGETYP");
                 Keyword oObject = xFile.GetKeyword("OBJECT");
-                if (oObject.Value.ToString().Contains("Master") && (oObject.Value.ToString().Contains("Flat") || oType.Value.ToString().Contains("Flat")))
+                if (oObject.Value.ToString().Contains("Master") && (oObject.Value.ToString().Contains("Bias") || oType.Value.ToString().Contains("Bias")))
                 {
-                    xFile.AddKeyword("REJECTION", "ESD", "PixInsight Statistical Rejection Method");
-                    xFile.AddKeyword("TOTALFRAMES", 64, "Number of Integrated SubFrames");
+                    xFile.AddKeyword("REJECTION", "WSC", "PixInsight Statistical Rejection Method");
+                    xFile.AddKeyword("TOTALFRAMES", 1028, "Number of Integrated SubFrames");
                 }
                 */
             }
@@ -123,10 +123,31 @@ namespace XisfFileManager.FileOperations
             string pattern;
             string mSearch;
 
+            startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.pixelRejection:";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
+            Match match = Regex.Match(modifiedString, pattern); 
+            string pixelRejection = match.Value.ToString();
+
+            startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.numberOfImages:";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
+            match = Regex.Match(modifiedString, pattern);
+            string numberOfImages = match.Value.ToString();
+
             startTag = "<FITSKeyword name=\"HISTORY\"";
             stopTag = "/>";
             pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
             modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            startTag = "<FITSKeyword name=\"IMAGETYP\"";
+            stopTag = "/>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+
+            match = Regex.Match(modifiedString, pattern);
+            modifiedString = modifiedString.Insert(match.Index + match.Length, pixelRejection);
+            match = Regex.Match(modifiedString, pattern);
+            modifiedString = modifiedString.Insert(match.Index + match.Length, numberOfImages);
 
 
             return;

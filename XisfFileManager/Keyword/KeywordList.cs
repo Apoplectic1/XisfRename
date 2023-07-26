@@ -1287,16 +1287,28 @@ namespace XisfFileManager
                 if (node.Comment.ToLower().Contains("pixelrejection"))
                 {
                     if (node.Comment.ToLower().Contains("linear"))
+                    {
                         AddKeyword("REJECTION", "LFC", "PixInsight Linear Fit Clipping");
+                        break;
+                    }
 
                     if (node.Comment.ToLower().Contains("student"))
+                    {
                         AddKeyword("REJECTION", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
-
-                    if (node.Comment.ToLower().Contains("sigma"))
-                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
+                        break;
+                    }
 
                     if (node.Comment.ToLower().Contains("winsor"))
+                    {
                         AddKeyword("REJECTION", "WSC", "PixInsight Winsorized Sigma Clipping");
+                        break;
+                    }
+
+                    if (node.Comment.ToLower().Contains("sigma"))
+                    {
+                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
+                        break;
+                    }
                 }
             }
         }
