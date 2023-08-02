@@ -172,7 +172,7 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Flat " + mFile.FilterName + "  " + mFile.CaptureDateTime.ToString("yyyy-MM-dd") + "  ";
 
-                        if (mFile.TotalFrames.ToString("D3") != string.Empty)
+                        if (mFile.TotalFrames != 0)
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "x" + mFile.TotalFrames.ToString() + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "  ";
@@ -183,6 +183,7 @@ namespace XisfFileManager.FileOperations
                         newName += mFile.Telescope + "@";
                         newName += mFile.FocalLength.ToString("F0");
 
+                        /*
                         if (mFile.FocuserPosition != -1.0)
                         {
                             newName += "  F" + mFile.FocuserPosition.ToString("D5");
@@ -192,6 +193,7 @@ namespace XisfFileManager.FileOperations
                         {
                             newName += "  R" + mFile.RotatorAngle.FormatRotationAngle();
                         }
+                        */
                     }
 
                     newName += "  (";

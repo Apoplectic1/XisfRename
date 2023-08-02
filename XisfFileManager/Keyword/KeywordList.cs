@@ -304,7 +304,7 @@ namespace XisfFileManager
             return -273.0;
             */
         }
-     
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         public bool Approved
@@ -829,13 +829,13 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public double FocalLength
+        public int FocalLength
         {
             get
             {
                 object Object = GetKeywordValue("FOCALLEN");
                 if (Object != null)
-                    return Convert.ToDouble(Object);
+                    return Convert.ToInt32(Object);
                 return -1;
             }
             set
@@ -1109,7 +1109,7 @@ namespace XisfFileManager
 
             set
             {
-                    AddKeyword("PROTECT", value, "Xisf File Manager Protected File Status");
+                AddKeyword("PROTECT", value, "Xisf File Manager Protected File Status");
             }
         }
 
@@ -1143,14 +1143,25 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("REJECTION");
+                // Temp
+                Keyword keyWord = GetKeyword("REJECTION");
+                if (keyWord != null)
+                {
+                    AddKeyword("RJCT-ALG", keyWord.Value, keyWord.Comment);
+                    RemoveKeyword("REJECTION");
+                    RemoveKeyword("REJECTIO");
+                }
+                // Temp
+
+                object Object = GetKeywordValue("RJCT-ALG");
                 if (Object != null)
                     return (string)Object;
                 return string.Empty;
             }
             set
             {
-                AddKeyword("REJECTION", value, "Rejection Integration Method");
+                SetIntegrationParamaters();
+                //AddKeyword("RJCT-ALG", value, "Rejection Integration Method");
             }
 
             /*
@@ -1168,7 +1179,7 @@ namespace XisfFileManager
 
                  if (FormValue.mTextBox.Equals("SC") || FormValue.mTextBox.Equals("WSC") || FormValue.mTextBox.Equals("LFC") || FormValue.mTextBox.Equals("ESD"))
                  {
-                     AddKeyword("REJECTION", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
+                     AddKeyword("RJCT-ALG", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
                      return FormValue.mTextBox;
                  }
              }
@@ -1176,7 +1187,7 @@ namespace XisfFileManager
              return string.Empty;
             */
         }
-        
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
@@ -1281,32 +1292,33 @@ namespace XisfFileManager
                 if (node.Comment.ToLower().Contains("numberofimages"))
                 {
                     var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
-                    AddKeyword("TOTALFRAMES", totalFrames, "Number of Integrated SubFrames");
+
+                    AddKeyword("NUM-FRMS", totalFrames, "Number of Integrated SubFrames");
                 }
 
                 if (node.Comment.ToLower().Contains("pixelrejection"))
                 {
                     if (node.Comment.ToLower().Contains("linear"))
                     {
-                        AddKeyword("REJECTION", "LFC", "PixInsight Linear Fit Clipping");
+                        AddKeyword("RJCT-ALG", "LFC", "PixInsight Linear Fit Clipping");
                         break;
                     }
 
                     if (node.Comment.ToLower().Contains("student"))
                     {
-                        AddKeyword("REJECTION", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+                        AddKeyword("RJCT-ALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
                         break;
                     }
 
                     if (node.Comment.ToLower().Contains("winsor"))
                     {
-                        AddKeyword("REJECTION", "WSC", "PixInsight Winsorized Sigma Clipping");
+                        AddKeyword("RJCT-ALG", "WSC", "PixInsight Winsorized Sigma Clipping");
                         break;
                     }
 
                     if (node.Comment.ToLower().Contains("sigma"))
                     {
-                        AddKeyword("REJECTION", "SC", "PixInsight Sigma Clipping");
+                        AddKeyword("RJCT-ALG", "SC", "PixInsight Sigma Clipping");
                         break;
                     }
                 }
@@ -1390,7 +1402,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string SiteName
         {
-            get 
+            get
             {
                 object Object = GetKeywordValue("SITENAME");
                 if (Object != (object)null)
@@ -1398,7 +1410,7 @@ namespace XisfFileManager
                 return "Penns Park, PA";
             }
             set
-            { 
+            {
                 AddKeyword("SITENAME", value, "Location name of observation site");
             }
         }
@@ -1407,7 +1419,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public double SSWeight
         {
-            get 
+            get
             {
                 object Obj = GetKeywordValue("SSWEIGHT");
                 if (Obj == (object)null)
@@ -1418,7 +1430,7 @@ namespace XisfFileManager
             {
                 AddKeyword("SSWEIGHT", value, "");
             }
-            
+
             //return Math.Round(Convert.ToDouble(Obj), 3, MidpointRounding.AwayFromZero);
         }
 
@@ -1547,20 +1559,29 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("TOTALFRAMES");
+                // Temp
+                Keyword keyWord = GetKeyword("TOTALFRAMES");
+                if (keyWord != null)
+                {
+                    AddKeyword("NUM-FRMS", keyWord.Value, keyWord.Comment);
+                    RemoveKeyword("TOTALFRAMES");
+                }
+                // Temp
+
+                object Object = GetKeywordValue("NUM-FRMS");
                 if (Object != null)
                     return (int)Object;
+
                 return 0;
             }
             set
             {
                 SetIntegrationParamaters();
-                AddKeyword("TOTALFRAMES", value, "");
             }
             /*
                 
 
-            object Object = GetKeywordValue("TOTALFRAMES");
+            object Object = GetKeywordValue("FRAMES");
             if (Object == null)
             {
                 while (findMissingKeywords)
@@ -1578,7 +1599,7 @@ namespace XisfFileManager
                     bool bStatus = int.TryParse(returnValue.mTextBox, out int frames);
                     if (bStatus)
                     {
-                        AddKeyword("TOTALFRAMES", frames, "Total number of Integrated SubFrames");
+                        AddKeyword("NUM-FRMS", frames, "Total number of Integrated SubFrames");
 
                         if (returnValue.mGlobalCheckBox)
                             return -frames;

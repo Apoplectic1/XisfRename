@@ -21,6 +21,7 @@ namespace XisfFileManager.FileOperations
         private Match keywordBlock;
         private string keywordMatch = @"<xisf.*?</xisf>";
         private string modifiedString;
+        private enum eField { Master, FrameType, Filter, Date, Exposure, Binning, Frames, Camera, Gain, Offet, SensorTemp, Telescope, FocalLength, Algorithim, Software }
 
         public async Task ReadXisfFile(XisfFile xFile)
         {
@@ -58,8 +59,7 @@ namespace XisfFileManager.FileOperations
 
                 modifiedString = keywordBlock.ToString().Replace("'", "");
 
-
-                PruneXisfFile();
+                //PruneXisfFile();
 
                 xFile.mXDoc = new XDocument();
 
@@ -88,7 +88,6 @@ namespace XisfFileManager.FileOperations
                     xFile.ImageAttachment(element);
                 }
 
-
                 IEnumerable<XElement> thumbnail = xFile.mXDoc.Descendants(ns + "Thumbnail");
                 foreach (XElement element in thumbnail)
                 {
@@ -103,16 +102,7 @@ namespace XisfFileManager.FileOperations
                     xFile.AddXMLKeyword(element);
                 }
 
-                xFile.SetRequiredKeywords();
-                /*
-                Keyword oType= xFile.GetKeyword("IMAGETYP");
-                Keyword oObject = xFile.GetKeyword("OBJECT");
-                if (oObject.Value.ToString().Contains("Master") && (oObject.Value.ToString().Contains("Bias") || oType.Value.ToString().Contains("Bias")))
-                {
-                    xFile.AddKeyword("REJECTION", "WSC", "PixInsight Statistical Rejection Method");
-                    xFile.AddKeyword("TOTALFRAMES", 1028, "Number of Integrated SubFrames");
-                }
-                */
+                SetKeywordsFromFileName(xFile);
             }
         }
 
@@ -121,25 +111,28 @@ namespace XisfFileManager.FileOperations
             string startTag;
             string stopTag;
             string pattern;
-            string mSearch;
 
+            // Find and save Pixel Rejection Method
             startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.pixelRejection:";
             stopTag = "/>";
             pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
-            Match match = Regex.Match(modifiedString, pattern); 
+            Match match = Regex.Match(modifiedString, pattern);
             string pixelRejection = match.Value.ToString();
 
+            // Find and save the number of subframes used to integerate a master
             startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.numberOfImages:";
             stopTag = "/>";
             pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
             match = Regex.Match(modifiedString, pattern);
             string numberOfImages = match.Value.ToString();
 
+            // Remove all HISTORY Keywords
             startTag = "<FITSKeyword name=\"HISTORY\"";
             stopTag = "/>";
             pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
             modifiedString = Regex.Replace(modifiedString, pattern, "");
 
+            // Insert Rejection Method and number of subframes after the IMAGETYP Keyword (just a convienent place)
             startTag = "<FITSKeyword name=\"IMAGETYP\"";
             stopTag = "/>";
             pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
@@ -150,82 +143,171 @@ namespace XisfFileManager.FileOperations
             modifiedString = modifiedString.Insert(match.Index + match.Length, numberOfImages);
 
 
+
+            // Remove all Property ProcessingHistory entries
+            startTag = "<Property id=\"PixInsight:ProcessingHistory\"";
+            stopTag = "</Property>";
+            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+            modifiedString = Regex.Replace(modifiedString, pattern, "");
+
+            // Remove orphan </MetaData>
+            int index;
+            index = modifiedString.IndexOf("</Metadata");
+            if (index != -1)
+            {
+                index = modifiedString.IndexOf("<Metadata>");
+                if (index == -1)
+                {
+                    startTag = "</Metadata";
+                    stopTag = ">";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+                    modifiedString = Regex.Replace(modifiedString, pattern, "");
+                }
+            }
+
+            // Make sure image has <Image> to <\Image>
+            index = modifiedString.IndexOf("<Image");
+            if (index != -1)
+            {
+                index = modifiedString.IndexOf("</Image>");
+                if (index == -1)
+                {
+                    // Insert </Image> before <\xisf>
+                    startTag = "</xisf";
+                    stopTag = ">";
+                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
+
+                    match = Regex.Match(modifiedString, pattern);
+                    modifiedString = modifiedString.Insert(match.Index, "</Image>");
+                }
+            }
+
             return;
+        }
 
-            mSearch = "BlockAlignmentSize";
-            pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
-            MatchCollection BlockAlignmentSize = Regex.Matches(modifiedString, pattern);
 
-            mSearch = "MaxInlineBlockSize";
-            pattern = $"<([^<>]*?{mSearch}[^<>]*?)>";
-            MatchCollection MaxInlineBlockSize = Regex.Matches(modifiedString, pattern);
+        /// <summary>
+        /// ![Screenshot](Images/MasterFormat.jpg)
+        /// </summary>
+        public void SetKeywordsFromFileName(XisfFile xFile)
+        {
+            return;
+            string sFileName = Path.GetFileName(xFile.FilePath);
 
-            startTag = "<Property";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            startTag = "<Property";
-            stopTag = "/Property>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "");
-
-            startTag = "<ICCProfile";
-            stopTag = "</ICCProfile>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            startTag = "<FITSKeyword name=\"HISTORY\" val";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            startTag = "<FITSKeyword name=\"COMMENT\" val";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            startTag = "<Image";
-            stopTag = "</Image>";
-            int first = modifiedString.IndexOf(startTag);
-            int last = modifiedString.IndexOf(stopTag);
-            if (last <= first)
+            if (sFileName != null)
             {
-                startTag = "/><Display";
-                stopTag = "/xisf>";
-                pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                modifiedString = Regex.Replace(modifiedString.ToString(), pattern, "/></Image></xisf>");
+                // Split the string into fields using whitespace as the delimiter
+                string[] fields = sFileName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Assign Master, FrameType, Filter and Date without hours, minutes, seconds
+                string Master = fields[0];
+
+                if (Master != "Master")
+                    return;
+
+                string FrameType = fields[1];
+
+                if (FrameType == "Flat")
+                {
+                    string Filter = fields[2];
+                    DateTime Date = DateTime.ParseExact(fields[3], "yyyy-MM-dd", null);
+
+                    // Split fields[4] into Exposure, Binning, and Frames using 'x' as the separator
+                    string[] exposureParts = fields[4].Split(new char[] { 'x' });
+                    double Exposure = double.Parse(exposureParts[0]);
+                    int Binning = int.Parse(exposureParts[1]);
+                    int Frames = int.Parse(exposureParts[2]);
+
+                    // Extract Camera, Gain, Offset, and SensorTemp from fields[5]
+                    string Camera = fields[5].Substring(0, 4);
+                    int gainStartIndex = fields[5].IndexOf('G') + 1;
+                    int gainEndIndex = fields[5].IndexOf('O');
+                    int Gain = int.Parse(fields[5].Substring(gainStartIndex, gainEndIndex - gainStartIndex));
+                    int offsetStartIndex = fields[5].IndexOf('O') + 1;
+                    int offsetEndIndex = fields[5].IndexOf('@');
+                    int Offset = int.Parse(fields[5].Substring(offsetStartIndex, offsetEndIndex - offsetStartIndex));
+                    int sensorTempStartIndex = fields[5].IndexOf('@') + 1;
+                    int sensorTempEndIndex = fields[5].IndexOf('C');
+                    double SensorTemp = double.Parse(fields[5].Substring(sensorTempStartIndex, sensorTempEndIndex - sensorTempStartIndex));
+
+                    // Extract Telescope and FocalLength from fields[6]
+                    int telescopeStartIndex = fields[6].IndexOf('@') + 1;
+                    string Telescope = fields[6].Substring(0, telescopeStartIndex - 1);
+                    int FocalLength = int.Parse(fields[6].Substring(telescopeStartIndex));
+
+                    // Extract Algorithm and Software from the remaining fields
+                    string Algorithm = fields[7].Replace("(", "");
+                    string Software = fields[8].Substring(0, fields[8].IndexOf(')'));
+
+                    xFile.AddKeyword("OBJECT", Master, "Master Integration Frame");
+                    xFile.AddKeyword("IMAGETYP", FrameType, "Type of Master Frame");
+                    xFile.AddKeyword("FILTER", Filter, "Filter used");
+                    //xFile.AddKeyword("DATE-END", Date, "Local time of capture");
+                    //xFile.AddKeyword("DATE-LOC", Date, "Local time of capture");
+                    //xFile.AddKeyword("DATE-OBS", Date.ToUniversalTime(), "UTC time of capture");
+                    xFile.AddKeyword("EXPTIME", Exposure, "Exposure time in seconds");
+                    xFile.AddKeyword("XBINNING", Binning, "Horizontal Binning");
+                    xFile.AddKeyword("YBINNING", Binning, "Vertical Binning");
+                    xFile.AddKeyword("NUM-FRMS", Frames, "Number of integrated subframes");
+                    xFile.AddKeyword("INSTRUME", Camera, "Camera used");
+                    xFile.AddKeyword("GAIN", Gain, "Camera gain setting");
+                    xFile.AddKeyword("OFFSET", Offset, "Camera offset setting");
+                    xFile.AddKeyword("CCD-TEMP", -20.0, "Actual Sensor Temperature");
+                    xFile.AddKeyword("TELESCOP", Telescope, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    xFile.AddKeyword("FOCALLEN", FocalLength, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    xFile.AddKeyword("RJCT-ALG", Algorithm, "PixInsight Statistical Rejection Algorithm used");
+                    xFile.AddKeyword("CREATOR", Software, "Software Capture package used to capture subframes");
+                }
+                if ((FrameType == "Dark") || (FrameType == "Bias"))
+                {
+                    string Filter = "Shutter";
+                    DateTime Date = DateTime.ParseExact(fields[2], "yyyy-MM-dd", null);
+
+                    // Split fields[4] into Exposure, Binning, and Frames using 'x' as the separator
+                    string[] exposureParts = fields[3].Split(new char[] { 'x' });
+                    double Exposure = double.Parse(exposureParts[0]);
+                    int Binning = int.Parse(exposureParts[1]);
+                    int Frames = int.Parse(exposureParts[2]);
+
+                    // Extract Camera, Gain, Offset, and SensorTemp from fields[5]
+                    string Camera = fields[4].Substring(0, 4);
+                    int gainStartIndex = fields[4].IndexOf('G') + 1;
+                    int gainEndIndex = fields[4].IndexOf('O');
+                    int Gain = int.Parse(fields[4].Substring(gainStartIndex, gainEndIndex - gainStartIndex));
+                    int offsetStartIndex = fields[4].IndexOf('O') + 1;
+                    int offsetEndIndex = fields[4].IndexOf('@');
+                    int Offset = int.Parse(fields[4].Substring(offsetStartIndex, offsetEndIndex - offsetStartIndex));
+                    int sensorTempStartIndex = fields[4].IndexOf('@') + 1;
+                    int sensorTempEndIndex = fields[4].IndexOf('C');
+                    double SensorTemp = double.Parse(fields[4].Substring(sensorTempStartIndex, sensorTempEndIndex - sensorTempStartIndex));
+
+                    string Telescope = "APM107R";
+                    int FocalLength = 531;
+
+                    // Extract Algorithm and Software from the remaining fields
+                    string Algorithm = fields[5].Replace("(", "");
+                    string Software = fields[6].Substring(0, fields[6].IndexOf(')'));
+
+                    xFile.AddKeyword("OBJECT", Master, "Master Integration Frame");
+                    xFile.AddKeyword("IMAGETYP", FrameType, "Type of Master Frame");
+                    xFile.AddKeyword("FILTER", Filter, "Filter used");
+                    //xFile.AddKeyword("DATE-END", Date, "Local time of capture");
+                    //xFile.AddKeyword("DATE-LOC", Date, "Local time of capture");
+                    //xFile.AddKeyword("DATE-OBS", Date.ToUniversalTime(), "UTC time of capture");
+                    xFile.AddKeyword("EXPTIME", Exposure, "Exposure time in seconds");
+                    xFile.AddKeyword("XBINNING", Binning, "Horizontal Binning");
+                    xFile.AddKeyword("YBINNING", Binning, "Vertical Binning");
+                    xFile.AddKeyword("NUM-FRMS", Frames, "Number of integrated subframes");
+                    xFile.AddKeyword("INSTRUME", Camera, "Camera used");
+                    xFile.AddKeyword("GAIN", Gain, "Camera gain setting");
+                    xFile.AddKeyword("OFFSET", Offset, "Camera offset setting");
+                    xFile.AddKeyword("CCD-TEMP", -20.0, "Actual Sensor Temperature");
+                    xFile.AddKeyword("TELESCOP", Telescope, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    xFile.AddKeyword("FOCALLEN", FocalLength, "APM107 Super ED with Riccardi 0.75 Reducer");
+                    xFile.AddKeyword("RJCT-ALG", Algorithm, "PixInsight Statistical Rejection Algorithm used");
+                    xFile.AddKeyword("CREATOR", Software, "Software Capture package used to capture subframes");
+                }
             }
-
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            //Add <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
-            startTag = "</Metadata>";
-            int startIndex = modifiedString.IndexOf(startTag);
-            int stopIndex = startIndex + startTag.Length;
-
-            if (startIndex != -1 && stopIndex != -1)
-            {
-                modifiedString = modifiedString.Remove(startIndex, startTag.Length);
-                modifiedString = modifiedString.Insert(startIndex, BlockAlignmentSize[0].ToString() + "</Metadata>");
-            }
-            else
-                modifiedString += $"<Property id=\"XISF:BlockAlignmentSize\" type=\"UInt16\" value=\"4096\"/></Metadata>";
-
-
-            //Add <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
-            startTag = "</Metadata>";
-            startIndex = modifiedString.IndexOf(startTag);
-            stopIndex = startIndex + startTag.Length;
-
-            if (startIndex != -1 && stopIndex != -1)
-            {
-                modifiedString = modifiedString.Remove(startIndex, startTag.Length);
-                modifiedString = modifiedString.Insert(startIndex, MaxInlineBlockSize[0].ToString() + "</Metadata>");
-            }
-            else
-                modifiedString = Regex.Replace(modifiedString, pattern, "<Property id=\"XISF:MaxInlineBlockSize\" type=\"UInt16\" value=\"3072\"/></Metadata>");
         }
     }
 }

@@ -119,7 +119,7 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.FilterName; }
             set { mKeywordList.AddKeyword("FILTER", value); }
         }
-        public double FocalLength
+        public int FocalLength
         {
             get { return mKeywordList.FocalLength; }
             set { mKeywordList.FocalLength = value; }

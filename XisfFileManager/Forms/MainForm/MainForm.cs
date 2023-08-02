@@ -344,24 +344,6 @@ namespace XisfFileManager
                 mFileList.Add(mFile);
             }
 
-            /*
-            foreach (var xFile in mFileList)
-            {
-                XElement root = xFile.mXDoc.Root;
-                XNamespace ns = root.GetDefaultNamespace();
-
-                IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
-
-                // Find each keyword and add it to xFile
-                foreach (XElement element in elements)
-                {
-                    xFile.KeywordData.AddXMLKeyword(element);
-                }
-
-                xFile.SetRequiredKeywords();
-            }
-            */
-
             // Sort Image File Lists by Capture Time
             // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
             // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
@@ -1297,203 +1279,115 @@ namespace XisfFileManager
 
         private void FindCaptureSoftware()
         {
-            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.Black;
-
-            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
-
-            Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Black;
-
-            // Now check each and every source file for different or the same capture software
-            // If identical, do nothing. If different, make all found UI software labels red 
-            bool foundTSX = false;
-            bool foundSGP = false;
-            bool foundNINA = false;
-            bool foundVOY = false;
-            bool foundSCP = false;
-
+            // Check each source file for different or the same capture software
+            int foundTSX = 0;
+            int foundSGP = 0;
+            int foundNINA = 0;
+            int foundVOY = 0;
+            int foundSCP = 0;
             int count = 0;
+
             foreach (XisfFile file in mFileList)
             {
-                string program;
+                string softwareCreator = file.CaptureSoftware;
 
-                program = file.CaptureSoftware;
-
-                if (program.Contains("TSX"))
+                if (softwareCreator.Equals("NINA"))
                 {
-                    foundTSX = true;
+                    foundNINA++;
                     count++;
+                    continue;
                 }
 
-                if (program.Contains("NINA"))
+                if (softwareCreator.Equals("SGP"))
                 {
-                    foundNINA = true;
+                    foundSGP++;
                     count++;
+                    continue;
                 }
 
-                if (program.Contains("SGP"))
+                if (softwareCreator.Equals("TSX"))
                 {
-                    foundSGP = true;
+                    foundTSX++;
                     count++;
+                    continue;
                 }
 
-                if (program.Contains("VOY"))
+                if (softwareCreator.Equals("VOY"))
                 {
-                    foundVOY = true;
+                    foundVOY++;
                     count++;
+                    continue;
                 }
 
-                if (program.Contains("SCP"))
+                if (softwareCreator.Equals("SCP"))
                 {
-                    foundSCP = true;
+                    foundSCP++;
                     count++;
+                    continue;
                 }
             }
 
-            if (foundTSX)
+            if ((count != (foundNINA + foundSCP + foundSGP + foundTSX + foundVOY)) || (count == 0))
             {
-                if (foundNINA | foundSGP | foundVOY | foundSCP)
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = true;
-                }
-            }
+                // Missing at least one. If we found any, make DarkViolet otherwise Red
+                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = (foundNINA == 0) ? Color.Red : Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = (foundSCP == 0) ? Color.Red : Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = (foundSGP == 0) ? Color.Red : Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = (foundTSX == 0) ? Color.Red : Color.DarkViolet;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = (foundVOY == 0) ? Color.Red : Color.DarkViolet;
 
-            if (foundNINA)
-            {
-                if (foundTSX | foundSGP | foundVOY | foundSCP)
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = true;
-                }
-            }
+                // Missing at least on. Uncheck all
+                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
 
-            if (foundSGP)
-            {
-                if (foundTSX | foundNINA | foundVOY | foundSCP)
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = true;
-                }
-            }
-
-            if (foundVOY)
-            {
-                if (foundTSX | foundNINA | foundSGP | foundSCP)
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = true;
-                }
-            }
-
-            if (foundSCP)
-            {
-                if (foundTSX | foundNINA | foundSGP | foundVOY)
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.Red;
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = true;
-                }
-            }
-
-            if (!foundTSX && !foundNINA && !foundSGP && !foundVOY && !foundSCP)
-            {
-                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.DarkViolet;
-            }
-
-            if (foundTSX ^ foundNINA ^ foundSGP ^ foundVOY ^ foundSCP)
-            {
-                // Set "SetAll" to black if only a single software program was found
-                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
+                // Missing at least one. Set SetAll and SetByFile Buttons to Red
+                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Red;
             }
             else
             {
-                // More that one software program - set "SetByFile" to red
-                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Red;
-            }
+                // All matched. Is there more that one SoftwareCreator? If so, DarkViolet otherwise Black
+                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = ((foundNINA == count) || (foundNINA == 0)) ? Color.Black : Color.DarkGreen;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = ((foundSCP == count) || (foundSCP == 0)) ? Color.Black : Color.DarkGreen;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = ((foundSGP == count) || (foundSGP == 0)) ? Color.Black : Color.DarkGreen;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = ((foundTSX == count) || (foundTSX == 0)) ? Color.Black : Color.DarkGreen;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = ((foundVOY == count) || (foundVOY == 0)) ? Color.Black : Color.DarkGreen;
 
-            if (count != mFileList.Count)
-            {
-                // The number of source files didn't equal the number of files with a known software program
-                // Set "SetByFile" to red
-                Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Red;
+                // All matched. Is there a single SoftwareCreator? If so, checked otherwise unchecked
+                RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = (foundNINA == count) ? true : false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = (foundSCP == count) ? true : false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = (foundSGP == count) ? true : false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = (foundTSX == count) ? true : false;
+                RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = (foundVOY == count) ? true : false;
+
+                // All matched. Set SetAll and SetByFile Buttons to Black
+                Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
+                Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Black;
             }
         }
 
         private void Button_CaptureSoftware_SetAll_Click(object sender, EventArgs e)
         {
-            int count = 0;
             foreach (XisfFile file in mFileList)
             {
-                if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
-                {
-                    count++;
-                    file.AddKeyword("CREATOR", "TSX");
-                }
-
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked)
-                {
-                    count++;
                     file.AddKeyword("CREATOR", "NINA");
-                }
+
+                if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
+                    file.AddKeyword("CREATOR", "TSX");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked)
-                {
-                    count++;
                     file.AddKeyword("CREATOR", "SGP");
-                }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked)
-                {
-                    count++;
                     file.AddKeyword("CREATOR", "VOY");
-                }
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked)
-                {
-                    count++;
                     file.AddKeyword("CREATOR", "SCP");
-                }
-
-                file.SetRequiredKeywords();
             }
-
-            if (count == 0)
-            {
-                return;
-            }
-
 
             FindCaptureSoftware();
         }
@@ -1538,6 +1432,18 @@ namespace XisfFileManager
             {
                 TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
             }
+
+            foreach (XisfFile file in mFileList)
+            {
+                if (TextBox_KeywordUpdateTab_Telescope_FocalLength.Text != file.FocalLength.ToString())
+                {
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "";
+                    Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Red;
+                    break;
+                }
+            }
+
+            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
         }
 
         private void RadioButton_KeywordTelescope_EVO150_CheckedChanged(object sender, EventArgs e)
@@ -2117,6 +2023,7 @@ namespace XisfFileManager
                 if (filter == "Green")
                 {
                     foundGreen = true;
+                    greenCount++;
                     filterCount++;
                 }
 
@@ -2137,6 +2044,7 @@ namespace XisfFileManager
                 if (filter == "O3")
                 {
                     foundO3 = true;
+                    o3Count++;
                     filterCount++;
                 }
 
@@ -2331,6 +2239,17 @@ namespace XisfFileManager
 
 
             // Now check each and every source file for a valid frame type
+
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Black;
+
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+
             bool foundLight = false;
             bool foundDark = false;
             bool foundFlat = false;
@@ -2640,39 +2559,93 @@ namespace XisfFileManager
 
             if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
             {
+                // No Camera was found so set all UI lables to Red
+                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
+                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
+            }
+
+
+            // ****************************************************************
+
+            bool missingCamera = !mFileList.Any(i => i.Camera == "A144" || i.Camera == "Q178" || i.Camera == "Z183" || i.Camera == "Z533");
+            bool uniqueCamera = mFileList.Select(i => i.Camera).Distinct().Count() == 1;
+
+            if (missingCamera)
+            {
+                RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
+                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
+                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
+                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
+
                 RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
                 RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
                 RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
                 RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
-                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
+            }
+            else if (!uniqueCamera)
+            {
+                RadioButton_KeywordUpdateTab_Camera_A144.Checked = mFileList.Exists(i => i.Camera == "A144");
+                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = mFileList.Exists(i => i.Camera == "Q178");
+                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = mFileList.Exists(i => i.Camera == "Z183");
+                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = mFileList.Exists(i => i.Camera == "Z533");
 
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
+                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = mFileList.Exists(i => i.Camera == "A144") ? Color.Green : Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = mFileList.Exists(i => i.Camera == "Q178") ? Color.Green : Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = mFileList.Exists(i => i.Camera == "Z183") ? Color.Green : Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = mFileList.Exists(i => i.Camera == "Z533") ? Color.Green : Color.Black;
+            }
+            else
+            {
+                RadioButton_KeywordUpdateTab_Camera_A144.Checked = mFileList.Exists(i => i.Camera == "A144");
+                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = mFileList.Exists(i => i.Camera == "Q178");
+                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = mFileList.Exists(i => i.Camera == "Z183");
+                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = mFileList.Exists(i => i.Camera == "Z533");
+
+                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
+                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
             }
 
             // ****************************************************************
 
             bool missingGain = mFileList.Exists(i => i.Gain == -1);
             bool uniqueGain = mFileList.Select(i => i.Gain).Distinct().Count() == 1;
-
+            var uniqueNonNegativeGain = mFileList
+                                            .Select(i => i.Gain)
+                                            .Where(g => g != -1)
+                                            .Distinct();
             if (missingGain)
-                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-            else if (!uniqueGain)
-                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
-
-            if (!missingGain && uniqueGain)
             {
-                // All valid and unique so just pick the first one to display
-                if (foundZ533)
-                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = mFileList[0].Gain.ToString();
-                if (foundZ183)
-                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = mFileList[0].Gain.ToString();
-                if (foundQ178)
-                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = mFileList[0].Gain.ToString();
+                // At least one Gain value is missing
+                if (uniqueNonNegativeGain.Any())
+                {
+                    // There is just one non negative Gain
+                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
+                    Label_KeywordUpdateTab_Camera_Gain.Text = uniqueNonNegativeGain.ToString();
+                }
+                else
+                {
+                    // There are multiple non negative Gains
+                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_Camera_Gain.Text = string.Empty;
+                }
+            }
+            else
+            {
+                // All Gain values are non negative
+                if (uniqueNonNegativeGain.Count() == 1)
+                {
+                    // There is just one non negative Gain
+                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
+                    Label_KeywordUpdateTab_Camera_Gain.Text = uniqueNonNegativeGain.ToString();
+                }
+                else
+                {
+                    // There are multiple non negative Gains
+                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
+                    Label_KeywordUpdateTab_Camera_Gain.Text = string.Empty;
+                }
             }
 
             // ****************************************************************
@@ -2684,6 +2657,8 @@ namespace XisfFileManager
                 Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
             else if (!uniqueOffset)
                 Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.DarkViolet;
+            else
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Black;
 
             if (!missingOffset && uniqueOffset)
             {
@@ -3369,7 +3344,7 @@ namespace XisfFileManager
                     }
                 }
 
-                file.AddKeyword("TOTALFRAMES", frames, "Number of Integrated SubFrames");
+                file.AddKeyword("NUM-FRMS", frames, "Number of Integrated SubFrames");
             }
         }
 
@@ -3441,10 +3416,10 @@ namespace XisfFileManager
                     }
 
                     if (foundNumberOfImages)
-                        file.AddKeyword("TOTALFRAMES", numberOfImages, "Number of Integrated SubFrames");
+                        file.AddKeyword("NUM-FRMS", numberOfImages, "Number of Integrated SubFrames");
 
                     if (foundRejection)
-                        file.AddKeyword("REJECTION", rejection, comment);
+                        file.AddKeyword("RJCT-ALG", rejection, comment);
                 }
             }
         }
