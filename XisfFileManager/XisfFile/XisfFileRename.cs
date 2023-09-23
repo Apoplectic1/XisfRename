@@ -28,7 +28,7 @@ namespace XisfFileManager.FileOperations
             return dupFileName;
         }
 
-        public Tuple<int, string> RenameFile(int index, XisfFile file)
+        public Tuple<int, string> RenameFile(XisfFile file)
         {
             try
             {
@@ -41,12 +41,12 @@ namespace XisfFileManager.FileOperations
                 // Actually rename the file
                 if (file.Unique == true)
                 {
-                    newFileName = BuildFileName(index, file);
+                    newFileName = BuildFileName(file.Index, file);
                     int lastParen = newFileName.LastIndexOf(')');
                     newFileName = newFileName.Remove(lastParen);
                     newFileName += ").xisf";
 
-                    // Rename the file if its name actually changed and the new file name doen't already exist
+                    // Rename the file if its name actually changed
                     if (file.FilePath != sourceFilePath + "\\" + newFileName)
                     {
                         if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
@@ -60,7 +60,7 @@ namespace XisfFileManager.FileOperations
                 {
                     Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
 
-                    dupFileName = BuildFileName(index - 1, file);
+                    dupFileName = BuildFileName(file.Index - 1, file);
                     int lastParen = dupFileName.LastIndexOf(')');
                     dupFileName = dupFileName.Remove(lastParen);
                     dupFileName += ").xisf";

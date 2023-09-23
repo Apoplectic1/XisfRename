@@ -502,8 +502,17 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("CREATOR");
+                object Object = GetKeywordValue("SWCREATE");
                 string software = (string)Object;
+
+                // Nina 3 Format
+                if (Object != null)
+                    if (software.Contains("N.I.N.A"))
+                        return "NINA";
+
+                
+                Object = GetKeywordValue("CREATOR");
+                software = (string)Object;
 
                 if (Object != null)
                 {

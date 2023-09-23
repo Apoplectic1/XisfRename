@@ -273,7 +273,7 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
-            ClearForm();
+            ClearCameraForm();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
@@ -551,151 +551,215 @@ namespace XisfFileManager
             TabControl_Update.Enabled = true;
         }
 
-        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)
+        private string GetPanelDirectory(string directoryPath)
         {
-            if (bNight)
+            string[] directories = directoryPath.Split('\\');
+            for (int i = directories.Length - 1; i >= 0; i--)
             {
-                List<string> nightlist = new List<string>();
-
-                foreach (XisfFile file in fileList)
+                if (directories[i].Contains("Panel"))
                 {
-                    string fileName = Directory.GetParent(file.FilePath).ToString();
-
-                    nightlist.Add(fileName.Substring(fileName.LastIndexOf('\\') + 1));
-                }
-
-                nightlist.Distinct().ToList();
-
-
-                foreach (string night in nightlist)
-                {
-                    // Take a look at the Unique test. Files should already be unique?
-                    int index = 0;
-                    int lumaIndex = 0;
-                    int redIndex = 0;
-                    int greenIndex = 0;
-                    int blueIndex = 0;
-                    int haIndex = 0;
-                    int o3Index = 0;
-                    int s2Index = 0;
-                    int shutterIndex = 0;
-
-                    foreach (XisfFile file in fileList)
-                    {
-                        if (!file.FilePath.Contains(night))
-                            continue;
-
-                        if (bFilter)
-                        {
-                            int fileIndex = file.Index;
-
-                            if (file.FilterName.Equals("Luma"))
-                                file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
-
-                            if (file.FilterName.Equals("Red"))
-                                file.Index = (file.Unique) ? ++redIndex : redIndex++;
-
-                            if (file.FilterName.Equals("Green"))
-                                file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
-
-                            if (file.FilterName.Equals("Blue"))
-                                file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
-
-                            if (file.FilterName.Equals("Ha"))
-                                file.Index = (file.Unique) ? ++haIndex : haIndex++;
-
-                            if (file.FilterName.Equals("O3"))
-                                file.Index = (file.Unique) ? ++o3Index : o3Index++;
-
-                            if (file.FilterName.Equals("S2"))
-                                file.Index = (file.Unique) ? ++s2Index : s2Index++;
-
-                            if (file.FilterName.Equals("Shutter"))
-                                file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
-
-                            if (fileIndex == file.Index)
-                            {
-                                DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.FilePath +
-                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                "File Update Failed",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                                Environment.Exit(-1);
-                            }
-                        }
-
-                        if (bTime)
-                        {
-                            // This works because fileList is already sorted by Time
-                            file.Index = (file.Unique) ? ++index : index++;
-                        }
-                    }
+                    return string.Join("\\", directories.Take(i + 1));
                 }
             }
+            return directoryPath;
+        }
 
-            if (bTarget)
+        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> xFileList)
+        {
+            // Preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
+            // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
+            // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
+            // Ignore any found duplicates
+
+            // Begin directory tree recursive search
+
+            var panelsQuery = from xFile in xFileList
+                              where Path.GetDirectoryName(xFile.FilePath).Contains("Panel")
+                              group xFile by GetPanelDirectory(Path.GetDirectoryName(xFile.FilePath)) into panelGroup
+                              select new
+                              {
+                                  PanelDirectory = panelGroup.Key,
+                                  FilesInPanel = panelGroup.ToList()
+                              };
+
+            if (!panelsQuery.Any())
             {
-                // Take a look at the Unique test. Files should already be unique?
-                int index = 0;
-                int lumaIndex = 0;
-                int redIndex = 0;
-                int greenIndex = 0;
-                int blueIndex = 0;
-                int haIndex = 0;
-                int o3Index = 0;
-                int s2Index = 0;
-                int shutterIndex = 0;
+                // Include all files if there are no panels.
+                panelsQuery = from xFile in xFileList
+                              group xFile by "" into allFilesGroup
+                              select new
+                              {
+                                  PanelDirectory = "",
+                                  FilesInPanel = allFilesGroup.ToList()
+                              };
+            }
 
-                foreach (XisfFile file in fileList)
+
+            foreach (var panelGroup in panelsQuery)
+            {
+                // Process files within each individual panel.
+                string panelDirectory = panelGroup.PanelDirectory;
+
+                var starsQuery = from xFile in panelGroup.FilesInPanel
+                                 where !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
+                                        Path.GetDirectoryName(xFile.FilePath).Contains("Stars")
+                                 select xFile;
+
+                var lightsQuery = from xFile in panelGroup.FilesInPanel
+                                  where !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
+                                        !Path.GetDirectoryName(xFile.FilePath).Contains("Stars")
+                                  select xFile;
+
+
+
+                List<IEnumerable<XisfFile>> queryList = new List<IEnumerable<XisfFile>>();
+                queryList.Add(lightsQuery);
+                queryList.Add(starsQuery);
+
+                if (bNight)
                 {
-                    if (file.FilePath.Contains("Duplicates"))
-                        continue;
-
-                    if (bFilter)
+                    foreach (var query in queryList)
                     {
-                        int fileIndex = file.Index;
+                        // Number files using the existing subdirectory structure under TARGET/Capture starting at 1 for each night
+                        List<string> nightlist = new List<string>();
 
-                        if (file.FilterName.Equals("Luma"))
-                            file.Index = (file.Unique) ? ++lumaIndex : lumaIndex++;
-
-                        if (file.FilterName.Equals("Red"))
-                            file.Index = (file.Unique) ? ++redIndex : redIndex++;
-
-                        if (file.FilterName.Equals("Green"))
-                            file.Index = (file.Unique) ? ++greenIndex : greenIndex++;
-
-                        if (file.FilterName.Equals("Blue"))
-                            file.Index = (file.Unique) ? ++blueIndex : blueIndex++;
-
-                        if (file.FilterName.Equals("Ha"))
-                            file.Index = (file.Unique) ? ++haIndex : haIndex++;
-
-                        if (file.FilterName.Equals("O3"))
-                            file.Index = (file.Unique) ? ++o3Index : o3Index++;
-
-                        if (file.FilterName.Equals("S2"))
-                            file.Index = (file.Unique) ? ++s2Index : s2Index++;
-
-                        if (file.FilterName.Equals("Shutter"))
-                            file.Index = (file.Unique) ? ++shutterIndex : shutterIndex++;
-
-                        if (fileIndex == file.Index)
+                        foreach (XisfFile xFile in query)
                         {
-                            DialogResult result = MessageBox.Show(
-                                "No Filter in source file:\n" + file.FilePath +
-                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                "File Update Failed",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                            Environment.Exit(-1);
+                            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xFile.FilePath);
+                            nightlist.Add(fileNameWithoutExtension);
+                        }
+
+                        foreach (string night in nightlist)
+                        {
+                            // Take a look at the Unique test. Files should already be unique?
+                            int index = 0;
+                            int lumaIndex = 0;
+                            int redIndex = 0;
+                            int greenIndex = 0;
+                            int blueIndex = 0;
+                            int haIndex = 0;
+                            int o3Index = 0;
+                            int s2Index = 0;
+                            int shutterIndex = 0;
+
+                            foreach (XisfFile xFile in query)
+                            {
+                                if (!xFile.FilePath.Contains(night))
+                                    continue;
+
+                                if (bFilter)
+                                {
+                                    int fileIndex = xFile.Index;
+
+                                    if (xFile.FilterName.Equals("Luma"))
+                                        xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+
+                                    if (xFile.FilterName.Equals("Red"))
+                                        xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+
+                                    if (xFile.FilterName.Equals("Green"))
+                                        xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+
+                                    if (xFile.FilterName.Equals("Blue"))
+                                        xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+
+                                    if (xFile.FilterName.Equals("Ha"))
+                                        xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+
+                                    if (xFile.FilterName.Equals("O3"))
+                                        xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+
+                                    if (xFile.FilterName.Equals("S2"))
+                                        xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+
+                                    if (xFile.FilterName.Equals("Shutter"))
+                                        xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+
+                                    if (fileIndex == xFile.Index)
+                                    {
+                                        DialogResult result = MessageBox.Show(
+                                        "No Filter in source file:\n" + xFile.FilePath +
+                                        "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                        "File Update Failed",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                        Environment.Exit(-1);
+                                    }
+                                }
+
+                                if (bTime)
+                                {
+                                    // This works because fileList is already sorted by Time
+                                    xFile.Index = (xFile.Unique) ? ++index : index++;
+                                }
+                            }
                         }
                     }
+                }
 
-                    if (bTime)
+                if (bTarget)
+                {
+                    foreach (var query in queryList)
                     {
-                        // This works because fileList is already sorted by Time
-                        file.Index = (file.Unique) ? ++index : index++;
+                        // Take a look at the Unique test. Files should already be unique? They have to have unique names but could contain identicle Keywords? 
+                        int lightsIndex = 0;
+                        int lumaIndex = 0;
+                        int redIndex = 0;
+                        int greenIndex = 0;
+                        int blueIndex = 0;
+                        int haIndex = 0;
+                        int o3Index = 0;
+                        int s2Index = 0;
+                        int shutterIndex = 0;
+
+                        foreach (XisfFile xFile in query)
+                        {
+                            if (bFilter)
+                            {
+                                int fileIndex = xFile.Index;
+
+                                if (xFile.FilterName.Equals("Luma"))
+                                    xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+
+                                if (xFile.FilterName.Equals("Red"))
+                                    xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+
+                                if (xFile.FilterName.Equals("Green"))
+                                    xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+
+                                if (xFile.FilterName.Equals("Blue"))
+                                    xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+
+                                if (xFile.FilterName.Equals("Ha"))
+                                    xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+
+                                if (xFile.FilterName.Equals("O3"))
+                                    xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+
+                                if (xFile.FilterName.Equals("S2"))
+                                    xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+
+                                if (xFile.FilterName.Equals("Shutter"))
+                                    xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+
+                                if (fileIndex == xFile.Index)
+                                {
+                                    DialogResult result = MessageBox.Show(
+                                        "No Filter in source file:\n" + xFile.FilePath +
+                                        "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                        "File Update Failed",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                    Environment.Exit(-1);
+                                }
+                            }
+
+                            if (bTime)
+                            {
+                                // This works because fileList is already sorted by Time
+                                xFile.Index = (xFile.Unique) ? ++lightsIndex : lightsIndex++;
+                            }
+                        }
                     }
                 }
             }
@@ -716,16 +780,20 @@ namespace XisfFileManager
 
             mRenameFile.MarkDuplicates(mFileList);
 
+            // SetFileIndex will preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
+            // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
+            // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
+            // Any found Duplicates are handled inside the RenameFile method
             SetFileIndex(byTarget, byNight, byFilter, byTime, mFileList);
 
-            foreach (XisfFile file in mFileList)
+            foreach (XisfFile xFile in mFileList)
             {
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(file.FilePath) + "\n" + Path.GetFileName(file.FilePath);
+                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
-                file.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+                xFile.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
-                Tuple<int, string> renameTuple = mRenameFile.RenameFile(file.Index, file);
+                Tuple<int, string> renameTuple = mRenameFile.RenameFile(xFile);
 
                 duplicates += (renameTuple.Item1 == 0) ? 1 : 0;
 
@@ -2451,21 +2519,21 @@ namespace XisfFileManager
             }
         }
 
-        private void ClearForm()
+        private void ClearCameraForm()
         {
             Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
-            RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
-            RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
-            RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
-            RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_A144.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
 
             Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
@@ -2490,163 +2558,147 @@ namespace XisfFileManager
 
         public void FindCamera()
         {
-            ClearForm();
-
-            // Color Key - Valid is item specific
-            // All items valid and unique are colored Black
-            // All items valid but not unique are colored DarkViolet
-            // At least one item is missing is colored Red
+            ClearCameraForm();
 
             // If no files, just return
             if (mFileList.Count == 0) return;
 
-            bool foundZ533 = mFileList.Where(i => i.Camera.Equals("Z533")).Count() > 0;
-            bool foundZ183 = mFileList.Where(i => i.Camera.Equals("Z183")).Count() > 0;
-            bool foundQ178 = mFileList.Where(i => i.Camera.Equals("Q178")).Count() > 0;
-            bool foundA144 = mFileList.Where(i => i.Camera.Equals("A144")).Count() > 0;
-
-            if (foundZ533)
-            {
-                if (foundZ183 | foundQ178 | foundA144)
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.DarkViolet;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Z533.Checked = true;
-                }
-            }
-
-            if (foundZ183)
-            {
-                if (foundZ533 | foundQ178 | foundA144)
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.DarkViolet;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Z183.Checked = true;
-                }
-            }
-
-            if (foundQ178)
-            {
-                if (foundZ533 | foundZ183 | foundA144)
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.DarkViolet;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Camera_Q178.Checked = true;
-                }
-            }
-
-            if (foundA144)
-            {
-                if (foundZ533 | foundZ183 | foundQ178)
-                {
-                    RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
-                    RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.DarkViolet;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Camera_A144.Checked = true;
-                }
-            }
-
-            if (!foundA144 && !foundQ178 && !foundZ183 && !foundZ533)
-            {
-                // No Camera was found so set all UI lables to Red
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
-            }
-
-
             // ****************************************************************
 
-            bool missingCamera = !mFileList.Any(i => i.Camera == "A144" || i.Camera == "Q178" || i.Camera == "Z183" || i.Camera == "Z533");
-            bool uniqueCamera = mFileList.Select(i => i.Camera).Distinct().Count() == 1;
+            List<string> cameraList = mFileList.Where(c => c.Camera == "A144" || c.Camera == "Q178" || c.Camera == "Z183" || c.Camera == "Z33").Select(c => c.Camera).ToList();
+            bool bMissingCameras = (cameraList.Count() != mFileList.Count()) && cameraList.Count != 0;
+            bool bDifferentCameras = (cameraList.Count() == mFileList.Count()) && cameraList.Count != 0;
+            cameraList = cameraList.Distinct().ToList();
+            bool bNoCameras = cameraList.Count() == 0;
+            bool bUniqueCamera = cameraList.Count() == 1;
+            bDifferentCameras &= cameraList.Count() > 1;
 
-            if (missingCamera)
+            CheckBox_KeywordUpdateTab_Camera_A144.Checked = cameraList.Contains("A144");
+            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = cameraList.Contains("Q178");
+            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = cameraList.Contains("Z183");
+            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = cameraList.Contains("Z533");
+
+            if (bNoCameras)
             {
-                RadioButton_KeywordUpdateTab_Camera_A144.Checked = false;
-                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = false;
-                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = false;
-                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = false;
-
-                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
-                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
-                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
-                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
+                // All files are missing cameras
+                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Red;
             }
-            else if (!uniqueCamera)
-            {
-                RadioButton_KeywordUpdateTab_Camera_A144.Checked = mFileList.Exists(i => i.Camera == "A144");
-                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = mFileList.Exists(i => i.Camera == "Q178");
-                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = mFileList.Exists(i => i.Camera == "Z183");
-                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = mFileList.Exists(i => i.Camera == "Z533");
 
-                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = mFileList.Exists(i => i.Camera == "A144") ? Color.Green : Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = mFileList.Exists(i => i.Camera == "Q178") ? Color.Green : Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = mFileList.Exists(i => i.Camera == "Z183") ? Color.Green : Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = mFileList.Exists(i => i.Camera == "Z533") ? Color.Green : Color.Black;
+            if (bMissingCameras)
+            {
+                // Found at least one Camera but some files are missing Cameras 
+                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = CheckBox_KeywordUpdateTab_Camera_A144.Checked ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = CheckBox_KeywordUpdateTab_Camera_Q178.Checked ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z183.Checked ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z533.Checked ? Color.DarkViolet : Color.Red;
             }
-            else
-            {
-                RadioButton_KeywordUpdateTab_Camera_A144.Checked = mFileList.Exists(i => i.Camera == "A144");
-                RadioButton_KeywordUpdateTab_Camera_Q178.Checked = mFileList.Exists(i => i.Camera == "Q178");
-                RadioButton_KeywordUpdateTab_Camera_Z183.Checked = mFileList.Exists(i => i.Camera == "Z183");
-                RadioButton_KeywordUpdateTab_Camera_Z533.Checked = mFileList.Exists(i => i.Camera == "Z533");
 
-                RadioButton_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
-                RadioButton_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
+            if (bDifferentCameras)
+            {
+                // Found different Cameras and all files contain Cameras 
+                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = CheckBox_KeywordUpdateTab_Camera_A144.Checked ? Color.Green : Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = CheckBox_KeywordUpdateTab_Camera_Q178.Checked ? Color.Green : Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z183.Checked ? Color.Green : Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z533.Checked ? Color.Green : Color.Black;
+            }
+
+            if (bUniqueCamera)
+            {
+                // All files have the same Camera
+                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
+                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
             }
 
             // ****************************************************************
-
-            bool missingGain = mFileList.Exists(i => i.Gain == -1);
-            bool uniqueGain = mFileList.Select(i => i.Gain).Distinct().Count() == 1;
+            /*
+             * Just code examples
+             * 
             var uniqueNonNegativeGain = mFileList
                                             .Select(i => i.Gain)
                                             .Where(g => g != -1)
-                                            .Distinct();
-            if (missingGain)
+                                            .Distinct()
+                                            .ToList();
+
+            var uniqueNonNegativeGain = mFileList
+                                            .Where(i => i.Gain != -1 && i.Camera == "Z183")
+                                            .Select(i => new { i.Gain, i.Camera })
+                                            .Distinct()
+                                            .ToList();
+            */
+
+            // ASSUMES ONE CAMERA - The Checked CAMERA
+
+            List<int> gainListZ183 = mFileList.Where(i => i.Gain != -1 && i.Camera == "Z183").Select(i => i.Gain).ToList();
+            bool bMissingGainZ183 = (gainListZ183.Count() != mFileList.Count()) && gainListZ183.Count != 0;
+            bool bDifferentGainsZ183 = (gainListZ183.Count() == mFileList.Count()) && gainListZ183.Count != 0;
+            gainListZ183 = gainListZ183.Distinct().ToList();
+            bool bNoGainsZ183 = gainListZ183.Count() == 0;
+            bool bUniqueGainZ183 = gainListZ183.Count() == 1;
+            bDifferentGainsZ183 &= gainListZ183.Count() > 1;
+
+            Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
+            TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
+            TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
+
+            if (bNoGainsZ183)
+                // No Gain was found for the Z183
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
+
+            if (bMissingGainZ183)
             {
-                // At least one Gain value is missing
-                if (uniqueNonNegativeGain.Any())
-                {
-                    // There is just one non negative Gain
-                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.DarkViolet;
-                    Label_KeywordUpdateTab_Camera_Gain.Text = uniqueNonNegativeGain.ToString();
-                }
-                else
-                {
-                    // There are multiple non negative Gains
-                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-                    Label_KeywordUpdateTab_Camera_Gain.Text = string.Empty;
-                }
+                // Found at least one Gain but some files are missing Gains 
+
             }
-            else
+
+            if (bDifferentGainsZ183)
             {
-                // All Gain values are non negative
-                if (uniqueNonNegativeGain.Count() == 1)
-                {
-                    // There is just one non negative Gain
-                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
-                    Label_KeywordUpdateTab_Camera_Gain.Text = uniqueNonNegativeGain.ToString();
-                }
-                else
-                {
-                    // There are multiple non negative Gains
-                    Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-                    Label_KeywordUpdateTab_Camera_Gain.Text = string.Empty;
-                }
+                // Found different Gains and all files contain Gains
+
             }
+
+            if (bUniqueGainZ183)
+                // One Gain was found for the Z183
+                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = gainListZ183.First().ToString();
+
+
+            List<int> gainListZ533 = mFileList.Where(i => i.Gain != -1 && i.Camera == "Z533").Select(i => i.Gain).ToList();
+            bool bMissingGainZ533 = (gainListZ533.Count() != mFileList.Count()) && gainListZ533.Count != 0;
+            bool bDifferentGainsZ533 = (gainListZ533.Count() == mFileList.Count()) && gainListZ533.Count != 0;
+            gainListZ183 = gainListZ533.Distinct().ToList();
+            bool bNoGainsZ533 = gainListZ533.Count() == 0;
+            bool bUniqueGainZ533 = gainListZ533.Count() == 1;
+            bDifferentGainsZ533 &= gainListZ533.Count() > 1;
+
+            if (bNoGainsZ533)
+                // No Gain was found for the Z533
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
+
+            if (bMissingGainZ533)
+            {
+                // Found at least one Gain but some files are missing Gains 
+
+            }
+
+            if (bDifferentGainsZ533)
+            {
+                // Found different Gains and all files contain Gains
+
+            }
+
+            if (bUniqueGainZ533)
+                // One Gain was found for the Z533
+                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = gainListZ533.First().ToString();
+
+            if ((bNoGainsZ183 && CheckBox_KeywordUpdateTab_Camera_Z183.Checked) || (bNoGainsZ533 && CheckBox_KeywordUpdateTab_Camera_Z533.Checked))
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
+
+
 
             // ****************************************************************
 
@@ -2663,12 +2715,12 @@ namespace XisfFileManager
             if (!missingOffset && uniqueOffset)
             {
                 // All valid and unique so just pick the first one to display
-                if (foundZ533)
-                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = mFileList[0].Offset.ToString();
-                if (foundZ183)
-                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = mFileList[0].Offset.ToString();
-                if (foundQ178)
-                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = mFileList[0].Offset.ToString();
+                //if (foundZ533)
+                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = mFileList[0].Offset.ToString();
+                //if (foundZ183)
+                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = mFileList[0].Offset.ToString();
+                //if (foundQ178)
+                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = mFileList[0].Offset.ToString();
             }
 
             // ****************************************************************
@@ -2718,30 +2770,13 @@ namespace XisfFileManager
                 TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = Regex.Replace(mFileList[0].ExposureSeconds.FormatExposureTime(), @"\b0+(\d+)", match => match.Groups[1].Value);
             }
 
-            // ****************************************************************
-            // ****************************************************************
-
-            // Now set button colors
-            if (missingGain || missingOffset || missingTemperature || missingExposure || missingBinning)
-            {
-                Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Red;
-            }
-            else
-            {
-                if (!uniqueGain || !uniqueOffset || !uniqueTemperature || !uniqueExposure || !uniqueBinning)
-                {
-                    Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.DarkViolet;
-                    Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.DarkViolet;
-                }
-            }
 
             // ****************************************************************
         }
 
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
         {
-            if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
             {
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
@@ -2757,7 +2792,7 @@ namespace XisfFileManager
                 }
             }
 
-            if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
             {
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
@@ -2773,7 +2808,7 @@ namespace XisfFileManager
                 }
             }
 
-            if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
+            if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
             {
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
@@ -2794,11 +2829,20 @@ namespace XisfFileManager
         {
             double value;
             int parseInt;
+            int checkedCount = 0;
 
             if (mFileList.Count == 0)
             {
                 return;
             }
+
+            checkedCount += CheckBox_KeywordUpdateTab_Camera_A144.Checked ? 1 : 0;
+            checkedCount += CheckBox_KeywordUpdateTab_Camera_Q178.Checked ? 1 : 0;
+            checkedCount += CheckBox_KeywordUpdateTab_Camera_Z183.Checked ? 1 : 0;
+            checkedCount += CheckBox_KeywordUpdateTab_Camera_Z533.Checked ? 1 : 0;
+
+            if (checkedCount != 1)
+                return;
 
             foreach (XisfFile file in mFileList)
             {
@@ -2823,7 +2867,7 @@ namespace XisfFileManager
                     file.ExposureSeconds = value;
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     file.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
@@ -2849,7 +2893,7 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     file.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
@@ -2874,7 +2918,7 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     file.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
@@ -2899,7 +2943,7 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     file.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");
@@ -3039,7 +3083,7 @@ namespace XisfFileManager
                 int gainValueUI;
                 int offsetValue;
                 int offsetValueUI;
-                if (RadioButton_KeywordUpdateTab_Camera_Z533.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     file.AddKeyword("NAXIS1", 3008, "Horizontal Pixel Width");
@@ -3122,7 +3166,7 @@ namespace XisfFileManager
                     file.Offset = offsetValue;
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_Z183.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     file.AddKeyword("NAXIS1", 5496, "Horizontal Pixel Width");
@@ -3208,7 +3252,7 @@ namespace XisfFileManager
 
 
 
-                if (RadioButton_KeywordUpdateTab_Camera_Q178.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     file.AddKeyword("NAXIS1", 3072, "Horizontal Pixel Width");
@@ -3291,7 +3335,7 @@ namespace XisfFileManager
                     file.Offset = offsetValue;
                 }
 
-                if (RadioButton_KeywordUpdateTab_Camera_A144.Checked)
+                if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     file.AddKeyword("NAXIS1", 1392, "Horizontal Pixel Width");

@@ -146,6 +146,7 @@ namespace XisfFileManager.FileOperations
         }
         public int ImageAttachmentLength { get; set; } = 0;
         public int ImageAttachmentStart { get; set; } = 0;
+        public int ImageAttachmentStartPadding { get; set; } = 0;
         public int Index { get; set; } = 0;
         public bool Master { get; set; } = false;
         public bool NarrowBand { get; set; } = false;
@@ -176,6 +177,7 @@ namespace XisfFileManager.FileOperations
             set { mKeywordList.SensorTemperature = value; }
         }
         public double SSWeight { get; set; } = 0.0;
+        public int ThumbnailAttachmentStartPadding { get; set; } = 0;
         public int ThumbnailAttachmentLength { get; set; } = 0;
         public int ThumbnailAttachmentStart { get; set; } = 0;
         public string TargetObjectName

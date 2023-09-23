@@ -56,6 +56,7 @@
             this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150 = new System.Windows.Forms.RadioButton();
             this.RadioButton_KeywordUpdateTab_Telescope_APM107 = new System.Windows.Forms.RadioButton();
             this.GroupBox_KeywordUpdateTab_Camera = new System.Windows.Forms.GroupBox();
+            this.Label_CameraDivider1 = new System.Windows.Forms.Label();
             this.TextBox_KeywordUpdateTab_Camera_Binning = new System.Windows.Forms.TextBox();
             this.Label_KeywordUpdateTab_Camera_ToggleNBPreset = new System.Windows.Forms.Label();
             this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB = new System.Windows.Forms.Button();
@@ -78,10 +79,6 @@
             this.TextBox_KeywordUpdateTab_Camera_Z183Gain = new System.Windows.Forms.TextBox();
             this.TextBox_KeywordUpdateTab_Camera_Z533Offset = new System.Windows.Forms.TextBox();
             this.TextBox_KeywordUpdateTab_Camera_Z533Gain = new System.Windows.Forms.TextBox();
-            this.RadioButton_KeywordUpdateTab_Camera_A144 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordUpdateTab_Camera_Q178 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordUpdateTab_Camera_Z183 = new System.Windows.Forms.RadioButton();
-            this.RadioButton_KeywordUpdateTab_Camera_Z533 = new System.Windows.Forms.RadioButton();
             this.Label_KeywordUpdateTab_FileName = new System.Windows.Forms.Label();
             this.GroupBox_KeywordUpdateTab_ImageType = new System.Windows.Forms.GroupBox();
             this.Button_KeywordUpdateTab_ImageType_SetByFile = new System.Windows.Forms.Button();
@@ -327,7 +324,10 @@
             this.Button_CalibrationTab_FindCalibrationFrames = new System.Windows.Forms.Button();
             this.TabPage_SubFrameWeights = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.Label_CameraDivider1 = new System.Windows.Forms.Label();
+            this.CheckBox_KeywordUpdateTab_Camera_Z533 = new System.Windows.Forms.CheckBox();
+            this.CheckBox_KeywordUpdateTab_Camera_Z183 = new System.Windows.Forms.CheckBox();
+            this.CheckBox_KeywordUpdateTab_Camera_Q178 = new System.Windows.Forms.CheckBox();
+            this.CheckBox_KeywordUpdateTab_Camera_A144 = new System.Windows.Forms.CheckBox();
             this.GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
             this.GroupBox_KeywordUpdateTab_Telescope.SuspendLayout();
@@ -566,7 +566,7 @@
             this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_Newtonian254);
             this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_EvoStar150);
             this.GroupBox_KeywordUpdateTab_Telescope.Controls.Add(this.RadioButton_KeywordUpdateTab_Telescope_APM107);
-            this.GroupBox_KeywordUpdateTab_Telescope.Location = new System.Drawing.Point(153, 162);
+            this.GroupBox_KeywordUpdateTab_Telescope.Location = new System.Drawing.Point(151, 162);
             this.GroupBox_KeywordUpdateTab_Telescope.Name = "GroupBox_KeywordUpdateTab_Telescope";
             this.GroupBox_KeywordUpdateTab_Telescope.Size = new System.Drawing.Size(181, 187);
             this.GroupBox_KeywordUpdateTab_Telescope.TabIndex = 21;
@@ -656,6 +656,10 @@
             // 
             // GroupBox_KeywordUpdateTab_Camera
             // 
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.CheckBox_KeywordUpdateTab_Camera_A144);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.CheckBox_KeywordUpdateTab_Camera_Q178);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.CheckBox_KeywordUpdateTab_Camera_Z183);
+            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.CheckBox_KeywordUpdateTab_Camera_Z533);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_CameraDivider1);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Binning);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.Label_KeywordUpdateTab_Camera_ToggleNBPreset);
@@ -679,16 +683,21 @@
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z183Gain);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z533Offset);
             this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.TextBox_KeywordUpdateTab_Camera_Z533Gain);
-            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_A144);
-            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Q178);
-            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Z183);
-            this.GroupBox_KeywordUpdateTab_Camera.Controls.Add(this.RadioButton_KeywordUpdateTab_Camera_Z533);
-            this.GroupBox_KeywordUpdateTab_Camera.Location = new System.Drawing.Point(341, 162);
+            this.GroupBox_KeywordUpdateTab_Camera.Location = new System.Drawing.Point(339, 162);
             this.GroupBox_KeywordUpdateTab_Camera.Name = "GroupBox_KeywordUpdateTab_Camera";
-            this.GroupBox_KeywordUpdateTab_Camera.Size = new System.Drawing.Size(319, 186);
+            this.GroupBox_KeywordUpdateTab_Camera.Size = new System.Drawing.Size(319, 187);
             this.GroupBox_KeywordUpdateTab_Camera.TabIndex = 20;
             this.GroupBox_KeywordUpdateTab_Camera.TabStop = false;
             this.GroupBox_KeywordUpdateTab_Camera.Text = "Camera";
+            // 
+            // Label_CameraDivider1
+            // 
+            this.Label_CameraDivider1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_CameraDivider1.Location = new System.Drawing.Point(70, 21);
+            this.Label_CameraDivider1.Name = "Label_CameraDivider1";
+            this.Label_CameraDivider1.Size = new System.Drawing.Size(2, 120);
+            this.Label_CameraDivider1.TabIndex = 27;
+            this.Label_CameraDivider1.Text = "CameraDivider2";
             // 
             // TextBox_KeywordUpdateTab_Camera_Binning
             // 
@@ -709,7 +718,7 @@
             // 
             // Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB
             // 
-            this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB.Location = new System.Drawing.Point(183, 42);
+            this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB.Location = new System.Drawing.Point(195, 42);
             this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB.Name = "Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB";
             this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB.Size = new System.Drawing.Size(48, 20);
             this.Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB.TabIndex = 24;
@@ -720,7 +729,7 @@
             // Label_KeywordUpdateTab_Camera_Camera
             // 
             this.Label_KeywordUpdateTab_Camera_Camera.AutoSize = true;
-            this.Label_KeywordUpdateTab_Camera_Camera.Location = new System.Drawing.Point(18, 20);
+            this.Label_KeywordUpdateTab_Camera_Camera.Location = new System.Drawing.Point(15, 20);
             this.Label_KeywordUpdateTab_Camera_Camera.Name = "Label_KeywordUpdateTab_Camera_Camera";
             this.Label_KeywordUpdateTab_Camera_Camera.Size = new System.Drawing.Size(43, 13);
             this.Label_KeywordUpdateTab_Camera_Camera.TabIndex = 23;
@@ -775,7 +784,7 @@
             // Label_CameraDivider2
             // 
             this.Label_CameraDivider2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_CameraDivider2.Location = new System.Drawing.Point(180, 21);
+            this.Label_CameraDivider2.Location = new System.Drawing.Point(185, 21);
             this.Label_CameraDivider2.Name = "Label_CameraDivider2";
             this.Label_CameraDivider2.Size = new System.Drawing.Size(2, 120);
             this.Label_CameraDivider2.TabIndex = 19;
@@ -882,46 +891,6 @@
             this.TextBox_KeywordUpdateTab_Camera_Z533Gain.TabIndex = 4;
             this.TextBox_KeywordUpdateTab_Camera_Z533Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // RadioButton_KeywordUpdateTab_Camera_A144
-            // 
-            this.RadioButton_KeywordUpdateTab_Camera_A144.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_Camera_A144.Location = new System.Drawing.Point(14, 122);
-            this.RadioButton_KeywordUpdateTab_Camera_A144.Name = "RadioButton_KeywordUpdateTab_Camera_A144";
-            this.RadioButton_KeywordUpdateTab_Camera_A144.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordUpdateTab_Camera_A144.TabIndex = 3;
-            this.RadioButton_KeywordUpdateTab_Camera_A144.Text = "A144";
-            this.RadioButton_KeywordUpdateTab_Camera_A144.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordUpdateTab_Camera_Q178
-            // 
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.Location = new System.Drawing.Point(14, 96);
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.Name = "RadioButton_KeywordUpdateTab_Camera_Q178";
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.Size = new System.Drawing.Size(51, 17);
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.TabIndex = 2;
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.Text = "Q178";
-            this.RadioButton_KeywordUpdateTab_Camera_Q178.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordUpdateTab_Camera_Z183
-            // 
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.Location = new System.Drawing.Point(14, 70);
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.Name = "RadioButton_KeywordUpdateTab_Camera_Z183";
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.TabIndex = 1;
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.Text = "Z183";
-            this.RadioButton_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_KeywordUpdateTab_Camera_Z533
-            // 
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.AutoSize = true;
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.Location = new System.Drawing.Point(14, 44);
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.Name = "RadioButton_KeywordUpdateTab_Camera_Z533";
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.Size = new System.Drawing.Size(50, 17);
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.TabIndex = 0;
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.Text = "Z533";
-            this.RadioButton_KeywordUpdateTab_Camera_Z533.UseVisualStyleBackColor = true;
-            // 
             // Label_KeywordUpdateTab_FileName
             // 
             this.Label_KeywordUpdateTab_FileName.AutoSize = true;
@@ -937,9 +906,9 @@
             this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.Button_KeywordUpdateTab_ImageType_SetAll);
             this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.GroupBox_KeywordUpdateTab_ImageType_Frame);
             this.GroupBox_KeywordUpdateTab_ImageType.Controls.Add(this.GroupBox_KeywordUpdateTab_ImageType_Filter);
-            this.GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(666, 162);
+            this.GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(665, 162);
             this.GroupBox_KeywordUpdateTab_ImageType.Name = "GroupBox_KeywordUpdateTab_ImageType";
-            this.GroupBox_KeywordUpdateTab_ImageType.Size = new System.Drawing.Size(288, 186);
+            this.GroupBox_KeywordUpdateTab_ImageType.Size = new System.Drawing.Size(288, 187);
             this.GroupBox_KeywordUpdateTab_ImageType.TabIndex = 18;
             this.GroupBox_KeywordUpdateTab_ImageType.TabStop = false;
             this.GroupBox_KeywordUpdateTab_ImageType.Text = "Image Type";
@@ -3643,14 +3612,45 @@
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // Label_CameraDivider1
+            // CheckBox_KeywordUpdateTab_Camera_Z533
             // 
-            this.Label_CameraDivider1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_CameraDivider1.Location = new System.Drawing.Point(70, 21);
-            this.Label_CameraDivider1.Name = "Label_CameraDivider1";
-            this.Label_CameraDivider1.Size = new System.Drawing.Size(2, 120);
-            this.Label_CameraDivider1.TabIndex = 27;
-            this.Label_CameraDivider1.Text = "CameraDivider2";
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.Location = new System.Drawing.Point(14, 44);
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.Name = "CheckBox_KeywordUpdateTab_Camera_Z533";
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.Size = new System.Drawing.Size(51, 17);
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.TabIndex = 28;
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.Text = "Z533";
+            this.CheckBox_KeywordUpdateTab_Camera_Z533.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_KeywordUpdateTab_Camera_Z183
+            // 
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.Location = new System.Drawing.Point(14, 70);
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.Name = "CheckBox_KeywordUpdateTab_Camera_Z183";
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.Size = new System.Drawing.Size(51, 17);
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.TabIndex = 29;
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.Text = "Z183";
+            this.CheckBox_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_KeywordUpdateTab_Camera_Q178
+            // 
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.Location = new System.Drawing.Point(14, 96);
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.Name = "CheckBox_KeywordUpdateTab_Camera_Q178";
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.Size = new System.Drawing.Size(52, 17);
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.TabIndex = 30;
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.Text = "Q178";
+            this.CheckBox_KeywordUpdateTab_Camera_Q178.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_KeywordUpdateTab_Camera_A144
+            // 
+            this.CheckBox_KeywordUpdateTab_Camera_A144.AutoSize = true;
+            this.CheckBox_KeywordUpdateTab_Camera_A144.Location = new System.Drawing.Point(14, 122);
+            this.CheckBox_KeywordUpdateTab_Camera_A144.Name = "CheckBox_KeywordUpdateTab_Camera_A144";
+            this.CheckBox_KeywordUpdateTab_Camera_A144.Size = new System.Drawing.Size(51, 17);
+            this.CheckBox_KeywordUpdateTab_Camera_A144.TabIndex = 31;
+            this.CheckBox_KeywordUpdateTab_Camera_A144.Text = "A144";
+            this.CheckBox_KeywordUpdateTab_Camera_A144.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -3927,10 +3927,6 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Master;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_Camera;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_A144;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Q178;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Z183;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_Camera_Z533;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_A144Gain;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Offset;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Gain;
@@ -4038,5 +4034,9 @@
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm;
         private System.Windows.Forms.NumericUpDown NumericUpDown_FileSelection_DirectorySelection_TotalFrames;
         private System.Windows.Forms.Label Label_CameraDivider1;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Camera_Z533;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Camera_A144;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Camera_Q178;
+        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_Camera_Z183;
     }
 }

@@ -82,7 +82,21 @@ namespace XisfFileManager.FileOperations
                 XElement root = xFile.mXDoc.Root;
                 XNamespace ns = root.GetDefaultNamespace();
 
-                IEnumerable<XElement> image = xFile.mXDoc.Descendants(ns + "Image");
+                // This was taken from an image capture from Nina 3. The .fits file was then converted to .xisf by PixInsight 1.8.9-2
+                // 
+                // Example: <Image geometry="5496:3672:1" sampleFormat="UInt16" colorSpace="Gray" location="attachment:8192:40362624">
+                // 8192 is starting address of image data.
+                // 40362624 is image size.
+                //
+                // Later in the .xisf file is
+                //     <Metadata>
+                //     <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
+                //     <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
+                //     </Metadata>
+                //
+                // My guess is the 8192 has to be modulo 4096
+
+                IEnumerable < XElement> image = xFile.mXDoc.Descendants(ns + "Image");
                 foreach (XElement element in image)
                 {
                     xFile.ImageAttachment(element);

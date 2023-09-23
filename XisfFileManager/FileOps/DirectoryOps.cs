@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace XisfFileManager
 {
@@ -31,15 +33,17 @@ namespace XisfFileManager
 
         public bool RecuseDirectories(System.IO.DirectoryInfo rootDirectory)
         {
-
-            System.IO.FileInfo[] files = null;
+            FileInfo[] files = null;
 
             // Find and process all the files directly under this folder 
             try
             {
                 if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing"))
                 {
-                    files = rootDirectory.GetFiles("*.xisf");
+                    FileInfo[] allfiles = rootDirectory.GetFiles("*.xisf");
+
+                    // Filter out files that contain a '#' character (This is to exclude emacs temporary save files during debug)
+                    files = allfiles.Where(file => !file.Name.Contains("#")).ToArray();
                 }
                 else
                 {
