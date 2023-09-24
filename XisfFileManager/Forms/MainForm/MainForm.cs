@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Deployment.Application;
-using LocalLib;
+//using System.Deployment.Application;
+//using LocalLib;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
 using System.Drawing;
@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
+
 
 namespace XisfFileManager
 {
@@ -33,7 +34,7 @@ namespace XisfFileManager
         private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
         private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
-        private OpenFolderDialog mFolder;
+        //private OpenFolderDialog mFolder;
         private XisfFile mFile;
         private double mEccentricityRangeHigh;
         private double mEccentricityRangeLow;
@@ -97,7 +98,7 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_Task.Text = "No Images Selected";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
 
-
+            /*
             // Version Number
             if (ApplicationDeployment.IsNetworkDeployed)
             {
@@ -109,7 +110,7 @@ namespace XisfFileManager
             {
                 Text = "XISF File Manager - Version: " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             }
-
+            */
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
         }
@@ -279,6 +280,20 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             TabControl_Update.Enabled = false;
 
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            string selectedFolder;
+
+            using (var folderBrowserDialog = new FolderBrowserDialog())
+            {
+                DialogResult result = folderBrowserDialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                    selectedFolder = folderBrowserDialog.SelectedPath;
+                else
+                    return;
+            }
+            /*
             mFolder = new OpenFolderDialog()
             {
                 Title = "Select .xisf Folder",
@@ -296,9 +311,9 @@ namespace XisfFileManager
             {
                 return;
             }
-
-            mFolderBrowseState = mFolder.SelectedPaths[0];
-            DirectoryInfo diDirectoryTree = new DirectoryInfo(mFolder.SelectedPaths[0]);
+            */
+            //mFolderBrowseState = mFolder.SelectedPaths;
+            DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
 
             mDirectoryOps.ClearFileList();
             mDirectoryOps.Filter = DirectoryOps.FilterType.ALL;
