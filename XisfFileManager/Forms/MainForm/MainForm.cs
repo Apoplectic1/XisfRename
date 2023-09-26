@@ -18,7 +18,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
-
+using System.Diagnostics.Eventing.Reader;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using XisfFileManager.Forms.MainForm;
 
 namespace XisfFileManager
 {
@@ -66,8 +68,6 @@ namespace XisfFileManager
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
-
-
 
         public MainForm()
         {
@@ -262,7 +262,6 @@ namespace XisfFileManager
         // ##########################################################################################################################
         private async void Button_Browse_Click(object sender, EventArgs e)
         {
-            XisfFileReader fileReader = new XisfFileReader();
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
             mFileList.Clear();
             SubFrameLists.Clear();
@@ -279,6 +278,7 @@ namespace XisfFileManager
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             TabControl_Update.Enabled = false;
+
 
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
@@ -335,6 +335,8 @@ namespace XisfFileManager
                 MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
                 return;
             }
+
+            XisfFileReader fileReader = new XisfFileReader();
 
             // Upate the UI with data from the .xisf recursive directory search
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
@@ -2550,48 +2552,87 @@ namespace XisfFileManager
             CheckBox_KeywordUpdateTab_Camera_A144.Checked = false;
             CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
 
-            Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_SensorTemp.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Black;
-            Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Black;
+            Label_KeywordUpdateTab_Camera_Seconds.ForeColor = Color.Black;
 
             Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
             Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
 
             // Clear Form Camera Text Boxes
-            TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144Binning.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_A144Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144Seconds.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_A144Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Text = string.Empty;
+
+            ComboBox_KeywordUpdateTab_Camera_Q178Binning.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Q178Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Gain.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Offset.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Seconds.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text = string.Empty;
+
+
+            ComboBox_KeywordUpdateTab_Camera_Z183Binning.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z183Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Gain.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Offset.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Seconds.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Text = string.Empty;
+
+            ComboBox_KeywordUpdateTab_Camera_Z533Binning.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Gain.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Offset.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Seconds.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.DataSource = null;
+            ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text = string.Empty;
+
         }
 
         public void FindCamera()
         {
             ClearCameraForm();
 
+            //Z183CustomComboBox.OutlineColor = Color.Red;
+
             // If no files, just return
             if (mFileList.Count == 0) return;
 
             // ****************************************************************
 
-            List<string> cameraList = mFileList.Where(c => c.Camera == "A144" || c.Camera == "Q178" || c.Camera == "Z183" || c.Camera == "Z33").Select(c => c.Camera).ToList();
-            bool bMissingCameras = (cameraList.Count() != mFileList.Count()) && cameraList.Count != 0;
-            bool bDifferentCameras = (cameraList.Count() == mFileList.Count()) && cameraList.Count != 0;
-            cameraList = cameraList.Distinct().ToList();
-            bool bNoCameras = cameraList.Count() == 0;
-            bool bUniqueCamera = cameraList.Count() == 1;
-            bDifferentCameras &= cameraList.Count() > 1;
+            // cameraList should contain an entry for each file
+            List<string> CameraList = mFileList.Where(c => c.Camera == "A144" || c.Camera == "Q178" || c.Camera == "Z183" || c.Camera == "Z533").Select(c => c.Camera).ToList();
+            bool bFoundZ183 = CameraList.Count(c => c == "Z183") != 0;
+            bool bFoundZ533 = CameraList.Count(c => c == "Z533") != 0;
+            bool bFoundQ178 = CameraList.Count(c => c == "Q178") != 0;
+            bool bFoundA144 = CameraList.Count(c => c == "A144") != 0;
 
-            CheckBox_KeywordUpdateTab_Camera_A144.Checked = cameraList.Contains("A144");
-            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = cameraList.Contains("Q178");
-            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = cameraList.Contains("Z183");
-            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = cameraList.Contains("Z533");
+            bool bNoCameras = CameraList.Count() == 0;
+            bool bMissingCameras = (CameraList.Count() != mFileList.Count()) && !bNoCameras;
+            bool bDifferentCameras = ((bFoundZ183 ? 1 : 0) + (bFoundZ533 ? 1 : 0) + (bFoundQ178 ? 1 : 0) + (bFoundA144 ? 1 : 0) >= 2) && !bMissingCameras;
+            bool bUniqueCamera = !bMissingCameras && !bDifferentCameras && !bNoCameras;
+            //bool bUniqueCamera = !bMissingCameras && !bNoCameras;
+
+            CheckBox_KeywordUpdateTab_Camera_A144.Checked = bFoundA144;
+            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = bFoundQ178;
+            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = bFoundZ183;
+            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = bFoundZ533;
 
             if (bNoCameras)
             {
@@ -2605,10 +2646,10 @@ namespace XisfFileManager
             if (bMissingCameras)
             {
                 // Found at least one Camera but some files are missing Cameras 
-                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = CheckBox_KeywordUpdateTab_Camera_A144.Checked ? Color.DarkViolet : Color.Red;
-                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = CheckBox_KeywordUpdateTab_Camera_Q178.Checked ? Color.DarkViolet : Color.Red;
-                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z183.Checked ? Color.DarkViolet : Color.Red;
-                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = CheckBox_KeywordUpdateTab_Camera_Z533.Checked ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = bFoundA144 ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = bFoundQ178 ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = bFoundZ183 ? Color.DarkViolet : Color.Red;
+                CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = bFoundZ533 ? Color.DarkViolet : Color.Red;
             }
 
             if (bDifferentCameras)
@@ -2622,7 +2663,6 @@ namespace XisfFileManager
 
             if (bUniqueCamera)
             {
-                // All files have the same Camera
                 CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
                 CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
                 CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
@@ -2630,162 +2670,540 @@ namespace XisfFileManager
             }
 
             // ****************************************************************
-            /*
-             * Just code examples
-             * 
-            var uniqueNonNegativeGain = mFileList
-                                            .Select(i => i.Gain)
-                                            .Where(g => g != -1)
-                                            .Distinct()
-                                            .ToList();
 
-            var uniqueNonNegativeGain = mFileList
-                                            .Where(i => i.Gain != -1 && i.Camera == "Z183")
-                                            .Select(i => new { i.Gain, i.Camera })
-                                            .Distinct()
-                                            .ToList();
-            */
+            bool bNoSecondsZ533 = false;
+            bool bMissingSecondsZ533 = false;
+            bool bDifferentSecondsZ533 = false;
+            bool bUniqueSecondsZ533 = false;
 
-            // ASSUMES ONE CAMERA - The Checked CAMERA
-
-            List<int> gainListZ183 = mFileList.Where(i => i.Gain != -1 && i.Camera == "Z183").Select(i => i.Gain).ToList();
-            bool bMissingGainZ183 = (gainListZ183.Count() != mFileList.Count()) && gainListZ183.Count != 0;
-            bool bDifferentGainsZ183 = (gainListZ183.Count() == mFileList.Count()) && gainListZ183.Count != 0;
-            gainListZ183 = gainListZ183.Distinct().ToList();
-            bool bNoGainsZ183 = gainListZ183.Count() == 0;
-            bool bUniqueGainZ183 = gainListZ183.Count() == 1;
-            bDifferentGainsZ183 &= gainListZ183.Count() > 1;
-
-            Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
-            TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
-            TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
-
-            if (bNoGainsZ183)
-                // No Gain was found for the Z183
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
-
-            if (bMissingGainZ183)
+            if (bFoundZ533)
             {
-                // Found at least one Gain but some files are missing Gains 
+                List<double> SecondsListZ533 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z533").Select(i => i.ExposureSeconds).ToList();
+                bNoSecondsZ533 = SecondsListZ533.Count() == 0;
+                bMissingSecondsZ533 = SecondsListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoSecondsZ533;
+                bDifferentSecondsZ533 = SecondsListZ533.Distinct().Count() > 1;
+                bUniqueSecondsZ533 = !bMissingSecondsZ533 && !bDifferentSecondsZ533 && !bNoSecondsZ533;
 
+                ComboBox_KeywordUpdateTab_Camera_Z533Seconds.DataSource = SecondsListZ533.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSecondsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Seconds.ForeColor = Color.Black;
+
+                if (!bMissingSecondsZ533 && bDifferentSecondsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Seconds.ForeColor = Color.Green;
+
+                if (bMissingSecondsZ533 && !bDifferentSecondsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Seconds.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Seconds.SelectedIndex = bUniqueSecondsZ533 || (bMissingSecondsZ533 && !bDifferentSecondsZ533) ? 0 : -1;
             }
 
-            if (bDifferentGainsZ183)
-            {
-                // Found different Gains and all files contain Gains
 
+            bool bNoSecondsZ183 = false;
+            bool bMissingSecondsZ183 = false;
+            bool bDifferentSecondsZ183 = false;
+            bool bUniqueSecondsZ183 = false;
+
+            if (bFoundZ183)
+            {
+                List<double> SecondsListZ183 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z183").Select(i => i.ExposureSeconds).ToList();
+                bNoSecondsZ183 = SecondsListZ183.Count() == 0;
+                bMissingSecondsZ183 = SecondsListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoSecondsZ183;
+                bDifferentSecondsZ183 = SecondsListZ183.Distinct().Count() > 1;
+                bUniqueSecondsZ183 = !bMissingSecondsZ183 && !bDifferentSecondsZ183 && !bNoSecondsZ183;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Seconds.DataSource = SecondsListZ183.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSecondsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Seconds.ForeColor = Color.Black;
+
+                if (!bMissingSecondsZ183 && bDifferentSecondsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Seconds.ForeColor = Color.Green;
+
+                if (bMissingSecondsZ183 && !bDifferentSecondsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Seconds.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Seconds.SelectedIndex = bUniqueSecondsZ183 || (bMissingSecondsZ183 && !bDifferentSecondsZ183) ? 0 : -1;
             }
 
-            if (bUniqueGainZ183)
-                // One Gain was found for the Z183
-                TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = gainListZ183.First().ToString();
 
+            bool bNoSecondsQ178 = false;
+            bool bMissingSecondsQ178 = false;
+            bool bDifferentSecondsQ178 = false;
+            bool bUniqueSecondsQ178 = false;
 
-            List<int> gainListZ533 = mFileList.Where(i => i.Gain != -1 && i.Camera == "Z533").Select(i => i.Gain).ToList();
-            bool bMissingGainZ533 = (gainListZ533.Count() != mFileList.Count()) && gainListZ533.Count != 0;
-            bool bDifferentGainsZ533 = (gainListZ533.Count() == mFileList.Count()) && gainListZ533.Count != 0;
-            gainListZ183 = gainListZ533.Distinct().ToList();
-            bool bNoGainsZ533 = gainListZ533.Count() == 0;
-            bool bUniqueGainZ533 = gainListZ533.Count() == 1;
-            bDifferentGainsZ533 &= gainListZ533.Count() > 1;
-
-            if (bNoGainsZ533)
-                // No Gain was found for the Z533
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
-
-            if (bMissingGainZ533)
+            if (bFoundQ178)
             {
-                // Found at least one Gain but some files are missing Gains 
+                List<double> SecondsListQ178 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Q178").Select(i => i.ExposureSeconds).ToList();
+                bNoSecondsQ178 = SecondsListQ178.Count() == 0;
+                bMissingSecondsQ178 = SecondsListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoSecondsQ178;
+                bDifferentSecondsQ178 = SecondsListQ178.Distinct().Count() > 1;
+                bUniqueSecondsQ178 = !bMissingSecondsQ178 && !bDifferentSecondsQ178 && !bNoSecondsQ178;
 
+                ComboBox_KeywordUpdateTab_Camera_Q178Seconds.DataSource = SecondsListQ178.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSecondsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Seconds.ForeColor = Color.Black;
+
+                if (!bMissingSecondsQ178 && bDifferentSecondsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Seconds.ForeColor = Color.Green;
+
+                if (bMissingSecondsQ178 && !bDifferentSecondsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Seconds.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Seconds.SelectedIndex = bUniqueSecondsQ178 || (bMissingSecondsQ178 && !bDifferentSecondsQ178) ? 0 : -1;
             }
 
-            if (bDifferentGainsZ533)
-            {
-                // Found different Gains and all files contain Gains
+            bool bNoSecondsA144 = false;
+            bool bMissingSecondsA144 = false;
+            bool bDifferentSecondsA144 = false;
+            bool bUniqueSecondsA144 = false;
 
+            if (bFoundA144)
+            {
+                List<double> SecondsListA144 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "A144").Select(i => i.ExposureSeconds).ToList();
+                bNoSecondsA144 = SecondsListA144.Count() == 0;
+                bMissingSecondsA144 = SecondsListA144.Count() != CameraList.Count(c => c == "A144") && !bNoSecondsA144;
+                bDifferentSecondsA144 = SecondsListA144.Distinct().Count() > 1;
+                bUniqueSecondsA144 = !bMissingSecondsA144 && !bDifferentSecondsA144 && !bNoSecondsA144;
+
+                ComboBox_KeywordUpdateTab_Camera_A144Seconds.DataSource = SecondsListA144.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSecondsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Seconds.ForeColor = Color.Black;
+
+                if (!bMissingSecondsA144 && bDifferentSecondsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Seconds.ForeColor = Color.Green;
+
+                if (bMissingSecondsA144 && !bDifferentSecondsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Seconds.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_A144Seconds.SelectedIndex = bUniqueSecondsA144 || (bMissingSecondsA144 && !bDifferentSecondsA144) ? 0 : -1;
             }
 
-            if (bUniqueGainZ533)
-                // One Gain was found for the Z533
-                TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = gainListZ533.First().ToString();
-
-            if ((bNoGainsZ183 && CheckBox_KeywordUpdateTab_Camera_Z183.Checked) || (bNoGainsZ533 && CheckBox_KeywordUpdateTab_Camera_Z533.Checked))
-                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
-
-
-
-            // ****************************************************************
-
-            bool missingOffset = mFileList.Exists(i => i.Offset == -1);
-            bool uniqueOffset = mFileList.Select(i => i.Offset).Distinct().Count() == 1;
-
-            if (missingOffset)
-                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
-            else if (!uniqueOffset)
-                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.DarkViolet;
+            if (bNoSecondsZ533 || bMissingSecondsZ533 || bNoSecondsZ183 || bMissingSecondsZ183 || bNoSecondsQ178 || bMissingSecondsQ178 || bNoSecondsA144 || bMissingSecondsA144)
+                Label_KeywordUpdateTab_Camera_Seconds.ForeColor = Color.Red;
             else
-                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Black;
-
-            if (!missingOffset && uniqueOffset)
-            {
-                // All valid and unique so just pick the first one to display
-                //if (foundZ533)
-                TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = mFileList[0].Offset.ToString();
-                //if (foundZ183)
-                TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = mFileList[0].Offset.ToString();
-                //if (foundQ178)
-                TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = mFileList[0].Offset.ToString();
-            }
+                if (bDifferentSecondsZ533 || bDifferentSecondsZ183 || bDifferentSecondsQ178 || bDifferentSecondsA144)
+                Label_KeywordUpdateTab_Camera_Seconds.ForeColor = Color.Green;
 
             // ****************************************************************
 
-            bool missingTemperature = mFileList.Exists(i => i.SensorTemperature == -273.0);
-            bool uniqueTemperature = mFileList.Select(i => i.SensorTemperature).Distinct().Count() == 1;
+            bool bNoGainsZ533 = false;
+            bool bMissingGainsZ533 = false;
+            bool bDifferentGainsZ533 = false;
+            bool bUniqueGainZ533 = false;
 
-            if (missingTemperature)
-                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.Red;
-            else if (!uniqueTemperature)
-                Label_KeywordUpdateTab_Camera_SensorTemperature.ForeColor = Color.DarkViolet;
-
-            if (!missingTemperature && uniqueTemperature)
+            if (bFoundZ533)
             {
-                // All valid and unique so just pick the first one to display
-                TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text = Convert.ToDouble(mFileList[0].SensorTemperature).ToString("F1");
+                List<int> GainListZ533 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z533").Select(i => i.Gain).ToList();
+                bNoGainsZ533 = GainListZ533.Count() == 0;
+                bMissingGainsZ533 = GainListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoGainsZ533;
+                bDifferentGainsZ533 = GainListZ533.Distinct().Count() > 1 && !bMissingGainsZ533;
+                bUniqueGainZ533 = !bMissingGainsZ533 && !bDifferentGainsZ533 && !bNoGainsZ533;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Gain.DataSource = GainListZ533.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueGainZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Gain.ForeColor = Color.Black;
+
+                if (!bMissingGainsZ533 && bDifferentGainsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Gain.ForeColor = Color.Green;
+
+                if (bMissingGainsZ533 && !bDifferentGainsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Gain.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Gain.SelectedIndex = bUniqueGainZ533 || (bMissingGainsZ533 && !bDifferentGainsZ533) ? 0 : -1;
             }
 
-            // ***************************************************************
 
-            bool missingBinning = mFileList.Exists(i => i.Binning == -1);
-            bool uniqueBinning = mFileList.Select(i => i.Binning).Distinct().Count() == 1;
+            bool bNoGainsZ183 = false;
+            bool bMissingGainsZ183 = false;
+            bool bDifferentGainsZ183 = false;
+            bool bUniqueGainZ183 = false;
 
-            if (missingBinning)
+            if (bFoundZ183)
+            {
+                List<int> GainListZ183 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z183").Select(i => i.Gain).ToList();
+                bNoGainsZ183 = GainListZ183.Count() == 0;
+                bMissingGainsZ183 = GainListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoGainsZ183;
+                bDifferentGainsZ183 = GainListZ183.Distinct().Count() > 1;
+                bUniqueGainZ183 = !bMissingGainsZ183 && !bDifferentGainsZ183 && !bNoGainsZ183;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Gain.DataSource = GainListZ183.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueGainZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Gain.ForeColor = Color.Black;
+
+                if (!bMissingGainsZ183 && bDifferentGainsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Gain.ForeColor = Color.Green;
+
+                if (bMissingGainsZ183 && !bDifferentGainsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Gain.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Gain.SelectedIndex = bUniqueGainZ183 || (bMissingGainsZ183 && !bDifferentGainsZ183) ? 0 : -1;
+            }
+
+
+            bool bNoGainsQ178 = false;
+            bool bMissingGainsQ178 = false;
+            bool bDifferentGainsQ178 = false;
+            bool bUniqueGainQ178 = false;
+
+            if (bFoundQ178)
+            {
+                List<int> GainListQ178 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Q178").Select(i => i.Gain).ToList();
+                bNoGainsQ178 = GainListQ178.Count() == 0;
+                bMissingGainsQ178 = GainListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoGainsQ178;
+                bDifferentGainsQ178 = GainListQ178.Distinct().Count() > 1 && !bMissingGainsQ178;
+                bUniqueGainQ178 = !bMissingGainsQ178 && !bDifferentGainsQ178 && !bNoGainsQ178;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Gain.DataSource = GainListQ178.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueGainQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Gain.ForeColor = Color.Black;
+
+                if (!bMissingGainsQ178 && bDifferentGainsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Gain.ForeColor = Color.Green;
+
+                if (bMissingGainsQ178 && !bDifferentGainsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Gain.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Gain.SelectedIndex = bUniqueGainQ178 || (bMissingGainsQ178 && !bDifferentGainsQ178) ? 0 : -1;
+            }
+
+
+            if (bNoGainsZ533 || bMissingGainsZ533 || bNoGainsZ183 || bMissingGainsZ183 || bNoGainsQ178 || bMissingGainsQ178)
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Red;
+            else
+                if (bDifferentGainsZ533 || bDifferentGainsZ183 || bDifferentGainsQ178)
+                Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Green;
+
+            // ****************************************************************
+
+
+            bool bNoOffsetsZ533 = false;
+            bool bMissingOffsetsZ533 = false;
+            bool bDifferentOffsetsZ533 = false;
+            bool bUniqueOffsetZ533 = false;
+
+            if (bFoundZ533)
+            {
+                List<int> OffsetListZ533 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z533").Select(i => i.Offset).ToList();
+                bNoOffsetsZ533 = OffsetListZ533.Count() == 0;
+                bMissingOffsetsZ533 = OffsetListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoOffsetsZ533;
+                bDifferentOffsetsZ533 = OffsetListZ533.Distinct().Count() > 1 && !bMissingOffsetsZ533;
+                bUniqueOffsetZ533 = !bMissingOffsetsZ533 && !bDifferentOffsetsZ533 && !bNoOffsetsZ533;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Offset.DataSource = OffsetListZ533.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueOffsetZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Offset.ForeColor = Color.Black;
+
+                if (!bMissingOffsetsZ533 && bDifferentOffsetsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Offset.ForeColor = Color.Green;
+
+                if (bMissingOffsetsZ533 && !bDifferentOffsetsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Offset.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Offset.SelectedIndex = bUniqueOffsetZ533 || (bMissingOffsetsZ533 && !bDifferentOffsetsZ533) ? 0 : -1;
+            }
+
+
+            bool bNoOffsetsZ183 = false;
+            bool bMissingOffsetsZ183 = false;
+            bool bDifferentOffsetsZ183 = false;
+            bool bUniqueOffsetZ183 = false;
+
+            if (bFoundZ183)
+            {
+                List<int> OffsetListZ183 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z183").Select(i => i.Offset).ToList();
+                bNoOffsetsZ183 = OffsetListZ183.Count() == 0;
+                bMissingOffsetsZ183 = OffsetListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoOffsetsZ183;
+                bDifferentOffsetsZ183 = OffsetListZ183.Distinct().Count() > 1;
+                bUniqueOffsetZ183 = !bMissingOffsetsZ183 && !bDifferentOffsetsZ183 && !bNoOffsetsZ183;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Offset.DataSource = OffsetListZ183.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueOffsetZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Offset.ForeColor = Color.Black;
+
+                if (!bMissingOffsetsZ183 && bDifferentOffsetsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Offset.ForeColor = Color.Green;
+
+                if (bMissingOffsetsZ183 && !bDifferentOffsetsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Offset.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Offset.SelectedIndex = bUniqueOffsetZ183 || (bMissingOffsetsZ183 && !bDifferentOffsetsZ183) ? 0 : -1;
+            }
+
+            bool bNoOffsetsQ178 = false;
+            bool bMissingOffsetsQ178 = false;
+            bool bDifferentOffsetsQ178 = false;
+            bool bUniqueOffsetQ178 = false;
+
+            if (bFoundQ178)
+            {
+                List<int> OffsetListQ178 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Q178").Select(i => i.Offset).ToList();
+                bNoOffsetsQ178 = OffsetListQ178.Count() == 0;
+                bMissingOffsetsQ178 = OffsetListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoOffsetsQ178;
+                bDifferentOffsetsQ178 = OffsetListQ178.Distinct().Count() > 1 && !bMissingOffsetsQ178;
+                bUniqueOffsetQ178 = !bMissingOffsetsQ178 && !bDifferentOffsetsQ178 && !bNoOffsetsQ178;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Offset.DataSource = OffsetListQ178.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueOffsetQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Offset.ForeColor = Color.Black;
+
+                if (!bMissingOffsetsQ178 && bDifferentOffsetsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Offset.ForeColor = Color.Green;
+
+                if (bMissingOffsetsQ178 && !bDifferentOffsetsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Offset.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Offset.SelectedIndex = bUniqueOffsetQ178 || (bMissingOffsetsQ178 && !bDifferentOffsetsQ178) ? 0 : -1;
+            }
+
+            if (bNoOffsetsZ533 || bMissingOffsetsZ533 || bNoOffsetsZ183 || bMissingOffsetsZ183 || bNoOffsetsQ178 || bMissingOffsetsQ178)
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Red;
+            else
+               if (bDifferentOffsetsZ533 || bDifferentOffsetsZ183 || bDifferentOffsetsQ178)
+                Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Green;
+
+
+            // ****************************************************************
+
+            bool bNoSensorTempsZ533 = false;
+            bool bMissingSensorTempsZ533 = false;
+            bool bDifferentSensorTempsZ533 = false;
+            bool bUniqueSensorTempZ533 = false;
+
+            if (bFoundZ533)
+            {
+                List<double> SensorTempListZ533 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z533").Select(i => i.SensorTemperature).ToList();
+                bNoSensorTempsZ533 = SensorTempListZ533.Count() == 0;
+                bMissingSensorTempsZ533 = SensorTempListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoSensorTempsZ533;
+                bDifferentSensorTempsZ533 = SensorTempListZ533.Distinct().Count() > 1 && !bMissingSensorTempsZ533;
+                bUniqueSensorTempZ533 = !bMissingSensorTempsZ533 && !bDifferentSensorTempsZ533 && !bNoSensorTempsZ533;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.DataSource = SensorTempListZ533.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSensorTempZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.ForeColor = Color.Black;
+
+                if (!bMissingSensorTempsZ533 && bDifferentSensorTempsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.ForeColor = Color.Green;
+
+                if (bMissingSensorTempsZ533 && !bDifferentSensorTempsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.SelectedIndex = bUniqueSensorTempZ533 || (bMissingSensorTempsZ533 && !bDifferentSensorTempsZ533) ? 0 : -1;
+            }
+
+            bool bNoSensorTempsZ183 = false;
+            bool bMissingSensorTempsZ183 = false;
+            bool bDifferentSensorTempsZ183 = false;
+            bool bUniqueSensorTempZ183 = false;
+
+            if (bFoundZ183)
+            {
+                List<double> SensorTempListZ183 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z183").Select(i => i.SensorTemperature).ToList();
+                bNoSensorTempsZ183 = SensorTempListZ183.Count() == 0;
+                bMissingSensorTempsZ183 = SensorTempListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoSensorTempsZ183;
+                bDifferentSensorTempsZ183 = SensorTempListZ183.Distinct().Count() > 1;
+                bUniqueSensorTempZ183 = !bMissingSensorTempsZ183 && !bDifferentSensorTempsZ183 && !bNoSensorTempsZ183;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.DataSource = SensorTempListZ183.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSensorTempZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.ForeColor = Color.Black;
+
+                if (!bMissingSensorTempsZ183 && bDifferentSensorTempsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.ForeColor = Color.Green;
+
+                if (bMissingSensorTempsZ183 && !bDifferentSensorTempsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.SelectedIndex = bUniqueSensorTempZ183 || (bMissingSensorTempsZ183 && !bDifferentSensorTempsZ183) ? 0 : -1;
+            }
+
+            bool bNoSensorTempsQ178 = false;
+            bool bMissingSensorTempsQ178 = false;
+            bool bDifferentSensorTempsQ178 = false;
+            bool bUniqueSensorTempQ178 = false;
+
+            if (bFoundQ178)
+            {
+                List<double> SensorTempListQ178 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "Q178").Select(i => i.FocuserTemperature).ToList();
+                bNoSensorTempsQ178 = SensorTempListQ178.Count() == 0;
+                bMissingSensorTempsQ178 = SensorTempListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoSensorTempsQ178;
+                bDifferentSensorTempsQ178 = SensorTempListQ178.Distinct().Count() > 1 && !bMissingSensorTempsQ178;
+                bUniqueSensorTempQ178 = !bMissingSensorTempsQ178 && !bDifferentSensorTempsQ178 && !bNoSensorTempsQ178;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.DataSource = SensorTempListQ178.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSensorTempQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.ForeColor = Color.Black;
+
+                if (!bMissingSensorTempsQ178 && bDifferentSensorTempsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.ForeColor = Color.Green;
+
+                if (bMissingSensorTempsQ178 && !bDifferentSensorTempsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.SelectedIndex = bUniqueSensorTempQ178 || (bMissingSensorTempsQ178 && !bDifferentSensorTempsQ178) ? 0 : -1;
+            }
+
+            bool bNoSensorTempsA144 = false;
+            bool bMissingSensorTempsA144 = false;
+            bool bDifferentSensorTempsA144 = false;
+            bool bUniqueSensorTempA144 = false;
+
+            if (bFoundA144)
+            {
+                List<double> SensorTempListA144 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "A144").Select(i => i.FocuserTemperature).ToList();
+                bNoSensorTempsA144 = SensorTempListA144.Count() == 0;
+                bMissingSensorTempsA144 = SensorTempListA144.Count() != CameraList.Count(c => c == "A144") && !bNoSensorTempsA144;
+                bDifferentSensorTempsA144 = SensorTempListA144.Distinct().Count() > 1 && !bMissingSensorTempsA144;
+                bUniqueSensorTempA144 = !bMissingSensorTempsA144 && !bDifferentSensorTempsA144 && !bNoSensorTempsA144;
+
+                ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.DataSource = SensorTempListA144.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueSensorTempA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.ForeColor = Color.Black;
+
+                if (!bMissingSensorTempsA144 && bDifferentSensorTempsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.ForeColor = Color.Green;
+
+                if (bMissingSensorTempsA144 && !bDifferentSensorTempsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.SelectedIndex = bUniqueSensorTempA144 || (bMissingSensorTempsA144 && !bDifferentSensorTempsA144) ? 0 : -1;
+            }
+
+            if (bNoSensorTempsZ533 || bMissingSensorTempsZ533 || bNoSensorTempsZ183 || bMissingSensorTempsZ183 || bNoSensorTempsQ178 || bMissingSensorTempsQ178 || bNoSensorTempsA144 || bMissingSensorTempsA144)
+                Label_KeywordUpdateTab_Camera_SensorTemp.ForeColor = Color.Red;
+            else
+                if (bDifferentSensorTempsZ533 || bDifferentSensorTempsZ183 || bDifferentSensorTempsQ178 || bDifferentSensorTempsA144)
+                Label_KeywordUpdateTab_Camera_SensorTemp.ForeColor = Color.Green;
+
+            // ****************************************************************
+
+            bool bNoBinningsZ533 = false;
+            bool bMissingBinningsZ533 = false;
+            bool bDifferentBinningsZ533 = false;
+            bool bUniqueBinningZ533 = false;
+
+            if (bFoundZ533)
+            {
+                List<int> BinningListZ533 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z533").Select(i => i.Binning).ToList();
+                bNoBinningsZ533 = BinningListZ533.Count() == 0;
+                bMissingBinningsZ533 = BinningListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoBinningsZ533;
+                bDifferentBinningsZ533 = BinningListZ533.Distinct().Count() > 1;
+                bUniqueBinningZ533 = !bMissingBinningsZ533 && !bDifferentBinningsZ533 && !bNoBinningsZ533;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Binning.DataSource = BinningListZ533.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueBinningZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Binning.ForeColor = Color.Black;
+
+                if (!bMissingBinningsZ533 && bDifferentBinningsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Binning.ForeColor = Color.Green;
+
+                if (bMissingBinningsZ533 && !bDifferentBinningsZ533)
+                    ComboBox_KeywordUpdateTab_Camera_Z533Binning.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z533Binning.SelectedIndex = bUniqueBinningZ533 || (bMissingBinningsZ533 && !bDifferentBinningsZ533) ? 0 : -1;
+            }
+
+            bool bNoBinningsZ183 = false;
+            bool bMissingBinningsZ183 = false;
+            bool bDifferentBinningsZ183 = false;
+            bool bUniqueBinningZ183 = false;
+
+            if (bFoundZ183)
+            {
+                List<int> BinningListZ183 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z183").Select(i => i.Binning).ToList();
+                bNoBinningsZ183 = BinningListZ183.Count() == 0;
+                bMissingBinningsZ183 = BinningListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoBinningsZ183;
+                bDifferentBinningsZ183 = BinningListZ183.Distinct().Count() > 1;
+                bUniqueBinningZ183 = !bMissingBinningsZ183 && !bDifferentBinningsZ183 && !bNoBinningsZ183;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Binning.DataSource = BinningListZ183.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueBinningZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Binning.ForeColor = Color.Black;
+
+                if (!bMissingBinningsZ183 && bDifferentBinningsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Binning.ForeColor = Color.Green;
+
+                if (bMissingBinningsZ183 && !bDifferentBinningsZ183)
+                    ComboBox_KeywordUpdateTab_Camera_Z183Binning.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Z183Binning.SelectedIndex = bUniqueBinningZ183 || (bMissingBinningsZ183 && !bDifferentBinningsZ183) ? 0 : -1;
+            }
+
+            bool bNoBinningsQ178 = false;
+            bool bMissingBinningsQ178 = false;
+            bool bDifferentBinningsQ178 = false;
+            bool bUniqueBinningQ178 = false;
+
+            if (bFoundQ178)
+            {
+                List<int> BinningListQ178 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Q178").Select(i => i.Binning).ToList();
+                bNoBinningsQ178 = BinningListQ178.Count() == 0;
+                bMissingBinningsQ178 = BinningListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoBinningsQ178;
+                bDifferentBinningsQ178 = BinningListQ178.Distinct().Count() > 1;
+                bUniqueBinningQ178 = !bMissingBinningsQ178 && !bDifferentBinningsQ178 && !bNoBinningsQ178;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Binning.DataSource = BinningListQ178.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueBinningQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Binning.ForeColor = Color.Black;
+
+                if (!bMissingBinningsQ178 && bDifferentBinningsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Binning.ForeColor = Color.Green;
+
+                if (bMissingBinningsQ178 && !bDifferentBinningsQ178)
+                    ComboBox_KeywordUpdateTab_Camera_Q178Binning.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_Q178Binning.SelectedIndex = bUniqueBinningQ178 || (bMissingBinningsQ178 && !bDifferentBinningsQ178) ? 0 : -1;
+            }
+
+            bool bNoBinningsA144 = false;
+            bool bMissingBinningsA144 = false;
+            bool bDifferentBinningsA144 = false;
+            bool bUniqueBinningsA144 = false;
+
+            if (bFoundA144)
+            {
+                List<int> BinningsListA144 = mFileList.Where(i => i.Binning > 0 && i.Camera == "A144").Select(i => i.Binning).ToList();
+                bNoBinningsA144 = BinningsListA144.Count() == 0;
+                bMissingBinningsA144 = BinningsListA144.Count() != CameraList.Count(c => c == "A144") && !bNoBinningsA144;
+                bDifferentBinningsA144 = BinningsListA144.Distinct().Count() > 1;
+                bUniqueBinningsA144 = !bMissingBinningsA144 && !bDifferentBinningsA144 && !bNoBinningsA144;
+
+                ComboBox_KeywordUpdateTab_Camera_A144Binning.DataSource = BinningsListA144.OrderBy(item => item).Distinct().ToList();
+
+                if (bUniqueBinningsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Binning.ForeColor = Color.Black;
+
+                if (!bMissingBinningsA144 && bDifferentBinningsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Binning.ForeColor = Color.Green;
+
+                if (bMissingBinningsA144 && !bDifferentBinningsA144)
+                    ComboBox_KeywordUpdateTab_Camera_A144Binning.ForeColor = Color.DarkViolet;
+
+                ComboBox_KeywordUpdateTab_Camera_A144Binning.SelectedIndex = bUniqueBinningsA144 || (bMissingBinningsA144 && !bDifferentBinningsA144) ? 0 : -1;
+            }
+
+            if (bNoBinningsZ533 || bMissingBinningsZ533 || bNoBinningsZ183 || bMissingBinningsZ183 || bNoBinningsQ178 || bMissingBinningsQ178 || bNoBinningsA144 || bMissingBinningsA144)
                 Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Red;
-            else if (!uniqueBinning)
-                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.DarkViolet;
-
-            if (!missingBinning && uniqueBinning)
-            {
-                TextBox_KeywordUpdateTab_Camera_Binning.Text = mFileList[0].Binning.ToString();
-            }
+            else
+                if (bDifferentBinningsZ533 || bDifferentBinningsZ183 || bDifferentBinningsQ178 || bDifferentBinningsA144)
+                Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Green;
 
             // ****************************************************************
-
-            bool missingExposure = mFileList.Exists(i => i.ExposureSeconds == double.MinValue);
-            bool uniqueExposure = mFileList.Select(i => i.ExposureSeconds).Distinct().Count() == 1;
-
-            if (missingExposure)
-                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.Red;
-            else if (!uniqueExposure)
-                Label_KeywordUpdateTab_Camera_ExposureSeconds.ForeColor = Color.DarkViolet;
-
-            if (!missingExposure && uniqueExposure)
-            {
-                // All valid and unique so just pick the first one to display and remove leading zeros from integers
-                TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text = Regex.Replace(mFileList[0].ExposureSeconds.FormatExposureTime(), @"\b0+(\d+)", match => match.Groups[1].Value);
-            }
-
-
             // ****************************************************************
         }
 
@@ -2796,14 +3214,14 @@ namespace XisfFileManager
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+                    ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                    ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
                 }
                 else
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
-                    TextBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
+                    ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text = "100";
+                    ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text = "50";
                 }
             }
 
@@ -2812,14 +3230,14 @@ namespace XisfFileManager
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
-                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
+                    ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text = "53";
+                    ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
                 }
                 else
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
-                    TextBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
+                    ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text = "111";
+                    ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text = "10";
                 }
             }
 
@@ -2828,14 +3246,14 @@ namespace XisfFileManager
                 if (Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text == "NB Preset")
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "NB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+                    ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                    ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
                 }
                 else
                 {
                     Label_KeywordUpdateTab_Camera_ToggleNBPreset.Text = "BB Preset";
-                    TextBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
-                    TextBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
+                    ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text = "40";
+                    ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text = "15";
                 }
             }
         }
@@ -2847,9 +3265,7 @@ namespace XisfFileManager
             int checkedCount = 0;
 
             if (mFileList.Count == 0)
-            {
                 return;
-            }
 
             checkedCount += CheckBox_KeywordUpdateTab_Camera_A144.Checked ? 1 : 0;
             checkedCount += CheckBox_KeywordUpdateTab_Camera_Q178.Checked ? 1 : 0;
@@ -2867,7 +3283,7 @@ namespace XisfFileManager
                 file.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
 
-                bool status = double.TryParse(TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text, out value);
+                bool status = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
                 if (status)
                 {
                     file.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
@@ -2875,7 +3291,7 @@ namespace XisfFileManager
 
                 file.AddKeyword("NAXIS", 2, "XISF File Manager");
 
-                status = double.TryParse(TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text, out value);
+                status = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text, out value);
                 if (status)
                 {
                     file.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
@@ -2892,15 +3308,15 @@ namespace XisfFileManager
                     file.AddKeyword("BAYERPAT", "RGGB");
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
                     if (status)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
                     if (status)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
                     if (status)
                     {
                         file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
@@ -2917,15 +3333,15 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
                     if (status)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
                     if (status)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
                     if (status)
                     {
                         file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
@@ -2942,15 +3358,15 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
                     if (status)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
                     if (status)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
                     if (status)
                     {
                         file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
@@ -2969,7 +3385,7 @@ namespace XisfFileManager
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.AddKeyword("GAIN", 0.37);
                     file.RemoveKeyword("OFFSET");
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Binning.Text, out parseInt);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
                     if (status)
                     {
                         file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
@@ -3013,7 +3429,7 @@ namespace XisfFileManager
                 file.AddKeyword("BITPIX", 16, "Bits Per Pixel");
                 file.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
-                string temperatureTextUI = TextBox_KeywordUpdateTab_Camera_SensorTemperature.Text;
+                string temperatureTextUI = ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text;
 
                 string temperatureText;
                 if (globalTemperature)
@@ -3052,8 +3468,8 @@ namespace XisfFileManager
                 file.AddKeyword("CCD-TEMP", temperature, "Actual Sensor Temperature");
 
                 file.AddKeyword("NAXIS", 2, "XISF File Manager");
-                file.Binning = Int32.Parse(TextBox_KeywordUpdateTab_Camera_Binning.Text);
-                string secondsTextUI = TextBox_KeywordUpdateTab_Camera_ExposureSeconds.Text;
+                file.Binning = Int32.Parse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text);
+                string secondsTextUI = ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text;
 
                 string secondsText;
                 if (globalSeconds)
@@ -3107,7 +3523,7 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 3.76, "Vertical Pixel Size in Microns");
                     file.AddKeyword("BAYERPAT", "RGGB");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Gain.Text, out gainValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -3144,7 +3560,7 @@ namespace XisfFileManager
                     file.Gain = gainValue;
 
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z533Offset.Text, out offsetValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -3190,7 +3606,7 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Gain.Text, out gainValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -3227,7 +3643,7 @@ namespace XisfFileManager
                     file.Gain = gainValue;
 
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Z183Offset.Text, out offsetValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -3276,7 +3692,7 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Gain.Text, out gainValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out gainValueUI);
                     gainValueUI = status ? gainValueUI : -1;
 
                     if (globalGain)
@@ -3313,7 +3729,7 @@ namespace XisfFileManager
                     file.Gain = gainValue;
 
 
-                    status = int.TryParse(TextBox_KeywordUpdateTab_Camera_Q178Offset.Text, out offsetValueUI);
+                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
 
                     if (globalOffset)
@@ -3415,6 +3831,9 @@ namespace XisfFileManager
             int numberOfImages = 0;
             string rejection = string.Empty;
             string comment = string.Empty;
+
+            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
             if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
             {

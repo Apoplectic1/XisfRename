@@ -181,8 +181,10 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "UpdateFiles(XisfFile.XisfFile " + xFile.FilePath + ")");
-                return false;
+                DialogResult status = MessageBox.Show("Update Write File Failed", xFile.FilePath, MessageBoxButtons.OKCancel);
+                if (status == DialogResult.OK)
+                    return false;
+                Environment.Exit(-1);
             }
 
 
@@ -404,11 +406,13 @@ namespace XisfFileManager.FileOperations
                                 case Buffer.TypeEnum.POSITION:
                                     if ((int)position > buffer.ToPosition)
                                     {
-                                        MessageBox.Show(fileName + "\n\nThe length of xml xisfString is after the start of image data:\n" +
-                                            "    Current Write Position:     " + position.ToString() + "\n" +
-                                            "    Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.",
-                                            "MainForm.cs WriteBinaryFile()",
-                                            MessageBoxButtons.OK);
+                                        string title = "WriteBinaryFile(string fileName) POSITION Error";
+                                        string message = "\n\nThe length of xml xisfString is after the start of image data:\n" +
+                                            "    File:                            " + fileName + "\n" +
+                                            "    Current Write Position:          " + position.ToString() + "\n" +
+                                            "    Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
+
+                                        MessageBox.Show(message, title, MessageBoxButtons.OK);
                                         return false;
                                     }
 
@@ -454,7 +458,7 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "WriteBinaryFile(" + fileName + ")");
+                MessageBox.Show(fileName, "WriteBinaryFile Failed");
                 return false;
             }
 

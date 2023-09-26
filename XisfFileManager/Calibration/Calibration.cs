@@ -199,6 +199,7 @@ namespace XisfFileManager
             bool bIgnoreRotator = calibrationFrameMatchType == eFrameType.DARK || calibrationFrameMatchType == eFrameType.BIAS;
             bool bIgnoreFocuser = calibrationFrameMatchType == eFrameType.DARK || calibrationFrameMatchType == eFrameType.BIAS;
 
+            // Return a list of all calibration files that match the target file camera
             List<XisfFile> CameraList = calibrationFileList.Where(camera => camera.Camera == targetFile.Camera).ToList();
             if (CameraList.Count == 0)
             {
@@ -208,6 +209,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine CameraList to match the passed FrameType (DARK, FLAT, etc.)
             List<XisfFile> FrameTypeList = CameraList.Where(frameType => frameType.FrameType == calibrationFrameMatchType).ToList();
             if (FrameTypeList.Count == 0)
             {
@@ -217,6 +219,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine FrameTypeList to match  match the target file binning
             List<XisfFile> BinningList = FrameTypeList.Where(binning => binning.Binning == targetFile.Binning).ToList();
             if (BinningList.Count == 0)
             {
@@ -226,6 +229,8 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine BinningList to match  match the target file filter
+            // We ignore filters for DARKs and BIASs
             List<XisfFile> FilterList = bIgnoreFilter ? BinningList : BinningList.Where(filter => filter.FilterName == targetFile.FilterName).ToList();
             if (FilterList.Count == 0)
             {
@@ -235,6 +240,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine FilterList to match  match the target file gain
             List<XisfFile> GainList = FilterList.Where(gain => Math.Abs(gain.Gain - targetFile.Gain) <= GainTolerance).ToList();
             if (GainList.Count == 0)
             {
@@ -244,6 +250,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine GainList to match  match the target file offset
             List<XisfFile> OffsetList = GainList.Where(offset => Math.Abs(offset.Offset - targetFile.Offset) <= OffsetTolerance).ToList();
             if (OffsetList.Count == 0)
             {
@@ -253,6 +260,8 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine OffsetList to match  match the target file focuser position
+            // We ignore focuser position for DARKs and BIASs
             List<XisfFile> FocuserList = bIgnoreFocuser ? OffsetList : OffsetList.Where(focus => Math.Abs(focus.FocuserPosition - targetFile.FocuserPosition) <= FocuserTolerance).ToList();
             if (FocuserList.Count == 0) FocuserList.AddRange(OffsetList); // Deal with old Masters that don't incude the Focus position
             if (FocuserList.Count == 0)
@@ -263,6 +272,8 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine FocuserList to match  match the target file rotator position
+            // We ignore rotator position for DARKs and BIASs
             List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorAngle - targetFile.RotatorAngle) <= RotationTolerance).ToList();
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
             if (RotatorList.Count == 0)
@@ -273,6 +284,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Refine RotatorList to match  match the target file CCD temperature
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
             if (TemperatureList.Count == 0)
             {
@@ -282,7 +294,7 @@ namespace XisfFileManager
                 return null;
             }
 
-
+            // Refine TemperatureList to match  match the target file exposure time
             List<XisfFile> ExposureList = TemperatureList.Where(exposure => Math.Abs(exposure.ExposureSeconds - targetFile.ExposureSeconds) <= ExposureTolerance).ToList();
             List<XisfFile> ExposureToleranceList = ExposureList.Where(value => value.ExposureSeconds >= targetFile.ExposureSeconds).ToList();
             if (!bIgnoreExposure)
@@ -304,6 +316,7 @@ namespace XisfFileManager
                 return null;
             }
 
+            // Return the single best and nearest calibration file
             return ExposureToleranceList.OrderBy(nearest => Math.Abs((nearest.CaptureDateTime - targetFile.CaptureDateTime).TotalSeconds)).FirstOrDefault();
         }
 
@@ -720,18 +733,22 @@ namespace XisfFileManager
             foreach (var flatFile in mUniqueFlatCalibrationFileList)
             {
                 mCalibrationTabValues.Progress += 1;
-                mCalibrationTabValues.FileName = targetCalibrationDirectory + "\n" + Path.GetFileName(flatFile.FilePath);
-                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
+                if (flatFile != null)
+                {
+                    mCalibrationTabValues.FileName = targetCalibrationDirectory + "\n" + Path.GetFileName(flatFile.FilePath);
+                    CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
-                FileInfo sourceCalibrationFile = new FileInfo(flatFile.FilePath);
-                FileInfo destinationCalibrationFile = new FileInfo(targetCalibrationDirectory + @"\" + Path.GetFileName(flatFile.FilePath));
 
-                sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
+                    FileInfo sourceCalibrationFile = new FileInfo(flatFile.FilePath);
+                    FileInfo destinationCalibrationFile = new FileInfo(targetCalibrationDirectory + @"\" + Path.GetFileName(flatFile.FilePath));
 
-                string fileNameHolder = flatFile.FilePath;
-                flatFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(flatFile, subFrameLists, true);
-                flatFile.FilePath = fileNameHolder;
+                    sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
+
+                    string fileNameHolder = flatFile.FilePath;
+                    flatFile.FilePath = destinationCalibrationFile.FullName;
+                    XisfFileUpdate.UpdateFile(flatFile, subFrameLists, true);
+                    flatFile.FilePath = fileNameHolder;
+                }
             }
 
             foreach (var biasFile in mBiasCalibrationFileList)

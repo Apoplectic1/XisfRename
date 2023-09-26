@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using XisfFileManager.Forms.UserInputForm;
+using static System.Windows.Forms.DataFormats;
 /*
 public class Keywords
 {
@@ -426,10 +428,58 @@ namespace XisfFileManager
                     }
                 }
 
-                // Build LOC from OBS or made up Object
-                DateTime Local = DateTime.Parse(Object.ToString());
-                AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
-                DateTime UTC = DateTime.Parse(Object.ToString()).ToUniversalTime(); //, "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture).ToUniversalTime();
+                DateTime Local;
+                DateTime UTC;
+
+                if (CaptureSoftware == "TSX")
+                {
+                    // "7/18/202010:19:28.000PMDST";
+
+                    // Remove the "DST" part from the end of the string
+                    string dateString = Object.ToString().Replace("DST", "").Trim();
+
+                    // Find the positions of slashes and the last space
+                    int firstSlash = dateString.IndexOf('/');
+                    int secondSlash = dateString.IndexOf('/', firstSlash + 1);
+                    int dpoint = dateString.LastIndexOf('.');
+
+                    if (firstSlash > 0)
+                    {
+                        // Extract date components
+                        string monthStr = dateString.Substring(0, firstSlash);
+                        string dayStr = dateString.Substring(firstSlash + 1, secondSlash - firstSlash - 1);
+                        string yearStr = dateString.Substring(secondSlash + 1, 4);
+
+                        // Extract time components
+                        string timeStr = dateString.Substring(secondSlash + 5, 12);
+
+                        // Convert PM time to 24-hour format
+                        if (dateString.Contains("PM"))
+                            timeStr = (int.Parse(timeStr.Substring(0, 2)) + 12).ToString() + timeStr.Substring(2);
+
+                        // Combine date and time parts for parsing
+                        string dateTimeStr = $"{monthStr}/{dayStr}/{yearStr} {timeStr}";
+                        Local = DateTime.Parse(dateTimeStr);
+                    }
+                    else
+                    {
+                        Local = DateTime.Parse(dateString);
+                    }
+                    
+                    AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
+                    UTC = Local.ToUniversalTime();
+                }
+                else 
+                {
+                    // if '6/8/2020 01:22:44.119 AM DST'
+
+
+                    // Build LOC from OBS or made up Object
+                    Local = DateTime.Parse(Object.ToString());
+                    AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
+                    UTC = Local.ToUniversalTime();
+                }
+                
                 AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
                 RemoveKeyword("LOCALTIM");
 
