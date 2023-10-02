@@ -21,6 +21,8 @@ using static System.Net.WebRequestMethods;
 using System.Diagnostics.Eventing.Reader;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using XisfFileManager.Forms.MainForm;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace XisfFileManager
 {
@@ -825,6 +827,93 @@ namespace XisfFileManager
                 Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
             else
                 Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
+
+
+            // Begin directory tree recursive search
+            List<string> directoryList = new List<string>();
+
+            directoryList = mFileList
+                                    .Where(xFile => Path.GetDirectoryName(xFile.FilePath).Contains("Panel") &&
+                                                   (Path.GetDirectoryName(xFile.FilePath).Contains("Luma") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Red") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Green") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Blue") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Ha") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("O3") ||
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("S2")) && 
+                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Project") &&
+                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
+                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
+                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
+                                    .Select(xFile => GetPanelDirectory(Path.GetDirectoryName(xFile.FilePath)))
+                                    .Distinct()
+                                    .ToList();
+
+            if (directoryList.Count == 0)
+            {
+                directoryList = mFileList
+                                    .Where(xFile => (Path.GetDirectoryName(xFile.FilePath).Contains("Luma") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Red") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Green") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Blue") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Ha") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("O3") ||
+                                                     Path.GetDirectoryName(xFile.FilePath).Contains("S2")) &&
+                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Project") &&
+                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
+                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
+                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
+                                    .Select(xFile => GetPanelDirectory(Path.GetDirectoryName(xFile.FilePath)))
+                                    .Distinct()
+                                    .ToList();
+            }
+
+            foreach (string directoryPath in directoryList)
+            {
+                // Get all files in the directory and its subdirectories
+                string[] files = Directory.GetFiles(directoryPath, "*.xisf", SearchOption.AllDirectories);
+
+                // Group files by their parent directory (lowest-level directories)
+                var directoryGroups = files.GroupBy(filePath => Path.GetDirectoryName(filePath));
+
+                foreach (var directoryGroup in directoryGroups)
+                {
+                    string lowestDirectoryPath = directoryGroup.Key;
+                    int fileCount = directoryGroup.Count();
+
+                    string newDirectoryName;
+                    if (CheckBox_FileSlection_NoTotals.Checked)
+                        // Create the new directory name without the count appended
+                        newDirectoryName = $"{Regex.Replace(lowestDirectoryPath, @" - \d+$", "")}";
+                    else
+                        // Create the new directory name with the count appended
+                        newDirectoryName = $"{Regex.Replace(lowestDirectoryPath, @" - \d+$", "")} - {fileCount}";
+
+                    if (newDirectoryName != lowestDirectoryPath)
+                        Directory.Move(lowestDirectoryPath, newDirectoryName);
+                }
+            }
+            /*
+            // Rename the lowest directories by appending the count
+            foreach (var kvp in directoryCounts)
+            {
+                string directory = kvp.Key;
+                int count = kvp.Value;
+
+                // Create the new directory name with the count appended
+                string newDirectoryName = $"{directory} - {count}";
+
+                // Get the full path of the directory
+                string fullPath = Path.Combine(Path.GetDirectoryName(filePaths[0]), directory);
+
+                // Get the new full path with the renamed directory
+                string newFullPath = Path.Combine(Path.GetDirectoryName(filePaths[0]), newDirectoryName);
+
+                // Rename the directory
+                Directory.Move(fullPath, newFullPath);
+            }
+            */
+
 
             mFileList.Clear();
 
