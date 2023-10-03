@@ -457,8 +457,12 @@ namespace XisfFileManager
                         if (dateString.Contains("PM"))
                             timeStr = (int.Parse(timeStr.Substring(0, 2)) + 12).ToString() + timeStr.Substring(2);
 
+                        // Fix a fix of mine: Hours sometimes has three digits - take the time from the file name
+                        timeStr = Regex.Replace(timeStr, @"^\d{3}:", m => m.Value.Substring(0, 2) + ":");
+
                         // Combine date and time parts for parsing
                         string dateTimeStr = $"{monthStr}/{dayStr}/{yearStr} {timeStr}";
+
                         Local = DateTime.Parse(dateTimeStr);
                     }
                     else
@@ -472,10 +476,10 @@ namespace XisfFileManager
                 else 
                 {
                     // if '6/8/2020 01:22:44.119 AM DST'
-
+                    string result = Regex.Replace(Object.ToString(), @"(\.\d+)[^.]*$", "$1");
 
                     // Build LOC from OBS or made up Object
-                    Local = DateTime.Parse(Object.ToString());
+                    Local = DateTime.Parse(result);
                     AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
                     UTC = Local.ToUniversalTime();
                 }
@@ -968,7 +972,7 @@ namespace XisfFileManager
                 Object = GetKeywordValue("FOCUSTEM");
                 if (Object != null)
                 {
-                    AddKeyword("FOCTEMP", (double)Object);
+                    AddKeyword("FOCTEMP", Convert.ToDouble(Object));
 
                     // Remove any other keyword synonyms
                     RemoveKeyword("FOCUSTEM");
