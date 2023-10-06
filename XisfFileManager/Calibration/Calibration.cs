@@ -1,9 +1,11 @@
 ﻿using MathNet.Numerics;
+using Microsoft.Extensions.FileSystemGlobbing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -448,60 +450,6 @@ namespace XisfFileManager
             return bAllFlatsMatched;
         }
 
-
-        // ******************************************************************************************************************
-        // ******************************************************************************************************************
-        private bool MatchCalibrationPanelFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
-        {
-            if (targetFrameList.Count == 0)
-            {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            MatchCalibrationPanelFrames: No Target Frames Found\r\n";
-                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
-                return false;
-            }
-
-            List<string> targetNameList = new List<string>();
-            List<string> filterNameList = new List<string>();
-            List<int> binningList = new List<int>();
-
-            // Now we add to mDarkDictionary for all the Dark calibration files that match/do not match the target
-            foreach (var targetFile in mUnmatchedPanelTargetFileList)
-            {
-                // Find all Target and Filter Names
-                targetNameList.Add(targetFile.TargetObjectName);
-                filterNameList.Add(targetFile.FilterName);
-                binningList.Add(targetFile.Binning);
-            }
-
-            targetNameList = targetNameList.Distinct().OrderBy(x => x).ToList();
-            filterNameList = filterNameList.Distinct().OrderBy(x => x).ToList();
-            binningList = binningList.Distinct().OrderBy(x => x).ToList();
-
-            int panelNumber = 1;
-            foreach (var targetFile in mUnmatchedPanelTargetFileList)
-            {
-                int targetIndex = targetNameList.IndexOf(targetFile.TargetObjectName);
-                int filterIndex = filterNameList.IndexOf(targetFile.FilterName);
-                int binningIndex = binningList.IndexOf(targetFile.Binning);
-
-                if (targetIndex != -1 && filterIndex != -1 && binningIndex != -1)
-                {
-                    if (binningList.Count == 1)
-                    {
-                        panelNumber = (targetIndex * filterNameList.Count) + (filterIndex + 1);
-                    }
-                    else
-                    {
-                        panelNumber = (targetIndex * (filterNameList.Count + binningList.Count)) + (filterIndex + 1);
-                    }
-                    targetFile.AddKeyword("CPANEL", "P" + panelNumber, "Integrate these Panel numbers");
-                    targetFile.CPANEL = "P" + panelNumber.ToString();
-                }
-            }
-
-            return true;
-        }
         // ******************************************************************************************************************
         // ******************************************************************************************************************
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
@@ -678,10 +626,6 @@ namespace XisfFileManager
                     filterIndex++;
                 }
             }
-
-            // Set CPANEL in Light Frames based only on TARGET name and FILTER name 
-            // Ignore all other parameters like EXPOSURE time, GAIN, OFFSET, TEMPERATURE etc.
-            MatchCalibrationPanelFrames(CalibrationDirectory.LIBRARY, mUnmatchedPanelTargetFileList, false);
 
             mCalibrationTabValues.TotalUniqueFlatCalibrationFiles = mFlatCalibrationFileList.Count;
             mCalibrationTabValues.TotalUniqueDarkCalibrationFiles = mDarkCalibrationFileList.Count;

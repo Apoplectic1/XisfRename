@@ -281,9 +281,6 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             TabControl_Update.Enabled = false;
 
-
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
             string selectedFolder;
 
             using (var folderBrowserDialog = new FolderBrowserDialog())
@@ -344,15 +341,15 @@ namespace XisfFileManager
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
             Application.DoEvents();
 
-            foreach (var file in mDirectoryOps.Files)
+            foreach (var xFile in mDirectoryOps.Files)
             {
-                Label_FileSelection_BrowseFileName.Text = file.DirectoryName + "\n" + file.Name;
+                Label_FileSelection_BrowseFileName.Text = xFile.DirectoryName + "\n" + xFile.Name;
                 ProgressBar_FileSelection_ReadProgress.Value += 1;
 
                 // Create a new xisf file instance
                 mFile = new XisfFile
                 {
-                    FilePath = file.FullName
+                    FilePath = xFile.FullName
                 };
 
                 await Task.Run(async () =>
@@ -840,7 +837,7 @@ namespace XisfFileManager
                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Blue") ||
                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Ha") ||
                                                     Path.GetDirectoryName(xFile.FilePath).Contains("O3") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("S2")) && 
+                                                    Path.GetDirectoryName(xFile.FilePath).Contains("S2")) &&
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Project") &&
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
@@ -878,19 +875,44 @@ namespace XisfFileManager
 
                 foreach (var directoryGroup in directoryGroups)
                 {
+                    double totalExposureTime = 0;
+                    foreach (XisfFile xFile in mFileList)
+                    {
+                        if (directoryGroup.Contains(xFile.FilePath))
+                            totalExposureTime += xFile.ExposureSeconds;
+                    }
+
                     string lowestDirectoryPath = directoryGroup.Key;
                     int fileCount = directoryGroup.Count();
 
-                    string newDirectoryName;
-                    if (CheckBox_FileSlection_NoTotals.Checked)
-                        // Create the new directory name without the count appended
-                        newDirectoryName = $"{Regex.Replace(lowestDirectoryPath, @" - \d+$", "")}";
+                    int lastIndexOfBackslash = lowestDirectoryPath.LastIndexOf('\\');
+                    string lowestDirectory = lowestDirectoryPath.Substring(lastIndexOfBackslash + 1);
+                    int firstIndexOfDash = lowestDirectory.IndexOf("-");
+
+                    if (firstIndexOfDash > 0)
+                        lowestDirectory = lowestDirectory.Substring(0, firstIndexOfDash).TrimEnd();
                     else
-                        // Create the new directory name with the count appended
-                        newDirectoryName = $"{Regex.Replace(lowestDirectoryPath, @" - \d+$", "")} - {fileCount}";
+                        lowestDirectory = lowestDirectory.TrimEnd();
+
+                    string newDirectoryName = lowestDirectoryPath.Substring(0, lastIndexOfBackslash) + "\\" + lowestDirectory;
+
+                    double totalExposureTimeHours = totalExposureTime / 3600;
+
+                    if (!CheckBox_FileSlection_NoTotals.Checked)
+                        // Create the new directory name with the total file count and total exposure time appended
+                        newDirectoryName = $"{newDirectoryName} - {fileCount}, {(totalExposureTimeHours):F1}";
 
                     if (newDirectoryName != lowestDirectoryPath)
-                        Directory.Move(lowestDirectoryPath, newDirectoryName);
+                    {
+                        try
+                        {
+                            Directory.Move(lowestDirectoryPath, newDirectoryName);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"An error occurred while renaming the directory: \n{lowestDirectoryPath} to: \n{newDirectoryName}");
+                        }
+                    }
                 }
             }
             /*
@@ -4225,12 +4247,6 @@ namespace XisfFileManager
 
                 file.RemoveKeyword("CBIAS");
                 file.CBIAS = string.Empty;
-
-                file.RemoveKeyword("CPANEL");
-                file.CPANEL = string.Empty;
-
-                file.RemoveKeyword("CLIGHT");
-                file.CLIGHT = string.Empty;
             }
 
             mCalibration.ResetAll();

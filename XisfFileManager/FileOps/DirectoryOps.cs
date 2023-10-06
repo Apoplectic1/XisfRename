@@ -38,7 +38,11 @@ namespace XisfFileManager
             // Find and process all the files directly under this folder 
             try
             {
-                if ((rootDirectory.Name != "Duplicates") && (rootDirectory.Name != "PreProcessing"))
+                if (
+                    (rootDirectory.Name != "Duplicates") && 
+                    (rootDirectory.Name != "PreProcessing") &&
+                    (rootDirectory.Name != "Project")
+                    )
                 {
                     FileInfo[] allfiles = rootDirectory.GetFiles("*.xisf");
 

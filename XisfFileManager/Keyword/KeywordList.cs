@@ -720,7 +720,22 @@ namespace XisfFileManager
                 AddKeyword("CPANEL", value, "Match this file with other CPANEL" + CPANEL + " files");
             }
         }
-
+        // *********************************************************************************************************
+        // *********************************************************************************************************
+        public string CSTARS
+        {
+            get
+            {
+                object Object = GetKeywordValue("CSTARS");
+                if (Object != null)
+                    return (string)Object;
+                return string.Empty;
+            }
+            set
+            {
+                AddKeyword("CSTARS", value, "Match this file with other CSTARS" + CSTARS + " files");
+            }
+        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double Eccentricity
@@ -1633,7 +1648,7 @@ namespace XisfFileManager
 
                 object Object = GetKeywordValue("NUM-FRMS");
                 if (Object != null)
-                    return (int)Object;
+                    return Convert.ToInt32(Object);
 
                 return 0;
             }
