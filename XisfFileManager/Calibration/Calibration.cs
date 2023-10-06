@@ -99,7 +99,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private void ReadCalibrationFrames(Calibration.CalibrationDirectory location, string sCalibrationFrameDirectory)
+        private async Task ReadCalibrationFramesAsync(Calibration.CalibrationDirectory location, string sCalibrationFrameDirectory)
         {
             // Recursively search sCalibrationFrameDirectory to find calibration frames
             // Add the frames to either mLocalCalibrationFileList or mLibraryCalibrationFileList
@@ -118,11 +118,11 @@ namespace XisfFileManager
             mDirectoryOps.File = File;
             mDirectoryOps.Frame = Frame;
             mDirectoryOps.Recurse = Recurse;
-            mDirectoryOps.RecuseDirectories(diDirectoryTree);
+            _ = mDirectoryOps.RecuseDirectories(diDirectoryTree);
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                MessageBox.Show("No Calibration Files Found under: " + diDirectoryTree.ToString(), "Select Calibration Folder");
+                _ = MessageBox.Show("No Calibration Files Found under: " + diDirectoryTree.ToString(), "Select Calibration Folder");
                 return;
             }
 
@@ -158,13 +158,13 @@ namespace XisfFileManager
                 // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
                 // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
-                fileReader.ReadXisfFile(calibrationFile);
-                /*
+                //fileReader.ReadXisfFile(calibrationFile);
+                
                 await Task.Run(async () =>
                 {
                     await fileReader.ReadXisfFile(calibrationFile);
                 });
-                */
+                
 
                 calibrationFileList.Add(calibrationFile);
             }
@@ -342,7 +342,7 @@ namespace XisfFileManager
                 // Yes - so see if it's empty
                 if (Directory.GetFileSystemEntries(localCalibrationDirectory).Length != 0)
                     // It has calibration files so build a list of existing Calibration Frames
-                    ReadCalibrationFrames(Calibration.CalibrationDirectory.LOCAL, localCalibrationDirectory);
+                    _ = ReadCalibrationFramesAsync(CalibrationDirectory.LOCAL, localCalibrationDirectory);
 
                 if (mLocalCalibrationFileList.Count != 0)
                 {
@@ -455,7 +455,7 @@ namespace XisfFileManager
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
         {
             //ReadCalibrationFrames(CalibrationDirectory.LIBRARY, @"D:\Temp\CalibrationLibrary");
-            ReadCalibrationFrames(CalibrationDirectory.LIBRARY, @"E:\Photography\Astro Photography\Calibration");
+            _ = ReadCalibrationFramesAsync(CalibrationDirectory.LIBRARY, @"E:\Photography\Astro Photography\Calibration");
 
             return MatchCalibrationLibraryFrames(targetFileList);
         }
@@ -666,11 +666,11 @@ namespace XisfFileManager
                 FileInfo sourceCalibrationFile = new FileInfo(darkFile.FilePath);
                 FileInfo destinationCalibrationFile = new FileInfo(targetCalibrationDirectory + @"\" + Path.GetFileName(darkFile.FilePath));
 
-                sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
+                _ = sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
 
                 string fileNameHolder = darkFile.FilePath;
                 darkFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(darkFile, subFrameLists, true);
+                _ = XisfFileUpdate.UpdateFile(darkFile, subFrameLists, true);
                 darkFile.FilePath = fileNameHolder;
             }
 
@@ -686,11 +686,11 @@ namespace XisfFileManager
                     FileInfo sourceCalibrationFile = new FileInfo(flatFile.FilePath);
                     FileInfo destinationCalibrationFile = new FileInfo(targetCalibrationDirectory + @"\" + Path.GetFileName(flatFile.FilePath));
 
-                    sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
+                    _ = sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
 
                     string fileNameHolder = flatFile.FilePath;
                     flatFile.FilePath = destinationCalibrationFile.FullName;
-                    XisfFileUpdate.UpdateFile(flatFile, subFrameLists, true);
+                    _ = XisfFileUpdate.UpdateFile(flatFile, subFrameLists, true);
                     flatFile.FilePath = fileNameHolder;
                 }
             }
@@ -704,11 +704,11 @@ namespace XisfFileManager
                 FileInfo sourceCalibrationFile = new FileInfo(biasFile.FilePath);
                 FileInfo destinationCalibrationFile = new FileInfo(targetCalibrationDirectory + @"\" + Path.GetFileName(biasFile.FilePath));
 
-                sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
+                _ = sourceCalibrationFile.CopyTo(destinationCalibrationFile.FullName, true);
 
                 string fileNameHolder = biasFile.FilePath;
                 biasFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(biasFile, subFrameLists, true);
+                _ = XisfFileUpdate.UpdateFile(biasFile, subFrameLists, true);
                 biasFile.FilePath = fileNameHolder;
             }
 

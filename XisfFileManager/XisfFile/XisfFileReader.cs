@@ -23,7 +23,7 @@ namespace XisfFileManager.FileOperations
         private string modifiedString;
         private enum eField { Master, FrameType, Filter, Date, Exposure, Binning, Frames, Camera, Gain, Offet, SensorTemp, Telescope, FocalLength, Algorithim, Software }
 
-        public async Task ReadXisfFile(XisfFile xFile)
+        public Task ReadXisfFile(XisfFile xFile)
         {
             using (FileStream fileStream = new FileStream(xFile.FilePath, FileMode.Open, FileAccess.Read))
             {
@@ -76,7 +76,7 @@ namespace XisfFileManager.FileOperations
                         MessageBoxIcon.Error);
 
                     Application.Exit();
-                    return;
+                    return Task.CompletedTask;
                 }
 
                 XElement root = xFile.mXDoc.Root;
@@ -118,6 +118,8 @@ namespace XisfFileManager.FileOperations
 
                 SetKeywordsFromFileName(xFile);
             }
+
+            return Task.CompletedTask;
         }
 
         private void PruneXisfFile()
