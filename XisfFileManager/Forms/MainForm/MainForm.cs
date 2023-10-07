@@ -13,19 +13,20 @@ using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
+using System.Threading;
+
+using XisfFileManager.Enums;
+using XisfFileManager.FileOps.DirectoryProperties;
 
 namespace XisfFileManager
 {
     public delegate void DataReceivedEventHandler(CalibrationTabPageValues data);
 
-    public enum eFrameType { LIGHT, DARK, FLAT, BIAS, EMPTY }
-    public enum eFilterType { LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER, EMPTY }
-
     // ##########################################################################################################################
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        private DirectoryOps.FileType mFileType = DirectoryOps.FileType.NO_MASTERS;
+        private eFile mFileType = eFile.NO_MASTERS;
         private List<XisfFile> mFileList;
         private OpenFileDialog mFileCsv;
         private XisfFile mFile;
@@ -49,7 +50,7 @@ namespace XisfFileManager
         private double mStarsRangeLow;
         private double mUpdateStatisticsRangeHigh;
         private double mUpdateStatisticsRangeLow;
-        private eSubFrameNumericListsValid eSubFrameValidListsValid;
+        private eValidation eSubFrameValidListsValid;
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private readonly ImageCalculations ImageParameterLists;
@@ -60,11 +61,14 @@ namespace XisfFileManager
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
 
+        private DirectoryProperties mDirectoryProperties;
+
+
         public MainForm()
         {
             InitializeComponent();
             CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
-
+            mDirectoryProperties = new DirectoryProperties();
             mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
             mFileReader = new XisfFileReader();
@@ -73,7 +77,7 @@ namespace XisfFileManager
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
             {
-                RenameOrder = XisfFileRename.OrderType.INDEX
+                RenameOrder = eOrder.INDEX
             };
 
             // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
@@ -119,15 +123,15 @@ namespace XisfFileManager
 
             switch (data.MessageMode)
             {
-                case CalibrationTabPageValues.eMessageMode.CLEAR:
+                case eMessageMode.CLEAR:
                     TextBox_CalibrationTab_Messgaes.Clear();
                     break;
 
-                case CalibrationTabPageValues.eMessageMode.APPEND:
+                case eMessageMode.APPEND:
                     TextBox_CalibrationTab_Messgaes.AppendText(data.MatchCalibrationMessage);
                     break;
 
-                case CalibrationTabPageValues.eMessageMode.NEW:
+                case eMessageMode.NEW:
                     TextBox_CalibrationTab_Messgaes.Clear();
                     TextBox_CalibrationTab_Messgaes.AppendText(data.MatchCalibrationMessage);
                     break;
@@ -136,7 +140,7 @@ namespace XisfFileManager
                     break;
 
             }
-            data.MessageMode = CalibrationTabPageValues.eMessageMode.KEEP;
+            data.MessageMode = eMessageMode.KEEP;
 
 
             Label_CalibrationTab_TotalMatchedFiles.Text = "Matched " + data.TotalMatchedCalibrationFiles.ToString() + " Calibration Files: " +
@@ -304,10 +308,10 @@ namespace XisfFileManager
             DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
 
             mDirectoryOps.ClearFileList();
-            mDirectoryOps.Filter = DirectoryOps.FilterType.ALL;
+            mDirectoryOps.Filter = eFilter.ALL;
             mDirectoryOps.File = mFileType;
-            mDirectoryOps.Camera = DirectoryOps.CameraType.ALL;
-            mDirectoryOps.Frame = DirectoryOps.FrameType.ALL;
+            mDirectoryOps.Camera = eCamera.ALL;
+            mDirectoryOps.Frame = eFrame.ALL;
             mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             mDirectoryOps.RecuseDirectories(diDirectoryTree);
@@ -536,13 +540,16 @@ namespace XisfFileManager
 
                 ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
+
             if (mDirectoryOps.Files.Count == mFileList.Count)
                 Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
             else
                 Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + mDirectoryOps.Files.Count + " Image Files";
+
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+
             // **********************************************************************
 
             SetUISubFrameGroupBoxState();
@@ -556,98 +563,132 @@ namespace XisfFileManager
             TabControl_Update.Enabled = true;
         }
 
-        // Define the regular expression pattern to match "Panel" followed by the desired substring
-        //string pattern = @"Panel\s+(\S+?)(?:\\|$)";
-
-        // Use Regex.Match to find the match
-        //Match match = Regex.Match(inputString, pattern);
-
-        private string GetCameraDirectory(string directoryPath)
-        {
-            string[] directories = directoryPath.Split('\\');
-            for (int i = directories.Length - 1; i >= 0; i--)
-            {
-                if (Regex.IsMatch(directories[i], @"^[ZQA]\d{3}$"))
-                {
-                    string cameraDirectory = string.Join("\\", directories.Take(i + 1));
-                    return cameraDirectory;
-                }
-            }
-            return directoryPath;
-        }
-        private string GetPanelDirectory(string directoryPath)
-        {
-            string[] directories = directoryPath.Split('\\');
-            for (int i = directories.Length - 1; i >= 0; i--)
-            {
-                if (Regex.IsMatch(directories[i], @"^Panel\s+(\S+)$"))
-                {
-                    string panelDirectory = string.Join("\\", directories.Take(i + 1));
-                    return panelDirectory;
-                }
-            }
-            return directoryPath;
-        }
-
         public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> xFileList)
         {
             // Begin directory tree recursive search
 
-            // Group XisfFile elements by Camera and then by Panel
-            var groupedFiles = from xFile in mFileList
-                               group xFile by new
-                               {
-                                   Camera = GetCameraDirectory(xFile.FilePath),
-                                   Panel = GetPanelDirectory(xFile.FilePath),
-                               } into fileGroup
-                               select new
-                               {
-                                   Camera = fileGroup.Key.Camera,
-                                   Panel = fileGroup.Key.Panel,
-                                   Files = fileGroup.ToList()
-                               };
+            mDirectoryProperties.SetDirectoryStatistics(xFileList);
 
-            // Iterate through each Camera and associated Panels
-            foreach (var cameraGroup in groupedFiles.GroupBy(g => g.Camera))
+            // Iterate through each Target, Camera and associated Panels
+            foreach (var targetGroup in mDirectoryProperties.TargetGroup())
             {
-                string cameraDirectory = cameraGroup.Key;
-
-                foreach (var panelGroup in cameraGroup.GroupBy(g => g.Panel))
+                string targetDirectory = targetGroup.Key;
+                
+                foreach (var cameraGroup in mDirectoryProperties.CameraGroup())
                 {
-                    string panelDirectory = panelGroup.Key;
+                    string cameraDirectory = cameraGroup.Key;
 
-                    var starsQuery = from xFile in panelGroup.SelectMany(g => g.Files)
-                                     where !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
-                                            Path.GetDirectoryName(xFile.FilePath).Contains("Stars")
-                                     select xFile;
-
-                    var lightsQuery = from xFile in panelGroup.SelectMany(g => g.Files)
-                                      where !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
-                                            !Path.GetDirectoryName(xFile.FilePath).Contains("Stars")
-                                      select xFile;
-
-
-                    List<IEnumerable<XisfFile>> queryList = new List<IEnumerable<XisfFile>>();
-                    queryList.Add(lightsQuery);
-                    queryList.Add(starsQuery);
-
-                    if (bNight)
+                    foreach (var panelGroup in mDirectoryProperties.PanelGroup())
                     {
-                        foreach (var query in queryList)
+                        string panelDirectory = panelGroup.Key;
+
+                        //int Ha = mDirectoryProperties.FilterInGroup("Ha", mDirectoryProperties.LightsGroup).Count();
+
+                        //foreach(var lightGroup in mDirectoryProperties.LightsGroup)
+                        //{
+                            
+                        //}
+
+                        //foreach(var starsGroup in mDirectoryProperties.StarsGroup)
+                        //{
+
+                        //}
+                        
+                      /*
+
+
+                        List<IEnumerable<XisfFile>> queryList = new List<IEnumerable<XisfFile>>();
+                        queryList.Add(lightsQuery);
+                        queryList.Add(starsQuery);
+
+                        if (bNight)
                         {
-                            // Number files using the existing subdirectory structure under TARGET/Capture starting at 1 for each night
-                            List<string> nightlist = new List<string>();
-
-                            foreach (XisfFile xFile in query)
+                            foreach (var query in queryList)
                             {
-                                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xFile.FilePath);
-                                nightlist.Add(fileNameWithoutExtension);
+                                // Number files using the existing subdirectory structure under TARGET/Capture starting at 1 for each night
+                                List<string> nightlist = new List<string>();
+
+                                foreach (XisfFile xFile in query)
+                                {
+                                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xFile.FilePath);
+                                    nightlist.Add(fileNameWithoutExtension);
+                                }
+
+                                foreach (string night in nightlist)
+                                {
+                                    // Take a look at the Unique test. Files should already be unique?
+                                    int index = 0;
+                                    int lumaIndex = 0;
+                                    int redIndex = 0;
+                                    int greenIndex = 0;
+                                    int blueIndex = 0;
+                                    int haIndex = 0;
+                                    int o3Index = 0;
+                                    int s2Index = 0;
+                                    int shutterIndex = 0;
+
+                                    foreach (XisfFile xFile in query)
+                                    {
+                                        if (!xFile.FilePath.Contains(night))
+                                            continue;
+
+                                        if (bFilter)
+                                        {
+                                            int fileIndex = xFile.Index;
+
+                                            if (xFile.FilterName.Equals("Luma"))
+                                                xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+
+                                            if (xFile.FilterName.Equals("Red"))
+                                                xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+
+                                            if (xFile.FilterName.Equals("Green"))
+                                                xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+
+                                            if (xFile.FilterName.Equals("Blue"))
+                                                xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+
+                                            if (xFile.FilterName.Equals("Ha"))
+                                                xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+
+                                            if (xFile.FilterName.Equals("O3"))
+                                                xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+
+                                            if (xFile.FilterName.Equals("S2"))
+                                                xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+
+                                            if (xFile.FilterName.Equals("Shutter"))
+                                                xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+
+                                            if (fileIndex == xFile.Index)
+                                            {
+                                                DialogResult result = MessageBox.Show(
+                                                "No Filter in source file:\n" + xFile.FilePath +
+                                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                                "File Update Failed",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
+                                                Environment.Exit(-1);
+                                            }
+                                        }
+
+                                        if (bTime)
+                                        {
+                                            // This works because fileList is already sorted by Time
+                                            xFile.Index = (xFile.Unique) ? ++index : index++;
+                                        }
+                                    }
+                                }
                             }
+                        }
+                      
 
-                            foreach (string night in nightlist)
+                        if (bTarget)
+                        {
+                            foreach (var query in queryList)
                             {
-                                // Take a look at the Unique test. Files should already be unique?
-                                int index = 0;
+                                // Take a look at the Unique test. Files should already be unique? They have to have unique names but could contain identicle Keywords? 
+                                int lightsIndex = 0;
                                 int lumaIndex = 0;
                                 int redIndex = 0;
                                 int greenIndex = 0;
@@ -659,9 +700,6 @@ namespace XisfFileManager
 
                                 foreach (XisfFile xFile in query)
                                 {
-                                    if (!xFile.FilePath.Contains(night))
-                                        continue;
-
                                     if (bFilter)
                                     {
                                         int fileIndex = xFile.Index;
@@ -693,11 +731,11 @@ namespace XisfFileManager
                                         if (fileIndex == xFile.Index)
                                         {
                                             DialogResult result = MessageBox.Show(
-                                            "No Filter in source file:\n" + xFile.FilePath +
-                                            "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                            "File Update Failed",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error);
+                                                "No Filter in source file:\n" + xFile.FilePath +
+                                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                                "File Update Failed",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
                                             Environment.Exit(-1);
                                         }
                                     }
@@ -705,81 +743,15 @@ namespace XisfFileManager
                                     if (bTime)
                                     {
                                         // This works because fileList is already sorted by Time
-                                        xFile.Index = (xFile.Unique) ? ++index : index++;
+                                        xFile.Index = (xFile.Unique) ? ++lightsIndex : lightsIndex++;
                                     }
                                 }
                             }
                         }
-                    }
-
-                    if (bTarget)
-                    {
-                        foreach (var query in queryList)
-                        {
-                            // Take a look at the Unique test. Files should already be unique? They have to have unique names but could contain identicle Keywords? 
-                            int lightsIndex = 0;
-                            int lumaIndex = 0;
-                            int redIndex = 0;
-                            int greenIndex = 0;
-                            int blueIndex = 0;
-                            int haIndex = 0;
-                            int o3Index = 0;
-                            int s2Index = 0;
-                            int shutterIndex = 0;
-
-                            foreach (XisfFile xFile in query)
-                            {
-                                if (bFilter)
-                                {
-                                    int fileIndex = xFile.Index;
-
-                                    if (xFile.FilterName.Equals("Luma"))
-                                        xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
-
-                                    if (xFile.FilterName.Equals("Red"))
-                                        xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
-
-                                    if (xFile.FilterName.Equals("Green"))
-                                        xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
-
-                                    if (xFile.FilterName.Equals("Blue"))
-                                        xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
-
-                                    if (xFile.FilterName.Equals("Ha"))
-                                        xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
-
-                                    if (xFile.FilterName.Equals("O3"))
-                                        xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
-
-                                    if (xFile.FilterName.Equals("S2"))
-                                        xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
-
-                                    if (xFile.FilterName.Equals("Shutter"))
-                                        xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
-
-                                    if (fileIndex == xFile.Index)
-                                    {
-                                        DialogResult result = MessageBox.Show(
-                                            "No Filter in source file:\n" + xFile.FilePath +
-                                            "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                            "File Update Failed",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error);
-                                        Environment.Exit(-1);
-                                    }
-                                }
-
-                                if (bTime)
-                                {
-                                    // This works because fileList is already sorted by Time
-                                    xFile.Index = (xFile.Unique) ? ++lightsIndex : lightsIndex++;
-                                }
-                            }
-                        }
+                      */
                     }
                 }
             }
-
         }
 
         private void Button_Rename_Click(object sender, EventArgs e)
@@ -816,7 +788,7 @@ namespace XisfFileManager
 
                 Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
 
-                Application.DoEvents();
+                Application.DoEvents(); // Update UI
             }
 
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
@@ -826,7 +798,7 @@ namespace XisfFileManager
             else
                 Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
-
+            /*
             // Begin directory tree recursive search
             List<string> directoryList = new List<string>();
 
@@ -843,7 +815,7 @@ namespace XisfFileManager
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
-                                    .Select(xFile => GetPanelDirectory(Path.GetDirectoryName(xFile.FilePath)))
+                                    .Select(xFile => GetPanelDirectoryPath(Path.GetDirectoryName(xFile.FilePath)))
                                     .Distinct()
                                     .ToList();
 
@@ -861,7 +833,7 @@ namespace XisfFileManager
                                                     !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
                                                     !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
                                                     !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
-                                    .Select(xFile => GetPanelDirectory(Path.GetDirectoryName(xFile.FilePath)))
+                                    .Select(xFile => GetPanelDirectoryPath(Path.GetDirectoryName(xFile.FilePath)))
                                     .Distinct()
                                     .ToList();
             }
@@ -869,14 +841,14 @@ namespace XisfFileManager
             foreach (string directoryPath in directoryList)
             {
                 // Get all files in the directory and its subdirectories
-                string[] files = Directory.GetFiles(directoryPath, "*.xisf", SearchOption.AllDirectories);
+                var files = Directory.EnumerateFiles(directoryPath, "*.xisf");
 
                 // Group files by their parent directory (lowest-level directories)
                 var directoryGroups = files.GroupBy(filePath => Path.GetDirectoryName(filePath));
 
                 foreach (var directoryGroup in directoryGroups)
                 {
-                    double totalExposureTime = 0;
+                    double totalExposureTime = -1;
                     foreach (XisfFile xFile in mFileList)
                     {
                         if (directoryGroup.Contains(xFile.FilePath))
@@ -897,48 +869,20 @@ namespace XisfFileManager
 
                     string newDirectoryName = lowestDirectoryPath.Substring(0, lastIndexOfBackslash) + "\\" + lowestDirectory;
 
-                    double totalExposureTimeHours = totalExposureTime / 3600;
+                    string totalExposureTimeHours = (totalExposureTime / 3600).ToString("F1");
 
                     if (!CheckBox_FileSlection_NoTotals.Checked)
                         // Create the new directory name with the total file count and total exposure time appended
-                        newDirectoryName = newDirectoryName + " - " + fileCount.ToString() + ", " + totalExposureTimeHours.ToString("F1");
+                        newDirectoryName = newDirectoryName + " - " + fileCount.ToString() + ", " + totalExposureTimeHours;
 
-                    if (newDirectoryName != lowestDirectoryPath)
-                    {
-                        try
-                        {
-                            Directory.Move(lowestDirectoryPath, newDirectoryName);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"An error occurred while renaming the directory: \n{lowestDirectoryPath} to: \n{newDirectoryName}");
-                        }
-                    }
+                    if (System.IO.File.Exists(newDirectoryName) == false)
+                        Directory.Move(lowestDirectoryPath, newDirectoryName);
                 }
-            }
-            /*
-            // Rename the lowest directories by appending the count
-            foreach (var kvp in directoryCounts)
-            {
-                string directory = kvp.Key;
-                int count = kvp.Value;
-
-                // Create the new directory name with the count appended
-                string newDirectoryName = $"{directory} - {count}";
-
-                // Get the full path of the directory
-                string fullPath = Path.Combine(Path.GetDirectoryName(filePaths[0]), directory);
-
-                // Get the new full path with the renamed directory
-                string newFullPath = Path.Combine(Path.GetDirectoryName(filePaths[0]), newDirectoryName);
-
-                // Rename the directory
-                Directory.Move(fullPath, newFullPath);
+            
             }
             */
-
-
             mFileList.Clear();
+            
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
         }
@@ -952,12 +896,12 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
 
             // Only fill out the weight lists if in fact, we are actually updating them
-            if (XisfFileUpdate.Operation == XisfFileUpdate.eOperation.CALCULATED_WEIGHTS)
+            if (XisfFileUpdate.Operation == eOperation.CALCULATED_WEIGHTS)
             {
                 // If the data in at least one of the read source XISF files is bad or inconsistent, do not allow that data to be updated without
                 // re-reading a new PixInsight Subframe Selector generated CSV file (to either initially fill out or to correct bogus data)
                 eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.INVALD)
+                if (eSubFrameValidListsValid == eValidation.INVALD)
                 {
                     var result = MessageBox.Show(
                         "SubFrame Numerical Weight List is Invalid.\n\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
@@ -973,7 +917,7 @@ namespace XisfFileManager
                 }
 
                 // If we've got good consistent file and SubFrame data, then update the numerical lists 
-                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
+                if (eSubFrameValidListsValid == eValidation.VALID)
                 {
                     // Fisrt calculate a new WEIGHT Keyword (not SSWEIGHT yet) based on the current state of the UI and file/list contents
                     SubFrameNumericLists.CalculateNewSubFrameWeights(mFileList.Count);
@@ -1077,20 +1021,20 @@ namespace XisfFileManager
 
             switch (eSubFrameValidListsValid)
             {
-                case eSubFrameNumericListsValid.EMPTY:
+                case eValidation.EMPTY:
                     MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
-                case eSubFrameNumericListsValid.MISMATCH:
+                case eValidation.MISMATCH:
                     MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
-                case eSubFrameNumericListsValid.INVALD:
+                case eValidation.INVALD:
                     MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
                     return;
             }
 
-            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
+            if (eSubFrameValidListsValid == eValidation.VALID)
             {
                 // SubFrame data is valid
                 NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
@@ -1105,7 +1049,7 @@ namespace XisfFileManager
 
             SetUISubFrameGroupBoxState();
 
-            XisfFileUpdate.Operation = XisfFileUpdate.eOperation.NEW_WEIGHTS;
+            XisfFileUpdate.Operation = eOperation.NEW_WEIGHTS;
         }
 
         private void TextBox_FwhmRangeHigh_TextChanged(object sender, EventArgs e)
@@ -1213,7 +1157,7 @@ namespace XisfFileManager
         {
             if (RadioButton_FileSelection_SequenceNumbering_WeightIndex.Checked)
             {
-                mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHTINDEX;
+                mRenameFile.RenameOrder = eOrder.WEIGHTINDEX;
             }
         }
 
@@ -1221,7 +1165,7 @@ namespace XisfFileManager
         {
             if (RadioButton_FileSelection_SequenceNumbering_IndexOnly.Checked)
             {
-                mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEX;
+                mRenameFile.RenameOrder = eOrder.INDEX;
             }
         }
 
@@ -1229,7 +1173,7 @@ namespace XisfFileManager
         {
             if (RadioButton_FileSelection_SequenceNumbering_WeightOnly.Checked)
             {
-                mRenameFile.RenameOrder = XisfFileRename.OrderType.WEIGHT;
+                mRenameFile.RenameOrder = eOrder.WEIGHT;
             }
         }
 
@@ -1237,13 +1181,13 @@ namespace XisfFileManager
         {
             if (RadioButton_FileSelection_SequenceNumbering_IndexWeight.Checked)
             {
-                mRenameFile.RenameOrder = XisfFileRename.OrderType.INDEXWEIGHT;
+                mRenameFile.RenameOrder = eOrder.INDEXWEIGHT;
             }
         }
 
         private void SetUISubFrameGroupBoxState()
         {
-            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == eSubFrameNumericListsValid.VALID)
+            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == eValidation.VALID)
             {
                 RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
                 RadioButton_SetImageStatistics_RescaleWeights.Enabled = true;
@@ -1260,13 +1204,13 @@ namespace XisfFileManager
 
             eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
 
-            if (eSubFrameValidListsValid != eSubFrameNumericListsValid.VALID)
+            if (eSubFrameValidListsValid != eValidation.VALID)
             {
                 GroupBox_InitialRejectionCriteria.Enabled = false;
                 GroupBox_WeightCalculations.Enabled = false;
             }
 
-            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
+            if (eSubFrameValidListsValid == eValidation.VALID)
             {
                 // SubFrame data is valid
                 TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
@@ -1304,7 +1248,7 @@ namespace XisfFileManager
 
             if (mFileList.Count != 0)
             {
-                if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
+                if (eSubFrameValidListsValid == eValidation.VALID)
                 {
                     GroupBox_InitialRejectionCriteria.Enabled = true;
 
@@ -1333,7 +1277,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_KeepWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.KEEP_WEIGHTS;
+                XisfFileUpdate.Operation = eOperation.KEEP_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1342,7 +1286,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_RescaleWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.RESCALE_WEIGHTS;
+                XisfFileUpdate.Operation = eOperation.RESCALE_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1351,7 +1295,7 @@ namespace XisfFileManager
         {
             if (RadioButton_SetImageStatistics_CalculateWeights.Checked)
             {
-                XisfFileUpdate.Operation = XisfFileUpdate.eOperation.CALCULATED_WEIGHTS;
+                XisfFileUpdate.Operation = eOperation.CALCULATED_WEIGHTS;
                 SetUISubFrameGroupBoxState();
             }
         }
@@ -1398,8 +1342,8 @@ namespace XisfFileManager
 
         private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
         {
-            eSubFrameNumericListsValid valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != eSubFrameNumericListsValid.VALID)
+            eValidation valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != eValidation.VALID)
             {
                 return;
             }
@@ -1416,12 +1360,11 @@ namespace XisfFileManager
 
         private void UpdateWeightCalculations()
         {
-            eSubFrameNumericListsValid valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != eSubFrameNumericListsValid.VALID)
+            eValidation valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
+            if (valid != eValidation.VALID)
             {
                 return;
             }
-
 
             Label_FwhmMeanValue.Text = SubFrameNumericLists.Fwhm.Average().ToString("F2");
             Label_FwhmMedianValue.Text = SubFrameNumericLists.Fwhm.Median().ToString("F2");
@@ -1472,7 +1415,6 @@ namespace XisfFileManager
             Label_SnrSigmaValue.Text = SubFrameNumericLists.Snr.StandardDeviation().ToString("F2");
 
         }
-
 
         private void FindCaptureSoftware()
         {
@@ -1617,7 +1559,6 @@ namespace XisfFileManager
 
             FindCaptureSoftware();
         }
-
 
         private void RadioButton_KeywordTelescope_APM107_CheckedChanged(object sender, EventArgs e)
         {
@@ -1931,7 +1872,6 @@ namespace XisfFileManager
             FindTelescope();
         }
 
-
         private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
         {
             bool globalTelescope = false;
@@ -1972,7 +1912,6 @@ namespace XisfFileManager
             FindTelescope();
         }
 
-
         private void Button_KeywordImageTypeFrame_SetByFile_Click(object sender, EventArgs e)
         {
             bool globalFrameType = false;
@@ -1985,7 +1924,7 @@ namespace XisfFileManager
             {
                 if (globalFrameType)
                 {
-                    if (file.FrameType == eFrameType.EMPTY)
+                    if (file.FrameType == eFrame.EMPTY)
                         file.AddKeyword("IMAGETYP", frameTypeText, "XISF File Manager");
                 }
                 else
@@ -2461,28 +2400,28 @@ namespace XisfFileManager
             frameTypeCount = 0;
             foreach (XisfFile file in mFileList)
             {
-                if (file.FrameType == eFrameType.LIGHT)
+                if (file.FrameType == eFrame.LIGHT)
                 {
                     foundLight = true;
                     lightCount++;
                     frameTypeCount++;
                 }
 
-                if (file.FrameType == eFrameType.DARK)
+                if (file.FrameType == eFrame.DARK)
                 {
                     foundDark = true;
                     darkCount++;
                     frameTypeCount++;
                 }
 
-                if (file.FrameType == eFrameType.FLAT)
+                if (file.FrameType == eFrame.FLAT)
                 {
                     foundFlat = true;
                     flatCount++;
                     frameTypeCount++;
                 }
 
-                if (file.FrameType == eFrameType.BIAS)
+                if (file.FrameType == eFrame.BIAS)
                 {
                     foundBias = true;
                     biasCount++;
@@ -3511,7 +3450,6 @@ namespace XisfFileManager
             FindCamera();
         }
 
-
         private void Button_KeywordCamera_SetByFile_Click(object sender, EventArgs e)
         {
             bool status;
@@ -3896,7 +3834,6 @@ namespace XisfFileManager
             FindCamera();
         }
 
-
         private void Button_KeywordImageTypeFrame_SetMaster_Click(object sender, EventArgs e)
         {
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
@@ -4082,37 +4019,28 @@ namespace XisfFileManager
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
                 if (WeightKeywords.Count > 1)
-                {
                     Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
-                }
                 else
-                {
                     Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
-                }
 
                 if (WeightKeywords.Count > 0)
-                {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
-                }
-                return;
             }
-
-            return;
         }
 
         private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
         {
-            mFileType = DirectoryOps.FileType.ALL;
+            mFileType = eFile.ALL;
         }
 
         private void RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged(object sender, EventArgs e)
         {
-            mFileType = DirectoryOps.FileType.NO_MASTERS;
+            mFileType = eFile.NO_MASTERS;
         }
 
         private void RadioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
         {
-            mFileType = DirectoryOps.FileType.MASTERS;
+            mFileType = eFile.MASTERS;
         }
 
         private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
@@ -4120,7 +4048,7 @@ namespace XisfFileManager
             bool bMatchedAllFiles = false;
 
             TextBox_CalibrationTab_Messgaes.Clear();
-            mCalibration.Frame = DirectoryOps.FrameType.ALL;
+            mCalibration.Frame = eFrame.ALL;
 
             if (!bMatchedAllFiles)
                 mCalibration.FindLibraryCalibrationFrames(mFileList);
@@ -4248,6 +4176,10 @@ namespace XisfFileManager
 
                 file.RemoveKeyword("CBIAS");
                 file.CBIAS = string.Empty;
+
+                // No longer used
+                file.RemoveKeyword("CPANEL");
+                file.RemoveKeyword("CLIGHT");
             }
 
             mCalibration.ResetAll();
@@ -4350,31 +4282,6 @@ namespace XisfFileManager
             }
 
             RefreshComboBoxes();
-
-            /*
-            foreach (XisfFile file in mFileList)
-            {
-                bool bFound = false;
-
-                string foundItem = file.mKeywordList.mKeywordList.OfType<string>().FirstOrDefault(item => item == ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text);
-
-
-                foreach (var keyword in file.mKeywordList.mKeywordList.ToList())
-                {
-                    if (keyword.Name.Equals(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text))
-                    {
-                        keyword.Value = (object)ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text;
-                        file.AddKeyword(keyword.Name, keyword.Value, keyword.Comment);
-                        bFound = true;
-                    }
-                }
-
-                if (!bFound)
-                    file.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
-            }
-
-            RefreshComboBoxes();
-            */
         }
 
         private void RefreshComboBoxes()
@@ -4406,6 +4313,11 @@ namespace XisfFileManager
             {
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
+        }
+
+        private void ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

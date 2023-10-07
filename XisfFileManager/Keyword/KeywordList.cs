@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using XisfFileManager.Forms.UserInputForm;
 using static System.Windows.Forms.DataFormats;
+
+using XisfFileManager.Enums;
+
 /*
 public class Keywords
 {
@@ -1037,19 +1040,19 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public eFrameType FrameType
+        public eFrame FrameType
         {
             get
             {
                 object Object = GetKeywordValue("IMAGETYP");
                 if (Object != null)
                 {
-                    if (Object.ToString().ToLower().Contains("light")) return eFrameType.LIGHT;
-                    if (Object.ToString().ToLower().Contains("dark")) return eFrameType.DARK;
-                    if (Object.ToString().ToLower().Contains("flat")) return eFrameType.FLAT;
-                    if (Object.ToString().ToLower().Contains("bias")) return eFrameType.BIAS;
+                    if (Object.ToString().ToLower().Contains("light")) return eFrame.LIGHT;
+                    if (Object.ToString().ToLower().Contains("dark")) return eFrame.DARK;
+                    if (Object.ToString().ToLower().Contains("flat")) return eFrame.FLAT;
+                    if (Object.ToString().ToLower().Contains("bias")) return eFrame.BIAS;
                 }
-                return eFrameType.EMPTY;
+                return eFrame.EMPTY;
             }
 
             set

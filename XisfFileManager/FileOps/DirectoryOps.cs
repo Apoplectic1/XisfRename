@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using XisfFileManager.Enums;
+
 namespace XisfFileManager
 {
     public class DirectoryOps
@@ -11,14 +13,11 @@ namespace XisfFileManager
         private readonly List<string> mExceptionLog;
         private System.IO.FileInfo mFileInfo;
 
-        public enum CameraType { ALL, Z183, Z533, Q178, A144 }
-        public enum FileType { ALL, NO_MASTERS, MASTERS };
-        public enum FilterType { ALL, LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER }
-        public enum FrameType { ALL, LIGHT, DARK, FLAT, BIAS };
-        public CameraType Camera { get; set; } = CameraType.ALL;
-        public FileType File { get; set; } = FileType.NO_MASTERS;
-        public FilterType Filter { get; set; } = FilterType.ALL;
-        public FrameType Frame { get; set; } = FrameType.ALL;
+       
+        public eCamera Camera { get; set; } = eCamera.ALL;
+        public eFile File { get; set; } = eFile.NO_MASTERS;
+        public eFilter Filter { get; set; } = eFilter.ALL;
+        public eFrame Frame { get; set; } = eFrame.ALL;
         public List<System.IO.FileInfo> Files { get { return mFileList; } }
         public List<string> GetExceptions { get { return mExceptionLog; } }
         public void ClearFileList() { mFileList.Clear(); mExceptionLog.Clear(); }
@@ -106,21 +105,21 @@ namespace XisfFileManager
             return true;
         }
 
-        private void OnlyFileType(FileType fileType)
+        private void OnlyFileType(eFile fileType)
         {
             if (mFileInfo == null) return;
 
             switch (fileType)
             {
-                case FileType.ALL:
+                case eFile.ALL:
                     break;
 
-                case FileType.MASTERS:
+                case eFile.MASTERS:
                     if (!mFileInfo.Name.ToLower().Contains("master"))
                         mFileInfo = null;
                     break;
 
-                case FileType.NO_MASTERS:
+                case eFile.NO_MASTERS:
                     if (mFileInfo.Name.ToLower().Contains("master"))
                         mFileInfo = null;
                     break;
@@ -132,26 +131,26 @@ namespace XisfFileManager
             }
         }
 
-        private void OnlyCameraType(CameraType CameraType)
+        private void OnlyCameraType(eCamera CameraType)
         {
             if (mFileInfo == null) return;
 
             switch (CameraType)
             {
-                case CameraType.ALL:
+                case eCamera.ALL:
                     break;
 
-                case CameraType.Z183:
+                case eCamera.Z183:
                     if (!mFileInfo.Name.Contains("Z183"))
                         mFileInfo = null;
                     break;
 
-                case CameraType.Z533:
+                case eCamera.Z533:
                     if (!mFileInfo.Name.Contains("Z533"))
                         mFileInfo = null;
                     break;
 
-                case CameraType.A144:
+                case eCamera.A144:
                     if (!mFileInfo.Name.Contains("A144"))
                         mFileInfo = null;
                     break;
@@ -163,31 +162,31 @@ namespace XisfFileManager
             }
         }
 
-        private void OnlyFrameType(FrameType FrameType)
+        private void OnlyFrameType(eFrame frameType)
         {
             if (mFileInfo == null) return;
 
-            switch (FrameType)
+            switch (frameType)
             {
-                case FrameType.ALL:
+                case eFrame.ALL:
                     break;
 
-                case FrameType.DARK:
+                case eFrame.DARK:
                     if (!mFileInfo.Name.Contains("Dark"))
                         mFileInfo = null;
                     break;
 
-                case FrameType.LIGHT:
+                case eFrame.LIGHT:
                     if (!mFileInfo.Name.Contains("L-"))
                         mFileInfo = null;
                     break;
 
-                case FrameType.FLAT:
+                case eFrame.FLAT:
                     if (!mFileInfo.Name.Contains("F-"))
                         mFileInfo = null;
                     break;
 
-                case FrameType.BIAS:
+                case eFrame.BIAS:
                     if (!mFileInfo.Name.Contains("B-"))
                         mFileInfo = null;
                     break;
@@ -199,51 +198,51 @@ namespace XisfFileManager
             }
         }
 
-        private void OnlyFilterType(FilterType filterType)
+        private void OnlyFilterType(eFilter filterType)
         {
             if (mFileInfo == null) return;
 
             switch (filterType)
             {
-                case FilterType.ALL:
+                case eFilter.ALL:
                     break;
 
-                case FilterType.LUMA:
+                case eFilter.LUMA:
                     if (!mFileInfo.Name.Contains("Luma"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.RED:
+                case eFilter.RED:
                     if (!mFileInfo.Name.Contains("Red"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.GREEN:
+                case eFilter.GREEN:
                     if (!mFileInfo.Name.Contains("Green"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.BLUE:
+                case eFilter.BLUE:
                     if (!mFileInfo.Name.Contains("Blue"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.HA:
+                case eFilter.HA:
                     if (mFileInfo.Name.Contains("Ha"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.O3:
+                case eFilter.O3:
                     if (mFileInfo.Name.Contains("O3"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.S2:
+                case eFilter.S2:
                     if (mFileInfo.Name.Contains("S2"))
                         mFileInfo = null;
                     break;
 
-                case FilterType.SHUTTER:
+                case eFilter.SHUTTER:
                     if (mFileInfo.Name.Contains("Shutter"))
                         mFileInfo = null;
                     break;

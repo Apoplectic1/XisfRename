@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using XisfFileManager.Enums;
 
 namespace XisfFileManager.Keywords
 {
     public class SubFrame
     {
-        public enum eValidation { EMPTY, INVALD, VALID, MISMATCH }
         public List<Keyword> ApprovedList { get; set; }
         public List<Keyword> AirMassList { get; set; }
         public List<Keyword> Eccentricity { get; set; }

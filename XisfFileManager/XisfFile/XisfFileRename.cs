@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+
+using XisfFileManager.Enums;
 using XisfFileManager.FileOperations;
 
 namespace XisfFileManager.FileOperations
@@ -13,8 +15,8 @@ namespace XisfFileManager.FileOperations
         private int mDupIndex;
 
         public List<XisfFile> mFileList;
-        public enum OrderType { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }
-        public OrderType RenameOrder;
+       
+        public eOrder RenameOrder;
 
         private string RecurseDupFileName(string dupFileName)
         {
@@ -105,7 +107,7 @@ namespace XisfFileManager.FileOperations
         {
             string newName = string.Empty;
             string targetName;
-            eFrameType frameType;
+            eFrame frameType;
 
             if (mFile.Master)
             {
@@ -117,7 +119,7 @@ namespace XisfFileManager.FileOperations
                 {
                     //mFile.KeywordData.TotalFrames(true);
 
-                    if (mFile.FrameType == eFrameType.LIGHT)
+                    if (mFile.FrameType == eFrame.LIGHT)
                     {
                         newName = targetName + "  Integration  L-" + mFile.FilterName + "  ";
 
@@ -142,7 +144,7 @@ namespace XisfFileManager.FileOperations
                         newName += ")";
                     }
 
-                    if (frameType == eFrameType.DARK)
+                    if (frameType == eFrame.DARK)
                     {
                         newName += "Dark  " + mFile.CaptureDateTime.ToString("yyyy-MM-dd") + "  ";
 
@@ -155,7 +157,7 @@ namespace XisfFileManager.FileOperations
                         newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C";
                     }
 
-                    if (frameType == eFrameType.BIAS)
+                    if (frameType == eFrame.BIAS)
                     {
                         newName += "Bias  " + mFile.CaptureDateTime.ToString("yyyy-MM-dd") + "  ";
 
@@ -168,7 +170,7 @@ namespace XisfFileManager.FileOperations
                         newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C";
                     }
 
-                    if (frameType == eFrameType.FLAT)
+                    if (frameType == eFrame.FLAT)
                     {
                         newName += "Flat " + mFile.FilterName + "  " + mFile.CaptureDateTime.ToString("yyyy-MM-dd") + "  ";
 
@@ -219,7 +221,7 @@ namespace XisfFileManager.FileOperations
 
             // *************************************************************************************************************
 
-            if (mFile.FrameType == eFrameType.DARK)
+            if (mFile.FrameType == eFrame.DARK)
             {
                 newName = index.ToString("D3") + " ";
                 newName += " Dark  ";
@@ -234,7 +236,7 @@ namespace XisfFileManager.FileOperations
                 return newName;
             }
 
-            if (mFile.FrameType == eFrameType.BIAS)
+            if (mFile.FrameType == eFrame.BIAS)
             {
                 newName = index.ToString("D4") + " ";
                 newName += " Bias  ";
@@ -249,7 +251,7 @@ namespace XisfFileManager.FileOperations
                 return newName;
             }
 
-            if (mFile.FrameType == eFrameType.FLAT)
+            if (mFile.FrameType == eFrame.FLAT)
             {
                 newName = index.ToString("D3") + " ";
                 newName += " F-" + mFile.FilterName + "  ";
@@ -284,15 +286,15 @@ namespace XisfFileManager.FileOperations
                 return newName;
             }
 
-            if (mFile.FrameType == eFrameType.LIGHT)
+            if (mFile.FrameType == eFrame.LIGHT)
             {
                 switch (RenameOrder)
                 {
-                    case OrderType.INDEX:
+                    case eOrder.INDEX:
                         newName = index.ToString("D3") + " ";
                         break;
 
-                    case OrderType.INDEXWEIGHT:
+                    case eOrder.INDEXWEIGHT:
                         if (mFile.SSWeight < 0)
                         {
                             newName = index.ToString("D3") + " ";
@@ -302,7 +304,7 @@ namespace XisfFileManager.FileOperations
                             newName = index.ToString("D3") + " " + Convert.ToInt32(mFile.SSWeight * 1000.0).ToString("D4") + " ";
                         }
                         break;
-                    case OrderType.WEIGHT:
+                    case eOrder.WEIGHT:
                         if (Double.IsNaN(mFile.SSWeight))
                         {
                             newName = index.ToString("D3") + " ";
@@ -312,7 +314,7 @@ namespace XisfFileManager.FileOperations
                             newName = Convert.ToInt32(mFile.SSWeight * 1000.0).ToString("D4") + " ";
                         }
                         break;
-                    case OrderType.WEIGHTINDEX:
+                    case eOrder.WEIGHTINDEX:
                         if (Double.IsNaN(mFile.SSWeight))
                         {
                             newName = index.ToString("D3") + " ";

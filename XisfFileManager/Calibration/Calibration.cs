@@ -15,13 +15,14 @@ using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
 using static System.Net.WebRequestMethods;
 
+using XisfFileManager.Enums;
+
 namespace XisfFileManager
 {
     // ******************************************************************************************************************
     // ******************************************************************************************************************
     public class Calibration
     {
-        public enum CalibrationDirectory { LOCAL, LIBRARY }
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedDarkList;
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedFlatList;
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedPanelList;
@@ -40,9 +41,9 @@ namespace XisfFileManager
         //private TreeNode mDatesTree;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
-        public DirectoryOps.FileType File { get; set; } = DirectoryOps.FileType.MASTERS;
-        public DirectoryOps.FilterType Filter { get; set; } = DirectoryOps.FilterType.ALL;
-        public DirectoryOps.FrameType Frame { get; set; } = DirectoryOps.FrameType.ALL;
+        public eFile File { get; set; } = eFile.MASTERS;
+        public eFilter Filter { get; set; } = eFilter.ALL;
+        public eFrame Frame { get; set; } = eFrame.ALL;
         public bool Recurse { get; set; } = true;
         public double ExposureTolerance { get; set; } = 10;
         public double FocuserTolerance { get; set; } = 10000;
@@ -80,9 +81,9 @@ namespace XisfFileManager
         public void ResetAll()
         {
             ExposureTolerance = 10;
-            File = DirectoryOps.FileType.MASTERS;
-            Filter = DirectoryOps.FilterType.ALL;
-            Frame = DirectoryOps.FrameType.ALL;
+            File = eFile.MASTERS;
+            Filter = eFilter.ALL;
+            Frame = eFrame.ALL;
             GainTolerance = 10;
             OffsetTolerance = 10;
             TemperatureTolerance = 25;
@@ -99,7 +100,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private async Task ReadCalibrationFramesAsync(Calibration.CalibrationDirectory location, string sCalibrationFrameDirectory)
+        private async Task ReadCalibrationFramesAsync(eCalibrationDirectory location, string sCalibrationFrameDirectory)
         {
             // Recursively search sCalibrationFrameDirectory to find calibration frames
             // Add the frames to either mLocalCalibrationFileList or mLibraryCalibrationFileList
@@ -107,7 +108,7 @@ namespace XisfFileManager
             List<XisfFile> calibrationFileList = new List<XisfFile>();
             XisfFileReader fileReader = new XisfFileReader();
 
-            mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
+            mCalibrationTabValues.MessageMode = eMessageMode.CLEAR;
             mCalibrationTabValues.Progress = 0;
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
@@ -171,7 +172,7 @@ namespace XisfFileManager
 
             calibrationFileList.Sort(XisfFile.CaptureTimeComparison);
 
-            if (location == CalibrationDirectory.LIBRARY)
+            if (location == eCalibrationDirectory.LIBRARY)
                 mLibraryCalibrationFileList = calibrationFileList.Distinct().ToList();
             else
                 mLocalCalibrationFileList = calibrationFileList.Distinct().ToList();
@@ -182,7 +183,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private XisfFile MatchNearestCalibrationFile(eFrameType calibrationFrameMatchType, XisfFile targetFile, List<XisfFile> calibrationFileList)
+        private XisfFile MatchNearestCalibrationFile(eFrame calibrationFrameMatchType, XisfFile targetFile, List<XisfFile> calibrationFileList)
         {
             // This routine gets called twice for each target frame
             // The first time the this is used to build non-unique (meaning to find all) lists of target matching calibration files
@@ -196,16 +197,16 @@ namespace XisfFileManager
             // To Do
             // Add code to inform user of how close the match was for each appropriate match parameter (the ones with margins)
 
-            bool bIgnoreFilter = calibrationFrameMatchType == eFrameType.DARK;
-            bool bIgnoreExposure = calibrationFrameMatchType == eFrameType.FLAT || calibrationFrameMatchType == eFrameType.BIAS;
-            bool bIgnoreRotator = calibrationFrameMatchType == eFrameType.DARK || calibrationFrameMatchType == eFrameType.BIAS;
-            bool bIgnoreFocuser = calibrationFrameMatchType == eFrameType.DARK || calibrationFrameMatchType == eFrameType.BIAS;
+            bool bIgnoreFilter = calibrationFrameMatchType == eFrame.DARK;
+            bool bIgnoreExposure = calibrationFrameMatchType == eFrame.FLAT || calibrationFrameMatchType == eFrame.BIAS;
+            bool bIgnoreRotator = calibrationFrameMatchType == eFrame.DARK || calibrationFrameMatchType == eFrame.BIAS;
+            bool bIgnoreFocuser = calibrationFrameMatchType == eFrame.DARK || calibrationFrameMatchType == eFrame.BIAS;
 
             // Return a list of all calibration files that match the target file camera
             List<XisfFile> CameraList = calibrationFileList.Where(camera => camera.Camera == targetFile.Camera).ToList();
             if (CameraList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Camera for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -215,7 +216,7 @@ namespace XisfFileManager
             List<XisfFile> FrameTypeList = CameraList.Where(frameType => frameType.FrameType == calibrationFrameMatchType).ToList();
             if (FrameTypeList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " FrameType for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -225,7 +226,7 @@ namespace XisfFileManager
             List<XisfFile> BinningList = FrameTypeList.Where(binning => binning.Binning == targetFile.Binning).ToList();
             if (BinningList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Binning for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -236,7 +237,7 @@ namespace XisfFileManager
             List<XisfFile> FilterList = bIgnoreFilter ? BinningList : BinningList.Where(filter => filter.FilterName == targetFile.FilterName).ToList();
             if (FilterList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Filter for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -246,7 +247,7 @@ namespace XisfFileManager
             List<XisfFile> GainList = FilterList.Where(gain => Math.Abs(gain.Gain - targetFile.Gain) <= GainTolerance).ToList();
             if (GainList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Gain for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -256,7 +257,7 @@ namespace XisfFileManager
             List<XisfFile> OffsetList = GainList.Where(offset => Math.Abs(offset.Offset - targetFile.Offset) <= OffsetTolerance).ToList();
             if (OffsetList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Offset for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -268,7 +269,7 @@ namespace XisfFileManager
             if (FocuserList.Count == 0) FocuserList.AddRange(OffsetList); // Deal with old Masters that don't incude the Focus position
             if (FocuserList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Focus Position for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -280,7 +281,7 @@ namespace XisfFileManager
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
             if (RotatorList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Rotator Position for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -290,7 +291,7 @@ namespace XisfFileManager
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
             if (TemperatureList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Temperature for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -312,7 +313,7 @@ namespace XisfFileManager
             }
             if (ExposureToleranceList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Exposure for:\r\n    " + targetFile.FilePath + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -342,22 +343,22 @@ namespace XisfFileManager
                 // Yes - so see if it's empty
                 if (Directory.GetFileSystemEntries(localCalibrationDirectory).Length != 0)
                     // It has calibration files so build a list of existing Calibration Frames
-                    _ = ReadCalibrationFramesAsync(CalibrationDirectory.LOCAL, localCalibrationDirectory);
+                    _ = ReadCalibrationFramesAsync(eCalibrationDirectory.LOCAL, localCalibrationDirectory);
 
                 if (mLocalCalibrationFileList.Count != 0)
                 {
                     // So we found valid calibration files 
                     // Check to see if they still match the LIGHT frames
 
-                    bAllExistingDarksMatched = MatchCalibrationDarkFrames(CalibrationDirectory.LOCAL, mLocalCalibrationFileList, bSilent);
+                    bAllExistingDarksMatched = MatchCalibrationDarkFrames(eCalibrationDirectory.LOCAL, mLocalCalibrationFileList, bSilent);
 
                     // If all target frames have corresponding Darks and Flats, let us know and return true
                     if (bAllExistingDarksMatched && bAllExistingFlatsMatched)
                     {
-                        mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.CLEAR;
+                        mCalibrationTabValues.MessageMode = eMessageMode.CLEAR;
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
-                        mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                        mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                         mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count();
                         mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            All Target Frames Match Existing Target Capture Directory Calibration Files\r\n";
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
@@ -372,14 +373,14 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private bool MatchCalibrationDarkFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
+        private bool MatchCalibrationDarkFrames(eCalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
         {
             int errorMessageLimit = 4;
             bool bAllDarksMatched = true;
 
             if (targetFrameList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            MatchCalibrationDarkFrames: No Target Frames Found\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return false;
@@ -390,17 +391,17 @@ namespace XisfFileManager
             // Now we add to mDarkDictionary for all the Dark calibration files that match/do not match the target
             foreach (var targetFile in mUnmatchedDarkTargetFileList)
             {
-                if (location == CalibrationDirectory.LIBRARY)
-                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrameType.DARK, targetFile, mLibraryCalibrationFileList)));
+                if (location == eCalibrationDirectory.LIBRARY)
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrame.DARK, targetFile, mLibraryCalibrationFileList)));
                 else
-                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrameType.DARK, targetFile, mLocalCalibrationFileList)));
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrame.DARK, targetFile, mLocalCalibrationFileList)));
 
 
                 if (mMatchedDarkList[mMatchedDarkList.Count - 1].CalibrationFile == null && errorMessageLimit > 0)
                 {
                     if (!bSilent)
                     {
-                        mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                        mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                         mCalibrationTabValues.MatchCalibrationMessage = "No matching Dark for target frame:\r\n" + targetFile.FilePath + "\r\n";
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                     }
@@ -414,14 +415,14 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        private bool MatchCalibrationFlatFrames(CalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
+        private bool MatchCalibrationFlatFrames(eCalibrationDirectory location, List<XisfFile> targetFrameList, bool bSilent)
         {
             int errorMessageLimit = 4;
             bool bAllFlatsMatched = true;
 
             if (targetFrameList.Count == 0)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            MatchCalibrationFlatFrames: No Target Frames Found\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return false;
@@ -432,14 +433,14 @@ namespace XisfFileManager
             // Now we add to mFlatDictionary for all the Flat calibration files that match/do not match the target
             foreach (var targetFile in mUnmatchedFlatTargetFileList)
             {
-                if (location == CalibrationDirectory.LIBRARY)
-                    mMatchedFlatList.Add((targetFile, MatchNearestCalibrationFile(eFrameType.FLAT, targetFile, mLibraryCalibrationFileList)));
+                if (location == eCalibrationDirectory.LIBRARY)
+                    mMatchedFlatList.Add((targetFile, MatchNearestCalibrationFile(eFrame.FLAT, targetFile, mLibraryCalibrationFileList)));
                 else
-                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrameType.FLAT, targetFile, mLocalCalibrationFileList)));
+                    mMatchedDarkList.Add((targetFile, MatchNearestCalibrationFile(eFrame.FLAT, targetFile, mLocalCalibrationFileList)));
 
                 if (mMatchedFlatList[mMatchedFlatList.Count - 1].CalibrationFile == null && errorMessageLimit > 0)
                 {
-                    mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                    mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                     mCalibrationTabValues.MatchCalibrationMessage = "No matching Flat for target frame:\r\n" + targetFile.FilePath + "\r\n";
                     CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                     bAllFlatsMatched = false;
@@ -455,7 +456,7 @@ namespace XisfFileManager
         public bool FindLibraryCalibrationFrames(List<XisfFile> targetFileList)
         {
             //ReadCalibrationFrames(CalibrationDirectory.LIBRARY, @"D:\Temp\CalibrationLibrary");
-            _ = ReadCalibrationFramesAsync(CalibrationDirectory.LIBRARY, @"E:\Photography\Astro Photography\Calibration");
+            _ = ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, @"E:\Photography\Astro Photography\Calibration");
 
             return MatchCalibrationLibraryFrames(targetFileList);
         }
@@ -491,7 +492,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing DARK calibration file will be flagged later
 
-            bool bAllDarksMatched = MatchCalibrationDarkFrames(CalibrationDirectory.LIBRARY, mUnmatchedDarkTargetFileList, false);
+            bool bAllDarksMatched = MatchCalibrationDarkFrames(eCalibrationDirectory.LIBRARY, mUnmatchedDarkTargetFileList, false);
 
             mUniqueDarkCalibrationFileList = mMatchedDarkList.Select(item => item.CalibrationFile).Distinct().ToList();
 
@@ -506,7 +507,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing FLAT calibration file will be flagged later
 
-            bool bAllFlatsMatched = MatchCalibrationFlatFrames(CalibrationDirectory.LIBRARY, mUnmatchedFlatTargetFileList, false);
+            bool bAllFlatsMatched = MatchCalibrationFlatFrames(eCalibrationDirectory.LIBRARY, mUnmatchedFlatTargetFileList, false);
 
             mUniqueFlatCalibrationFileList = mMatchedFlatList.Select(item => item.CalibrationFile).Distinct().ToList();
 
@@ -634,7 +635,7 @@ namespace XisfFileManager
 
             if (bAllDarksMatched && bAllFlatsMatched)
             {
-                mCalibrationTabValues.MessageMode = CalibrationTabPageValues.eMessageMode.APPEND;
+                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 if (mCalibrationTabValues.TotalMatchedCalibrationFiles == 0)
                 {
                     mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count();

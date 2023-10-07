@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using XisfFileManager.Keywords;
+using XisfFileManager.Enums;
 
 namespace XisfFileManager.Calculations
 {
     public class SubFrameNumericLists
     {
-        public enum eSubFrameNumericListsValid { EMPTY, INVALD, VALID, MISMATCH }
+        
 
         public List<double> AirMass { get; set; }
         public double AirMassScaled { get; private set; }
@@ -136,7 +137,7 @@ namespace XisfFileManager.Calculations
             Weight.Clear();
         }
 
-        public eSubFrameNumericListsValid ValidatenumericLists(int SubFrameCount)
+        public eValidation ValidatenumericLists(int SubFrameCount)
         {
             bool bStatus = true;
             bool bZero = true;
@@ -147,7 +148,7 @@ namespace XisfFileManager.Calculations
 
             if (bZero)
             {
-                return eSubFrameNumericListsValid.EMPTY;
+                return eValidation.EMPTY;
             }
 
             bStatus = FileName.Count == SubFrameCount ? bStatus : false;
@@ -216,17 +217,17 @@ namespace XisfFileManager.Calculations
 
             if (!bFileExists)
             {
-                return eSubFrameNumericListsValid.MISMATCH;
+                return eValidation.MISMATCH;
             }
 
             if (bZero)
-                return eSubFrameNumericListsValid.EMPTY;
+                return eValidation.EMPTY;
             else
             {
                 if (bStatus)
-                    return eSubFrameNumericListsValid.VALID;
+                    return eValidation.VALID;
                 else
-                    return eSubFrameNumericListsValid.INVALD;
+                    return eValidation.INVALD;
             }
         }
 

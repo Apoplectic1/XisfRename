@@ -21,7 +21,7 @@ namespace XisfFileManager.FileOperations
         private Match keywordBlock;
         private string keywordMatch = @"<xisf.*?</xisf>";
         private string modifiedString;
-        private enum eField { Master, FrameType, Filter, Date, Exposure, Binning, Frames, Camera, Gain, Offet, SensorTemp, Telescope, FocalLength, Algorithim, Software }
+       
 
         public Task ReadXisfFile(XisfFile xFile)
         {

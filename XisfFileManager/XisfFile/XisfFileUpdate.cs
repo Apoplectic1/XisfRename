@@ -12,11 +12,13 @@ using System.Xml.Linq;
 using XisfFileManager.Calculations;
 using XisfFileManager.Keywords;
 
+using XisfFileManager.Enums;
+
 namespace XisfFileManager.FileOperations
 {
     public static class XisfFileUpdate
     {
-        public enum eOperation { NEW_WEIGHTS, KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
+        
         public static eOperation Operation { get; set; } = eOperation.KEEP_WEIGHTS;
         public static Buffer mBuffer;
         public static List<Buffer> mBufferList;
@@ -110,7 +112,7 @@ namespace XisfFileManager.FileOperations
                     // Add header (includes binary and string portions) up the start of "<xisf version"
                     mBuffer = new Buffer
                     {
-                        Type = Buffer.TypeEnum.ASCII,
+                        Type = eBufferData.ASCII,
                         AsciiData = "XISF0100"
                     };
                     mBufferList.Add(mBuffer);
@@ -118,7 +120,7 @@ namespace XisfFileManager.FileOperations
                     // Write length (filled out later) and reserved bytes as 0's
                     mBuffer = new Buffer
                     {
-                        Type = Buffer.TypeEnum.ZEROS,
+                        Type = eBufferData.ZEROS,
                         BinaryByteLength = 8
                     };
                     mBufferList.Add(mBuffer);
@@ -126,7 +128,7 @@ namespace XisfFileManager.FileOperations
                     // Add the newly replaced XML ascii potortion to the buffer list 
                     mBuffer = new Buffer
                     {
-                        Type = Buffer.TypeEnum.ASCII,
+                        Type = eBufferData.ASCII,
                         AsciiData = xisfString
                     };
                     mBufferList.Add(mBuffer);
@@ -134,7 +136,7 @@ namespace XisfFileManager.FileOperations
                     // Pad from current position to the start of image data
                     mBuffer = new Buffer
                     {
-                        Type = Buffer.TypeEnum.ZEROS,
+                        Type = eBufferData.ZEROS,
                         BinaryByteLength = xFile.ImageAttachmentStartPadding
                     };
                     mBufferList.Add(mBuffer);
@@ -142,7 +144,7 @@ namespace XisfFileManager.FileOperations
                     // Add the binary image data from rawFileData after padding
                     mBuffer = new Buffer
                     {
-                        Type = Buffer.TypeEnum.BINARY,
+                        Type = eBufferData.BINARY,
                         BinaryDataStart = xFile.ImageAttachmentStart,
                         BinaryByteLength = xFile.ImageAttachmentLength,
                         BinaryData = rawFileData
@@ -154,7 +156,7 @@ namespace XisfFileManager.FileOperations
                         // Pad from current position to the start of the thumbnail image data
                         mBuffer = new Buffer
                         {
-                            Type = Buffer.TypeEnum.ZEROS,
+                            Type = eBufferData.ZEROS,
                             BinaryByteLength = xFile.ThumbnailAttachmentStartPadding
                         };
                         mBufferList.Add(mBuffer);
@@ -162,7 +164,7 @@ namespace XisfFileManager.FileOperations
                         // Add the binary thumbnail image data from rawFileData after image data and padding
                         mBuffer = new Buffer
                         {
-                            Type = Buffer.TypeEnum.BINARY,
+                            Type = eBufferData.BINARY,
                             BinaryDataStart = xFile.ThumbnailAttachmentStart,
                             BinaryByteLength = xFile.ThumbnailAttachmentLength,
                             BinaryData = rawFileData
@@ -388,22 +390,22 @@ namespace XisfFileManager.FileOperations
 
                             switch (buffer.Type)
                             {
-                                case Buffer.TypeEnum.ASCII:
+                                case eBufferData.ASCII:
                                     binaryWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
                                     break;
 
-                                case Buffer.TypeEnum.BINARY:
+                                case eBufferData.BINARY:
                                     binaryWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
                                     break;
 
-                                case Buffer.TypeEnum.ZEROS:
+                                case eBufferData.ZEROS:
                                     for (int i = (int)position; i < buffer.BinaryByteLength + position; i++)
                                     {
                                         binaryWriter.Write(zero, 0, 1);
                                     }
                                     break;
 
-                                case Buffer.TypeEnum.POSITION:
+                                case eBufferData.POSITION:
                                     if ((int)position > buffer.ToPosition)
                                     {
                                         string title = "WriteBinaryFile(string fileName) POSITION Error";

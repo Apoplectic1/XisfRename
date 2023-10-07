@@ -3,6 +3,8 @@ using MathNet.Numerics.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using XisfFileManager.Enums;
 using XisfFileManager.FileOperations;
 
 namespace XisfFileManager.Calculations
@@ -43,9 +45,9 @@ namespace XisfFileManager.Calculations
         public void BuildImageParameterValueLists(XisfFile xFile)
         {
 
-            eFrameType imageType = xFile.FrameType;
+            eFrame imageType = xFile.FrameType;
 
-            if (imageType == eFrameType.LIGHT)
+            if (imageType == eFrame.LIGHT)
             {
                 int focusPosition = xFile.FocuserPosition;
                 double focusTemperature = xFile.FocuserTemperature;

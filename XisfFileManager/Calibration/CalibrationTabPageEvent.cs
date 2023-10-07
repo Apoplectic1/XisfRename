@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using XisfFileManager.Enums;
+
 namespace XisfFileManager
 {
     public class CalibrationTabPageValues
     {
-        public enum eMessageMode { CLEAR, APPEND, NEW, KEEP }
+        
         public eMessageMode MessageMode { get; set; } = eMessageMode.KEEP;
         public string FileName { get; set; }
         public int Progress { get; set; }

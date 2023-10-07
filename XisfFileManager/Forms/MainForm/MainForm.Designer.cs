@@ -38,7 +38,7 @@
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX = new System.Windows.Forms.RadioButton();
             GroupBox_KeywordUpdateTab_Telescope = new System.Windows.Forms.GroupBox();
-            TextBox_KeywordUpdateTab_Telescope_FocalLength = new System.Windows.Forms.TextBox();
+            TextBox_KeywordUpdateTab_Telescope_FocalLength = new System.Windows.Forms.ComboBox();
             Label_KeywordUpdateTab_Telescope_FocalLength = new System.Windows.Forms.Label();
             Button_KeywordUpdateTab_Telescope_SetByFile = new System.Windows.Forms.Button();
             Button_KeywordUpdateTab_Telescope_SetAll = new System.Windows.Forms.Button();
@@ -494,17 +494,16 @@
             // 
             // TextBox_KeywordUpdateTab_Telescope_FocalLength
             // 
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(37, 142);
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.FormattingEnabled = true;
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(39, 139);
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Name = "TextBox_KeywordUpdateTab_Telescope_FocalLength";
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(51, 23);
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(67, 23);
             TextBox_KeywordUpdateTab_Telescope_FocalLength.TabIndex = 19;
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Label_KeywordUpdateTab_Telescope_FocalLength
             // 
             Label_KeywordUpdateTab_Telescope_FocalLength.AutoSize = true;
-            Label_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(99, 147);
+            Label_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(110, 143);
             Label_KeywordUpdateTab_Telescope_FocalLength.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_Telescope_FocalLength.Name = "Label_KeywordUpdateTab_Telescope_FocalLength";
             Label_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(75, 15);
@@ -1246,7 +1245,7 @@
             GroupBox_SubFrameKeywords_CalibrationFiles.Size = new System.Drawing.Size(252, 53);
             GroupBox_SubFrameKeywords_CalibrationFiles.TabIndex = 25;
             GroupBox_SubFrameKeywords_CalibrationFiles.TabStop = false;
-            GroupBox_SubFrameKeywords_CalibrationFiles.Text = "Calibration Files";
+            GroupBox_SubFrameKeywords_CalibrationFiles.Text = "Calibration Files and Keywords";
             // 
             // Button_SubFrameKeywords_CalibrationFiles_ClearAll
             // 
@@ -1255,7 +1254,7 @@
             Button_SubFrameKeywords_CalibrationFiles_ClearAll.Name = "Button_SubFrameKeywords_CalibrationFiles_ClearAll";
             Button_SubFrameKeywords_CalibrationFiles_ClearAll.Size = new System.Drawing.Size(168, 27);
             Button_SubFrameKeywords_CalibrationFiles_ClearAll.TabIndex = 0;
-            Button_SubFrameKeywords_CalibrationFiles_ClearAll.Text = "Clear All Calibration Data";
+            Button_SubFrameKeywords_CalibrationFiles_ClearAll.Text = "Delete All Calibration Data";
             Button_SubFrameKeywords_CalibrationFiles_ClearAll.UseVisualStyleBackColor = true;
             Button_SubFrameKeywords_CalibrationFiles_ClearAll.Click += Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click;
             // 
@@ -1356,7 +1355,7 @@
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove
             // 
-            Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Location = new System.Drawing.Point(43, 92);
+            Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Location = new System.Drawing.Point(41, 92);
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove";
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Size = new System.Drawing.Size(88, 27);
@@ -1392,7 +1391,7 @@
             // Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords
             // 
             Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.AutoSize = true;
-            Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(34, 28);
+            Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(36, 42);
             Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Name = "Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords";
             Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(99, 15);
@@ -1402,12 +1401,13 @@
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords
             // 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.FormattingEnabled = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(16, 55);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Location = new System.Drawing.Point(15, 64);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(140, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Sorted = true;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 5;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndexChanged += ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords_SelectedIndexChanged;
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Delete
             // 
@@ -1446,7 +1446,7 @@
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName
             // 
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.AutoSize = true;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(44, 128);
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(41, 82);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(134, 19);
@@ -1456,7 +1456,7 @@
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords
             // 
-            Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Location = new System.Drawing.Point(14, 90);
+            Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Location = new System.Drawing.Point(14, 125);
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Name = "Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords";
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords.Size = new System.Drawing.Size(195, 27);
@@ -1469,7 +1469,7 @@
             // 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.AllowDrop = true;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.FormattingEnabled = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Location = new System.Drawing.Point(14, 54);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Location = new System.Drawing.Point(11, 54);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Size = new System.Drawing.Size(194, 23);
@@ -1480,7 +1480,7 @@
             // 
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.AllowDrop = true;
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.AutoSize = true;
-            Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Location = new System.Drawing.Point(71, 28);
+            Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Location = new System.Drawing.Point(71, 33);
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Name = "Label_KeywordUpdateTab_SubFrameKeywords_TagetName";
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Size = new System.Drawing.Size(74, 15);
@@ -4229,7 +4229,6 @@
         private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_SetAll;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_Camera_SetByFile;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_Camera_SetAll;
-        private System.Windows.Forms.TextBox TextBox_KeywordUpdateTab_Telescope_FocalLength;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Telescope_FocalLength;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_Frame_SetMaster;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Camera;
@@ -4334,5 +4333,6 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTime;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection;
         private System.Windows.Forms.CheckBox CheckBox_FileSlection_NoTotals;
+        private System.Windows.Forms.ComboBox TextBox_KeywordUpdateTab_Telescope_FocalLength;
     }
 }

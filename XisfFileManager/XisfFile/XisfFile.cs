@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
+using XisfFileManager.Enums;
+
 namespace XisfFileManager.FileOperations
 {
     public class XisfFile
@@ -124,7 +126,7 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.FocuserTemperature; }
             set { mKeywordList.FocuserTemperature = value; }
         }
-        public eFrameType FrameType
+        public eFrame FrameType
         {
             get { return mKeywordList.FrameType; }
             set { mKeywordList.AddKeyword("IMAGETYP", value); }
