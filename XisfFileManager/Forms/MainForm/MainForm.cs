@@ -17,6 +17,8 @@ using System.Threading;
 
 using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using System.Diagnostics.Metrics;
 
 namespace XisfFileManager
 {
@@ -569,186 +571,217 @@ namespace XisfFileManager
 
             mDirectoryProperties.SetDirectoryStatistics(xFileList);
 
+            bool hasCamera = false;
+            bool hasPanel = false;
+
             // Iterate through each Target, Camera and associated Panels
             foreach (var targetGroup in mDirectoryProperties.TargetGroup())
             {
                 string targetDirectory = targetGroup.Key;
-                
+
                 foreach (var cameraGroup in mDirectoryProperties.CameraGroup())
                 {
                     string cameraDirectory = cameraGroup.Key;
+
+                    var camera = cameraGroup;
+                    if (!hasCamera)
+                    {
+                        camera = targetGroup;
+                    }
+
+                    int Ha = mDirectoryProperties.FilterInGroup("Ha", mDirectoryProperties.LightsGroup()).Count();
 
                     foreach (var panelGroup in mDirectoryProperties.PanelGroup())
                     {
                         string panelDirectory = panelGroup.Key;
 
-                        //int Ha = mDirectoryProperties.FilterInGroup("Ha", mDirectoryProperties.LightsGroup).Count();
+                        var panel = panelGroup;
+
+                        if (!hasPanel)
+                        {
+                            panel = cameraGroup;
+                        }
+
+                        var HaGroup = mDirectoryProperties.FilterInGroup("Ha", mDirectoryProperties.LightsGroup());
+                        foreach (var group in HaGroup)
+                        {
+                            string key = group.Key; // The key (e.g., "Ha")
+                            int count = group.Count(); // The count of elements in this group
+                        }
+            
+
+
+
+
+
+
+
 
                         //foreach(var lightGroup in mDirectoryProperties.LightsGroup)
                         //{
-                            
+
                         //}
 
                         //foreach(var starsGroup in mDirectoryProperties.StarsGroup)
                         //{
 
                         //}
-                        
-                      /*
+
+                        /*
 
 
-                        List<IEnumerable<XisfFile>> queryList = new List<IEnumerable<XisfFile>>();
-                        queryList.Add(lightsQuery);
-                        queryList.Add(starsQuery);
+                          List<IEnumerable<XisfFile>> queryList = new List<IEnumerable<XisfFile>>();
+                          queryList.Add(lightsQuery);
+                          queryList.Add(starsQuery);
 
-                        if (bNight)
-                        {
-                            foreach (var query in queryList)
-                            {
-                                // Number files using the existing subdirectory structure under TARGET/Capture starting at 1 for each night
-                                List<string> nightlist = new List<string>();
+                          if (bNight)
+                          {
+                              foreach (var query in queryList)
+                              {
+                                  // Number files using the existing subdirectory structure under TARGET/Capture starting at 1 for each night
+                                  List<string> nightlist = new List<string>();
 
-                                foreach (XisfFile xFile in query)
-                                {
-                                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xFile.FilePath);
-                                    nightlist.Add(fileNameWithoutExtension);
-                                }
+                                  foreach (XisfFile xFile in query)
+                                  {
+                                      string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(xFile.FilePath);
+                                      nightlist.Add(fileNameWithoutExtension);
+                                  }
 
-                                foreach (string night in nightlist)
-                                {
-                                    // Take a look at the Unique test. Files should already be unique?
-                                    int index = 0;
-                                    int lumaIndex = 0;
-                                    int redIndex = 0;
-                                    int greenIndex = 0;
-                                    int blueIndex = 0;
-                                    int haIndex = 0;
-                                    int o3Index = 0;
-                                    int s2Index = 0;
-                                    int shutterIndex = 0;
+                                  foreach (string night in nightlist)
+                                  {
+                                      // Take a look at the Unique test. Files should already be unique?
+                                      int index = 0;
+                                      int lumaIndex = 0;
+                                      int redIndex = 0;
+                                      int greenIndex = 0;
+                                      int blueIndex = 0;
+                                      int haIndex = 0;
+                                      int o3Index = 0;
+                                      int s2Index = 0;
+                                      int shutterIndex = 0;
 
-                                    foreach (XisfFile xFile in query)
-                                    {
-                                        if (!xFile.FilePath.Contains(night))
-                                            continue;
+                                      foreach (XisfFile xFile in query)
+                                      {
+                                          if (!xFile.FilePath.Contains(night))
+                                              continue;
 
-                                        if (bFilter)
-                                        {
-                                            int fileIndex = xFile.Index;
+                                          if (bFilter)
+                                          {
+                                              int fileIndex = xFile.Index;
 
-                                            if (xFile.FilterName.Equals("Luma"))
-                                                xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+                                              if (xFile.FilterName.Equals("Luma"))
+                                                  xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
 
-                                            if (xFile.FilterName.Equals("Red"))
-                                                xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+                                              if (xFile.FilterName.Equals("Red"))
+                                                  xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
 
-                                            if (xFile.FilterName.Equals("Green"))
-                                                xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+                                              if (xFile.FilterName.Equals("Green"))
+                                                  xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
 
-                                            if (xFile.FilterName.Equals("Blue"))
-                                                xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+                                              if (xFile.FilterName.Equals("Blue"))
+                                                  xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
 
-                                            if (xFile.FilterName.Equals("Ha"))
-                                                xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+                                              if (xFile.FilterName.Equals("Ha"))
+                                                  xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
 
-                                            if (xFile.FilterName.Equals("O3"))
-                                                xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+                                              if (xFile.FilterName.Equals("O3"))
+                                                  xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
 
-                                            if (xFile.FilterName.Equals("S2"))
-                                                xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+                                              if (xFile.FilterName.Equals("S2"))
+                                                  xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
 
-                                            if (xFile.FilterName.Equals("Shutter"))
-                                                xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+                                              if (xFile.FilterName.Equals("Shutter"))
+                                                  xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
 
-                                            if (fileIndex == xFile.Index)
-                                            {
-                                                DialogResult result = MessageBox.Show(
-                                                "No Filter in source file:\n" + xFile.FilePath +
-                                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                                "File Update Failed",
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Error);
-                                                Environment.Exit(-1);
-                                            }
-                                        }
+                                              if (fileIndex == xFile.Index)
+                                              {
+                                                  DialogResult result = MessageBox.Show(
+                                                  "No Filter in source file:\n" + xFile.FilePath +
+                                                  "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                                  "File Update Failed",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Error);
+                                                  Environment.Exit(-1);
+                                              }
+                                          }
 
-                                        if (bTime)
-                                        {
-                                            // This works because fileList is already sorted by Time
-                                            xFile.Index = (xFile.Unique) ? ++index : index++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                      
+                                          if (bTime)
+                                          {
+                                              // This works because fileList is already sorted by Time
+                                              xFile.Index = (xFile.Unique) ? ++index : index++;
+                                          }
+                                      }
+                                  }
+                              }
+                          }
 
-                        if (bTarget)
-                        {
-                            foreach (var query in queryList)
-                            {
-                                // Take a look at the Unique test. Files should already be unique? They have to have unique names but could contain identicle Keywords? 
-                                int lightsIndex = 0;
-                                int lumaIndex = 0;
-                                int redIndex = 0;
-                                int greenIndex = 0;
-                                int blueIndex = 0;
-                                int haIndex = 0;
-                                int o3Index = 0;
-                                int s2Index = 0;
-                                int shutterIndex = 0;
 
-                                foreach (XisfFile xFile in query)
-                                {
-                                    if (bFilter)
-                                    {
-                                        int fileIndex = xFile.Index;
+                          if (bTarget)
+                          {
+                              foreach (var query in queryList)
+                              {
+                                  // Take a look at the Unique test. Files should already be unique? They have to have unique names but could contain identicle Keywords? 
+                                  int lightsIndex = 0;
+                                  int lumaIndex = 0;
+                                  int redIndex = 0;
+                                  int greenIndex = 0;
+                                  int blueIndex = 0;
+                                  int haIndex = 0;
+                                  int o3Index = 0;
+                                  int s2Index = 0;
+                                  int shutterIndex = 0;
 
-                                        if (xFile.FilterName.Equals("Luma"))
-                                            xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+                                  foreach (XisfFile xFile in query)
+                                  {
+                                      if (bFilter)
+                                      {
+                                          int fileIndex = xFile.Index;
 
-                                        if (xFile.FilterName.Equals("Red"))
-                                            xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+                                          if (xFile.FilterName.Equals("Luma"))
+                                              xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
 
-                                        if (xFile.FilterName.Equals("Green"))
-                                            xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+                                          if (xFile.FilterName.Equals("Red"))
+                                              xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
 
-                                        if (xFile.FilterName.Equals("Blue"))
-                                            xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+                                          if (xFile.FilterName.Equals("Green"))
+                                              xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
 
-                                        if (xFile.FilterName.Equals("Ha"))
-                                            xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+                                          if (xFile.FilterName.Equals("Blue"))
+                                              xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
 
-                                        if (xFile.FilterName.Equals("O3"))
-                                            xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+                                          if (xFile.FilterName.Equals("Ha"))
+                                              xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
 
-                                        if (xFile.FilterName.Equals("S2"))
-                                            xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+                                          if (xFile.FilterName.Equals("O3"))
+                                              xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
 
-                                        if (xFile.FilterName.Equals("Shutter"))
-                                            xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+                                          if (xFile.FilterName.Equals("S2"))
+                                              xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
 
-                                        if (fileIndex == xFile.Index)
-                                        {
-                                            DialogResult result = MessageBox.Show(
-                                                "No Filter in source file:\n" + xFile.FilePath +
-                                                "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
-                                                "File Update Failed",
-                                                MessageBoxButtons.OK,
-                                                MessageBoxIcon.Error);
-                                            Environment.Exit(-1);
-                                        }
-                                    }
+                                          if (xFile.FilterName.Equals("Shutter"))
+                                              xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
 
-                                    if (bTime)
-                                    {
-                                        // This works because fileList is already sorted by Time
-                                        xFile.Index = (xFile.Unique) ? ++lightsIndex : lightsIndex++;
-                                    }
-                                }
-                            }
-                        }
-                      */
+                                          if (fileIndex == xFile.Index)
+                                          {
+                                              DialogResult result = MessageBox.Show(
+                                                  "No Filter in source file:\n" + xFile.FilePath +
+                                                  "\n\nMainForm.cs\nSetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> fileList)",
+                                                  "File Update Failed",
+                                                  MessageBoxButtons.OK,
+                                                  MessageBoxIcon.Error);
+                                              Environment.Exit(-1);
+                                          }
+                                      }
+
+                                      if (bTime)
+                                      {
+                                          // This works because fileList is already sorted by Time
+                                          xFile.Index = (xFile.Unique) ? ++lightsIndex : lightsIndex++;
+                                      }
+                                  }
+                              }
+                          }
+                        */
                     }
                 }
             }

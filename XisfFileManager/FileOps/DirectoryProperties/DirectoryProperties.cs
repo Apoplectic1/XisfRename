@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Enums;
+using System.Collections;
 
 namespace XisfFileManager.FileOps.DirectoryProperties;
 
@@ -13,7 +14,7 @@ internal class DirectoryProperties
     // This allows us to fall through passing the complete directory structure to that point on to the next Grouping
 
     private List<string> mFilePathList = new List<string>();
-    private List<GroupedPath> mGroupedPaths = new List<GroupedPath>();
+    private List<GroupedKey> mGroupedPaths = new List<GroupedKey>();
 
     private string GetTargetDirectoryPath(string directoryPath)
     {
@@ -31,7 +32,7 @@ internal class DirectoryProperties
 
     private string GetCameraDirectoryPath(string directoryPath)
     {
-        // Assumes one letter followed ny 3 digits
+        // Assumes one letter followed any 3 digits
         string[] directories = directoryPath.Split('\\');
         for (int i = directories.Length - 1; i >= 0; i--)
         {
@@ -41,7 +42,7 @@ internal class DirectoryProperties
                 return cameraDirectory;
             }
         }
-        return GetTargetDirectoryPath(directoryPath);
+        return string.Empty;
     }
 
     private string GetPanelDirectoryPath(string directoryPath)
@@ -55,7 +56,7 @@ internal class DirectoryProperties
                 return panelDirectory;
             }
         }
-        return GetCameraDirectoryPath(directoryPath);
+        return string.Empty;
     }
 
     private string GetLightsDirectoryPath(string directoryPath)
@@ -63,13 +64,13 @@ internal class DirectoryProperties
         string[] directories = directoryPath.Split('\\');
         for (int i = directories.Length - 1; i >= 0; i--)
         {
-            if (Regex.IsMatch(directories[i], @"^Panel\s+(\S+)$"))
+            if (Regex.IsMatch(directories[i], @"^(?:(?!Stars).)*(Luma|Red|Green|Blue|Ha|O3|S2|Shutter)"))
             {
-                string panelDirectory = string.Join("\\", directories.Take(i + 1));
-                return panelDirectory;
+                string lightsDirectory = string.Join("\\", directories.Take(i + 1));
+                return lightsDirectory;
             }
         }
-        return Path.GetDirectoryName(directoryPath);
+        return string.Empty;
     }
 
     private string GetStarsDirectoryPath(string directoryPath)
@@ -77,13 +78,14 @@ internal class DirectoryProperties
         string[] directories = directoryPath.Split('\\');
         for (int i = directories.Length - 1; i >= 0; i--)
         {
-            if (Regex.IsMatch(directories[i], @"^Panel\s+(\S+)$"))
+            // Starts with "Stars"
+            if (Regex.IsMatch(directories[i], @"^(?=.*Stars)(?=.*(?:Luma|Red|Green|Blue|Ha|O3|S2|Shutter)).*$"))
             {
-                string panelDirectory = string.Join("\\", directories.Take(i + 1));
-                return panelDirectory;
+                string starsDirectory = string.Join("\\", directories.Take(i + 1));
+                return starsDirectory;
             }
         }
-        return Path.GetDirectoryName(directoryPath);
+        return string.Empty;
     }
 
     private string GetFilterDirectoryPath(string directoryPath, string sFilter)
@@ -91,16 +93,16 @@ internal class DirectoryProperties
         string[] directories = directoryPath.Split('\\');
         for (int i = directories.Length - 1; i >= 0; i--)
         {
-            if (directories[i].Contains(sFilter))
+            if (Regex.IsMatch(directories[i], $".*{Regex.Escape(sFilter)}.*"))
             {
-                string panelDirectory = string.Join("\\", directories.Take(i + 1));
-                return panelDirectory;
+                string filterDirectory = string.Join("\\", directories.Take(i + 1));
+                return filterDirectory;
             }
         }
-        return Path.GetDirectoryName(directoryPath);
+        return string.Empty;
     }
 
-    internal class GroupedPath
+    internal class GroupedKey
     {
         public string Target { get; set; }
         public string Camera { get; set; }
@@ -127,7 +129,7 @@ internal class DirectoryProperties
             mFilePathList.Add(xFile.FilePath);
         }
 
-        mGroupedPaths = ((IEnumerable<GroupedPath>)
+        mGroupedPaths = ((IEnumerable<GroupedKey>)
             (from filePath in mFilePathList
              group filePath by new
              {
@@ -143,9 +145,10 @@ internal class DirectoryProperties
                  Ha = GetFilterDirectoryPath(filePath, "Ha"),
                  O3 = GetFilterDirectoryPath(filePath, "O3"),
                  S2 = GetFilterDirectoryPath(filePath, "S2"),
-                 Shutter = GetFilterDirectoryPath(filePath, "Shutter")
+                 Shutter = GetFilterDirectoryPath(filePath, "Shutter"),
+                 Files = filePath
              } into pathGroup
-             select new GroupedPath
+             select new GroupedKey
              {
                  Target = pathGroup.Key.Target,
                  Camera = pathGroup.Key.Camera,
@@ -156,7 +159,7 @@ internal class DirectoryProperties
              })).ToList();
     }
 
-    public IEnumerable<IGrouping<string, GroupedPath>> TargetGroup()
+    public IEnumerable<IGrouping<string, GroupedKey>> TargetGroup()
     {
         if (mGroupedPaths != null)
         {
@@ -164,11 +167,11 @@ internal class DirectoryProperties
         }
         else
         {
-            return Enumerable.Empty<IGrouping<string, GroupedPath>>();
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
         }
     }
 
-    public IEnumerable<IGrouping<string, GroupedPath>> CameraGroup()
+    public IEnumerable<IGrouping<string, GroupedKey>> CameraGroup()
     {
         if (mGroupedPaths != null)
         {
@@ -176,11 +179,11 @@ internal class DirectoryProperties
         }
         else
         {
-            return Enumerable.Empty<IGrouping<string, GroupedPath>>();
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
         }
     }
 
-    public IEnumerable<IGrouping<string, GroupedPath>> PanelGroup()
+    public IEnumerable<IGrouping<string, GroupedKey>> PanelGroup()
     {
         if (mGroupedPaths != null)
         { 
@@ -188,7 +191,157 @@ internal class DirectoryProperties
         }
         else
         {
-            return Enumerable.Empty<IGrouping<string, GroupedPath>>();
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> LightsGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Lights);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> StarsGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Stars);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> LumaGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Luma);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> RedGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Red);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> GreenGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Green);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> BlueGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Luma);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> HaGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Ha);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> O3Group()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.O3);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> S2Group()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.S2);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> ShutterGroup()
+    {
+        if (mGroupedPaths != null)
+        {
+            return mGroupedPaths.GroupBy(groupedPath => groupedPath.Shutter);
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
+        }
+    }
+
+    public IEnumerable<IGrouping<string, GroupedKey>> FilterInGroup(string sFilter, IEnumerable<IGrouping<string, GroupedKey>> group)
+    {
+        if (mGroupedPaths != null)
+        {
+            switch (sFilter)
+            {
+                case "Luma":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Luma);
+                case "Red":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Red);
+                case "Green":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Green);
+                case "Blue":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Blue);
+                case "Ha":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Ha);
+                case "O3":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.O3);
+                case "S2":
+                    return group.SelectMany(g => g).GroupBy(gk => gk.S2);
+                default:
+                    return group.SelectMany(g => g).GroupBy(gk => gk.Shutter);
+            }
+        }
+        else
+        {
+            return Enumerable.Empty<IGrouping<string, GroupedKey>>();
         }
     }
 }
