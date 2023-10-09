@@ -11,7 +11,7 @@ namespace XisfFileManager.FileOps.DirectoryProperties;
 
 internal class DirectoryProperties
 {
-    public Dictionary<string, string> GroupStatistics = new Dictionary<string, string>();
+    public Dictionary<string, string> DirectoryStatistics = new Dictionary<string, string>();
 
     public void SetDirectoryStatistics(List<XisfFile> xFileList, bool bNoTotals)
     {
@@ -29,7 +29,7 @@ internal class DirectoryProperties
 
             string newStats = indexOfDashSpace >= 0 ? $"{groupName.Substring(0, indexOfDashSpace)} - {string2}" : $"{groupName} - {string2}".Trim();
 
-            GroupStatistics[groupName] = newStats;
+            DirectoryStatistics[groupName] = newStats;
         }
     }
 }

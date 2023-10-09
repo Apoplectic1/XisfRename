@@ -19,6 +19,7 @@ using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using System.Diagnostics.Metrics;
+using System.Collections;
 
 namespace XisfFileManager
 {
@@ -565,24 +566,69 @@ namespace XisfFileManager
             TabControl_Update.Enabled = true;
         }
 
-        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> xFileList)
+        public void SetDirectoryStatistics(List<XisfFile> xFileList)
         {
-            // Begin directory tree recursive search
-
             mDirectoryProperties.SetDirectoryStatistics(xFileList, CheckBox_FileSlection_NoTotals.Checked);
 
-            // Iterate through each Target, Camera and associated Panels
-            foreach (var group in mDirectoryProperties.GroupStatistics)
+            // Iterate through each Target, Camera and associated Panel Directory
+            foreach (var group in mDirectoryProperties.DirectoryStatistics)
             {
                 string currentDirectory = group.Key;
-
                 string newDirectory = group.Value;
 
                 if (currentDirectory.Equals(newDirectory))
                     continue;
 
                 Directory.Move(currentDirectory, newDirectory);
+            }
+        }
 
+        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> xFileList)
+        {
+            // Begin directory tree recursive search
+
+            foreach (var group in mDirectoryProperties.DirectoryStatistics)
+            {
+                string currentDirectory = group.Key;
+
+                int lumaIndex = 0;
+                int redIndex = 0;
+                int greenIndex = 0;
+                int blueIndex = 0;
+                int haIndex = 0;
+                int o3Index = 0;
+                int s2Index = 0;
+                int shutterIndex = 0;
+
+                foreach (XisfFile xFile in xFileList)
+                {
+                    if (xFile.FilePath.Contains(currentDirectory))
+                    {
+                        if (xFile.FilterName.Equals("Luma"))
+                            xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+
+                        if (xFile.FilterName.Equals("Red"))
+                            xFile.Index = (xFile.Unique) ? ++redIndex : redIndex++;
+
+                        if (xFile.FilterName.Equals("Green"))
+                            xFile.Index = (xFile.Unique) ? ++greenIndex : greenIndex++;
+
+                        if (xFile.FilterName.Equals("Blue"))
+                            xFile.Index = (xFile.Unique) ? ++blueIndex : blueIndex++;
+
+                        if (xFile.FilterName.Equals("Ha"))
+                            xFile.Index = (xFile.Unique) ? ++haIndex : haIndex++;
+
+                        if (xFile.FilterName.Equals("O3"))
+                            xFile.Index = (xFile.Unique) ? ++o3Index : o3Index++;
+
+                        if (xFile.FilterName.Equals("S2"))
+                            xFile.Index = (xFile.Unique) ? ++s2Index : s2Index++;
+
+                        if (xFile.FilterName.Equals("Shutter"))
+                            xFile.Index = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+                    }
+                }
             }
         }
 
@@ -599,12 +645,15 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count();
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
-            mRenameFile.MarkDuplicates(mFileList);
+            mRenameFile.MarkDuplicates(mFileList); // Does not move them
 
             // SetFileIndex will preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
             // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
             // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
             // Any found Duplicates are handled inside the RenameFile method
+
+            SetDirectoryStatistics(mFileList);
+
             SetFileIndex(byTarget, byNight, byFilter, byTime, mFileList);
 
             foreach (XisfFile xFile in mFileList)
@@ -630,91 +679,7 @@ namespace XisfFileManager
             else
                 Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
-            /*
-            // Begin directory tree recursive search
-            List<string> directoryList = new List<string>();
-
-            directoryList = mFileList
-                                    .Where(xFile => Path.GetDirectoryName(xFile.FilePath).Contains("Panel") &&
-                                                   (Path.GetDirectoryName(xFile.FilePath).Contains("Luma") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Red") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Green") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Blue") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("Ha") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("O3") ||
-                                                    Path.GetDirectoryName(xFile.FilePath).Contains("S2")) &&
-                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Project") &&
-                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
-                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
-                                                   !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
-                                    .Select(xFile => GetPanelDirectoryPath(Path.GetDirectoryName(xFile.FilePath)))
-                                    .Distinct()
-                                    .ToList();
-
-            if (directoryList.Count == 0)
-            {
-                directoryList = mFileList
-                                    .Where(xFile => (Path.GetDirectoryName(xFile.FilePath).Contains("Luma") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Red") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Green") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Blue") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("Ha") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("O3") ||
-                                                     Path.GetDirectoryName(xFile.FilePath).Contains("S2")) &&
-                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Project") &&
-                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Master") &&
-                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Duplicates") &&
-                                                    !Path.GetDirectoryName(xFile.FilePath).Contains("Calibration"))
-                                    .Select(xFile => GetPanelDirectoryPath(Path.GetDirectoryName(xFile.FilePath)))
-                                    .Distinct()
-                                    .ToList();
-            }
-
-            foreach (string directoryPath in directoryList)
-            {
-                // Get all files in the directory and its subdirectories
-                var files = Directory.EnumerateFiles(directoryPath, "*.xisf");
-
-                // Group files by their parent directory (lowest-level directories)
-                var directoryGroups = files.GroupBy(filePath => Path.GetDirectoryName(filePath));
-
-                foreach (var directoryGroup in directoryGroups)
-                {
-                    double totalExposureTime = -1;
-                    foreach (XisfFile xFile in mFileList)
-                    {
-                        if (directoryGroup.Contains(xFile.FilePath))
-                            totalExposureTime += xFile.ExposureSeconds;
-                    }
-
-                    string lowestDirectoryPath = directoryGroup.Key;
-                    int fileCount = directoryGroup.Count();
-
-                    int lastIndexOfBackslash = lowestDirectoryPath.LastIndexOf('\\');
-                    string lowestDirectory = lowestDirectoryPath.Substring(lastIndexOfBackslash + 1);
-                    int firstIndexOfDash = lowestDirectory.IndexOf("-");
-
-                    if (firstIndexOfDash > 0)
-                        lowestDirectory = lowestDirectory.Substring(0, firstIndexOfDash).TrimEnd();
-                    else
-                        lowestDirectory = lowestDirectory.TrimEnd();
-
-                    string newDirectoryName = lowestDirectoryPath.Substring(0, lastIndexOfBackslash) + "\\" + lowestDirectory;
-
-                    string totalExposureTimeHours = (totalExposureTime / 3600).ToString("F1");
-
-                    if (!CheckBox_FileSlection_NoTotals.Checked)
-                        // Create the new directory name with the total file count and total exposure time appended
-                        newDirectoryName = newDirectoryName + " - " + fileCount.ToString() + ", " + totalExposureTimeHours;
-
-                    if (System.IO.File.Exists(newDirectoryName) == false)
-                        Directory.Move(lowestDirectoryPath, newDirectoryName);
-                }
-            
-            }
-            */
             mFileList.Clear();
-            
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
         }
