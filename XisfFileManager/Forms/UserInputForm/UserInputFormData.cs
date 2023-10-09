@@ -2,11 +2,11 @@
 {
     public class UserInputFormData
     {
-        public string mFormName;
-        public string mFormText;
-        public string mFormEntryText;
-        public string mTextBox;
-        public bool mGlobalCheckBox;
-        public string mFileName;
+        public string FormName { get; set; }
+        public string FormText { get; set; }
+        public string FormEntryText { get; set; }
+        public string TextBox { get; set; }
+        public bool GlobalCheckBox { get; set; }
+        public string FileName { get; set; }
     }
 }

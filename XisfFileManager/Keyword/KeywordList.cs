@@ -73,27 +73,27 @@ namespace XisfFileManager
             mKeywordList.Clear();
         }
         // ***********************************************************************************************************************************
-        public Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
+        public static Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
         {
             UserInputFormData nullFormData = new UserInputFormData();
 
             using (var UIForm = new UserInputForm())
             {
-                UIForm.Name = formData.mFormName;
-                UIForm.Text = formData.mFormText;
-                UIForm.Label_EntryText.Text = formData.mFormEntryText;
-                UIForm.Label_FileName.Text = formData.mFileName;
+                UIForm.Name = formData.FormName;
+                UIForm.Text = formData.FormText;
+                UIForm.Label_EntryText.Text = formData.FormEntryText;
+                UIForm.Label_FileName.Text = formData.FileName;
 
                 UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
                 UIForm.StartPosition = FormStartPosition.CenterScreen;
 
 
                 var result = UIForm.ShowDialog();
-                UIForm.TextBox_Text.Focus();
+                _ = UIForm.TextBox_Text.Focus();
 
                 if (result == DialogResult.OK)
                 {
-                    formData.mGlobalCheckBox = UIForm.CheckBox_Global.Checked;
+                    formData.GlobalCheckBox = UIForm.CheckBox_Global.Checked;
                     return UIForm.mData;
                 }
                 else
@@ -102,8 +102,8 @@ namespace XisfFileManager
                 }
             }
 
-            nullFormData.mTextBox = string.Empty;
-            nullFormData.mGlobalCheckBox = false;
+            nullFormData.TextBox = string.Empty;
+            nullFormData.GlobalCheckBox = false;
 
             return nullFormData;
         }
@@ -156,13 +156,13 @@ namespace XisfFileManager
 
         public void RemoveKeyword(string sName)
         {
-            mKeywordList.RemoveAll(i => i.Name.Equals(sName));
+            _ = mKeywordList.RemoveAll(i => i.Name.Equals(sName));
         }
 
         // ----------------------------------------------------------------------------------------------------------
         public void RemoveKeyword(string sName, object oValue)
         {
-            mKeywordList.RemoveAll(i => i.Name.Equals(sName) && i.Value.Equals(oValue));
+            _ = mKeywordList.RemoveAll(i => i.Name.Equals(sName) && i.Value.Equals(oValue));
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ namespace XisfFileManager
 
         public void AddKeyword(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            mKeywordList.RemoveAll(i => i.Name == sName);
+            _ = mKeywordList.RemoveAll(i => i.Name == sName);
 
             Keyword newKeyword = NewKeyword(sName, oValue, sComment);
 
@@ -458,10 +458,10 @@ namespace XisfFileManager
 
                         // Convert PM time to 24-hour format
                         if (dateString.Contains("PM"))
-                            timeStr = (int.Parse(timeStr.Substring(0, 2)) + 12).ToString() + timeStr.Substring(2);
+                            timeStr = string.Concat((int.Parse(timeStr.Substring(0, 2)) + 12).ToString(), timeStr.AsSpan(2));
 
                         // Fix a fix of mine: Hours sometimes has three digits - take the time from the file name
-                        timeStr = Regex.Replace(timeStr, @"^\d{3}:", m => m.Value.Substring(0, 2) + ":");
+                        timeStr = Regex.Replace(timeStr, @"^\d{3}:", m => string.Concat(m.Value.AsSpan(0, 2), ":"));
 
                         // Combine date and time parts for parsing
                         string dateTimeStr = $"{monthStr}/{dayStr}/{yearStr} {timeStr}";
@@ -1141,7 +1141,7 @@ namespace XisfFileManager
 
             set
             {
-                if (Camera.Contains("Z"))
+                if (Camera.Contains('Z'))
                     AddKeyword("OFFSET", value, "Actual Camera Offset is this value times 10");
                 else
                     AddKeyword("OFFSET", value, "Camera Offset");
@@ -1204,18 +1204,18 @@ namespace XisfFileManager
 
             UserInputFormData formData = new UserInputFormData
             {
-                mFormName = "Cammera Pixel Size",
-                mFormText = "Camera Pixel Size Not Set (Assumes Square Pixels)",
-                mFormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):",
-                mFileName = FileName
+                FormName = "Cammera Pixel Size",
+                FormText = "Camera Pixel Size Not Set (Assumes Square Pixels)",
+                FormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):",
+                FileName = FileName
             };
 
 
             UserInputFormData FormValue = OpenUIForm(formData);
-            AddKeyword("XPIXSZ", Convert.ToDouble(FormValue.mTextBox));
-            AddKeyword("YPIXSZ", Convert.ToDouble(FormValue.mTextBox));
+            AddKeyword("XPIXSZ", Convert.ToDouble(FormValue.TextBox));
+            AddKeyword("YPIXSZ", Convert.ToDouble(FormValue.TextBox));
 
-            return Convert.ToDouble(FormValue.mTextBox);
+            return Convert.ToDouble(FormValue.TextBox);
         }
 
         // *********************************************************************************************************
@@ -1278,7 +1278,7 @@ namespace XisfFileManager
 
             if (latitude == null) return;
 
-            if (latitude.Contains("N"))
+            if (latitude.Contains('N'))
             {
                 latitude = Regex.Replace(latitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
             }
@@ -1293,7 +1293,7 @@ namespace XisfFileManager
 
             if (longitude == null) return;
 
-            if (longitude.Contains("W"))
+            if (longitude.Contains('W'))
             {
                 longitude = Regex.Replace(longitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
 
@@ -1377,7 +1377,7 @@ namespace XisfFileManager
                     AddKeyword("NUM-FRMS", totalFrames, "Number of Integrated SubFrames");
                 }
 
-                if (node.Comment.ToLower().Contains("pixelrejection"))
+                if (node.Comment.Contains("pixelrejection", StringComparison.OrdinalIgnoreCase))
                 {
                     if (node.Comment.ToLower().Contains("linear"))
                     {
@@ -1418,15 +1418,15 @@ namespace XisfFileManager
             {
                 UserInputFormData formData = new UserInputFormData
                 {
-                    mFormName = "Cammera Temperature",
-                    mFormText = "Camera Temperature Not Set",
-                    mFormEntryText = "Enter Camera Temperature Setpoint:",
-                    mFileName = FileName
+                    FormName = "Cammera Temperature",
+                    FormText = "Camera Temperature Not Set",
+                    FormEntryText = "Enter Camera Temperature Setpoint:",
+                    FileName = FileName
                 };
 
                 UserInputFormData returnData = OpenUIForm(formData);
 
-                bool status = double.TryParse(returnData.mTextBox, out double temperature);
+                bool status = double.TryParse(returnData.TextBox, out double temperature);
                 if (status)
                 {
                     AddKeyword("SET-TEMP", temperature);

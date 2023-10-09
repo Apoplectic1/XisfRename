@@ -29,13 +29,13 @@ namespace XisfFileManager.FileOperations
             {
                 mCsvFile = System.IO.File.ReadAllText(path);
 
-                ParseFields(CsvSubFrameKeywordLists);
+                _ = ParseFields(CsvSubFrameKeywordLists);
 
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "ParseSubFrameSelectorCsvFile(" + path + "))");
+                _ = MessageBox.Show(ex.ToString(), "ParseSubFrameSelectorCsvFile(" + path + "))");
                 return false;
             }
         }
@@ -206,7 +206,7 @@ namespace XisfFileManager.FileOperations
             if (index == EccentricityCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.Eccentricity.Add(BuildKeyword("Eccentricity", value));
             }
         }
@@ -227,7 +227,7 @@ namespace XisfFileManager.FileOperations
             if (index == EccentricityMeanDeviationCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.EccentricityMeanDeviation.Add(BuildKeyword("EccentricityMeanDeviation", value));
             }
         }
@@ -267,7 +267,7 @@ namespace XisfFileManager.FileOperations
             if (index == FwhmCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.FwhmList.Add(BuildKeyword("Fwhm", value));
             }
         }
@@ -288,7 +288,7 @@ namespace XisfFileManager.FileOperations
             if (index == FwhmMeanDeviationCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.FwhmMeanDeviationList.Add(BuildKeyword("FwhmMeanDeviation", value));
             }
         }
@@ -309,7 +309,7 @@ namespace XisfFileManager.FileOperations
             if (index == MedianCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.MedianList.Add(BuildKeyword("Median", value));
             }
         }
@@ -330,7 +330,7 @@ namespace XisfFileManager.FileOperations
             if (index == MedianMeanDeviationCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.MedianMeanDeviationList.Add(BuildKeyword("MedianMeanDeviation", value));
             }
         }
@@ -350,7 +350,7 @@ namespace XisfFileManager.FileOperations
             if (index == NoiseCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.NoiseList.Add(BuildKeyword("Noise", value));
             }
         }
@@ -370,7 +370,7 @@ namespace XisfFileManager.FileOperations
             if (index == NoiseRatioCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.NoiseRatioList.Add(BuildKeyword("NoiseRatio", value));
             }
         }
@@ -390,7 +390,7 @@ namespace XisfFileManager.FileOperations
             if (index == SnrWeightCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.SnrWeightList.Add(BuildKeyword("SNRWeight", value));
             }
         }
@@ -410,7 +410,7 @@ namespace XisfFileManager.FileOperations
             if (index == StarsCsvIndex)
             {
                 int value;
-                int.TryParse(field, out value);
+                _ = int.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.StarsList.Add(BuildKeyword("Stars", value)); ;
             }
         }
@@ -430,7 +430,7 @@ namespace XisfFileManager.FileOperations
             if (index == StarResidualIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.StarResidualList.Add(BuildKeyword("StarResidual", value));
             }
         }
@@ -450,7 +450,7 @@ namespace XisfFileManager.FileOperations
             if (index == StarResidualMeanDeviationCsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.StarResidualMeanDeviationList.Add(BuildKeyword("StarResidualMeanDeviation", value));
             }
         }
@@ -470,7 +470,7 @@ namespace XisfFileManager.FileOperations
             if (index == SSWeightcsvIndex)
             {
                 double value;
-                double.TryParse(field, out value);
+                _ = double.TryParse(field, out value);
                 CsvSubFrameKeywordLists.SubFrameList.WeightList.Add(BuildKeyword("WEIGHT", value));
             }
         }

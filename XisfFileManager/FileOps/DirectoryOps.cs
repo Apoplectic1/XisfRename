@@ -46,7 +46,7 @@ namespace XisfFileManager
                     FileInfo[] allfiles = rootDirectory.GetFiles("*.xisf");
 
                     // Filter out files that contain a '#' character (This is to exclude emacs temporary save files during debug)
-                    files = allfiles.Where(file => !file.Name.Contains("#")).ToArray();
+                    files = allfiles.Where(file => !file.Name.Contains('#')).ToArray();
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace XisfFileManager
                 foreach (System.IO.DirectoryInfo dirInfo in subDirs)
                 {
                     // Resursive call for each subdirectory.
-                    RecuseDirectories(dirInfo);
+                    _ = RecuseDirectories(dirInfo);
                 }
             }
 

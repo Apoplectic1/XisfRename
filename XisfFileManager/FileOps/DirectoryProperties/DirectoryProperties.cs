@@ -9,14 +9,14 @@ using System;
 
 namespace XisfFileManager.FileOps.DirectoryProperties;
 
-internal class DirectoryProperties
+sealed class DirectoryProperties
 {
     public Dictionary<string, string> DirectoryStatistics = new Dictionary<string, string>();
 
     public void SetDirectoryStatistics(List<XisfFile> xFileList, bool bNoTotals)
     {
         var directoryGroups = xFileList.GroupBy(path => Path.GetDirectoryName(path.FilePath));
-
+        
         foreach (var group in directoryGroups)
         {
             string groupName = group.Key;

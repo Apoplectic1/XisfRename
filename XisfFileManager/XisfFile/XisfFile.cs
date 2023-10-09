@@ -136,12 +136,12 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.Gain; }
             set { mKeywordList.Gain = value; }
         }
-        public int ImageAttachmentLength { get; set; } = 0;
-        public int ImageAttachmentStart { get; set; } = 0;
-        public int ImageAttachmentStartPadding { get; set; } = 0;
-        public int Index { get; set; } = 0;
-        public bool Master { get; set; } = false;
-        public bool NarrowBand { get; set; } = false;
+        public int ImageAttachmentLength { get; set; }
+        public int ImageAttachmentStart { get; set; }
+        public int ImageAttachmentStartPadding { get; set; }
+        public int Index { get; set; }
+        public bool Master { get; set; }
+        public bool NarrowBand { get; set; }
         public int Offset
         {
             get { return mKeywordList.Offset; }
@@ -168,10 +168,10 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.SensorTemperature; }
             set { mKeywordList.SensorTemperature = value; }
         }
-        public double SSWeight { get; set; } = 0.0;
-        public int ThumbnailAttachmentStartPadding { get; set; } = 0;
-        public int ThumbnailAttachmentLength { get; set; } = 0;
-        public int ThumbnailAttachmentStart { get; set; } = 0;
+        public double SSWeight { get; set; }
+        public int ThumbnailAttachmentStartPadding { get; set; }
+        public int ThumbnailAttachmentLength { get; set; }
+        public int ThumbnailAttachmentStart { get; set; }
         public string TargetObjectName
         {
             get { return mKeywordList.TargetName; }
@@ -187,7 +187,7 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.TotalFrames; }
             set { mKeywordList.TotalFrames = value; }
         }
-        public bool Unique { get; set; } = false;
+        public bool Unique { get; set; }
         public List<string> WeightKeyword
         {
             get { return mKeywordList.WeightKeyword; }

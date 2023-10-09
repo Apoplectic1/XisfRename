@@ -60,7 +60,7 @@ namespace XisfFileManager.FileOperations
                 }
                 else
                 {
-                    Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
+                    _ = Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
 
                     dupFileName = BuildFileName(file.Index - 1, file);
                     int lastParen = dupFileName.LastIndexOf(')');
@@ -76,7 +76,7 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
+                _ = MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
                 return new Tuple<int, string>(-1, "");
             }
         }
@@ -360,7 +360,7 @@ namespace XisfFileManager.FileOperations
             {
                 mDupIndex++;
 
-                Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
+                _ = Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
 
                 int last = currentFile.FilePath.LastIndexOf(@"\");
 
@@ -368,11 +368,11 @@ namespace XisfFileManager.FileOperations
                 string duplicateFileName = newFileName.Remove(0, 4).Insert(0, mDupIndex.ToString("D3") + " ");
 
                 File.Move(entry.FilePath, sourceFilePath + "\\" + "Duplicates" + "\\" + duplicateFileName);
-                mFileList.Remove(entry);
+                _ = mFileList.Remove(entry);
             }
         }
 
-        private bool IsFileLocked(string path)
+        private static bool IsFileLocked(string path)
         {
             FileInfo file = new FileInfo(path);
 

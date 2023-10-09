@@ -359,7 +359,7 @@ namespace XisfFileManager
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
                         mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                        mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count();
+                        mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count;
                         mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            All Target Frames Match Existing Target Capture Directory Calibration Files\r\n";
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                         return true;
@@ -638,7 +638,7 @@ namespace XisfFileManager
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 if (mCalibrationTabValues.TotalMatchedCalibrationFiles == 0)
                 {
-                    mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count();
+                    mCalibrationTabValues.TotalMatchedCalibrationFiles = targetFileList.Count;
                     mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            All Target Frames Match Existing Target Capture Directory Calibration Files\r\n";
                 }
                 else
@@ -716,7 +716,7 @@ namespace XisfFileManager
             return true;
         }
 
-        public string GetTargetCalibrationFileDirectories(string targetFilePath)
+        public static string GetTargetCalibrationFileDirectories(string targetFilePath)
         {
             string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath);
 
@@ -727,11 +727,11 @@ namespace XisfFileManager
                 if (targetCalibrationDirectory.Contains(@"Panel"))
                 {
                     // We found Mosaic Panels
-                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                    targetCalibrationDirectory = string.Concat(targetCalibrationDirectory.AsSpan(0, targetCalibrationDirectory.IndexOf("Captures")), @"Captures\Calibration");
                 }
                 else
                     // Not a Mosaic so put the Calibration directory under "Captures"
-                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                    targetCalibrationDirectory = string.Concat(targetCalibrationDirectory.AsSpan(0, targetCalibrationDirectory.IndexOf("Captures")), @"Captures\Calibration");
             }
             else
                 // No - so set just add "Calibration" under the target path
@@ -740,7 +740,7 @@ namespace XisfFileManager
             return targetCalibrationDirectory;
         }
 
-        public string SetTargetCalibrationFileDirectories(string targetFilePath)
+        public static string SetTargetCalibrationFileDirectories(string targetFilePath)
         {
             string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath);
 
@@ -751,11 +751,11 @@ namespace XisfFileManager
                 if (targetCalibrationDirectory.Contains(@"Panel"))
                 {
                     // We found Mosaic Panels
-                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                    targetCalibrationDirectory = string.Concat(targetCalibrationDirectory.AsSpan(0, targetCalibrationDirectory.IndexOf("Captures")), @"Captures\Calibration");
                 }
                 else
                     // Not a Mosaic so put the Calibration directory under "Captures"
-                    targetCalibrationDirectory = targetCalibrationDirectory.Substring(0, targetCalibrationDirectory.IndexOf("Captures")) + @"Captures\Calibration";
+                    targetCalibrationDirectory = string.Concat(targetCalibrationDirectory.AsSpan(0, targetCalibrationDirectory.IndexOf("Captures")), @"Captures\Calibration");
             }
             else
                 // No - so set just add "Calibration" under the target path

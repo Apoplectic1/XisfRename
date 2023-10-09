@@ -2,13 +2,13 @@
 {
     public class PositionTemperature
     {
-        public double Position;
-        public double Temperature;
+        public double Position { get; set; }
+        public double Temperature { get; set; }
     }
 
     public class PercentSeconds
     {
-        public double Position;
-        public double Temperature;
+        public double Position { get; set; }
+        public double Temperature { get; set; }
     }
 }

@@ -309,6 +309,9 @@
             ProgressBar_FileSelection_ReadProgress = new System.Windows.Forms.ProgressBar();
             GroupBox_FileSelection_SequenceOrder = new System.Windows.Forms.GroupBox();
             RadioButton_FileSelection_SequenceNumbering_WeightOnly = new System.Windows.Forms.RadioButton();
+            GroupBox_FileSelection_Count = new System.Windows.Forms.GroupBox();
+            RadioButton_FileSelection_Index_ByFilter = new System.Windows.Forms.RadioButton();
+            RadioButton_FileSelection_Index_ByTime = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_IndexOnly = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
@@ -327,12 +330,6 @@
             Label_FileSelection_Statistics_SubFrameOverhead = new System.Windows.Forms.Label();
             Label_FileSelection_Statistics_TempratureCompensation = new System.Windows.Forms.Label();
             Label_FileSelection_BrowseFileName = new System.Windows.Forms.Label();
-            GroupBox_FileSelection_Order = new System.Windows.Forms.GroupBox();
-            RadioButton_FileSelection_Order_ByTarget = new System.Windows.Forms.RadioButton();
-            RadioButton_FileSelection_Order_ByNight = new System.Windows.Forms.RadioButton();
-            GroupBox_FileSelection_Count = new System.Windows.Forms.GroupBox();
-            RadioButton_FileSelection_Index_ByFilter = new System.Windows.Forms.RadioButton();
-            RadioButton_FileSelection_Index_ByTime = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection = new System.Windows.Forms.GroupBox();
             CheckBox_FileSlection_NoTotals = new System.Windows.Forms.CheckBox();
             GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
@@ -370,11 +367,10 @@
             GroupBox_CalibrationTab_MatchingTolerance.SuspendLayout();
             TabPage_SubFrameWeights.SuspendLayout();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
+            GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumericUpDown_FileSelection_DirectorySelection_TotalFrames).BeginInit();
             GroupBox_FileSelection_Statistics.SuspendLayout();
-            GroupBox_FileSelection_Order.SuspendLayout();
-            GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection.SuspendLayout();
             SuspendLayout();
             // 
@@ -928,7 +924,7 @@
             // Label_KeywordUpdateTab_FileName
             // 
             Label_KeywordUpdateTab_FileName.AutoSize = true;
-            Label_KeywordUpdateTab_FileName.Location = new System.Drawing.Point(20, 444);
+            Label_KeywordUpdateTab_FileName.Location = new System.Drawing.Point(20, 416);
             Label_KeywordUpdateTab_FileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_FileName.Name = "Label_KeywordUpdateTab_FileName";
             Label_KeywordUpdateTab_FileName.Size = new System.Drawing.Size(77, 15);
@@ -1490,7 +1486,7 @@
             // 
             // ProgressBar_KeywordUpdateTab_WriteProgress
             // 
-            ProgressBar_KeywordUpdateTab_WriteProgress.Location = new System.Drawing.Point(20, 482);
+            ProgressBar_KeywordUpdateTab_WriteProgress.Location = new System.Drawing.Point(20, 454);
             ProgressBar_KeywordUpdateTab_WriteProgress.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ProgressBar_KeywordUpdateTab_WriteProgress.Name = "ProgressBar_KeywordUpdateTab_WriteProgress";
             ProgressBar_KeywordUpdateTab_WriteProgress.Size = new System.Drawing.Size(1094, 13);
@@ -3256,7 +3252,7 @@
             TabControl_Update.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabControl_Update.Name = "TabControl_Update";
             TabControl_Update.SelectedIndex = 0;
-            TabControl_Update.Size = new System.Drawing.Size(1147, 582);
+            TabControl_Update.Size = new System.Drawing.Size(1147, 505);
             TabControl_Update.TabIndex = 23;
             // 
             // TabPage_KeywordUpdate
@@ -3273,7 +3269,7 @@
             TabPage_KeywordUpdate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_KeywordUpdate.Name = "TabPage_KeywordUpdate";
             TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 554);
+            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 477);
             TabPage_KeywordUpdate.TabIndex = 0;
             TabPage_KeywordUpdate.Text = "Keyword Update";
             // 
@@ -3295,7 +3291,7 @@
             TabPage_Calibration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_Calibration.Name = "TabPage_Calibration";
             TabPage_Calibration.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_Calibration.Size = new System.Drawing.Size(1139, 554);
+            TabPage_Calibration.Size = new System.Drawing.Size(1139, 477);
             TabPage_Calibration.TabIndex = 1;
             TabPage_Calibration.Text = "Calibration";
             // 
@@ -3570,7 +3566,7 @@
             TabPage_SubFrameWeights.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_SubFrameWeights.Name = "TabPage_SubFrameWeights";
             TabPage_SubFrameWeights.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_SubFrameWeights.Size = new System.Drawing.Size(1139, 554);
+            TabPage_SubFrameWeights.Size = new System.Drawing.Size(1139, 477);
             TabPage_SubFrameWeights.TabIndex = 2;
             TabPage_SubFrameWeights.Text = "SubFrame Weights";
             // 
@@ -3580,7 +3576,7 @@
             tabPage1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            tabPage1.Size = new System.Drawing.Size(1139, 554);
+            tabPage1.Size = new System.Drawing.Size(1139, 477);
             tabPage1.TabIndex = 3;
             tabPage1.Text = "tabPage1";
             tabPage1.UseVisualStyleBackColor = true;
@@ -3597,6 +3593,7 @@
             // GroupBox_FileSelection_SequenceOrder
             // 
             GroupBox_FileSelection_SequenceOrder.Controls.Add(RadioButton_FileSelection_SequenceNumbering_WeightOnly);
+            GroupBox_FileSelection_SequenceOrder.Controls.Add(GroupBox_FileSelection_Count);
             GroupBox_FileSelection_SequenceOrder.Controls.Add(RadioButton_FileSelection_SequenceNumbering_IndexOnly);
             GroupBox_FileSelection_SequenceOrder.Controls.Add(RadioButton_FileSelection_SequenceNumbering_IndexWeight);
             GroupBox_FileSelection_SequenceOrder.Controls.Add(RadioButton_FileSelection_SequenceNumbering_WeightIndex);
@@ -3604,7 +3601,7 @@
             GroupBox_FileSelection_SequenceOrder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_FileSelection_SequenceOrder.Name = "GroupBox_FileSelection_SequenceOrder";
             GroupBox_FileSelection_SequenceOrder.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_FileSelection_SequenceOrder.Size = new System.Drawing.Size(232, 67);
+            GroupBox_FileSelection_SequenceOrder.Size = new System.Drawing.Size(232, 130);
             GroupBox_FileSelection_SequenceOrder.TabIndex = 3;
             GroupBox_FileSelection_SequenceOrder.TabStop = false;
             GroupBox_FileSelection_SequenceOrder.Text = "Sequence Numbering";
@@ -3612,7 +3609,7 @@
             // RadioButton_FileSelection_SequenceNumbering_WeightOnly
             // 
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.AutoSize = true;
-            RadioButton_FileSelection_SequenceNumbering_WeightOnly.Location = new System.Drawing.Point(16, 38);
+            RadioButton_FileSelection_SequenceNumbering_WeightOnly.Location = new System.Drawing.Point(27, 38);
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Name = "RadioButton_FileSelection_SequenceNumbering_WeightOnly";
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Size = new System.Drawing.Size(91, 19);
@@ -3621,11 +3618,48 @@
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.UseVisualStyleBackColor = true;
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.CheckedChanged += RadioButton_Weight_CheckedChanged;
             // 
+            // GroupBox_FileSelection_Count
+            // 
+            GroupBox_FileSelection_Count.Controls.Add(RadioButton_FileSelection_Index_ByFilter);
+            GroupBox_FileSelection_Count.Controls.Add(RadioButton_FileSelection_Index_ByTime);
+            GroupBox_FileSelection_Count.Location = new System.Drawing.Point(19, 65);
+            GroupBox_FileSelection_Count.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GroupBox_FileSelection_Count.Name = "GroupBox_FileSelection_Count";
+            GroupBox_FileSelection_Count.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GroupBox_FileSelection_Count.Size = new System.Drawing.Size(205, 59);
+            GroupBox_FileSelection_Count.TabIndex = 16;
+            GroupBox_FileSelection_Count.TabStop = false;
+            GroupBox_FileSelection_Count.Text = "Index";
+            // 
+            // RadioButton_FileSelection_Index_ByFilter
+            // 
+            RadioButton_FileSelection_Index_ByFilter.AutoSize = true;
+            RadioButton_FileSelection_Index_ByFilter.Checked = true;
+            RadioButton_FileSelection_Index_ByFilter.Location = new System.Drawing.Point(33, 24);
+            RadioButton_FileSelection_Index_ByFilter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_FileSelection_Index_ByFilter.Name = "RadioButton_FileSelection_Index_ByFilter";
+            RadioButton_FileSelection_Index_ByFilter.Size = new System.Drawing.Size(67, 19);
+            RadioButton_FileSelection_Index_ByFilter.TabIndex = 6;
+            RadioButton_FileSelection_Index_ByFilter.TabStop = true;
+            RadioButton_FileSelection_Index_ByFilter.Text = "By Filter";
+            RadioButton_FileSelection_Index_ByFilter.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_FileSelection_Index_ByTime
+            // 
+            RadioButton_FileSelection_Index_ByTime.AutoSize = true;
+            RadioButton_FileSelection_Index_ByTime.Location = new System.Drawing.Point(110, 24);
+            RadioButton_FileSelection_Index_ByTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_FileSelection_Index_ByTime.Name = "RadioButton_FileSelection_Index_ByTime";
+            RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(67, 19);
+            RadioButton_FileSelection_Index_ByTime.TabIndex = 5;
+            RadioButton_FileSelection_Index_ByTime.Text = "By Time";
+            RadioButton_FileSelection_Index_ByTime.UseVisualStyleBackColor = true;
+            // 
             // RadioButton_FileSelection_SequenceNumbering_IndexOnly
             // 
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.AutoSize = true;
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Checked = true;
-            RadioButton_FileSelection_SequenceNumbering_IndexOnly.Location = new System.Drawing.Point(16, 16);
+            RadioButton_FileSelection_SequenceNumbering_IndexOnly.Location = new System.Drawing.Point(27, 16);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Name = "RadioButton_FileSelection_SequenceNumbering_IndexOnly";
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Size = new System.Drawing.Size(82, 19);
@@ -3638,7 +3672,7 @@
             // RadioButton_FileSelection_SequenceNumbering_IndexWeight
             // 
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.AutoSize = true;
-            RadioButton_FileSelection_SequenceNumbering_IndexWeight.Location = new System.Drawing.Point(120, 16);
+            RadioButton_FileSelection_SequenceNumbering_IndexWeight.Location = new System.Drawing.Point(122, 16);
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Name = "RadioButton_FileSelection_SequenceNumbering_IndexWeight";
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Size = new System.Drawing.Size(95, 19);
@@ -3650,7 +3684,7 @@
             // RadioButton_FileSelection_SequenceNumbering_WeightIndex
             // 
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.AutoSize = true;
-            RadioButton_FileSelection_SequenceNumbering_WeightIndex.Location = new System.Drawing.Point(120, 38);
+            RadioButton_FileSelection_SequenceNumbering_WeightIndex.Location = new System.Drawing.Point(122, 38);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Name = "RadioButton_FileSelection_SequenceNumbering_WeightIndex";
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Size = new System.Drawing.Size(95, 19);
@@ -3775,7 +3809,7 @@
             // 
             // Button_FileSlection_Rename
             // 
-            Button_FileSlection_Rename.Location = new System.Drawing.Point(887, 155);
+            Button_FileSlection_Rename.Location = new System.Drawing.Point(892, 155);
             Button_FileSlection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_FileSlection_Rename.Name = "Button_FileSlection_Rename";
             Button_FileSlection_Rename.Size = new System.Drawing.Size(145, 27);
@@ -3838,85 +3872,9 @@
             Label_FileSelection_BrowseFileName.TabIndex = 21;
             Label_FileSelection_BrowseFileName.Text = "Browse File Name";
             // 
-            // GroupBox_FileSelection_Order
-            // 
-            GroupBox_FileSelection_Order.Controls.Add(RadioButton_FileSelection_Order_ByTarget);
-            GroupBox_FileSelection_Order.Controls.Add(RadioButton_FileSelection_Order_ByNight);
-            GroupBox_FileSelection_Order.Location = new System.Drawing.Point(887, 76);
-            GroupBox_FileSelection_Order.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_FileSelection_Order.Name = "GroupBox_FileSelection_Order";
-            GroupBox_FileSelection_Order.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_FileSelection_Order.Size = new System.Drawing.Size(119, 68);
-            GroupBox_FileSelection_Order.TabIndex = 15;
-            GroupBox_FileSelection_Order.TabStop = false;
-            GroupBox_FileSelection_Order.Text = "Order";
-            // 
-            // RadioButton_FileSelection_Order_ByTarget
-            // 
-            RadioButton_FileSelection_Order_ByTarget.AutoSize = true;
-            RadioButton_FileSelection_Order_ByTarget.Checked = true;
-            RadioButton_FileSelection_Order_ByTarget.Location = new System.Drawing.Point(16, 16);
-            RadioButton_FileSelection_Order_ByTarget.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_FileSelection_Order_ByTarget.Name = "RadioButton_FileSelection_Order_ByTarget";
-            RadioButton_FileSelection_Order_ByTarget.Size = new System.Drawing.Size(73, 19);
-            RadioButton_FileSelection_Order_ByTarget.TabIndex = 6;
-            RadioButton_FileSelection_Order_ByTarget.TabStop = true;
-            RadioButton_FileSelection_Order_ByTarget.Text = "By Target";
-            RadioButton_FileSelection_Order_ByTarget.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_FileSelection_Order_ByNight
-            // 
-            RadioButton_FileSelection_Order_ByNight.AutoSize = true;
-            RadioButton_FileSelection_Order_ByNight.Location = new System.Drawing.Point(16, 38);
-            RadioButton_FileSelection_Order_ByNight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_FileSelection_Order_ByNight.Name = "RadioButton_FileSelection_Order_ByNight";
-            RadioButton_FileSelection_Order_ByNight.Size = new System.Drawing.Size(71, 19);
-            RadioButton_FileSelection_Order_ByNight.TabIndex = 5;
-            RadioButton_FileSelection_Order_ByNight.Text = "By Night";
-            RadioButton_FileSelection_Order_ByNight.UseVisualStyleBackColor = true;
-            // 
-            // GroupBox_FileSelection_Count
-            // 
-            GroupBox_FileSelection_Count.Controls.Add(RadioButton_FileSelection_Index_ByFilter);
-            GroupBox_FileSelection_Count.Controls.Add(RadioButton_FileSelection_Index_ByTime);
-            GroupBox_FileSelection_Count.Location = new System.Drawing.Point(1013, 76);
-            GroupBox_FileSelection_Count.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_FileSelection_Count.Name = "GroupBox_FileSelection_Count";
-            GroupBox_FileSelection_Count.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_FileSelection_Count.Size = new System.Drawing.Size(106, 68);
-            GroupBox_FileSelection_Count.TabIndex = 16;
-            GroupBox_FileSelection_Count.TabStop = false;
-            GroupBox_FileSelection_Count.Text = "Index";
-            // 
-            // RadioButton_FileSelection_Index_ByFilter
-            // 
-            RadioButton_FileSelection_Index_ByFilter.AutoSize = true;
-            RadioButton_FileSelection_Index_ByFilter.Checked = true;
-            RadioButton_FileSelection_Index_ByFilter.Location = new System.Drawing.Point(16, 16);
-            RadioButton_FileSelection_Index_ByFilter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_FileSelection_Index_ByFilter.Name = "RadioButton_FileSelection_Index_ByFilter";
-            RadioButton_FileSelection_Index_ByFilter.Size = new System.Drawing.Size(67, 19);
-            RadioButton_FileSelection_Index_ByFilter.TabIndex = 6;
-            RadioButton_FileSelection_Index_ByFilter.TabStop = true;
-            RadioButton_FileSelection_Index_ByFilter.Text = "By Filter";
-            RadioButton_FileSelection_Index_ByFilter.UseVisualStyleBackColor = true;
-            // 
-            // RadioButton_FileSelection_Index_ByTime
-            // 
-            RadioButton_FileSelection_Index_ByTime.AutoSize = true;
-            RadioButton_FileSelection_Index_ByTime.Location = new System.Drawing.Point(16, 38);
-            RadioButton_FileSelection_Index_ByTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_FileSelection_Index_ByTime.Name = "RadioButton_FileSelection_Index_ByTime";
-            RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(67, 19);
-            RadioButton_FileSelection_Index_ByTime.TabIndex = 5;
-            RadioButton_FileSelection_Index_ByTime.Text = "By Time";
-            RadioButton_FileSelection_Index_ByTime.UseVisualStyleBackColor = true;
-            // 
             // GroupBox_FileSelection
             // 
             GroupBox_FileSelection.Controls.Add(CheckBox_FileSlection_NoTotals);
-            GroupBox_FileSelection.Controls.Add(GroupBox_FileSelection_Count);
-            GroupBox_FileSelection.Controls.Add(GroupBox_FileSelection_Order);
             GroupBox_FileSelection.Controls.Add(Label_FileSelection_BrowseFileName);
             GroupBox_FileSelection.Controls.Add(GroupBox_FileSelection_Statistics);
             GroupBox_FileSelection.Controls.Add(Button_FileSlection_Rename);
@@ -3935,7 +3893,7 @@
             // CheckBox_FileSlection_NoTotals
             // 
             CheckBox_FileSlection_NoTotals.AutoSize = true;
-            CheckBox_FileSlection_NoTotals.Location = new System.Drawing.Point(1043, 160);
+            CheckBox_FileSlection_NoTotals.Location = new System.Drawing.Point(1048, 160);
             CheckBox_FileSlection_NoTotals.Name = "CheckBox_FileSlection_NoTotals";
             CheckBox_FileSlection_NoTotals.Size = new System.Drawing.Size(75, 19);
             CheckBox_FileSlection_NoTotals.TabIndex = 22;
@@ -3946,7 +3904,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1170, 840);
+            ClientSize = new System.Drawing.Size(1170, 758);
             Controls.Add(TabControl_Update);
             Controls.Add(GroupBox_FileSelection);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -4013,15 +3971,13 @@
             TabPage_SubFrameWeights.ResumeLayout(false);
             GroupBox_FileSelection_SequenceOrder.ResumeLayout(false);
             GroupBox_FileSelection_SequenceOrder.PerformLayout();
+            GroupBox_FileSelection_Count.ResumeLayout(false);
+            GroupBox_FileSelection_Count.PerformLayout();
             GroupBox_FileSelection_DirectorySelection.ResumeLayout(false);
             GroupBox_FileSelection_DirectorySelection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)NumericUpDown_FileSelection_DirectorySelection_TotalFrames).EndInit();
             GroupBox_FileSelection_Statistics.ResumeLayout(false);
             GroupBox_FileSelection_Statistics.PerformLayout();
-            GroupBox_FileSelection_Order.ResumeLayout(false);
-            GroupBox_FileSelection_Order.PerformLayout();
-            GroupBox_FileSelection_Count.ResumeLayout(false);
-            GroupBox_FileSelection_Count.PerformLayout();
             GroupBox_FileSelection.ResumeLayout(false);
             GroupBox_FileSelection.PerformLayout();
             ResumeLayout(false);
@@ -4325,9 +4281,6 @@
         private System.Windows.Forms.Label Label_FileSelection_Statistics_SubFrameOverhead;
         private System.Windows.Forms.Label Label_FileSelection_Statistics_TempratureCompensation;
         private System.Windows.Forms.Label Label_FileSelection_BrowseFileName;
-        private System.Windows.Forms.GroupBox GroupBox_FileSelection_Order;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByTarget;
-        private System.Windows.Forms.RadioButton RadioButton_FileSelection_Order_ByNight;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Count;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByFilter;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTime;

@@ -13,7 +13,7 @@ namespace XisfFileManager.Calculations
         public List<double> AirMass { get; set; }
         public double AirMassScaled { get; private set; }
         public double AirMassValue { private get; set; } = 1.0;
-        public double AirMassRangeMin { private get; set; } = 0.0;
+        public double AirMassRangeMin { private get; set; }
         public double AirMassRangeMax { private get; set; } = 1.0;
 
         public List<bool> Approved { get; set; }
@@ -21,73 +21,73 @@ namespace XisfFileManager.Calculations
         public List<double> Eccentricity { get; set; }
         public double EccentricityScaled { get; private set; }
         public double EccentricityValue { private get; set; } = 1.0;
-        public double EccentricityRangeMin { private get; set; } = 0.0;
+        public double EccentricityRangeMin { private get; set; }
         public double EccentricityRangeMax { private get; set; } = 1.0;
 
         public List<double> EccentricityMeanDeviation { get; set; }
         public double EccentricityMeanDeviationScaled { get; private set; }
         public double EccentricityMeanDeviationValue { private get; set; } = 1.0;
-        public double EccentricityMeanDeviationRangeMin { private get; set; } = 0.0;
+        public double EccentricityMeanDeviationRangeMin { private get; set; }
         public double EccentricityMeanDeviationRangeMax { private get; set; } = 1.0;
 
         public List<double> Fwhm { get; set; }
         public double FwhmScaled { get; private set; }
         public double FwhmValue { private get; set; } = 1.0;
-        public double FwhmRangeMin { private get; set; } = 0.0;
+        public double FwhmRangeMin { private get; set; }
         public double FwhmRangeMax { private get; set; } = 1.0;
 
         public List<double> FwhmMeanDeviation { get; set; }
         public double FwhmMeanDeviationScaled { get; private set; }
         public double FwhmMeanDeviationValue { private get; set; } = 1.0;
-        public double FwhmMeanDeviationRangeMin { private get; set; } = 0.0;
+        public double FwhmMeanDeviationRangeMin { private get; set; }
         public double FwhmMeanDeviationRangeMax { private get; set; } = 1.0;
 
         public List<double> Median { get; set; }
         public double MedianScaled { get; private set; }
         public double MedianValue { private get; set; } = 1.0;
-        public double MedianRangeMin { private get; set; } = 0.0;
+        public double MedianRangeMin { private get; set; }
         public double MedianRangeMax { private get; set; } = 1.0;
 
         public List<double> MedianMeanDeviation { get; set; }
         public double MedianMeanDeviationScaled { get; private set; }
         public double MedianMeanDeviationValue { private get; set; } = 1.0;
-        public double MedianMeanDeviationRangeMin { private get; set; } = 0.0;
+        public double MedianMeanDeviationRangeMin { private get; set; }
         public double MedianMeanDeviationRangeMax { private get; set; } = 1.0;
 
         public List<double> Noise { get; set; }
         public double NoiseScaled { get; private set; }
         public double NoiseValue { private get; set; } = 1.0;
-        public double NoiseRangeMin { private get; set; } = 0.0;
+        public double NoiseRangeMin { private get; set; }
         public double NoiseRangeMax { private get; set; } = 1.0;
 
         public List<double> NoiseRatio { get; set; }
         public double NoiseRatioScaled { get; private set; }
         public double NoiseRatioValue { private get; set; } = 1.0;
-        public double NoiseRatioRangeMin { private get; set; } = 0.0;
+        public double NoiseRatioRangeMin { private get; set; }
         public double NoiseRatioRangeMax { private get; set; } = 1.0;
 
         public List<double> Snr { get; set; }
         public double SnrWeightScaled { get; private set; }
         public double SnrWeightValue { private get; set; } = 1.0;
-        public double SnrWeightRangeMin { private get; set; } = 0.0;
+        public double SnrWeightRangeMin { private get; set; }
         public double SnrWeightRangeMax { private get; set; } = 1.0;
 
         public List<double> StarResidual { get; set; }
         public double StarResidualScaled { get; private set; }
         public double StarResidualValue { private get; set; } = 1.0;
-        public double StarResidualRangeMin { private get; set; } = 0.0;
+        public double StarResidualRangeMin { private get; set; }
         public double StarResidualRangeMax { private get; set; } = 1.0;
 
         public List<double> StarResidualMeanDeviation { get; set; }
         public double StarResidualMeanDeviationScaled { get; private set; }
         public double StarResidualMeanDeviationValue { private get; set; } = 1.0;
-        public double StarResidualMeanDeviationRangeMin { private get; set; } = 0.0;
+        public double StarResidualMeanDeviationRangeMin { private get; set; }
         public double StarResidualMeanDeviationRangeMax { private get; set; } = 1.0;
 
         public List<double> Stars { get; set; }
         public double StarsScaled { get; private set; }
         public double StarsValue { private get; set; } = 1.0;
-        public double StarsRangeMin { private get; set; } = 0.0;
+        public double StarsRangeMin { private get; set; }
         public double StarsRangeMax { private get; set; } = 1.0;
 
         public List<double> Weight { get; set; }

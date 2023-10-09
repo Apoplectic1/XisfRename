@@ -25,7 +25,7 @@ namespace XisfFileManager
 
     public class CalibrationTabPageEvent
     {
-        public static event DataReceivedEventHandler CalibrationTabPage_InvokeEvent;
+        public static event DataReceivedEvent CalibrationTabPage_InvokeEvent;
 
         public static void TransmitData(CalibrationTabPageValues data)
         {

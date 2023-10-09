@@ -99,7 +99,7 @@ namespace XisfFileManager.FileOperations
 
                     // We need to set the start address and length of the image and thumbnail attachements due to changes in the <xisf> to </xisf> length
                     // Both image and thumbnail attachements require being padded with 0's prior to the image to BlockAlign them  
-                    UpdateImageAttachmentLocationsXml(xmlDoc, xFile);
+                    _ = UpdateImageAttachmentLocationsXml(xmlDoc, xFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -194,7 +194,7 @@ namespace XisfFileManager.FileOperations
             if (xFile.Approved == false)
             {
                 sourceFilePath = Path.GetDirectoryName(xFile.FilePath);
-                Directory.CreateDirectory(sourceFilePath + "\\Rejected");
+                _ = Directory.CreateDirectory(sourceFilePath + "\\Rejected");
                 File.Move(xFile.FilePath, sourceFilePath + "\\Rejected\\" + Path.GetFileName(xFile.FilePath));
             }
 
@@ -258,7 +258,7 @@ namespace XisfFileManager.FileOperations
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
             for (int i = nodeList.Count - 1; i >= 0; i--)
             {
-                nodeList[i].ParentNode.RemoveChild(nodeList[i]);
+                _ = nodeList[i].ParentNode.RemoveChild(nodeList[i]);
             }
 
             // At this point, our xmlDoc only contains header boilerplate
@@ -294,7 +294,7 @@ namespace XisfFileManager.FileOperations
                     newElement.SetAttribute("name", keyword.Name);
                     newElement.SetAttribute("comment", keyword.Comment);
                     newElement.SetAttribute("value", keyword.Value.ToString());
-                    item.AppendChild(newElement);
+                    _ = item.AppendChild(newElement);
                 }
             }
         }
@@ -414,7 +414,7 @@ namespace XisfFileManager.FileOperations
                                             "    Current Write Position:          " + position.ToString() + "\n" +
                                             "    Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
 
-                                        MessageBox.Show(message, title, MessageBoxButtons.OK);
+                                        _ = MessageBox.Show(message, title, MessageBoxButtons.OK);
                                         return false;
                                     }
 
@@ -460,7 +460,7 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex)
             {
-                MessageBox.Show(fileName, "WriteBinaryFile Failed");
+                _ = MessageBox.Show(fileName, "WriteBinaryFile Failed");
                 return false;
             }
 

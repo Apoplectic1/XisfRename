@@ -9,21 +9,18 @@ using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
 using System.Drawing;
 using XisfFileManager.Calculations;
-using static XisfFileManager.Calculations.SubFrameNumericLists;
 using MathNet.Numerics.Statistics;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
-using System.Threading;
-
+using System.Reflection;
 using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using System.Diagnostics.Metrics;
-using System.Collections;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using static System.Net.WebRequestMethods;
+using System.Globalization;
 
 namespace XisfFileManager
 {
-    public delegate void DataReceivedEventHandler(CalibrationTabPageValues data);
+    public delegate void DataReceivedEvent(CalibrationTabPageValues data);
 
     // ##########################################################################################################################
     // ##########################################################################################################################
@@ -96,21 +93,12 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_Task.Text = "No Images Selected";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
 
-            /*
-            // Version Number
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-                Version version = ad.CurrentVersion;
-                Text = "XISF File Manager - Version: " + version.ToString();
-            }
-            else
-            {
-                Text = "XISF File Manager - Version: " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
-            }
-            */
-            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
-            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            this.Text = $"XISF File Manager - Version: {version} - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+
+
+            _ = Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
+            _ = Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
         }
 
         // ****************************************************************************************************************
@@ -288,26 +276,7 @@ namespace XisfFileManager
                 else
                     return;
             }
-            /*
-            mFolder = new OpenFolderDialog()
-            {
-                Title = "Select .xisf Folder",
-                //AutoUpgradeEnabled = true,
-                CheckPathExists = false,
-
-                InitialDirectory = mFolderBrowseState,
-                // InitialDirectory = @"E:\Temp\maste", // @"E:\Photography\Astro Photography\Processing",
-
-                Multiselect = true,
-                RestoreDirectory = true
-            };
-
-            if (mFolder.ShowDialog(IntPtr.Zero).Equals(DialogResult.OK) == false)
-            {
-                return;
-            }
-            */
-            //mFolderBrowseState = mFolder.SelectedPaths;
+            
             DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
 
             mDirectoryOps.ClearFileList();
@@ -317,7 +286,7 @@ namespace XisfFileManager
             mDirectoryOps.Frame = eFrame.ALL;
             mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            mDirectoryOps.RecuseDirectories(diDirectoryTree);
+            _ = mDirectoryOps.RecuseDirectories(diDirectoryTree);
 
             Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
@@ -327,11 +296,11 @@ namespace XisfFileManager
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
+                _ = MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
                 return;
             }
 
-            XisfFileReader fileReader = new XisfFileReader();
+            XisfFileReader fileReader = new();
 
             // Upate the UI with data from the .xisf recursive directory search
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
@@ -411,7 +380,7 @@ namespace XisfFileManager
                 return;
             }
 
-            Label_FileSelection_Statistics_Task.Text = "Found " + mFileList.Count().ToString() + " Images";
+            Label_FileSelection_Statistics_Task.Text = "Found " + mFileList.Count.ToString() + " Images";
 
             // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
             // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
@@ -440,8 +409,8 @@ namespace XisfFileManager
 
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
-            List<string> TargetNames = new List<string>();
-            List<string> WeightKeywords = new List<string>();
+            List<string> TargetNames = new();
+            List<string> WeightKeywords = new();
 
             foreach (XisfFile file in mFileList)
             {
@@ -464,7 +433,7 @@ namespace XisfFileManager
 
                 foreach (string item in TargetNames)
                 {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
+                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
                 }
 
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
@@ -489,7 +458,7 @@ namespace XisfFileManager
 
                 foreach (var item in WeightKeywords)
                 {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
+                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
@@ -512,7 +481,7 @@ namespace XisfFileManager
 
 
             // Now make a list of all Keywords found in ALL files. Sort and populate comboBox
-            List<string> keywordNamelist = new List<string>();
+            List<string> keywordNamelist = new();
 
             foreach (XisfFile xFile in mFileList)
             {
@@ -527,7 +496,7 @@ namespace XisfFileManager
 
             foreach (var name in keywordNamelist)
             {
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+                _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
 
             // **********************************************************************
@@ -566,9 +535,9 @@ namespace XisfFileManager
             TabControl_Update.Enabled = true;
         }
 
-        public void SetDirectoryStatistics(List<XisfFile> xFileList)
+        public void SetDirectoryStatistics()
         {
-            mDirectoryProperties.SetDirectoryStatistics(xFileList, CheckBox_FileSlection_NoTotals.Checked);
+            mDirectoryProperties.SetDirectoryStatistics(mFileList, CheckBox_FileSlection_NoTotals.Checked);
 
             // Iterate through each Target, Camera and associated Panel Directory
             foreach (var group in mDirectoryProperties.DirectoryStatistics)
@@ -583,14 +552,21 @@ namespace XisfFileManager
             }
         }
 
-        public void SetFileIndex(bool bTarget, bool bNight, bool bFilter, bool bTime, List<XisfFile> xFileList)
+        public void SetFileIndex(bool bFilter, bool bTime)
         {
-            // Begin directory tree recursive search
+            if (bTime)
+            {
+                int index = 0;
+
+                foreach (XisfFile xFile in mFileList)
+                {
+                    xFile.Index = (xFile.Unique) ? ++index : index++;
+                }
+                return;
+            }
 
             foreach (var group in mDirectoryProperties.DirectoryStatistics)
             {
-                string currentDirectory = group.Key;
-
                 int lumaIndex = 0;
                 int redIndex = 0;
                 int greenIndex = 0;
@@ -600,9 +576,27 @@ namespace XisfFileManager
                 int s2Index = 0;
                 int shutterIndex = 0;
 
-                foreach (XisfFile xFile in xFileList)
+                // The newDirectory may or may not be the same as the original directory.
+                // The group.Key will index into the DirectoryStatistics Dictionary to get the directory we are working in.
+                // This allows us to rename the directory BEFORE renaming the files in the renamed directory without changing mFileList and
+                // it's an attempt to avoid ndows file rename/busy problems doing this the other way around.
+
+                string originalDirectory = group.Key;
+                string newDirectory = mDirectoryProperties.DirectoryStatistics[group.Key];
+
+
+
+                foreach (XisfFile xFile in mFileList)
                 {
-                    if (xFile.FilePath.Contains(currentDirectory))
+                    // Assuptions
+                    // For a given Target, we are assuming that there are one set of captures (Filters) under a particular Camera.
+                    // or a Panel in a Mosaic (the Mosaic Panel is effectively treaded as unique target.
+                    // 
+                    // We are also assuming that mFileList is in time sequential order independent of Filter (this is done before SetFileIndex() is called).
+
+                    // This code will sequentially number Filter image files in each group
+
+                    if (xFile.FilePath.Contains(originalDirectory))
                     {
                         if (xFile.FilterName.Equals("Luma"))
                             xFile.Index = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
@@ -635,14 +629,12 @@ namespace XisfFileManager
         private void Button_Rename_Click(object sender, EventArgs e)
         {
             int duplicates = 0;
-            bool byTarget = RadioButton_FileSelection_Order_ByTarget.Checked;
-            bool byNight = RadioButton_FileSelection_Order_ByNight.Checked;
-            bool byFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
-            bool byTime = RadioButton_FileSelection_Index_ByTime.Checked;
+            bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
+            bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
 
-            Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count().ToString() + " Images";
+            Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count.ToString() + " Images";
 
-            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count();
+            ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
             mRenameFile.MarkDuplicates(mFileList); // Does not move them
@@ -652,13 +644,18 @@ namespace XisfFileManager
             // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
             // Any found Duplicates are handled inside the RenameFile method
 
-            SetDirectoryStatistics(mFileList);
+            SetDirectoryStatistics();
 
-            SetFileIndex(byTarget, byNight, byFilter, byTime, mFileList);
+            SetFileIndex(bFilter, bTime);
 
             foreach (XisfFile xFile in mFileList)
             {
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
+
+                string key = Path.GetDirectoryName(xFile.FilePath);
+                string newXisfFilePath = mDirectoryProperties.DirectoryStatistics[key] + "\\" + Path.GetFileName(xFile.FilePath);
+                xFile.FilePath = newXisfFilePath;
+
                 Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
                 xFile.Master = CheckBox_FileSelection_DirectorySelection_Master.Checked;
@@ -675,10 +672,11 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
 
             if (duplicates == 1)
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
             else
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count() - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
+            mDirectoryProperties.DirectoryStatistics.Clear();
             mFileList.Clear();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
@@ -688,7 +686,11 @@ namespace XisfFileManager
         {
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
-            TabControl_Update.Enabled = false;
+            GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = false;
+            GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = false;
+            GroupBox_KeywordUpdateTab_Telescope.Enabled = false;
+            GroupBox_KeywordUpdateTab_Camera.Enabled = false;
+            GroupBox_KeywordUpdateTab_ImageType.Enabled = false;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
 
@@ -702,14 +704,18 @@ namespace XisfFileManager
                 {
                     var result = MessageBox.Show(
                         "SubFrame Numerical Weight List is Invalid.\n\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
-                        "compared to the number files in at least one Numeric Weight list.\n\nExample:\n    mWeightLists.Approved.Count = " + SubFrameNumericLists.Approved.Count() + "",
+                        "compared to the number files in at least one Numeric Weight list.\n\nExample:\n    mWeightLists.Approved.Count = " + SubFrameNumericLists.Approved.Count + "",
                         "\nMainForm.cs Button_Update_Click()",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
 
                     Label_FileSelection_Statistics_Task.Text = "Update Aborted";
                     GroupBox_FileSelection.Enabled = true;
-                    TabControl_Update.Enabled = true;
+                    GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
+                    GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Camera.Enabled = true;
+                    GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
                     return;
                 }
 
@@ -767,7 +773,11 @@ namespace XisfFileManager
                         MessageBoxIcon.Error);
 
                     GroupBox_FileSelection.Enabled = true;
-                    TabControl_Update.Enabled = true;
+                    GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
+                    GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Camera.Enabled = true;
+                    GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
                     return;
                 }
 
@@ -776,7 +786,11 @@ namespace XisfFileManager
 
             Label_FileSelection_Statistics_Task.Text = count.ToString() + " Images Updated";
             GroupBox_FileSelection.Enabled = true;
-            TabControl_Update.Enabled = true;
+            GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
+            GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
+            GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
+            GroupBox_KeywordUpdateTab_Camera.Enabled = true;
+            GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)
@@ -808,7 +822,7 @@ namespace XisfFileManager
 
             if (bStatus == false)
             {
-                MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
+                _ = MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
                 return;
             }
 
@@ -819,15 +833,15 @@ namespace XisfFileManager
             switch (eSubFrameValidListsValid)
             {
                 case eValidation.EMPTY:
-                    MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
+                    _ = MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
                 case eValidation.MISMATCH:
-                    MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
+                    _ = MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
                 case eValidation.INVALD:
-                    MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString() + " items.\n\n", mFileCsv.FileName);
+                    _ = MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString(CultureInfo.InvariantCulture) + " items.\n\n", mFileCsv.FileName);
                     return;
             }
 
@@ -930,7 +944,7 @@ namespace XisfFileManager
             mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
         }
 
-        private double ValidateRangeValue(System.Windows.Forms.TextBox textBox)
+        private static double ValidateRangeValue(System.Windows.Forms.TextBox textBox)
         {
             bool status;
             double value;
@@ -945,7 +959,7 @@ namespace XisfFileManager
             rangedValue = rangedValue > 500 ? 500 : rangedValue;
             rangedValue = rangedValue < -500 ? -500 : rangedValue;
 
-            textBox.Text = rangedValue.ToString("F0");
+            textBox.Text = rangedValue.ToString("F0", CultureInfo.InvariantCulture);
 
             return rangedValue;
         }
@@ -2225,7 +2239,7 @@ namespace XisfFileManager
                     frameTypeCount++;
                 }
 
-                if (file.TargetObjectName.Equals("Master"))
+                if (file.TargetObjectName.Equals("Master", StringComparison.Ordinal))
                 {
                     foundMaster = true;
                     masterCount++;
@@ -2466,13 +2480,13 @@ namespace XisfFileManager
 
             // cameraList should contain an entry for each file
             List<string> CameraList = mFileList.Where(c => c.Camera == "A144" || c.Camera == "Q178" || c.Camera == "Z183" || c.Camera == "Z533").Select(c => c.Camera).ToList();
-            bool bFoundZ183 = CameraList.Count(c => c == "Z183") != 0;
-            bool bFoundZ533 = CameraList.Count(c => c == "Z533") != 0;
-            bool bFoundQ178 = CameraList.Count(c => c == "Q178") != 0;
-            bool bFoundA144 = CameraList.Count(c => c == "A144") != 0;
+            bool bFoundZ183 = CameraList.Any(c => c == "Z183");
+            bool bFoundZ533 = CameraList.Any(c => c == "Z533");
+            bool bFoundQ178 = CameraList.Any(c => c == "Q178");
+            bool bFoundA144 = CameraList.Any(c => c == "A144");
 
-            bool bNoCameras = CameraList.Count() == 0;
-            bool bMissingCameras = (CameraList.Count() != mFileList.Count()) && !bNoCameras;
+            bool bNoCameras = CameraList.Count == 0;
+            bool bMissingCameras = (CameraList.Count != mFileList.Count) && !bNoCameras;
             bool bDifferentCameras = ((bFoundZ183 ? 1 : 0) + (bFoundZ533 ? 1 : 0) + (bFoundQ178 ? 1 : 0) + (bFoundA144 ? 1 : 0) >= 2) && !bMissingCameras;
             bool bUniqueCamera = !bMissingCameras && !bDifferentCameras && !bNoCameras;
             //bool bUniqueCamera = !bMissingCameras && !bNoCameras;
@@ -2527,8 +2541,8 @@ namespace XisfFileManager
             if (bFoundZ533)
             {
                 List<double> SecondsListZ533 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z533").Select(i => i.ExposureSeconds).ToList();
-                bNoSecondsZ533 = SecondsListZ533.Count() == 0;
-                bMissingSecondsZ533 = SecondsListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoSecondsZ533;
+                bNoSecondsZ533 = SecondsListZ533.Count == 0;
+                bMissingSecondsZ533 = SecondsListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoSecondsZ533;
                 bDifferentSecondsZ533 = SecondsListZ533.Distinct().Count() > 1;
                 bUniqueSecondsZ533 = !bMissingSecondsZ533 && !bDifferentSecondsZ533 && !bNoSecondsZ533;
 
@@ -2555,8 +2569,8 @@ namespace XisfFileManager
             if (bFoundZ183)
             {
                 List<double> SecondsListZ183 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z183").Select(i => i.ExposureSeconds).ToList();
-                bNoSecondsZ183 = SecondsListZ183.Count() == 0;
-                bMissingSecondsZ183 = SecondsListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoSecondsZ183;
+                bNoSecondsZ183 = SecondsListZ183.Count == 0;
+                bMissingSecondsZ183 = SecondsListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoSecondsZ183;
                 bDifferentSecondsZ183 = SecondsListZ183.Distinct().Count() > 1;
                 bUniqueSecondsZ183 = !bMissingSecondsZ183 && !bDifferentSecondsZ183 && !bNoSecondsZ183;
 
@@ -2583,8 +2597,8 @@ namespace XisfFileManager
             if (bFoundQ178)
             {
                 List<double> SecondsListQ178 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Q178").Select(i => i.ExposureSeconds).ToList();
-                bNoSecondsQ178 = SecondsListQ178.Count() == 0;
-                bMissingSecondsQ178 = SecondsListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoSecondsQ178;
+                bNoSecondsQ178 = SecondsListQ178.Count == 0;
+                bMissingSecondsQ178 = SecondsListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoSecondsQ178;
                 bDifferentSecondsQ178 = SecondsListQ178.Distinct().Count() > 1;
                 bUniqueSecondsQ178 = !bMissingSecondsQ178 && !bDifferentSecondsQ178 && !bNoSecondsQ178;
 
@@ -2610,8 +2624,8 @@ namespace XisfFileManager
             if (bFoundA144)
             {
                 List<double> SecondsListA144 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "A144").Select(i => i.ExposureSeconds).ToList();
-                bNoSecondsA144 = SecondsListA144.Count() == 0;
-                bMissingSecondsA144 = SecondsListA144.Count() != CameraList.Count(c => c == "A144") && !bNoSecondsA144;
+                bNoSecondsA144 = SecondsListA144.Count == 0;
+                bMissingSecondsA144 = SecondsListA144.Count != CameraList.Count(c => c == "A144") && !bNoSecondsA144;
                 bDifferentSecondsA144 = SecondsListA144.Distinct().Count() > 1;
                 bUniqueSecondsA144 = !bMissingSecondsA144 && !bDifferentSecondsA144 && !bNoSecondsA144;
 
@@ -2645,8 +2659,8 @@ namespace XisfFileManager
             if (bFoundZ533)
             {
                 List<int> GainListZ533 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z533").Select(i => i.Gain).ToList();
-                bNoGainsZ533 = GainListZ533.Count() == 0;
-                bMissingGainsZ533 = GainListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoGainsZ533;
+                bNoGainsZ533 = GainListZ533.Count == 0;
+                bMissingGainsZ533 = GainListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoGainsZ533;
                 bDifferentGainsZ533 = GainListZ533.Distinct().Count() > 1 && !bMissingGainsZ533;
                 bUniqueGainZ533 = !bMissingGainsZ533 && !bDifferentGainsZ533 && !bNoGainsZ533;
 
@@ -2673,8 +2687,8 @@ namespace XisfFileManager
             if (bFoundZ183)
             {
                 List<int> GainListZ183 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z183").Select(i => i.Gain).ToList();
-                bNoGainsZ183 = GainListZ183.Count() == 0;
-                bMissingGainsZ183 = GainListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoGainsZ183;
+                bNoGainsZ183 = GainListZ183.Count == 0;
+                bMissingGainsZ183 = GainListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoGainsZ183;
                 bDifferentGainsZ183 = GainListZ183.Distinct().Count() > 1;
                 bUniqueGainZ183 = !bMissingGainsZ183 && !bDifferentGainsZ183 && !bNoGainsZ183;
 
@@ -2701,8 +2715,8 @@ namespace XisfFileManager
             if (bFoundQ178)
             {
                 List<int> GainListQ178 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Q178").Select(i => i.Gain).ToList();
-                bNoGainsQ178 = GainListQ178.Count() == 0;
-                bMissingGainsQ178 = GainListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoGainsQ178;
+                bNoGainsQ178 = GainListQ178.Count == 0;
+                bMissingGainsQ178 = GainListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoGainsQ178;
                 bDifferentGainsQ178 = GainListQ178.Distinct().Count() > 1 && !bMissingGainsQ178;
                 bUniqueGainQ178 = !bMissingGainsQ178 && !bDifferentGainsQ178 && !bNoGainsQ178;
 
@@ -2738,8 +2752,8 @@ namespace XisfFileManager
             if (bFoundZ533)
             {
                 List<int> OffsetListZ533 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z533").Select(i => i.Offset).ToList();
-                bNoOffsetsZ533 = OffsetListZ533.Count() == 0;
-                bMissingOffsetsZ533 = OffsetListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoOffsetsZ533;
+                bNoOffsetsZ533 = OffsetListZ533.Count == 0;
+                bMissingOffsetsZ533 = OffsetListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoOffsetsZ533;
                 bDifferentOffsetsZ533 = OffsetListZ533.Distinct().Count() > 1 && !bMissingOffsetsZ533;
                 bUniqueOffsetZ533 = !bMissingOffsetsZ533 && !bDifferentOffsetsZ533 && !bNoOffsetsZ533;
 
@@ -2766,8 +2780,8 @@ namespace XisfFileManager
             if (bFoundZ183)
             {
                 List<int> OffsetListZ183 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z183").Select(i => i.Offset).ToList();
-                bNoOffsetsZ183 = OffsetListZ183.Count() == 0;
-                bMissingOffsetsZ183 = OffsetListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoOffsetsZ183;
+                bNoOffsetsZ183 = OffsetListZ183.Count == 0;
+                bMissingOffsetsZ183 = OffsetListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoOffsetsZ183;
                 bDifferentOffsetsZ183 = OffsetListZ183.Distinct().Count() > 1;
                 bUniqueOffsetZ183 = !bMissingOffsetsZ183 && !bDifferentOffsetsZ183 && !bNoOffsetsZ183;
 
@@ -2793,8 +2807,8 @@ namespace XisfFileManager
             if (bFoundQ178)
             {
                 List<int> OffsetListQ178 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Q178").Select(i => i.Offset).ToList();
-                bNoOffsetsQ178 = OffsetListQ178.Count() == 0;
-                bMissingOffsetsQ178 = OffsetListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoOffsetsQ178;
+                bNoOffsetsQ178 = OffsetListQ178.Count == 0;
+                bMissingOffsetsQ178 = OffsetListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoOffsetsQ178;
                 bDifferentOffsetsQ178 = OffsetListQ178.Distinct().Count() > 1 && !bMissingOffsetsQ178;
                 bUniqueOffsetQ178 = !bMissingOffsetsQ178 && !bDifferentOffsetsQ178 && !bNoOffsetsQ178;
 
@@ -2829,8 +2843,8 @@ namespace XisfFileManager
             if (bFoundZ533)
             {
                 List<double> SensorTempListZ533 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z533").Select(i => i.SensorTemperature).ToList();
-                bNoSensorTempsZ533 = SensorTempListZ533.Count() == 0;
-                bMissingSensorTempsZ533 = SensorTempListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoSensorTempsZ533;
+                bNoSensorTempsZ533 = SensorTempListZ533.Count == 0;
+                bMissingSensorTempsZ533 = SensorTempListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoSensorTempsZ533;
                 bDifferentSensorTempsZ533 = SensorTempListZ533.Distinct().Count() > 1 && !bMissingSensorTempsZ533;
                 bUniqueSensorTempZ533 = !bMissingSensorTempsZ533 && !bDifferentSensorTempsZ533 && !bNoSensorTempsZ533;
 
@@ -2856,8 +2870,8 @@ namespace XisfFileManager
             if (bFoundZ183)
             {
                 List<double> SensorTempListZ183 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z183").Select(i => i.SensorTemperature).ToList();
-                bNoSensorTempsZ183 = SensorTempListZ183.Count() == 0;
-                bMissingSensorTempsZ183 = SensorTempListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoSensorTempsZ183;
+                bNoSensorTempsZ183 = SensorTempListZ183.Count == 0;
+                bMissingSensorTempsZ183 = SensorTempListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoSensorTempsZ183;
                 bDifferentSensorTempsZ183 = SensorTempListZ183.Distinct().Count() > 1;
                 bUniqueSensorTempZ183 = !bMissingSensorTempsZ183 && !bDifferentSensorTempsZ183 && !bNoSensorTempsZ183;
 
@@ -2883,8 +2897,8 @@ namespace XisfFileManager
             if (bFoundQ178)
             {
                 List<double> SensorTempListQ178 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "Q178").Select(i => i.FocuserTemperature).ToList();
-                bNoSensorTempsQ178 = SensorTempListQ178.Count() == 0;
-                bMissingSensorTempsQ178 = SensorTempListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoSensorTempsQ178;
+                bNoSensorTempsQ178 = SensorTempListQ178.Count == 0;
+                bMissingSensorTempsQ178 = SensorTempListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoSensorTempsQ178;
                 bDifferentSensorTempsQ178 = SensorTempListQ178.Distinct().Count() > 1 && !bMissingSensorTempsQ178;
                 bUniqueSensorTempQ178 = !bMissingSensorTempsQ178 && !bDifferentSensorTempsQ178 && !bNoSensorTempsQ178;
 
@@ -2910,8 +2924,8 @@ namespace XisfFileManager
             if (bFoundA144)
             {
                 List<double> SensorTempListA144 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "A144").Select(i => i.FocuserTemperature).ToList();
-                bNoSensorTempsA144 = SensorTempListA144.Count() == 0;
-                bMissingSensorTempsA144 = SensorTempListA144.Count() != CameraList.Count(c => c == "A144") && !bNoSensorTempsA144;
+                bNoSensorTempsA144 = SensorTempListA144.Count == 0;
+                bMissingSensorTempsA144 = SensorTempListA144.Count != CameraList.Count(c => c == "A144") && !bNoSensorTempsA144;
                 bDifferentSensorTempsA144 = SensorTempListA144.Distinct().Count() > 1 && !bMissingSensorTempsA144;
                 bUniqueSensorTempA144 = !bMissingSensorTempsA144 && !bDifferentSensorTempsA144 && !bNoSensorTempsA144;
 
@@ -2945,8 +2959,8 @@ namespace XisfFileManager
             if (bFoundZ533)
             {
                 List<int> BinningListZ533 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z533").Select(i => i.Binning).ToList();
-                bNoBinningsZ533 = BinningListZ533.Count() == 0;
-                bMissingBinningsZ533 = BinningListZ533.Count() != CameraList.Count(c => c == "Z533") && !bNoBinningsZ533;
+                bNoBinningsZ533 = BinningListZ533.Count == 0;
+                bMissingBinningsZ533 = BinningListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoBinningsZ533;
                 bDifferentBinningsZ533 = BinningListZ533.Distinct().Count() > 1;
                 bUniqueBinningZ533 = !bMissingBinningsZ533 && !bDifferentBinningsZ533 && !bNoBinningsZ533;
 
@@ -2972,8 +2986,8 @@ namespace XisfFileManager
             if (bFoundZ183)
             {
                 List<int> BinningListZ183 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z183").Select(i => i.Binning).ToList();
-                bNoBinningsZ183 = BinningListZ183.Count() == 0;
-                bMissingBinningsZ183 = BinningListZ183.Count() != CameraList.Count(c => c == "Z183") && !bNoBinningsZ183;
+                bNoBinningsZ183 = BinningListZ183.Count == 0;
+                bMissingBinningsZ183 = BinningListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoBinningsZ183;
                 bDifferentBinningsZ183 = BinningListZ183.Distinct().Count() > 1;
                 bUniqueBinningZ183 = !bMissingBinningsZ183 && !bDifferentBinningsZ183 && !bNoBinningsZ183;
 
@@ -2999,8 +3013,8 @@ namespace XisfFileManager
             if (bFoundQ178)
             {
                 List<int> BinningListQ178 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Q178").Select(i => i.Binning).ToList();
-                bNoBinningsQ178 = BinningListQ178.Count() == 0;
-                bMissingBinningsQ178 = BinningListQ178.Count() != CameraList.Count(c => c == "Q178") && !bNoBinningsQ178;
+                bNoBinningsQ178 = BinningListQ178.Count == 0;
+                bMissingBinningsQ178 = BinningListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoBinningsQ178;
                 bDifferentBinningsQ178 = BinningListQ178.Distinct().Count() > 1;
                 bUniqueBinningQ178 = !bMissingBinningsQ178 && !bDifferentBinningsQ178 && !bNoBinningsQ178;
 
@@ -3026,8 +3040,8 @@ namespace XisfFileManager
             if (bFoundA144)
             {
                 List<int> BinningsListA144 = mFileList.Where(i => i.Binning > 0 && i.Camera == "A144").Select(i => i.Binning).ToList();
-                bNoBinningsA144 = BinningsListA144.Count() == 0;
-                bMissingBinningsA144 = BinningsListA144.Count() != CameraList.Count(c => c == "A144") && !bNoBinningsA144;
+                bNoBinningsA144 = BinningsListA144.Count == 0;
+                bMissingBinningsA144 = BinningsListA144.Count != CameraList.Count(c => c == "A144") && !bNoBinningsA144;
                 bDifferentBinningsA144 = BinningsListA144.Distinct().Count() > 1;
                 bUniqueBinningsA144 = !bMissingBinningsA144 && !bDifferentBinningsA144 && !bNoBinningsA144;
 
@@ -3687,7 +3701,7 @@ namespace XisfFileManager
                 {
                     foreach (Keyword node in file.mKeywordList.mKeywordList)
                     {
-                        if (node.Comment.ToLower().Contains("numberofimages"))
+                        if (node.Comment.ToLower(CultureInfo.InvariantCulture).Contains("numberofimages"))
                         {
                             numberOfImages = Convert.ToInt32(Regex.Match(node.Comment, @"\d+").Value);
                             foundNumberOfImages = true;
@@ -3767,7 +3781,7 @@ namespace XisfFileManager
 
                 foreach (var item in WeightKeywords)
                 {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
+                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
                 }
 
                 if (WeightKeywords.Count > 1)
@@ -3811,7 +3825,7 @@ namespace XisfFileManager
                     file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 }
 
-                WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                _ = WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
@@ -3848,28 +3862,28 @@ namespace XisfFileManager
             mCalibration.Frame = eFrame.ALL;
 
             if (!bMatchedAllFiles)
-                mCalibration.FindLibraryCalibrationFrames(mFileList);
+                _ = mCalibration.FindLibraryCalibrationFrames(mFileList);
         }
 
         private void CalibrationTab_ReMatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
-            mCalibration.MatchCalibrationLibraryFrames(mFileList);
+            _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
             if (CheckBox_CalibrationTab_CreateNew.Checked == true)
             {
-                string targetCalibrationDirectory = mCalibration.SetTargetCalibrationFileDirectories(mFileList[0].FilePath);
+                string targetCalibrationDirectory = Calibration.SetTargetCalibrationFileDirectories(mFileList[0].FilePath);
 
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);
 
-                Directory.CreateDirectory(targetCalibrationDirectory);
+                _ = Directory.CreateDirectory(targetCalibrationDirectory);
             }
 
-            mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
+            _ = mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
         }
 
         private void TextBox_CalibrationTab_ExposureTolerance_TextChanged(object sender, EventArgs e)
@@ -3938,8 +3952,7 @@ namespace XisfFileManager
             {
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = false;
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = false;
-                Label_FileSelection_Statistics_Task.Text = "Updates are enabled.";
-            }
+             }
         }
 
         private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
@@ -3954,7 +3967,7 @@ namespace XisfFileManager
 
             string directoryName = Path.GetDirectoryName(mFileList[0].FilePath);
             if (directoryName.Contains(@"Captures\"))
-                directoryName = directoryName.Substring(0, directoryName.IndexOf("Captures")) + @"Captures\Calibration";
+                directoryName = string.Concat(directoryName.AsSpan(0, directoryName.IndexOf("Captures")), @"Captures\Calibration");
             else
                 directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..") + @"\Calibration");
 
@@ -3980,10 +3993,10 @@ namespace XisfFileManager
             }
 
             mCalibration.ResetAll();
-            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString();
-            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString();
-            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = mCalibration.OffsetTolerance.ToString();
-            TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = mCalibration.TemperatureTolerance.ToString();
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString(CultureInfo.InvariantCulture);
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString(CultureInfo.InvariantCulture);
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = mCalibration.OffsetTolerance.ToString(CultureInfo.InvariantCulture);
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = mCalibration.TemperatureTolerance.ToString(CultureInfo.InvariantCulture);
 
             Label_CalibrationTab_TotalMatchedFiles.Text = "No Macthed Calibration Frames";
 
@@ -4023,7 +4036,7 @@ namespace XisfFileManager
             {
                 if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == value.Name)
                 {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
+                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = value.Value.ToString();
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = value.Comment;
                 }
@@ -4108,7 +4121,7 @@ namespace XisfFileManager
 
             foreach (var name in keywordNamelist)
             {
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+                _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
         }
 

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -69,7 +65,7 @@ namespace XisfFileManager.FileOperations
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
+                    _ = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
                         "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
                         "Parse XISF File",
                         MessageBoxButtons.OKCancel,

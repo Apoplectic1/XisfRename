@@ -5,7 +5,9 @@ namespace XisfFileManager
 {
     public partial class UserInputForm : Form
     {
-        public Forms.UserInputForm.UserInputFormData mData; 
+        public Forms.UserInputForm.UserInputFormData mData;
+        public bool GlobalCheckBox { get; set; }
+        public string TextBox { get { return mData.TextBox; } set { mData.TextBox = value; } }
 
         public UserInputForm()
         {
@@ -23,10 +25,11 @@ namespace XisfFileManager
 
         private void Button_OK_Click(object sender, EventArgs e)
         {
-            this.mData.mGlobalCheckBox = CheckBox_Global.Checked;
-            this.mData.mTextBox = this.TextBox_Text.Text;
+            GlobalCheckBox = CheckBox_Global.Checked;
+            TextBox = this.TextBox_Text.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
     }
 }
