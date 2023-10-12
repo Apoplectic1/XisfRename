@@ -16,20 +16,30 @@ sealed class DirectoryProperties
     public void SetDirectoryStatistics(List<XisfFile> xFileList, bool bNoTotals)
     {
         var directoryGroups = xFileList.GroupBy(path => Path.GetDirectoryName(path.FilePath));
-        
+
         foreach (var group in directoryGroups)
         {
             string groupName = group.Key;
 
-            int groupCount = group.Count();
-            double totalExposureTime = group.Sum(fileItem => fileItem.ExposureSeconds) / 3600.0;
+            // All occurrences of any of these words
+            MatchCollection matches = Regex.Matches(groupName, @"(?:Luma|Red|Green|Blue|Ha|O3|S2|Shutter)");
+            if (matches.Count > 0)
+            {
+                // Get the last occurrence by accessing the last match in the collection
+                Match lastMatch = matches[matches.Count - 1];
 
-            string string2 = bNoTotals ? "" : $"{groupCount}, {totalExposureTime:F1}";
-            int indexOfDashSpace = groupName.LastIndexOf(" -");
+                // Trim the input string to remove anything after the last specified word
+                groupName = groupName.Substring(0, lastMatch.Index + lastMatch.Length);
 
-            string newStats = indexOfDashSpace >= 0 ? $"{groupName.Substring(0, indexOfDashSpace)} - {string2}" : $"{groupName} - {string2}".Trim();
+                if (!bNoTotals)
+                {
+                    double totalExposureTime = group.Sum(fileItem => fileItem.ExposureSeconds) / 3600.0;
+                    string statistics = $" - {group.Count()}, {totalExposureTime:F1}";
+                    groupName = groupName + statistics;
+                }
+            }
 
-            DirectoryStatistics[groupName] = newStats;
+            DirectoryStatistics[group.Key] = groupName;
         }
     }
 }

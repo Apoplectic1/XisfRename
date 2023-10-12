@@ -100,6 +100,11 @@ namespace XisfFileManager.FileOperations
             get { return mKeywordList.CFLAT; }
             set { mKeywordList.CFLAT = value; }
         }
+        public string CPANEL
+        {
+            get { return mKeywordList.CPANEL; }
+            set { mKeywordList.CPANEL = value; }
+        }
         public double ExposureSeconds
         {
             get { return mKeywordList.ExposureSeconds; }

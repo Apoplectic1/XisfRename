@@ -259,6 +259,7 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
+            TextBox_CalibrationTab_Messgaes.Clear();
             ClearCameraForm();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
@@ -276,7 +277,7 @@ namespace XisfFileManager
                 else
                     return;
             }
-            
+
             DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
 
             mDirectoryOps.ClearFileList();
@@ -537,6 +538,7 @@ namespace XisfFileManager
 
         public void SetDirectoryStatistics()
         {
+            // Potentally rename containing Directory
             mDirectoryProperties.SetDirectoryStatistics(mFileList, CheckBox_FileSlection_NoTotals.Checked);
 
             // Iterate through each Target, Camera and associated Panel Directory
@@ -3147,9 +3149,7 @@ namespace XisfFileManager
 
                 bool status = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
                 if (status)
-                {
                     file.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
-                }
 
                 file.AddKeyword("NAXIS", 2, "XISF File Manager");
 
@@ -3857,17 +3857,24 @@ namespace XisfFileManager
         private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
             bool bMatchedAllFiles = false;
+            string calibrationFileMasterLibraryLocation;
 
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = eFrame.ALL;
 
+            //calibrationFileMasterFileLibraryLocation = @"D:\Temp\CalibrationLibrary"; // Debug
+            calibrationFileMasterLibraryLocation = @"E:\Photography\Astro Photography\Calibration";
+
             if (!bMatchedAllFiles)
-                _ = mCalibration.FindLibraryCalibrationFrames(mFileList);
+                _ = mCalibration.ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, calibrationFileMasterLibraryLocation);
+
+            _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
         private void CalibrationTab_ReMatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
+
             _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
@@ -3952,7 +3959,7 @@ namespace XisfFileManager
             {
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = false;
                 RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = false;
-             }
+            }
         }
 
         private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
@@ -3963,18 +3970,6 @@ namespace XisfFileManager
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {
             if (mFileList.Count == 0) return;
-
-
-            string directoryName = Path.GetDirectoryName(mFileList[0].FilePath);
-            if (directoryName.Contains(@"Captures\"))
-                directoryName = string.Concat(directoryName.AsSpan(0, directoryName.IndexOf("Captures")), @"Captures\Calibration");
-            else
-                directoryName = Path.GetFullPath(Path.Combine(directoryName, @"..") + @"\Calibration");
-
-            if (Directory.Exists(directoryName))
-            {
-                Directory.Delete(directoryName, true);
-            }
 
             foreach (var file in mFileList)
             {
@@ -3987,19 +3982,12 @@ namespace XisfFileManager
                 file.RemoveKeyword("CBIAS");
                 file.CBIAS = string.Empty;
 
-                // No longer used
                 file.RemoveKeyword("CPANEL");
+                file.CPANEL = string.Empty;
+
+                // No longer used
                 file.RemoveKeyword("CLIGHT");
             }
-
-            mCalibration.ResetAll();
-            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString(CultureInfo.InvariantCulture);
-            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString(CultureInfo.InvariantCulture);
-            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = mCalibration.OffsetTolerance.ToString(CultureInfo.InvariantCulture);
-            TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = mCalibration.TemperatureTolerance.ToString(CultureInfo.InvariantCulture);
-
-            Label_CalibrationTab_TotalMatchedFiles.Text = "No Macthed Calibration Frames";
-
         }
 
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
