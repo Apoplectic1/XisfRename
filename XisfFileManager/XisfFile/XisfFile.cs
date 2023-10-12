@@ -177,7 +177,7 @@ namespace XisfFileManager.FileOperations
         public int ThumbnailAttachmentStartPadding { get; set; }
         public int ThumbnailAttachmentLength { get; set; }
         public int ThumbnailAttachmentStart { get; set; }
-        public string TargetObjectName
+        public string TargetName
         {
             get { return mKeywordList.TargetName; }
             set { mKeywordList.TargetName = value; }

@@ -112,7 +112,7 @@ namespace XisfFileManager.FileOperations
             if (mFile.Master)
             {
                 newName = "Master ";
-                targetName = mFile.TargetObjectName;
+                targetName = mFile.TargetName;
                 frameType = mFile.FrameType;
 
                 if (targetName.Contains("Master"))
@@ -326,7 +326,7 @@ namespace XisfFileManager.FileOperations
                         break;
                 }
 
-                newName += " " + mFile.TargetObjectName + "  L-" + mFile.FilterName + "  ";
+                newName += " " + mFile.TargetName + "  L-" + mFile.FilterName + "  ";
 
                 newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "  ";
                 newName += mFile.Camera + "G" + mFile.Gain.ToString("D3") + "O" + mFile.Offset;

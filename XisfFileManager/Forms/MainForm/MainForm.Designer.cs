@@ -281,7 +281,7 @@
             TabPage_KeywordUpdate = new System.Windows.Forms.TabPage();
             TabPage_Calibration = new System.Windows.Forms.TabPage();
             CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
-            TreeView_CalibrationTab_Dates = new System.Windows.Forms.TreeView();
+            TreeView_CalibrationTab_TargetFileTree = new System.Windows.Forms.TreeView();
             Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
             TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
             GroupBox_CalibrationTab_MatchingTolerance = new System.Windows.Forms.GroupBox();
@@ -3277,7 +3277,7 @@
             // 
             TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
             TabPage_Calibration.Controls.Add(CheckBox_CalibrationTab_CreateNew);
-            TabPage_Calibration.Controls.Add(TreeView_CalibrationTab_Dates);
+            TabPage_Calibration.Controls.Add(TreeView_CalibrationTab_TargetFileTree);
             TabPage_Calibration.Controls.Add(Label_CalibrationTab_TotalMatchedFiles);
             TabPage_Calibration.Controls.Add(TextBox_CalibrationTab_Messgaes);
             TabPage_Calibration.Controls.Add(GroupBox_CalibrationTab_MatchingTolerance);
@@ -3310,11 +3310,11 @@
             // 
             // TreeView_CalibrationTab_Dates
             // 
-            TreeView_CalibrationTab_Dates.Location = new System.Drawing.Point(579, 7);
-            TreeView_CalibrationTab_Dates.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TreeView_CalibrationTab_Dates.Name = "TreeView_CalibrationTab_Dates";
-            TreeView_CalibrationTab_Dates.Size = new System.Drawing.Size(535, 257);
-            TreeView_CalibrationTab_Dates.TabIndex = 10;
+            TreeView_CalibrationTab_TargetFileTree.Location = new System.Drawing.Point(579, 7);
+            TreeView_CalibrationTab_TargetFileTree.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TreeView_CalibrationTab_TargetFileTree.Name = "TreeView_CalibrationTab_Dates";
+            TreeView_CalibrationTab_TargetFileTree.Size = new System.Drawing.Size(535, 257);
+            TreeView_CalibrationTab_TargetFileTree.TabIndex = 10;
             // 
             // Label_CalibrationTab_TotalMatchedFiles
             // 
@@ -4232,7 +4232,7 @@
         private System.Windows.Forms.Button Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_ToggleNBPreset;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
-        private System.Windows.Forms.TreeView TreeView_CalibrationTab_Dates;
+        private System.Windows.Forms.TreeView TreeView_CalibrationTab_TargetFileTree;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_CreateNew;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment;

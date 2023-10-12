@@ -17,6 +17,10 @@ using XisfFileManager.FileOps.DirectoryProperties;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using static System.Net.WebRequestMethods;
 using System.Globalization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XisfFileManager
 {
@@ -415,7 +419,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                TargetNames.Add(file.TargetObjectName);
+                TargetNames.Add(file.TargetName);
             }
 
             if (TargetNames.Count > 0)
@@ -533,6 +537,50 @@ namespace XisfFileManager
             FindTelescope();
             FindCamera();
             // **********************************************************************
+
+            // TreeView_CalibrationTab_Dates
+
+            // Create the TreeView
+
+            TreeView_CalibrationTab_TargetFileTree.Nodes.Clear();
+
+            var groupedByTargetName = mFileList.GroupBy(item => item.TargetName).OrderBy(group => group.Key);
+
+            // Create the hierarchical TreeView
+            foreach (var targetGroup in groupedByTargetName)
+            {
+                TreeNode targetNode = new TreeNode(targetGroup.Key);
+                TreeView_CalibrationTab_TargetFileTree.Nodes.Add(targetNode);
+
+                // Group the items by Camera
+                var groupedByCamera = targetGroup.GroupBy(item => item.Camera).OrderBy(group => group.Key);
+
+                foreach (var cameraGroup in groupedByCamera)
+                {
+                    TreeNode cameraNode = new TreeNode(cameraGroup.Key);
+                    targetNode.Nodes.Add(cameraNode);
+
+                    // Group the item by ExposureSeconds
+                    var groupedByExposureSeconds = cameraGroup.GroupBy(item => item.ExposureSeconds).OrderByDescending(group => group.Key);
+
+                    foreach (var exposureGroup in groupedByExposureSeconds)
+                    {
+                        TreeNode exposureNode = new TreeNode(exposureGroup.Key.ToString());
+                        cameraNode.Nodes.Add(exposureNode);
+
+                        // Group the items by Filter
+                        var groupedByFilter = exposureGroup.GroupBy(item => item.FilterName).OrderBy(group => group.Key);
+
+                        foreach (var filterGroup in groupedByFilter)
+                        {
+                            TreeNode filterNode = new TreeNode($"{filterGroup.Key} - {filterGroup.Count()} files");
+                            exposureNode.Nodes.Add(filterNode);
+                        }
+                    }
+                }
+            }
+
+            ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
             TabControl_Update.Enabled = true;
         }
 
@@ -2241,7 +2289,7 @@ namespace XisfFileManager
                     frameTypeCount++;
                 }
 
-                if (file.TargetObjectName.Equals("Master", StringComparison.Ordinal))
+                if (file.TargetName.Equals("Master", StringComparison.Ordinal))
                 {
                     foundMaster = true;
                     masterCount++;
@@ -3869,6 +3917,15 @@ namespace XisfFileManager
                 _ = mCalibration.ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, calibrationFileMasterLibraryLocation);
 
             _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
+        }
+
+        void ExpandAllNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Expand();
+                ExpandAllNodes(node.Nodes);
+            }
         }
 
         private void CalibrationTab_ReMatchCalibrationFrames_Click(object sender, EventArgs e)
