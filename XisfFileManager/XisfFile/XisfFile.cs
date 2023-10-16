@@ -145,19 +145,11 @@ namespace XisfFileManager.FileOperations
         public int ImageAttachmentStart { get; set; }
         public int ImageAttachmentStartPadding { get; set; }
         public int Index { get; set; }
-        public bool Master { get; set; }
-        public bool NarrowBand { get; set; }
         public int Offset
         {
             get { return mKeywordList.Offset; }
             set { mKeywordList.Offset = value; }
         }
-        public bool Protect
-        {
-            get { return mKeywordList.Protect; }
-            set { mKeywordList.Protect = value; }
-        }
-        public bool RiccardiReducer { get; set; }
         public string Rejection
         {
             get { return mKeywordList.Rejection; }
@@ -340,13 +332,6 @@ namespace XisfFileManager.FileOperations
 
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
-
-        public void SetRequiredKeywords()
-        {
-            Master = mKeywordList.TargetName.Contains("Master");
-            NarrowBand = mKeywordList.FilterName.Contains("Ha") || mKeywordList.FilterName.Contains("O3") || mKeywordList.FilterName.Contains("S2");
-            RiccardiReducer = mKeywordList.Telescope.EndsWith("R");
-         }
 
         public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
         {

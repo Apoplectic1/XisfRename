@@ -270,7 +270,7 @@ namespace XisfFileManager
             {
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                 mCalibrationTabValues.MatchCalibrationMessage = "No matching " + calibrationFrameMatchType + " Offset for:\r\n    " + targetFile.FilePath + "\r\n";
-                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Offet\r\n"
+                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Offset\r\n"
                                                               + "  Target Offset: " + targetFile.Offset + "Tolerance: " + OffsetTolerance + "\r\n  "
                                                               +    Path.GetFileName(targetFile.FilePath) + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);

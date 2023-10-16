@@ -109,7 +109,7 @@ namespace XisfFileManager.FileOperations
             string targetName;
             eFrame frameType;
 
-            if (mFile.Master)
+            if (mFile.TargetName.Equals("Master"))
             {
                 newName = "Master ";
                 targetName = mFile.TargetName;

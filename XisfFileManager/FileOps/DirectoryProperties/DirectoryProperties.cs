@@ -15,7 +15,7 @@ sealed class DirectoryProperties
 
     public void SetDirectoryStatistics(List<XisfFile> xFileList, bool bNoTotals)
     {
-        var directoryGroups = xFileList.GroupBy(path => Path.GetDirectoryName(path.FilePath));
+       var directoryGroups = xFileList.GroupBy(path => Path.GetDirectoryName(path.FilePath));
 
         foreach (var group in directoryGroups)
         {

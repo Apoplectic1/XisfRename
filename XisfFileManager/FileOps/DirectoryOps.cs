@@ -248,7 +248,7 @@ namespace XisfFileManager
                     break;
 
                 default:
-                    mExceptionLog.Add("File name does not contain filter: " + mFileInfo.Name);
+                    mExceptionLog.Add("File " + mFileInfo.Name + " is not referencing a specific filter.");
                     mFileInfo = null;
                     break;
             }

@@ -9,6 +9,7 @@ using XisfFileManager.Forms.UserInputForm;
 using static System.Windows.Forms.DataFormats;
 
 using XisfFileManager.Enums;
+using System.Diagnostics.Eventing.Reader;
 
 /*
 public class Keywords
@@ -472,11 +473,11 @@ namespace XisfFileManager
                     {
                         Local = DateTime.Parse(dateString);
                     }
-                    
+
                     AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
                     UTC = Local.ToUniversalTime();
                 }
-                else 
+                else
                 {
                     // if '6/8/2020 01:22:44.119 AM DST'
                     string result = Regex.Replace(Object.ToString(), @"(\.\d+)[^.]*$", "$1");
@@ -486,7 +487,7 @@ namespace XisfFileManager
                     AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
                     UTC = Local.ToUniversalTime();
                 }
-                
+
                 AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
                 RemoveKeyword("LOCALTIM");
 
@@ -567,7 +568,7 @@ namespace XisfFileManager
                     if (software.Contains("N.I.N.A"))
                         return "NINA";
 
-                
+
                 Object = GetKeywordValue("CREATOR");
                 software = (string)Object;
 
@@ -1523,51 +1524,31 @@ namespace XisfFileManager
             {
                 object Object = GetKeywordValue("OBJECT");
                 if (Object != null)
-                {
-                    // Replace a TargetName containing "Panel" with "P" in prep for the next Regex
-                    string targetName = ((string)Object).Replace("Panel", "P");
+                    return Object.ToString();
 
-                    // Replace a TargetName containing one or more letters, numbers, spaces, or a dash followed by "P" and
-                    // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
-                    // Return original string if replacement fails.
-                    string pattern = @"([A-Za-z0-9\s-]+)P(\d+)$";
-                    string replacement = "$1 P$2";
-                    string newTargetName = Regex.Replace(targetName, pattern, replacement);
-
-                    return newTargetName;
-                }
                 return string.Empty;
             }
             set
             {
-                AddKeyword("OBJECT", value, "Target Object Name");
-            }
-            /*
-
-
-
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
+                if (value.Equals("Master"))
                 {
-                    mFormName = "Target Name",
-                    mFormText = "Target Name Not Set",
-                    mFormEntryText = "Enter Target Name (ID or Master):",
-                    mFileName = FileName()
-                };
+                    AddKeyword("OBJECT", value, "Master Calibration Frame");
+                    return;
+                }
 
-                UserInputFormData returnData = OpenUIForm(formData);
+                string targetName;
 
-                AddKeyword("OBJECT", returnData.mTextBox, "XISF File Manager");
+                targetName = Regex.Replace(value, @"['""]+", ""); // Remove single and double quotes
+                targetName = Regex.Replace(targetName, @"\s+", " "); // Replace multiple spaces with a single space
 
-                if (returnData.mGlobalCheckBox)
-                    return "Global_" + returnData.mTextBox;
-                else
-                    return returnData.mTextBox;
+                // Replace a TargetName containing the word "Panel" with "P"  
+                // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
+                // Return original string if replacement fails.
+                targetName = Regex.Replace(targetName, @"\bPanel\b", "P");
+                targetName = Regex.Replace(targetName, @"(?<=[A-Za-z0-9\s-])\s*P(\d+)$", " P$1");
+
+                AddKeyword("OBJECT", targetName, "Target Object Name");
             }
-
-            return string.Empty;
-            */
         }
 
         // #########################################################################################################
