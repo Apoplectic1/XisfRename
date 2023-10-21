@@ -22,7 +22,6 @@ namespace XisfFileManager.FileOperations
         public static eOperation Operation { get; set; } = eOperation.KEEP_WEIGHTS;
         public static Buffer mBuffer;
         public static List<Buffer> mBufferList;
-        public static string TargetName { get; set; }
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################

@@ -780,52 +780,31 @@ namespace XisfFileManager
                 }
             }
 
-            XisfFileUpdate.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
-
             // If multiple Targets or if a Target has multiple Panels do not update with the ComboBox Text
             List<string> targetNames = new List<string>();
             targetNames.Clear();
             foreach (string target in ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items)
             {
-                string targetName = target.Replace("-Stars", "").Replace(" Stars", ""); // "-Stars" is no longer used
-                targetNames.Add(targetName);
+                // Remove " Stars" from targetName so there is a single target name for the next foreach below (" Stars" will be added there)
+                string targetName = target.Replace(" Stars", "");
+                targetNames.Add(targetName.Trim());
             }
             targetNames = targetNames.Distinct().ToList();
 
-            // File Protection
-            // We get here under two conditions: 1. Protect is not checked or 2. We are updating only unprotected files
+
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
-                string newTargetName = string.Empty;
                 xFile.SetObservationSite();
+                xFile.KeepPanel = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked;
 
+                // Update with ComboBox Text if checked
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked)
+                    // Rename everything to the ComboBox Text value
+                    xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
+                else
                 {
-                    // If multiple Targets or if a Target has multiple Panels do not update with the ComboBox Text
-                    if (targetNames.Count > 1)
-                    {
-                        if (Path.GetDirectoryName(xFile.FilePath).Contains("Stars ")) // Does not check for FilterName
-                        {
-                            // Make sure targets in a "Stars Filter" directory have TargetName-Stars
-                            string targetName = xFile.TargetName.Replace("-Stars", "").Replace(" Stars", ""); // "-Stars" is no longer used
-
-                            xFile.TargetName = targetName + " Stars";
-                        }
-                        else
-                            // Make sure the TargetName is formatted correctly
-                            xFile.TargetName = xFile.TargetName;
-                    }
-                    else
-                    {
-                        newTargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
-
-                        if (Path.GetDirectoryName(xFile.FilePath).Contains("Stars ")) // Does not check for FilterName
-                            xFile.TargetName = newTargetName + " Stars";
-                        else
-                            // Make sure the TargetName is formatted correctly
-                            xFile.TargetName = newTargetName;
-                    }
+                    xFile.TargetName = xFile.TargetName.Trim();
                 }
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
@@ -3917,7 +3896,6 @@ namespace XisfFileManager
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = eFrame.ALL;
 
-            //calibrationFileMasterFileLibraryLocation = @"D:\Temp\CalibrationLibrary"; // Debug
             calibrationFileMasterLibraryLocation = @"E:\Photography\Astro Photography\Calibration";
 
             if (!bMatchedAllFiles)
@@ -4048,7 +4026,7 @@ namespace XisfFileManager
                     file.AddKeyword("CBIAS", string.Empty, "Xisf File Manager");
                     file.CBIAS = string.Empty;
 
-                    file.AddKeyword("CPanel", string.Empty, "Xisf File Manager");
+                    file.AddKeyword("CPANEL", string.Empty, "Xisf File Manager");
                     file.CPANEL = string.Empty;
 
                     file.AddKeyword("CLIGHT", string.Empty, "Xisf File Manager");

@@ -10,53 +10,9 @@ using static System.Windows.Forms.DataFormats;
 
 using XisfFileManager.Enums;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 
-/*
-public class Keywords
-{
-    private static Keywords instance;
 
-    public static Keywords Instance
-    {
-        get
-        {
-            if (instance == null)
-                instance = new Keywords();
-            return instance;
-        }
-    }
-
-    public string Value1 { get; set; }
-    public int Value2 { get; set; }
-}
-
-public class ClassA
-{
-    private Keywords keywords = Keywords.Instance;
-
-    public void MethodA()
-    {
-        string value1 = keywords.Value1;
-        int value2 = keywords.Value2;
-
-        // Modify the values
-        keywords.Value1 = "New Value";
-        keywords.Value2 = 42;
-    }
-}
-
-public class ClassB
-{
-    private Keywords keywords = Keywords.Instance;
-
-    public void MethodB()
-    {
-        // Access the values
-        string value1 = keywords.Value1;
-        int value2 = keywords.Value2;
-    }
-}
-*/
 namespace XisfFileManager
 {
     public class KeywordList
@@ -273,42 +229,10 @@ namespace XisfFileManager
 
                 return -273.0;
             }
-
             set
             {
                 AddKeyword("AMB-TEMP", value, "Local Temerature from Open Weather API");
             }
-            // Did not find any air temeprature keywords so ask user to enter one
-            /*
-            while (findMissingKeywords)
-            {
-                // Loop until user enters a numeric value then return
-
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Ambient Temperature",
-                    mFormText = "Ambient Temperature Not Set",
-                    mFormEntryText = "Enter Ambient Temperature: ",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                FormValue.mTextBox = FormValue.mTextBox.Trim();
-
-                // Make sure user entered a valid temerature
-                if (onlyNumerics.Match(FormValue.mTextBox).Success)
-                {
-                    AddKeyword("AMB-TEMP", Convert.ToDouble(FormValue.mTextBox), "Local Temerature from Open Weather API");
-                    return Convert.ToDouble(FormValue.mTextBox);
-                }
-            }
-
-            // Did not ask user to enter missing ambient temerature and did not find a valid keyword so default to absolute zero
-
-            AddKeyword("AMB-TEMP", -273.0, "Missing Value");
-            return -273.0;
-            */
         }
 
         // *********************************************************************************************************
@@ -343,31 +267,6 @@ namespace XisfFileManager
                 AddKeyword("XBINNING", value, "Camera Binning Mode 1-4 - Square modes only");
                 AddKeyword("YBINNING", value, "Camera Binning Mode 1-4 - Square modes only");
             }
-            /*
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Cammera Binning",
-                    mFormText = "Camera Binning Not Set",
-                    mFormEntryText = "Enter Binning: 1, 2, 3 or 4",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                if (FormValue.mTextBox.Equals("1") || FormValue.mTextBox.Equals("2") || FormValue.mTextBox.Equals("3") || FormValue.mTextBox.Equals("4"))
-                {
-                    int bin = Convert.ToInt32(FormValue.mTextBox);
-
-                    AddKeyword("XBINNING", bin);
-                    AddKeyword("YBINNING", bin);
-                    return bin;
-                }
-            }
-
-            return -1;
-            */
         }
 
         // *********************************************************************************************************
@@ -385,28 +284,6 @@ namespace XisfFileManager
             {
                 AddKeyword("INSTRUME", value, "Camera used to take the exposure");
             }
-            /* 
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Capture Camera",
-                    mFormText = "Capture Camera Not Set",
-                    mFormEntryText = "Enter Z533, Z183, Q178 or A144:",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData FormValue = OpenUIForm(formData);
-
-                if (FormValue.mTextBox.Equals("Z533") || FormValue.mTextBox.Equals("Z183") || FormValue.mTextBox.Equals("Q178") || FormValue.mTextBox.Equals("A144"))
-                {
-                    AddKeyword("INSTRUME", FormValue.mTextBox, "XISF File Manager");
-                    return FormValue.mTextBox;
-                }
-            }
-
-            return string.Empty;
-            */
         }
 
         // *********************************************************************************************************
@@ -613,32 +490,6 @@ namespace XisfFileManager
             {
                 AddKeyword("CREATOR", value, "Software that captured this image");
             }
-            /*
-            while (FindMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Capture Software",
-                    mFormText = "Capture Software Not Set",
-                    mFormEntryText = "Enter NINA, SGP, TSX, VOY or SCP:",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnData = OpenUIForm(formData);
-
-                if (returnData.mTextBox.Equals("SGP") || returnData.mTextBox.Equals("NINA") || returnData.mTextBox.Equals("TSX") || returnData.mTextBox.Equals("VOY") || returnData.mTextBox.Equals("SCP"))
-                {
-                    AddKeyword("CREATOR", returnData.mTextBox, "XISF File Manager");
-
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + returnData.mTextBox;
-                    else
-                        return returnData.mTextBox;
-                }
-            }
-
-            return string.Empty;
-            */
         }
 
         // *********************************************************************************************************
@@ -737,7 +588,7 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("CSTARS", value, "Match this file with other CSTARS" + CSTARS + " files");
+                AddKeyword("CSTARS", value, "Match this file with other CPANEL Stars" + CPANEL + " files");
             }
         }
         // *********************************************************************************************************
@@ -783,31 +634,6 @@ namespace XisfFileManager
             {
                 AddKeyword("EXPTIME", value, "Frame Exposure Time in Seconds");
             }
-            /*
-
-
-            while (FindMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Exposure Time",
-                    mFormText = "Exposure Time Not Set",
-                    mFormEntryText = "Enter Exposure Time in Seconds (double):",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnData = OpenUIForm(formData);
-
-                bool status = double.TryParse(returnData.mTextBox, out double seconds);
-                if (status)
-                {
-                    AddKeyword("EXPTIME", seconds, "Exposure Time in Seconds");
-                    return seconds;
-                }
-            }
-
-            return double.MinValue;
-            */
         }
 
         // *********************************************************************************************************
@@ -880,34 +706,6 @@ namespace XisfFileManager
                     AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
             }
         }
-        /*
-
-            while (FindMissingKeywords)
-    {
-    UserInputFormData formData = new UserInputFormData
-    {
-        mFormName = "Filter Type",
-        mFormText = "Filter Type Not Set",
-        mFormEntryText = "Enter Filter (L, R, G, B, Ha, O3, S2 or S):",
-        mFileName = FileName()
-    };
-
-    UserInputFormData returnData = OpenUIForm(formData);
-
-    if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("R") || returnData.mTextBox.Equals("G") || returnData.mTextBox.Equals("B") ||
-        returnData.mTextBox.Equals("Ha") || returnData.mTextBox.Equals("O3") || returnData.mTextBox.Equals("S2") || returnData.mTextBox.Equals("S"))
-    {
-        AddKeyword("FILTER", returnData.mTextBox, "XISF File Manager");
-
-        if (returnData.mGlobalCheckBox)
-            return "Global_" + returnData.mTextBox;
-        else
-            return returnData.mTextBox;
-    }
-    }
-
-    return string.Empty;
-        */
 
         // *********************************************************************************************************
         // *********************************************************************************************************
@@ -942,33 +740,6 @@ namespace XisfFileManager
             {
                 AddKeyword("FOCPOS", value, "MoonLite Focuser Posistion");
             }
-            /*
-                while (findMissingKeywords)
-                {
-                    // Loop until user enters a numeric value then return
-
-                    UserInputFormData formData = new UserInputFormData
-                    {
-                        mFormName = "Focuser Position",
-                        mFormText = "Focuser Position Not Set",
-                        mFormEntryText = "Enter Focuser Position: ",
-                        mFileName = FileName()
-                    };
-
-                    UserInputFormData returnValue = OpenUIForm(formData);
-
-                    int value;
-                    // Make sure user entered a valid temerature
-                    bool bStatus = Int32.TryParse(returnValue.mTextBox, out value);
-                    if (bStatus)
-                    {
-                        AddKeyword("FOCPOS", value);
-                        return value;
-                    }
-                }
-
-            }
-            */
         }
 
         // *********************************************************************************************************
@@ -1006,37 +777,6 @@ namespace XisfFileManager
             {
                 AddKeyword("FOCTEMP", value, "MoonLite NightCrawler Focuser Temperature");
             }
-            /*
-                // Did not find any air temeprature keywords so ask user to enter one
-
-                while (findMissingKeywords)
-                {
-                    // Loop until user enters a numeric value then return
-
-                    UserInputFormData formData = new UserInputFormData
-                    {
-                        mFormName = "Focuser Temperature",
-                        mFormText = "Focuser Temperature Not Set",
-                        mFormEntryText = "Enter Focuser Temperature: ",
-                        mFileName = FileName()
-                    };
-
-                    UserInputFormData returnValue = OpenUIForm(formData);
-
-                    // Make sure user entered a valid temerature
-                    double value;
-                    // Make sure user entered a valid temerature
-                    bool bStatus = double.TryParse(returnValue.mTextBox, out value);
-                    if (bStatus)
-                        AddKeyword("FOCTEMP", value);
-
-                    return value;
-                }
-
-                // Did not ask user to enter missing focuser temerature and did not find a valid keyword so default to absolute zero
-                AddKeyword("FOCTEMP", -273.0);
-                return -273.0;
-            */
         }
 
         // *********************************************************************************************************
@@ -1055,41 +795,10 @@ namespace XisfFileManager
                 }
                 return eFrame.EMPTY;
             }
-
             set
             {
                 AddKeyword("IMAGETYP", value, "Type of frame capture");
             }
-            /*
-            while (FindMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Frame Type",
-                    mFormText = "Frame Type Not Set",
-                    mFormEntryText = "Enter Frame Type (L, D, F or B):",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnData = OpenUIForm(formData);
-
-                if (returnData.mTextBox.Equals("L") || returnData.mTextBox.Equals("D") || returnData.mTextBox.Equals("F") || returnData.mTextBox.Equals("B"))
-                {
-                    if (returnData.mTextBox.Equals("L")) frameType = "Light";
-                    if (returnData.mTextBox.Equals("D")) frameType = "Dark";
-                    if (returnData.mTextBox.Equals("F")) frameType = "Flat";
-                    if (returnData.mTextBox.Equals("B")) frameType = "Bias";
-
-                    AddKeyword("IMAGETYP", frameType, "XISF File Manager");
-
-                    if (returnData.mGlobalCheckBox)
-                        return "Global_" + returnData.mTextBox;
-                    else
-                        return returnData.mTextBox;
-                }
-            }
-        }
-            */
         }
 
         // *********************************************************************************************************
@@ -1147,37 +856,11 @@ namespace XisfFileManager
                 else
                     AddKeyword("OFFSET", value, "Camera Offset");
             }
-
-            /*
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Camera Offset",
-                    mFormText = "Camera Offset Not Set",
-                    mFormEntryText = "Enter Camera Offset:",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnValue = OpenUIForm(formData);
-
-                bool status = Int32.TryParse(returnValue.mTextBox, out int offset);
-                if (status)
-                {
-                    AddKeyword("OFFSET", offset);
-
-                    if (returnValue.mGlobalCheckBox)
-                        return -offset;
-                    else
-                        return offset;
-                }
-            }
-
-            return -1;
-            */
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public bool Protect
         {
             get
@@ -1245,67 +928,11 @@ namespace XisfFileManager
                 SetIntegrationParamaters();
                 //AddKeyword("RJCT-ALG", value, "Rejection Integration Method");
             }
-
-            /*
-             while (findMissingKeywords)
-             {
-                 UserInputFormData formData = new UserInputFormData
-                 {
-                     mFormName = "Master Frame Rejection Method",
-                     mFormText = "Master Frame Rejection Method Not Set",
-                     mFormEntryText = "Enter PixInsight Rejection Method (SC, WSC, LFC or ESD):",
-                     mFileName = FileName()
-                 };
-
-                 UserInputFormData FormValue = OpenUIForm(formData);
-
-                 if (FormValue.mTextBox.Equals("SC") || FormValue.mTextBox.Equals("WSC") || FormValue.mTextBox.Equals("LFC") || FormValue.mTextBox.Equals("ESD"))
-                 {
-                     AddKeyword("RJCT-ALG", FormValue.mTextBox, "PixInsight Pixel Integration Rejection Method");
-                     return FormValue.mTextBox;
-                 }
-             }
-
-             return string.Empty;
-            */
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
-        public void RepairSiteLatitude()
-        {
-            string latitude = (string)GetKeywordValue("SITELAT");
 
-            if (latitude == null) return;
-
-            if (latitude.Contains('N'))
-            {
-                latitude = Regex.Replace(latitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // An older version of SGP caused PixInsight to complain - this has been fixed and this method is not needed
-        public void RepairSiteLongitude()
-        {
-            string longitude = (string)GetKeywordValue("SITELONG");
-
-            if (longitude == null) return;
-
-            if (longitude.Contains('W'))
-            {
-                longitude = Regex.Replace(longitude, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", " ");
-
-                Regex regReplace = new Regex("'");
-
-                longitude = regReplace.Replace(longitude, "'-", 1);
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public double RotatorAngle
         {
             get
@@ -1334,6 +961,7 @@ namespace XisfFileManager
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         // Various programs appear to screw this up - fix it
         private void SetEGain()
         {
@@ -1365,6 +993,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public void SetIntegrationParamaters()
         {
             List<Keyword> keys = new List<Keyword>(mKeywordList);
@@ -1409,6 +1038,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public double SensorSetPointTemperature(bool findMissingKeywords = false)
         {
             object Object = GetKeywordValue("SET-TEMP");
@@ -1454,30 +1084,6 @@ namespace XisfFileManager
             {
                 AddKeyword("CCD-TEMP", value, "Actual sensor temperature");
             }
-            /*
-            while (findMissingKeywords)
-            {
-                UserInputFormData formData = new UserInputFormData
-                {
-                    mFormName = "Camera Sensor Temperature",
-                    mFormText = "Camera Sensor Temperature Not Set",
-                    mFormEntryText = "Enter Actual Sensor Temperature:",
-                    mFileName = FileName()
-                };
-
-                UserInputFormData returnData = OpenUIForm(formData);
-
-                bool status = double.TryParse(returnData.mTextBox, out double temperature);
-                if (status)
-                {
-                    AddKeyword("CCD-TEMP", temperature);
-
-                    return temperature;
-                }
-            }
-
-            return -273.0;
-            */
         }
 
         // *********************************************************************************************************
@@ -1489,7 +1095,7 @@ namespace XisfFileManager
                 object Object = GetKeywordValue("SITENAME");
                 if (Object != (object)null)
                     return (string)Object;
-                return "Penns Park, PA";
+                return string.Empty;
             }
             set
             {
@@ -1512,12 +1118,11 @@ namespace XisfFileManager
             {
                 AddKeyword("SSWEIGHT", value, "");
             }
-
-            //return Math.Round(Convert.ToDouble(Obj), 3, MidpointRounding.AwayFromZero);
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public string TargetName
         {
             get
@@ -1530,24 +1135,10 @@ namespace XisfFileManager
             }
             set
             {
-                if (value.Equals("Master"))
-                {
-                    AddKeyword("OBJECT", value, "Master Calibration Frame");
-                    return;
-                }
-
-                string targetName;
-
-                targetName = Regex.Replace(value, @"['""]+", ""); // Remove single and double quotes
-                targetName = Regex.Replace(targetName, @"\s+", " "); // Replace multiple spaces with a single space
-
-                // Replace a TargetName containing the word "Panel" with "P"  
-                // followed by one or more digits at the end of the string with the same string but with a space inserted before the "P".
-                // Return original string if replacement fails.
-                targetName = Regex.Replace(targetName, @"\bPanel\b", "P");
-                targetName = Regex.Replace(targetName, @"(?<=[A-Za-z0-9\s-])\s*P(\d+)$", " P$1");
-
-                AddKeyword("OBJECT", targetName, "Target Object Name");
+                if (value.Contains("Master"))
+                    AddKeyword("OBJECT", "Master", "Master Calibration Frame");
+                else
+                    AddKeyword("OBJECT", value, "Target Object Name");
             }
         }
 
@@ -1563,56 +1154,10 @@ namespace XisfFileManager
 
                 return string.Empty;
             }
-
             set
             {
                 AddKeyword("TELESCOP", value, "Telescope");
             }
-
-            /*
-
-                while (findMissingKeywords)
-                {
-                    UserInputFormData formData = new UserInputFormData
-                    {
-                        mFormName = "Telescope",
-                        mFormText = "Telescope Not Set",
-                        mFormEntryText = "Enter APM(R), EVO(R) or NWT(R):",
-                        mFileName = FileName()
-                    };
-
-                    UserInputFormData FormValue = OpenUIForm(formData);
-
-                    if (FormValue.mTextBox.Equals("APM") || FormValue.mTextBox.Equals("EVO") || FormValue.mTextBox.Equals("NWT") ||
-                        FormValue.mTextBox.Equals("APMR") || FormValue.mTextBox.Equals("EVOR") || FormValue.mTextBox.Equals("NWTR"))
-                    {
-                        if (FormValue.mTextBox.Contains("APM"))
-                            if (FormValue.mTextBox.EndsWith("R"))
-                                AddKeyword("TELESCOP", "APM107R", "APM107 Super ED w/Riccardi 0.75 Reducer");
-                            else
-                                AddKeyword("TELESCOP", "APM107", "APM107 Super ED wo/Reducer");
-
-                        if (FormValue.mTextBox.Contains("EVO"))
-                            if (FormValue.mTextBox.EndsWith("R"))
-                                AddKeyword("TELESCOP", "EVO150R", "Skyhawtcher EvoStar w/Riccardi 0.75 Reducer");
-                            else
-                                AddKeyword("TELESCOP", "EVO150", "SkyWatcher EvoStar wo/Reducer");
-
-                        if (FormValue.mTextBox.Contains("NWT"))
-                            if (FormValue.mTextBox.EndsWith("R"))
-                                AddKeyword("TELESCOP", "NWT254R", "10 Inch Custom w/Riccardi 0.75 Reducer");
-                            else
-                                AddKeyword("TELESCOP", "NWT254", "10 Inch Custom Newtonian wo/Reducer");
-
-                        if (FormValue.mGlobalCheckBox)
-                            return "Global_" + FormValue.mTextBox;
-                        else
-                            return FormValue.mTextBox;
-                    }
-                }
-            }
-            */
-
         }
 
         // *********************************************************************************************************
@@ -1640,40 +1185,6 @@ namespace XisfFileManager
             {
                 SetIntegrationParamaters();
             }
-            /*
-                
-
-            object Object = GetKeywordValue("FRAMES");
-            if (Object == null)
-            {
-                while (findMissingKeywords)
-                {
-                    UserInputFormData formData = new UserInputFormData
-                    {
-                        mFormName = "Master Frame Integration",
-                        mFormText = "Integrated SubFrames Not Set",
-                        mFormEntryText = "Enter Total Integration Frames:",
-                        mFileName = FileName()
-                    };
-
-                    UserInputFormData returnValue = OpenUIForm(formData);
-
-                    bool bStatus = int.TryParse(returnValue.mTextBox, out int frames);
-                    if (bStatus)
-                    {
-                        AddKeyword("NUM-FRMS", frames, "Total number of Integrated SubFrames");
-
-                        if (returnValue.mGlobalCheckBox)
-                            return -frames;
-                        else
-                            return frames;
-                    }
-                }
-                return -1;
-            }
-
-            return (int)Object;
-            */
         }
 
         // *********************************************************************************************************
@@ -1729,6 +1240,7 @@ namespace XisfFileManager
                 return wList;
             }
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
 

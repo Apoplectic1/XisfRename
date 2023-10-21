@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 using XisfFileManager.Enums;
@@ -15,7 +17,7 @@ namespace XisfFileManager.FileOperations
 
         public XisfFile()
         {
-            mXDoc = new XDocument();    
+            mXDoc = new XDocument();
             mKeywordList = new KeywordList();
         }
 
@@ -37,7 +39,7 @@ namespace XisfFileManager.FileOperations
         }
         public void RemoveKeyword(string keyword)
         {
-           mKeywordList.RemoveKeyword(keyword);
+            mKeywordList.RemoveKeyword(keyword);
         }
         public void RemoveKeyword(string keyword, object oValue)
         {
@@ -169,10 +171,43 @@ namespace XisfFileManager.FileOperations
         public int ThumbnailAttachmentStartPadding { get; set; }
         public int ThumbnailAttachmentLength { get; set; }
         public int ThumbnailAttachmentStart { get; set; }
+        public bool KeepPanel { get; set; }
+        /// <summary>
+        /// Updates an Xisf File Target Name.
+        /// Appends " Stars" if the Xisf File is contained in a "Stars Filter" Directory.
+        /// Sets CPANEL to the returned string value. Set CSTARS when containing directory name contains "Stars ".
+        /// </summary>
+        /// <returns>The TargetName string</returns>
         public string TargetName
         {
             get { return mKeywordList.TargetName; }
-            set { mKeywordList.TargetName = value; }
+            set
+            {
+                string targetName = value;
+
+                targetName = Regex.Replace(targetName, @"\s+", " "); // Replace multiple spaces with a single space
+
+                // First match Stars
+                if (Path.GetDirectoryName(FilePath).Contains("Stars "))
+                {
+                    mKeywordList.CSTARS = "Stars " + mKeywordList.FilterName;
+                    // Make sure files in "Stars" directories are properly named: "Target Stars"
+                    if (!targetName.Contains("Stars"))
+                        targetName = targetName + " Stars";
+                }
+                else
+                    mKeywordList.CSTARS = "*"; // Wildcard by CPANEL
+
+                // After Stars, replace a TargetName containing the word "Panel" with "P" followed by one or more digits
+                // Return original string if replacement fails.
+                targetName = Regex.Replace(targetName, @"\bPanel\b", "P");
+                targetName = Regex.Replace(targetName, @"(?<=[A-Za-z0-9\s-])\s*P(\d+)$", " P$1");
+
+                if (!KeepPanel)
+                    mKeywordList.CPANEL = targetName.Replace(" Stars", ""); // Remove " Stars" so we Register and Intergrate by CPanel
+
+                mKeywordList.TargetName = targetName;
+            }
         }
         public string Telescope
         {
@@ -193,9 +228,6 @@ namespace XisfFileManager.FileOperations
         // ***********************************************************************************************************************************
 
         // Access these properties from anything that instances the XifsFile class
-
-
-
 
         // ************************************************************************************************
         // ************************************************************************************************
@@ -255,19 +287,11 @@ namespace XisfFileManager.FileOperations
             bool bStatus;
 
             // First remove Keyword characteritics that interfere with later processing
-            // Get rid of "'"
             string elementValue = element.Attribute("value").Value;
-            //elementValue = elementValue.Replace(" ", "").Replace("'", "");
             elementValue = elementValue.Replace("'", "");
 
             // Now get rid of an extra decimal point at the end of what should be integers
             elementValue = elementValue.TrimEnd('.');
-
-            //int decimalIndex = elementValue.LastIndexOf('.') + 1;
-            //if ((decimalIndex == elementValue.Length) && (decimalIndex != 0))
-            //{
-            //    elementValue = elementValue.Replace(".", "");
-            // }
 
             // Now actually parse the keywords into bools, integers, doubles and finally strings
             bStatus = bool.TryParse(elementValue, out bool bBool);
@@ -335,11 +359,11 @@ namespace XisfFileManager.FileOperations
 
         public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
         {
-                if (object1 == null) return 1;
-                if (object2 == null) return 1;
-                if (object1.mKeywordList.CaptureDateTime > object2.mKeywordList.CaptureDateTime) return 1;
-                if (object1.mKeywordList.CaptureDateTime < object2.mKeywordList.CaptureDateTime) return -1;
-                return 0;
+            if (object1 == null) return 1;
+            if (object2 == null) return 1;
+            if (object1.mKeywordList.CaptureDateTime > object2.mKeywordList.CaptureDateTime) return 1;
+            if (object1.mKeywordList.CaptureDateTime < object2.mKeywordList.CaptureDateTime) return -1;
+            return 0;
         };
     }
 
@@ -351,7 +375,7 @@ namespace XisfFileManager.FileOperations
             return string.Format(fmt, Math.Round(temperatureValue, 1));
         }
 
-        public static string FormatRotationAngle(this double rotationAngle) 
+        public static string FormatRotationAngle(this double rotationAngle)
         {
             return rotationAngle.ToString("000.0");
         }

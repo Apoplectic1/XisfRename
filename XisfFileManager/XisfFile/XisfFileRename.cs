@@ -184,18 +184,6 @@ namespace XisfFileManager.FileOperations
 
                         newName += mFile.Telescope + "@";
                         newName += mFile.FocalLength.ToString("F0");
-
-                        /*
-                        if (mFile.FocuserPosition != -1.0)
-                        {
-                            newName += "  F" + mFile.FocuserPosition.ToString("D5");
-                        }
-
-                        if (mFile.RotatorAngle != double.MinValue)
-                        {
-                            newName += "  R" + mFile.RotatorAngle.FormatRotationAngle();
-                        }
-                        */
                     }
 
                     newName += "  (";
@@ -334,7 +322,11 @@ namespace XisfFileManager.FileOperations
 
                 newName += mFile.Telescope + "@";
                 newName += mFile.FocalLength.ToString("F0");
-                newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
+                
+                if (mFile.AmbientTemperature != -273.0)
+                    newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
+                else
+                    newName += mFile.FocuserTemperature.FormatTemperature() + "C  ";
 
                 newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
                 if (mFile.RotatorAngle != double.MinValue)

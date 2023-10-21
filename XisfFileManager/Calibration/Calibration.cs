@@ -25,7 +25,6 @@ namespace XisfFileManager
     {
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedDarkList;
         private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedFlatList;
-        private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mMatchedPanelList;
         private List<XisfFile> mBiasCalibrationFileList;
         private List<XisfFile> mDarkCalibrationFileList;
         private List<XisfFile> mFlatCalibrationFileList;
@@ -36,7 +35,6 @@ namespace XisfFileManager
         private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
-        private List<XisfFile> mUnmatchedPanelTargetFileList;
 
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
@@ -66,13 +64,11 @@ namespace XisfFileManager
             mLocalCalibrationFileList = new List<XisfFile>();
             mMatchedDarkList = new List<(XisfFile, XisfFile)>();
             mMatchedFlatList = new List<(XisfFile, XisfFile)>();
-            mMatchedPanelList = new List<(XisfFile, XisfFile)>();
             mUniqueDarkCalibrationFileList = new List<XisfFile>();
             mUniqueFlatCalibrationFileList = new List<XisfFile>();
             mUnmatchedBiasTargetFileList = new List<XisfFile>();
             mUnmatchedDarkTargetFileList = new List<XisfFile>();
             mUnmatchedFlatTargetFileList = new List<XisfFile>();
-            mUnmatchedPanelTargetFileList = new List<XisfFile>();
         }
 
         // ******************************************************************************************************************
@@ -482,12 +478,10 @@ namespace XisfFileManager
             mUnmatchedDarkTargetFileList.Clear();
             mUnmatchedFlatTargetFileList.Clear();
             mUnmatchedBiasTargetFileList.Clear();
-            mUnmatchedPanelTargetFileList.Clear();
 
             mUnmatchedDarkTargetFileList.AddRange(targetFileList);
             mUnmatchedFlatTargetFileList.AddRange(targetFileList);
             mUnmatchedBiasTargetFileList.AddRange(targetFileList);
-            mUnmatchedPanelTargetFileList.AddRange(targetFileList);
 
             // At this point, we have lists of target frames (lights, darks and flats) as well as a list of all Library calibration frames (darks, flats and bias) 
 
