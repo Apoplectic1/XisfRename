@@ -112,7 +112,7 @@ namespace XisfFileManager.FileOperations
                     xFile.AddXMLKeyword(element);
                 }
 
-                SetKeywordsFromFileName(xFile);
+                //SetKeywordsFromFileName(xFile);
             }
 
             return Task.CompletedTask;
@@ -203,7 +203,6 @@ namespace XisfFileManager.FileOperations
         /// </summary>
         public void SetKeywordsFromFileName(XisfFile xFile)
         {
-            return;
             string sFileName = Path.GetFileName(xFile.FilePath);
 
             if (sFileName != null)

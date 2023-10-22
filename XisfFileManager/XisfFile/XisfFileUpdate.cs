@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,6 @@ using System.Threading;
 //using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
 using XisfFileManager.Calculations;
 using XisfFileManager.Keywords;
 
@@ -20,8 +18,8 @@ namespace XisfFileManager.FileOperations
     {
         
         public static eOperation Operation { get; set; } = eOperation.KEEP_WEIGHTS;
-        public static Buffer mBuffer;
-        public static List<Buffer> mBufferList;
+        private static Buffer mBuffer;
+        private static List<Buffer> mBufferList;
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
@@ -180,7 +178,7 @@ namespace XisfFileManager.FileOperations
                         return false;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 DialogResult status = MessageBox.Show("Update Write File Failed", xFile.FilePath, MessageBoxButtons.OKCancel);
                 if (status == DialogResult.OK)
@@ -457,7 +455,7 @@ namespace XisfFileManager.FileOperations
 
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 _ = MessageBox.Show(fileName, "WriteBinaryFile Failed");
                 return false;

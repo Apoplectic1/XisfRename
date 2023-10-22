@@ -334,6 +334,7 @@
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            button1 = new System.Windows.Forms.Button();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -374,6 +375,7 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
             TabControl_Update_TargetScheduler.SuspendLayout();
+            TabPage_TargetScheduler.SuspendLayout();
             SuspendLayout();
             // 
             // ProgressBar_FileSelection_ReadProgress
@@ -3237,7 +3239,6 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(140, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Sorted = true;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 5;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndexChanged += ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords_SelectedIndexChanged;
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Delete
             // 
@@ -3906,12 +3907,23 @@
             // TabPage_TargetScheduler
             // 
             TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_TargetScheduler.Controls.Add(button1);
             TabPage_TargetScheduler.Location = new System.Drawing.Point(4, 24);
             TabPage_TargetScheduler.Name = "TabPage_TargetScheduler";
             TabPage_TargetScheduler.Padding = new System.Windows.Forms.Padding(3);
             TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 477);
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
+            // 
+            // button1
+            // 
+            button1.Location = new System.Drawing.Point(30, 26);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(75, 23);
+            button1.TabIndex = 0;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // MainForm
             // 
@@ -3993,6 +4005,7 @@
             GroupBox_KeywordUpdateTab_ImageType_Filter.ResumeLayout(false);
             GroupBox_KeywordUpdateTab_ImageType_Filter.PerformLayout();
             TabControl_Update_TargetScheduler.ResumeLayout(false);
+            TabPage_TargetScheduler.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -4302,5 +4315,6 @@
         private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName;
         private System.Windows.Forms.TabPage TabPage_TargetScheduler;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button button1;
     }
 }

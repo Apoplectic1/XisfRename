@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using XisfFileManager.Forms.UserInputForm;
-using static System.Windows.Forms.DataFormats;
 
 using XisfFileManager.Enums;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 
 
 namespace XisfFileManager

@@ -3,9 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using XisfFileManager.FileOperations;
-using XisfFileManager.Enums;
-using System.Collections;
-using System;
 
 namespace XisfFileManager.FileOps.DirectoryProperties;
 

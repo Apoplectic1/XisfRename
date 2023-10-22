@@ -1,19 +1,11 @@
-﻿using MathNet.Numerics;
-using Microsoft.Extensions.FileSystemGlobbing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using XisfFileManager;
 using XisfFileManager.FileOperations;
 using XisfFileManager.Keywords;
-using static System.Net.WebRequestMethods;
 
 using XisfFileManager.Enums;
 

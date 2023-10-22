@@ -14,13 +14,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using static System.Net.WebRequestMethods;
 using System.Globalization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Collections;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XisfFileManager
 {
@@ -4157,9 +4151,11 @@ namespace XisfFileManager
             }
         }
 
-        private void ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords_SelectedIndexChanged(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
+            XisfFileManager.TargetScheduler.SqlLiteReader mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteReader();
 
+            mSchedulerDB.ReadTargetSchedulerDataBaseFile(@"E:\Temp\schedulerdb.sqlite");
         }
     }
 }
