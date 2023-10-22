@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace XisfFileManager.TargetScheduler.Tables
+{
+    /*
+    CREATE TABLE `acquiredimage` (
+	`Id`			INTEGER NOT NULL,
+	`projectId`		INTEGER NOT NULL,
+	`targetId`		INTEGER NOT NULL,
+	`acquireddate`	INTEGER,
+	`filtername`	TEXT NOT NULL,
+	`accepted`		INTEGER NOT NULL,
+    `metadata`		TEXT NOT NULL, 
+	`rejectreason`	TEXT,
+	PRIMARY KEY(`Id`)
+	)
+	*/
+    internal class AcquiredImage
+    {
+		public int Id { get; set; }
+		public int projectId { get; set; }
+		public int targetId { get; set; }
+		public int acquiredate { get; set; }
+		public string filtername { get; set; }
+		public int accepted {  get; set; }
+		public string metadata { get; set; }
+		public string rejectedreason { get; set; }
+    }
+}

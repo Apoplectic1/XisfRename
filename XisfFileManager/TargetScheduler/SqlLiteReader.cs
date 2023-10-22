@@ -7,9 +7,13 @@ namespace XisfFileManager.TargetScheduler
     internal class SqlLiteReader
     {
         private List<ProfilePreference> mProfilePreferenceList;
-        private List<Project> mProjectList = new List<Project>();
-        private List<Target> mTargetList = new List<Target>();
-        private List<RuleWeight> mRuleWeightList = new List<RuleWeight>();
+        private List<Project> mProjectList;
+        private List<Target> mTargetList;
+        private List<RuleWeight> mRuleWeightList;
+        private List<ExposurePlan> mExposurePlanList;
+        private List<ExposureTemplate> mExposureTemplateList;
+        private List<AcquiredImage> mAcquiredImageList;
+        private List<ImageData> mImageDataList;
 
         public SqlLiteReader()
         {
@@ -17,6 +21,10 @@ namespace XisfFileManager.TargetScheduler
             mProjectList = new List<Project>();
             mTargetList = new List<Target>();
             mRuleWeightList = new List<RuleWeight>();
+            mExposurePlanList = new List<ExposurePlan>();
+            mExposureTemplateList = new List<ExposureTemplate>();
+            mAcquiredImageList = new List<AcquiredImage>();
+            mImageDataList = new List<ImageData>();
         }
 
         public bool ReadTargetSchedulerDataBaseFile(string sqlLightFileName)
@@ -25,6 +33,10 @@ namespace XisfFileManager.TargetScheduler
             mProjectList.Clear();
             mRuleWeightList.Clear();
             mTargetList.Clear();
+            mExposurePlanList.Clear();
+            mExposureTemplateList.Clear();
+            mAcquiredImageList.Clear();
+            mImageDataList.Clear();
 
             using (SqliteConnection connection = new SqliteConnection($"Data Source={sqlLightFileName};"))
             {
@@ -115,6 +127,82 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                using (SqliteCommand command = new SqliteCommand("SELECT * FROM exposureplan", connection))
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ExposurePlan exposurePlanRow = new ExposurePlan
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                profileId = reader.GetString(reader.GetOrdinal("profileId")),
+                                exposure = reader.GetDouble(reader.GetOrdinal("exposure")),
+                                desired = reader.GetInt32(reader.GetOrdinal("desired")),
+                                acquired = reader.GetInt32(reader.GetOrdinal("acquired")),
+                                accepted = reader.GetInt32(reader.GetOrdinal("accepted")),
+                                targetid = reader.GetInt32(reader.GetOrdinal("targetid")),
+                                exposureTemplateId = reader.GetInt32(reader.GetOrdinal("exposureTemplateId")),
+                            };
+
+                            mExposurePlanList.Add(exposurePlanRow);
+                        }
+                    }
+                }
+
+                using (SqliteCommand command = new SqliteCommand("SELECT * FROM exposuretemplate", connection))
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ExposureTemplate exposureTemplateRow = new ExposureTemplate
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                profileId = reader.GetString(reader.GetOrdinal("profileId")),
+                                name = reader.GetString(reader.GetOrdinal("name")),
+                                filtername = reader.GetString(reader.GetOrdinal("filtername")),
+                                gain = reader.GetInt32(reader.GetOrdinal("gain")),
+                                offset = reader.GetInt32(reader.GetOrdinal("offset")),
+                                bin = reader.GetInt32(reader.GetOrdinal("bin")),
+                                readoutmode = reader.GetInt32(reader.GetOrdinal("readoutmode")),
+                                twilightlevel = reader.GetInt32(reader.GetOrdinal("twilightlevel")),
+                                moonavoidanceenabled = reader.GetInt32(reader.GetOrdinal("moonavoidanceenabled")),
+                                moonavoidanceseparation = reader.GetInt32(reader.GetOrdinal("moonavoidanceseparation")),
+                                moonavoidancewidth = reader.GetInt32(reader.GetOrdinal("moonavoidancewidth")),
+                                maximumhumidity = reader.GetInt32(reader.GetOrdinal("maximumhumidity")),
+                                defaultexposure = reader.GetInt32(reader.GetOrdinal("defaultexposure")),
+                            };
+
+                            mExposureTemplateList.Add(exposureTemplateRow);
+                        }
+                    }
+                }
+
+                using (SqliteCommand command = new SqliteCommand("SELECT * FROM acquiredimage", connection))
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            AcquiredImage acquiredImageRow = new AcquiredImage
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                projectId = reader.GetInt32(reader.GetOrdinal("projectId")),
+                                targetId = reader.GetInt32(reader.GetOrdinal("targetId")),
+                                acquiredate = reader.GetInt32(reader.GetOrdinal("acquiredate")),
+                                filtername = reader.GetString(reader.GetOrdinal("filtername")),
+                                accepted = reader.GetInt32(reader.GetOrdinal("accepted")),
+                                metadata = reader.GetString(reader.GetOrdinal("metadata")),
+                                rejectedreason = reader.GetString(reader.GetOrdinal("rejectedreason"))
+                            };
+
+                            mAcquiredImageList.Add(acquiredImageRow);
+                        }
+                    }
+                }
+
+
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM ruleweight", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -130,6 +218,25 @@ namespace XisfFileManager.TargetScheduler
                             };
 
                             mRuleWeightList.Add(ruleWeightRow);
+                        }
+                    }
+                }
+
+                using (SqliteCommand command = new SqliteCommand("SELECT * FROM imagedata", connection))
+                {
+                    using (SqliteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ImageData imageDataRow = new ImageData
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                tag = reader.GetString(reader.GetOrdinal("tag")),
+                                imagedata = reader.GetFieldValue<byte[]>(reader.GetOrdinal("imagedata")),
+                                acquiredimageid = reader.GetInt32(reader.GetOrdinal("acquiredimageid")),
+                            };
+
+                            mImageDataList.Add(imageDataRow);
                         }
                     }
                 }
