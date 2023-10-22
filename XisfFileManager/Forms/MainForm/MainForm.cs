@@ -270,7 +270,7 @@ namespace XisfFileManager
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
-            TabControl_Update.Enabled = false;
+            TabControl_Update_TargetScheduler.Enabled = false;
 
             string selectedFolder;
 
@@ -583,7 +583,7 @@ namespace XisfFileManager
             }
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
-            TabControl_Update.Enabled = true;
+            TabControl_Update_TargetScheduler.Enabled = true;
         }
 
         public void SetDirectoryStatistics()

@@ -331,7 +331,9 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
-            TabControl_Update = new System.Windows.Forms.TabControl();
+            TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
+            TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -371,7 +373,7 @@
             GroupBox_KeywordUpdateTab_ImageType.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
-            TabControl_Update.SuspendLayout();
+            TabControl_Update_TargetScheduler.SuspendLayout();
             SuspendLayout();
             // 
             // ProgressBar_FileSelection_ReadProgress
@@ -3888,24 +3890,35 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Text = "O III";
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;
             // 
-            // TabControl_Update
+            // TabControl_Update_TargetScheduler
             // 
-            TabControl_Update.Controls.Add(TabPage_KeywordUpdate);
-            TabControl_Update.Controls.Add(TabPage_Calibration);
-            TabControl_Update.Controls.Add(TabPage_SubFrameWeights);
-            TabControl_Update.Location = new System.Drawing.Point(14, 241);
-            TabControl_Update.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabControl_Update.Name = "TabControl_Update";
-            TabControl_Update.SelectedIndex = 0;
-            TabControl_Update.Size = new System.Drawing.Size(1147, 505);
-            TabControl_Update.TabIndex = 23;
+            TabControl_Update_TargetScheduler.Controls.Add(TabPage_KeywordUpdate);
+            TabControl_Update_TargetScheduler.Controls.Add(TabPage_Calibration);
+            TabControl_Update_TargetScheduler.Controls.Add(TabPage_TargetScheduler);
+            TabControl_Update_TargetScheduler.Controls.Add(TabPage_SubFrameWeights);
+            TabControl_Update_TargetScheduler.Location = new System.Drawing.Point(14, 241);
+            TabControl_Update_TargetScheduler.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TabControl_Update_TargetScheduler.Name = "TabControl_Update_TargetScheduler";
+            TabControl_Update_TargetScheduler.SelectedIndex = 0;
+            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 505);
+            TabControl_Update_TargetScheduler.TabIndex = 23;
+            // 
+            // TabPage_TargetScheduler
+            // 
+            TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_TargetScheduler.Location = new System.Drawing.Point(4, 24);
+            TabPage_TargetScheduler.Name = "TabPage_TargetScheduler";
+            TabPage_TargetScheduler.Padding = new System.Windows.Forms.Padding(3);
+            TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 477);
+            TabPage_TargetScheduler.TabIndex = 3;
+            TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1170, 758);
-            Controls.Add(TabControl_Update);
+            Controls.Add(TabControl_Update_TargetScheduler);
             Controls.Add(GroupBox_FileSelection);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -3979,7 +3992,7 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.PerformLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.ResumeLayout(false);
             GroupBox_KeywordUpdateTab_ImageType_Filter.PerformLayout();
-            TabControl_Update.ResumeLayout(false);
+            TabControl_Update_TargetScheduler.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -4285,7 +4298,9 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Blue;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Green;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
-        private System.Windows.Forms.TabControl TabControl_Update;
+        private System.Windows.Forms.TabControl TabControl_Update_TargetScheduler;
         private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName;
+        private System.Windows.Forms.TabPage TabPage_TargetScheduler;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
