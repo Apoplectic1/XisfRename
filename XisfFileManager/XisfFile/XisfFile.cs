@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 using XisfFileManager.Enums;
+using XisfFileManager.TargetScheduler.Tables;
 
 namespace XisfFileManager.FileOperations
 {
@@ -12,135 +13,135 @@ namespace XisfFileManager.FileOperations
     {
         // Member Strutures
         public XDocument mXDoc;
-        public KeywordList mKeywordList;
+        public KeywordList KeywordList;
 
         public XisfFile()
         {
             mXDoc = new XDocument();
-            mKeywordList = new KeywordList();
+            KeywordList = new KeywordList();
         }
 
         // Properties
         public void Clear()
         {
             mXDoc = new XDocument();
-            mKeywordList.Clear();
+            KeywordList.Clear();
         }
 
         public void AddKeyword(string keyword, object value, string comment = "Xisf File Manager")
         {
-            mKeywordList.AddKeyword(keyword, value, comment);
+            KeywordList.AddKeyword(keyword, value, comment);
         }
 
         public void AddXMLKeyword(string keyword, object value, string comment = "Xisf File Manager")
         {
-            mKeywordList.AddKeyword(keyword, value, comment);
+            KeywordList.AddKeyword(keyword, value, comment);
         }
         public void RemoveKeyword(string keyword)
         {
-            mKeywordList.RemoveKeyword(keyword);
+            KeywordList.RemoveKeyword(keyword);
         }
         public void RemoveKeyword(string keyword, object oValue)
         {
-            mKeywordList.RemoveKeyword(keyword, oValue);
+            KeywordList.RemoveKeyword(keyword, oValue);
         }
         public Keyword GetKeyword(string keyword)
         {
-            return mKeywordList.GetKeyword(keyword);
+            return KeywordList.GetKeyword(keyword);
         }
         public object GetKeywordValue(string keyword)
         {
-            return mKeywordList.GetKeywordValue(keyword);
+            return KeywordList.GetKeywordValue(keyword);
         }
         public object GetKeywordComment(string keyword)
         {
-            return mKeywordList.GetKeywordComment(keyword);
+            return KeywordList.GetKeywordComment(keyword);
         }
         public double AmbientTemperature
         {
-            get { return mKeywordList.AmbientTemperature; }
-            set { mKeywordList.AmbientTemperature = value; }
+            get { return KeywordList.AmbientTemperature; }
+            set { KeywordList.AmbientTemperature = value; }
         }
         public bool Approved
         {
-            get { return mKeywordList.Approved; }
-            set { mKeywordList.Approved = value; }
+            get { return KeywordList.Approved; }
+            set { KeywordList.Approved = value; }
         }
         public int Binning
         {
-            get { return mKeywordList.Binning; }
-            set { mKeywordList.Binning = value; }
+            get { return KeywordList.Binning; }
+            set { KeywordList.Binning = value; }
         }
         public string Camera
         {
-            get { return mKeywordList.Camera; }
-            set { mKeywordList.Camera = value; }
+            get { return KeywordList.Camera; }
+            set { KeywordList.Camera = value; }
         }
         public DateTime CaptureDateTime
         {
-            get { return mKeywordList.CaptureDateTime; }
-            set { mKeywordList.CaptureDateTime = value; }
+            get { return KeywordList.CaptureDateTime; }
+            set { KeywordList.CaptureDateTime = value; }
         }
         public string CaptureSoftware
         {
-            get { return mKeywordList.CaptureSoftware; }
-            set { mKeywordList.CaptureSoftware = value; }
+            get { return KeywordList.CaptureSoftware; }
+            set { KeywordList.CaptureSoftware = value; }
         }
         public string CBIAS
         {
-            get { return mKeywordList.CBIAS; }
-            set { mKeywordList.CBIAS = value; }
+            get { return KeywordList.CBIAS; }
+            set { KeywordList.CBIAS = value; }
         }
         public string CDARK
         {
-            get { return mKeywordList.CDARK; }
-            set { mKeywordList.CDARK = value; }
+            get { return KeywordList.CDARK; }
+            set { KeywordList.CDARK = value; }
         }
         public string CFLAT
         {
-            get { return mKeywordList.CFLAT; }
-            set { mKeywordList.CFLAT = value; }
+            get { return KeywordList.CFLAT; }
+            set { KeywordList.CFLAT = value; }
         }
         public string CPANEL
         {
-            get { return mKeywordList.CPANEL; }
-            set { mKeywordList.CPANEL = value; }
+            get { return KeywordList.CPANEL; }
+            set { KeywordList.CPANEL = value; }
         }
         public double ExposureSeconds
         {
-            get { return mKeywordList.ExposureSeconds; }
-            set { mKeywordList.ExposureSeconds = value; }
+            get { return KeywordList.ExposureSeconds; }
+            set { KeywordList.ExposureSeconds = value; }
         }
         public string FilePath { get; set; } = string.Empty;
         public string FilterName
         {
-            get { return mKeywordList.FilterName; }
-            set { mKeywordList.AddKeyword("FILTER", value); }
+            get { return KeywordList.FilterName; }
+            set { KeywordList.AddKeyword("FILTER", value); }
         }
-        public int FocalLength
+        public double FocalLength
         {
-            get { return mKeywordList.FocalLength; }
-            set { mKeywordList.FocalLength = value; }
+            get { return KeywordList.FocalLength; }
+            set { KeywordList.FocalLength = value; }
         }
         public int FocuserPosition
         {
-            get { return mKeywordList.FocuserPosition; }
-            set { mKeywordList.FocuserPosition = value; }
+            get { return KeywordList.FocuserPosition; }
+            set { KeywordList.FocuserPosition = value; }
         }
         public double FocuserTemperature
         {
-            get { return mKeywordList.FocuserTemperature; }
-            set { mKeywordList.FocuserTemperature = value; }
+            get { return KeywordList.FocuserTemperature; }
+            set { KeywordList.FocuserTemperature = value; }
         }
         public eFrame FrameType
         {
-            get { return mKeywordList.FrameType; }
-            set { mKeywordList.AddKeyword("IMAGETYP", value); }
+            get { return KeywordList.FrameType; }
+            set { KeywordList.AddKeyword("IMAGETYP", value); }
         }
         public int Gain
         {
-            get { return mKeywordList.Gain; }
-            set { mKeywordList.Gain = value; }
+            get { return KeywordList.Gain; }
+            set { KeywordList.Gain = value; }
         }
         public int ImageAttachmentLength { get; set; }
         public int ImageAttachmentStart { get; set; }
@@ -148,23 +149,23 @@ namespace XisfFileManager.FileOperations
         public int Index { get; set; }
         public int Offset
         {
-            get { return mKeywordList.Offset; }
-            set { mKeywordList.Offset = value; }
+            get { return KeywordList.Offset; }
+            set { KeywordList.Offset = value; }
         }
         public string Rejection
         {
-            get { return mKeywordList.Rejection; }
-            set { mKeywordList.Rejection = value; }
+            get { return KeywordList.Rejection; }
+            set { KeywordList.Rejection = value; }
         }
         public double RotatorAngle
         {
-            get { return mKeywordList.RotatorAngle; }
-            set { mKeywordList.RotatorAngle = value; }
+            get { return KeywordList.RotatorAngle; }
+            set { KeywordList.RotatorAngle = value; }
         }
         public double SensorTemperature
         {
-            get { return mKeywordList.SensorTemperature; }
-            set { mKeywordList.SensorTemperature = value; }
+            get { return KeywordList.SensorTemperature; }
+            set { KeywordList.SensorTemperature = value; }
         }
         public double SSWeight { get; set; }
         public int ThumbnailAttachmentStartPadding { get; set; }
@@ -179,7 +180,7 @@ namespace XisfFileManager.FileOperations
         /// <returns>The TargetName string</returns>
         public string TargetName
         {
-            get { return mKeywordList.TargetName; }
+            get { return KeywordList.TargetName; }
             set
             {
                 string targetName = value;
@@ -189,13 +190,13 @@ namespace XisfFileManager.FileOperations
                 // First match Stars
                 if (Path.GetDirectoryName(FilePath).Contains("Stars "))
                 {
-                    mKeywordList.CSTARS = "Stars " + mKeywordList.FilterName;
+                    KeywordList.CSTARS = "Stars " + KeywordList.FilterName;
                     // Make sure files in "Stars" directories are properly named: "Target Stars"
                     if (!targetName.Contains("Stars"))
                         targetName = targetName + " Stars";
                 }
                 else
-                    mKeywordList.CSTARS = "*"; // Wildcard by CPANEL
+                    KeywordList.CSTARS = "*"; // Wildcard by CPANEL
 
                 // After Stars, replace a TargetName containing the word "Panel" with "P" followed by one or more digits
                 // Return original string if replacement fails.
@@ -203,25 +204,25 @@ namespace XisfFileManager.FileOperations
                 targetName = Regex.Replace(targetName, @"(?<=[A-Za-z0-9\s-])\s*P(\d+)$", " P$1");
 
                 if (!KeepPanel)
-                    mKeywordList.CPANEL = targetName.Replace(" Stars", ""); // Remove " Stars" so we Register and Intergrate by CPanel
+                    KeywordList.CPANEL = targetName.Replace(" Stars", ""); // Remove " Stars" so we Register and Intergrate by CPanel
 
-                mKeywordList.TargetName = targetName;
+                KeywordList.TargetName = targetName;
             }
         }
         public string Telescope
         {
-            get { return mKeywordList.Telescope; }
-            set { mKeywordList.Telescope = value; }
+            get { return KeywordList.Telescope; }
+            set { KeywordList.Telescope = value; }
         }
         public int TotalFrames
         {
-            get { return mKeywordList.TotalFrames; }
-            set { mKeywordList.TotalFrames = value; }
+            get { return KeywordList.TotalFrames; }
+            set { KeywordList.TotalFrames = value; }
         }
         public bool Unique { get; set; }
         public List<string> WeightKeyword
         {
-            get { return mKeywordList.WeightKeyword; }
+            get { return KeywordList.WeightKeyword; }
         }
 
         // ***********************************************************************************************************************************
@@ -278,21 +279,54 @@ namespace XisfFileManager.FileOperations
         {
             Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
-            mKeywordList.AddKeywordKeepDuplicates(newKeyword);
+            KeywordList.AddKeywordKeepDuplicates(newKeyword);
         }
 
         public void AddXMLKeyword(XElement element)
         {
+            // It looks like NINA 3 may have added a fourth XML Keyword string field called "xmlns=xxx'. We should ignore this field
+            // Example: "{<FITSKeyword name="IMAGETYP" value="LIGHT" comment="Type of exposure" xmlns="http://www.pixinsight.com/xisf" />}"
+
+            string elementName = string.Empty;
+            string elementValue = string.Empty;
+            string elementComment = string.Empty;
+
+            try
+            {
+                // Split the XML Keyword triple into elementName, elementValue, elementComment
+                elementName = element.Attribute("name").Value;
+                elementValue = element.Attribute("value").Value;
+                elementComment = element.Attribute("comment").Value;
+
+                // Get rid of an extra decimal point at the end of what should be integers
+                elementValue = elementValue.TrimEnd('.');
+
+                AddKeywordKeepDuplicates(elementName, elementValue, elementComment);
+            }
+            catch (Exception ex )
+            {
+                Console.WriteLine("\nXML to Keyword Exception Thrown:\n" + 
+                    "\tKeyword Name:" + elementName.ToString() +
+                    "\tKeyword Value:" + elementValue.ToString() +
+                    "\tKeyword Comment:" + elementComment.ToString() +
+                    "\n\n" + ex.Message);
+            }
+            return;
+
+
             bool bStatus;
 
+            // TODO: Do we really need to find Keyword value types? Can we remove this code?
+
             // First remove Keyword characteritics that interfere with later processing
-            string elementValue = element.Attribute("value").Value;
             elementValue = elementValue.Replace("'", "");
 
             // Now get rid of an extra decimal point at the end of what should be integers
             elementValue = elementValue.TrimEnd('.');
 
-            // Now actually parse the keywords into bools, integers, doubles and finally strings
+            // Now actually parse the keyword based on Value into bools, integers, doubles and finally strings
+
+            // Boolean?
             bStatus = bool.TryParse(elementValue, out bool bBool);
             if (bStatus)
             {
@@ -308,16 +342,7 @@ namespace XisfFileManager.FileOperations
                 }
             }
 
-            if (element.Attribute("name").Value == "EXPTIME")
-            {
-                bStatus = double.TryParse(elementValue, out double seconds);
-                if (bStatus)
-                {
-                    AddKeyword(element.Attribute("name").Value, seconds, element.Attribute("comment").Value);
-                    return;
-                }
-            }
-
+            // Integer?
             bStatus = Int32.TryParse(elementValue, out int iInt32);
             if (bStatus)
             {
@@ -325,6 +350,7 @@ namespace XisfFileManager.FileOperations
                 return;
             }
 
+            // Double?
             bStatus = double.TryParse(elementValue, out double dDouble);
             if (bStatus)
             {
@@ -332,8 +358,8 @@ namespace XisfFileManager.FileOperations
                 return;
             }
 
+            // String?
             // Pixinsight will add multiple Keywords using the same name
-            // Keep string Keyword Duplicates
             AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
         }
 
@@ -360,8 +386,8 @@ namespace XisfFileManager.FileOperations
         {
             if (object1 == null) return 1;
             if (object2 == null) return 1;
-            if (object1.mKeywordList.CaptureDateTime > object2.mKeywordList.CaptureDateTime) return 1;
-            if (object1.mKeywordList.CaptureDateTime < object2.mKeywordList.CaptureDateTime) return -1;
+            if (object1.KeywordList.CaptureDateTime > object2.KeywordList.CaptureDateTime) return 1;
+            if (object1.KeywordList.CaptureDateTime < object2.KeywordList.CaptureDateTime) return -1;
             return 0;
         };
     }

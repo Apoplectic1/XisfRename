@@ -6,37 +6,23 @@ namespace XisfFileManager.TargetScheduler
 {
     internal class SqlLiteReader
     {
-        private List<ProfilePreference> mProfilePreferenceList;
-        private List<Project> mProjectList;
-        private List<Target> mTargetList;
-        private List<RuleWeight> mRuleWeightList;
-        private List<ExposurePlan> mExposurePlanList;
-        private List<ExposureTemplate> mExposureTemplateList;
-        private List<AcquiredImage> mAcquiredImageList;
-        private List<ImageData> mImageDataList;
+        private SqlLiteManager mSqlManager;
 
-        public SqlLiteReader()
+        public SqlLiteReader(SqlLiteManager manager)
         {
-            mProfilePreferenceList = new List<ProfilePreference>();
-            mProjectList = new List<Project>();
-            mTargetList = new List<Target>();
-            mRuleWeightList = new List<RuleWeight>();
-            mExposurePlanList = new List<ExposurePlan>();
-            mExposureTemplateList = new List<ExposureTemplate>();
-            mAcquiredImageList = new List<AcquiredImage>();
-            mImageDataList = new List<ImageData>();
+            mSqlManager = manager;
         }
 
-        public bool ReadTargetSchedulerDataBaseFile(string sqlLightFileName)
+        public bool ReadDataBaseFile(string sqlLightFileName)
         {
-            mProfilePreferenceList.Clear();
-            mProjectList.Clear();
-            mRuleWeightList.Clear();
-            mTargetList.Clear();
-            mExposurePlanList.Clear();
-            mExposureTemplateList.Clear();
-            mAcquiredImageList.Clear();
-            mImageDataList.Clear();
+            mSqlManager.mProfilePreferenceList.Clear();
+            mSqlManager.mProjectList.Clear();
+            mSqlManager.mRuleWeightList.Clear();
+            mSqlManager.mTargetList.Clear();
+            mSqlManager.mExposurePlanList.Clear();
+            mSqlManager.mExposureTemplateList.Clear();
+            mSqlManager.mAcquiredImageList.Clear();
+            mSqlManager.mImageDataList.Clear();
 
             using (SqliteConnection connection = new SqliteConnection($"Data Source={sqlLightFileName};"))
             {
@@ -64,7 +50,7 @@ namespace XisfFileManager.TargetScheduler
                                 parkonwait = reader.GetInt32(reader.GetOrdinal("parkonwait")),
                             };
 
-                            mProfilePreferenceList.Add(profilepreferenceRow);
+                            mSqlManager.mProfilePreferenceList.Add(profilepreferenceRow);
                         }
                     }
                 }
@@ -97,7 +83,7 @@ namespace XisfFileManager.TargetScheduler
                                 isMosaic = reader.GetInt32(reader.GetOrdinal("isMosaic")),
                             };
 
-                            mProjectList.Add(projectRow);
+                            mSqlManager.mProjectList.Add(projectRow);
                         }
                     }
                 }
@@ -122,7 +108,7 @@ namespace XisfFileManager.TargetScheduler
                                 //overrideExposureOrder = reader.GetString(reader.GetOrdinal("overrideExposureOrder")),
                             };
 
-                            mTargetList.Add(targetRow);
+                            mSqlManager.mTargetList.Add(targetRow);
                         }
                     }
                 }
@@ -145,7 +131,7 @@ namespace XisfFileManager.TargetScheduler
                                 exposureTemplateId = reader.GetInt32(reader.GetOrdinal("exposureTemplateId")),
                             };
 
-                            mExposurePlanList.Add(exposurePlanRow);
+                            mSqlManager.mExposurePlanList.Add(exposurePlanRow);
                         }
                     }
                 }
@@ -174,7 +160,7 @@ namespace XisfFileManager.TargetScheduler
                                 defaultexposure = reader.GetInt32(reader.GetOrdinal("defaultexposure")),
                             };
 
-                            mExposureTemplateList.Add(exposureTemplateRow);
+                            mSqlManager.mExposureTemplateList.Add(exposureTemplateRow);
                         }
                     }
                 }
@@ -190,14 +176,14 @@ namespace XisfFileManager.TargetScheduler
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 projectId = reader.GetInt32(reader.GetOrdinal("projectId")),
                                 targetId = reader.GetInt32(reader.GetOrdinal("targetId")),
-                                acquiredate = reader.GetInt32(reader.GetOrdinal("acquiredate")),
+                                acquireddate = reader.GetInt32(reader.GetOrdinal("acquireddate")),
                                 filtername = reader.GetString(reader.GetOrdinal("filtername")),
                                 accepted = reader.GetInt32(reader.GetOrdinal("accepted")),
                                 metadata = reader.GetString(reader.GetOrdinal("metadata")),
-                                rejectedreason = reader.GetString(reader.GetOrdinal("rejectedreason"))
-                            };
+                                rejectreason = reader.IsDBNull(reader.GetOrdinal("rejectreason")) ? string.Empty : reader.GetString(reader.GetOrdinal("rejectreason")),
+                        };
 
-                            mAcquiredImageList.Add(acquiredImageRow);
+                            mSqlManager.mAcquiredImageList.Add(acquiredImageRow);
                         }
                     }
                 }
@@ -217,7 +203,7 @@ namespace XisfFileManager.TargetScheduler
                                 projectid = reader.GetInt32(reader.GetOrdinal("projectid")),
                             };
 
-                            mRuleWeightList.Add(ruleWeightRow);
+                            mSqlManager.mRuleWeightList.Add(ruleWeightRow);
                         }
                     }
                 }
@@ -236,7 +222,7 @@ namespace XisfFileManager.TargetScheduler
                                 acquiredimageid = reader.GetInt32(reader.GetOrdinal("acquiredimageid")),
                             };
 
-                            mImageDataList.Add(imageDataRow);
+                            mSqlManager.mImageDataList.Add(imageDataRow);
                         }
                     }
                 }

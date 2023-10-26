@@ -18,7 +18,6 @@ namespace XisfFileManager.FileOperations
         private string keywordMatch = @"<xisf.*?</xisf>";
         private string modifiedString;
        
-
         public Task ReadXisfFile(XisfFile xFile)
         {
             using (FileStream fileStream = new FileStream(xFile.FilePath, FileMode.Open, FileAccess.Read))
@@ -55,13 +54,19 @@ namespace XisfFileManager.FileOperations
 
                 modifiedString = keywordBlock.ToString().Replace("'", "");
 
-                //PruneXisfFile();
-
                 xFile.mXDoc = new XDocument();
 
                 try
                 {
-                    xFile.mXDoc = XDocument.Parse(modifiedString);
+                   // MatchCollection matches = Regex.Matches(modifiedString, "<xisf(.*?)xisf>");
+
+                    //modifiedString = string.Empty;
+                    //foreach (Match match in matches)
+                   //{
+                    //    modifiedString += match.Value;
+                   // }
+
+                        xFile.mXDoc = XDocument.Parse(modifiedString);
                 }
                 catch (Exception ex)
                 {
@@ -78,20 +83,6 @@ namespace XisfFileManager.FileOperations
                 XElement root = xFile.mXDoc.Root;
                 XNamespace ns = root.GetDefaultNamespace();
 
-                // This was taken from an image capture from Nina 3. The .fits file was then converted to .xisf by PixInsight 1.8.9-2
-                // 
-                // Example: <Image geometry="5496:3672:1" sampleFormat="UInt16" colorSpace="Gray" location="attachment:8192:40362624">
-                // 8192 is starting address of image data.
-                // 40362624 is image size.
-                //
-                // Later in the .xisf file is
-                //     <Metadata>
-                //     <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096"/>
-                //     <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072"/>
-                //     </Metadata>
-                //
-                // My guess is the 8192 has to be modulo 4096
-
                 IEnumerable < XElement> image = xFile.mXDoc.Descendants(ns + "Image");
                 foreach (XElement element in image)
                 {
@@ -104,9 +95,10 @@ namespace XisfFileManager.FileOperations
                     xFile.ThumbnailAttachment(element);
                 }
 
+                // This will place all XML formated FITS Keyword Name, Value, Comment triples into 'elements' so that 'elements' has an IEnumerable list of each set of keyword triples
                 IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
 
-                // Find each keyword and add it to xFile
+                // Look at each XML FITS keyword triple and add it to this file's Keyword set 
                 foreach (XElement element in elements)
                 {
                     xFile.AddXMLKeyword(element);
@@ -118,89 +110,6 @@ namespace XisfFileManager.FileOperations
             return Task.CompletedTask;
         }
 
-        private void PruneXisfFile()
-        {
-            string startTag;
-            string stopTag;
-            string pattern;
-
-            // Find and save Pixel Rejection Method
-            startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.pixelRejection:";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
-            Match match = Regex.Match(modifiedString, pattern);
-            string pixelRejection = match.Value.ToString();
-
-            // Find and save the number of subframes used to integerate a master
-            startTag = "<FITSKeyword name=\"HISTORY\" value=\"\" comment=\"ImageIntegration.numberOfImages:";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}*(.*?){Regex.Escape(stopTag)}";
-            match = Regex.Match(modifiedString, pattern);
-            string numberOfImages = match.Value.ToString();
-
-            // Remove all HISTORY Keywords
-            startTag = "<FITSKeyword name=\"HISTORY\"";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            // Insert Rejection Method and number of subframes after the IMAGETYP Keyword (just a convienent place)
-            startTag = "<FITSKeyword name=\"IMAGETYP\"";
-            stopTag = "/>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-
-            match = Regex.Match(modifiedString, pattern);
-            modifiedString = modifiedString.Insert(match.Index + match.Length, pixelRejection);
-            match = Regex.Match(modifiedString, pattern);
-            modifiedString = modifiedString.Insert(match.Index + match.Length, numberOfImages);
-
-
-
-            // Remove all Property ProcessingHistory entries
-            startTag = "<Property id=\"PixInsight:ProcessingHistory\"";
-            stopTag = "</Property>";
-            pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-            modifiedString = Regex.Replace(modifiedString, pattern, "");
-
-            // Remove orphan </MetaData>
-            int index;
-            index = modifiedString.IndexOf("</Metadata");
-            if (index != -1)
-            {
-                index = modifiedString.IndexOf("<Metadata>");
-                if (index == -1)
-                {
-                    startTag = "</Metadata";
-                    stopTag = ">";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-                    modifiedString = Regex.Replace(modifiedString, pattern, "");
-                }
-            }
-
-            // Make sure image has <Image> to <\Image>
-            index = modifiedString.IndexOf("<Image");
-            if (index != -1)
-            {
-                index = modifiedString.IndexOf("</Image>");
-                if (index == -1)
-                {
-                    // Insert </Image> before <\xisf>
-                    startTag = "</xisf";
-                    stopTag = ">";
-                    pattern = $"{Regex.Escape(startTag)}.*?{Regex.Escape(stopTag)}";
-
-                    match = Regex.Match(modifiedString, pattern);
-                    modifiedString = modifiedString.Insert(match.Index, "</Image>");
-                }
-            }
-
-            return;
-        }
-
-
-        /// <summary>
-        /// ![Screenshot](Images/MasterFormat.jpg)
-        /// </summary>
         public void SetKeywordsFromFileName(XisfFile xFile)
         {
             string sFileName = Path.GetFileName(xFile.FilePath);

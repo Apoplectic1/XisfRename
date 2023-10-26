@@ -24,10 +24,10 @@ namespace XisfFileManager.TargetScheduler.Tables
 		public int Id { get; set; }
 		public int projectId { get; set; }
 		public int targetId { get; set; }
-		public int acquiredate { get; set; }
+		public int acquireddate { get; set; }
 		public string filtername { get; set; }
 		public int accepted {  get; set; }
 		public string metadata { get; set; }
-		public string rejectedreason { get; set; }
+		public string rejectreason { get; set; }
     }
 }

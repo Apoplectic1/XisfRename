@@ -537,23 +537,6 @@ namespace XisfFileManager
                 AddKeyword("CFLAT", value, "WBPP: Match this file with other CFLAT" + CFLAT + " files");
             }
         }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string CLIGHT
-        {
-            get
-            {
-                object Object = GetKeywordValue("CLIGHT");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CLIGHT", value, "WBPP: Match this file with other CLIGHT" + CLIGHT + " files");
-            }
-        }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CPANEL
@@ -586,6 +569,7 @@ namespace XisfFileManager
                 AddKeyword("CSTARS", value, "Match this file with other CPANEL Stars" + CPANEL + " files");
             }
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double Eccentricity
@@ -605,6 +589,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public double ExposureSeconds
         {
             get
@@ -704,18 +689,22 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public int FocalLength
+        public double FocalLength
         {
             get
             {
                 object Object = GetKeywordValue("FOCALLEN");
-                if (Object != null)
-                    return Convert.ToInt32(Object);
-                return -1;
+                if (Object == null) return -1.0;
+                return Convert.ToDouble(Object);
             }
             set
             {
-                AddKeyword("FOCALLEN", value, Telescope + " Focal length in mm");
+                double Value;
+                bool bStatus = double.TryParse(value.ToString(), out Value);
+                if (bStatus)
+                    AddKeyword("FOCALLEN", Convert.ToDouble(value), Telescope + " Focal length in mm");
+                else
+                    AddKeyword("FOCALLEN", -1.0, "*** SET VALUE ERROR ***");
             }
         }
 
@@ -726,14 +715,17 @@ namespace XisfFileManager
             get
             {
                 object Object = GetKeywordValue("FOCPOS");
-                if (Object != null)
-                    return (int)Object;
-                return -1;
+                if (Object == null) return -1;
+                return Convert.ToInt32(Object);
             }
-
             set
             {
-                AddKeyword("FOCPOS", value, "MoonLite Focuser Posistion");
+                int Value;
+                bool bStatus = int.TryParse(value.ToString(), out Value);
+                if (bStatus)
+                    AddKeyword("FOCPOS", Convert.ToInt32(Math.Round((double)value)), "MoonLite Focuser Position");
+                else
+                    AddKeyword("FOCPOS", -1, "*** SET VALUE ERROR ***");
             }
         }
 
@@ -954,6 +946,7 @@ namespace XisfFileManager
             }
 
         }
+
         // *********************************************************************************************************
         // *********************************************************************************************************
 
@@ -1117,7 +1110,6 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-
         public string TargetName
         {
             get

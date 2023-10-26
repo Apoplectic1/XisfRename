@@ -486,7 +486,7 @@ namespace XisfFileManager
 
             foreach (XisfFile xFile in mFileList)
             {
-                foreach (var keywordName in xFile.mKeywordList.mKeywordList)
+                foreach (var keywordName in xFile.KeywordList.mKeywordList)
                 {
                     keywordNamelist.Add(keywordName.Name);
                 }
@@ -3727,7 +3727,7 @@ namespace XisfFileManager
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    foreach (Keyword node in file.mKeywordList.mKeywordList)
+                    foreach (Keyword node in file.KeywordList.mKeywordList)
                     {
                         if (node.Comment.ToLower(CultureInfo.InvariantCulture).Contains("numberofimages"))
                         {
@@ -4037,7 +4037,7 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                foreach (var keyword in file.mKeywordList.mKeywordList)
+                foreach (var keyword in file.KeywordList.mKeywordList)
                 {
                     keywordList.Add(keyword);
                 }
@@ -4076,12 +4076,12 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
-                    file.mKeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+                    file.KeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
 
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
                 {
-                    file.mKeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
-                    file.mKeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+                    file.KeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    file.KeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
                 }
             }
         }
@@ -4108,12 +4108,12 @@ namespace XisfFileManager
             foreach (XisfFile xFile in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked)
-                    xFile.mKeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+                    xFile.KeywordList.AddKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
 
                 if (RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Checked)
                 {
-                    xFile.mKeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
-                    xFile.mKeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
+                    xFile.KeywordList.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text);
+                    xFile.KeywordList.AddKeywordKeepDuplicates(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text, ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text);
                 }
             }
 
@@ -4136,7 +4136,7 @@ namespace XisfFileManager
 
             foreach (XisfFile xFile in mFileList)
             {
-                foreach (var keywordName in xFile.mKeywordList.mKeywordList)
+                foreach (var keywordName in xFile.KeywordList.mKeywordList)
                 {
                     keywordNamelist.Add(keywordName.Name);
                 }
@@ -4153,9 +4153,11 @@ namespace XisfFileManager
 
         private void button1_Click(object sender, EventArgs e)
         {
-            XisfFileManager.TargetScheduler.SqlLiteReader mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteReader();
+            XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
 
             mSchedulerDB.ReadTargetSchedulerDataBaseFile(@"E:\Temp\schedulerdb.sqlite");
+
+            mSchedulerDB.UpdateTargetImageCounts(mFileList);
         }
     }
 }

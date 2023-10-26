@@ -1,12 +1,227 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using XisfFileManager.FileOperations;
+using XisfFileManager.TargetScheduler.Tables;
 
 namespace XisfFileManager.TargetScheduler
 {
     internal class SqlLiteManager
     {
+        public List<ProfilePreference> mProfilePreferenceList;
+        public List<Project> mProjectList;
+        public List<Target> mTargetList;
+        public List<RuleWeight> mRuleWeightList;
+        public List<ExposurePlan> mExposurePlanList;
+        public List<ExposureTemplate> mExposureTemplateList;
+        public List<AcquiredImage> mAcquiredImageList;
+        public List<ImageData> mImageDataList;
+
+        public SqlLiteReader mSqlReader { get; private set; }
+        public SqlLiteWriter mSqlWriter { get; private set; }
+        public SqlLiteUpdater mSqlUpdater { get; private set; }
+
+        internal SqlLiteManager()
+        {
+            mProfilePreferenceList = new List<ProfilePreference>();
+            mProjectList = new List<Project>();
+            mTargetList = new List<Target>();
+            mRuleWeightList = new List<RuleWeight>();
+            mExposurePlanList = new List<ExposurePlan>();
+            mExposureTemplateList = new List<ExposureTemplate>();
+            mAcquiredImageList = new List<AcquiredImage>();
+            mImageDataList = new List<ImageData>();
+
+            mSqlReader = new SqlLiteReader(this);
+            mSqlWriter = new SqlLiteWriter(this);
+            mSqlUpdater = new SqlLiteUpdater(this);
+        }
+
+        public bool ReadTargetSchedulerDataBaseFile(string databaseFilePath)
+        {
+            return mSqlReader.ReadDataBaseFile(databaseFilePath);
+        }
+
+        public void UpdateTargetImageCounts(List<XisfFile> xFileList)
+        {
+            foreach (XisfFile xFile in xFileList)
+            {
+                double degrees = 0;
+
+                object objectRA = xFile.KeywordList.GetKeywordValue("OBJCTRA");
+                if (objectRA is string)
+                {
+                    string RA = (string)objectRA;
+                    RA = RA.Contains('.') ? RA : RA + ".0";
+                    //if (Regex.IsMatch(RA, @"^[+-]?\d{1,2} \d{1,2} \d{1,2}\.\d+"))
+                    if (Regex.IsMatch(RA, @"^\d{1,2} \d{1,2} \d{1,2}\.\d+"))
+                    {
+                        // We matched [hh mm ss] string format
+                        degrees = ConvertHoursMinutesSecondsToDecimal(RA);
+                        xFile.KeywordList.AddKeyword("RA", degrees, "Degrees Right Ascension");
+                    }
+                    else
+                    {
+                    }
+                }
+                else
+                {
+                    // objectRA is a number. Is it in hours or degrees?
+                    double number;
+                    bool status = double.TryParse(objectRA.ToString(), out number);
+                    if (status)
+                    {
+                        // Assume its a packed hhmmss format
+                        string result = UnpackTimeString(number.ToString()).Replace("+", "").Replace("-", "");
+
+                        if (Regex.IsMatch(result, @"^\d{1,2} \d{1,2} \d{1,2}\.\d+"))
+                        {
+                            xFile.KeywordList.AddKeyword("OBJCTRA", result, "[h m s] Target Right Ascension");
+                            degrees = ConvertHoursMinutesSecondsToDecimal(result);
+                            xFile.KeywordList.AddKeyword("RA", degrees, "Degrees Right Ascension");
+                        }
+                    }
+                }
+
+
+
+
+                object objectDEC = xFile.KeywordList.GetKeywordValue("OBJCTDEC");
+                if (objectDEC is string)
+                {
+                    string DEC = (string)objectDEC;
+                    DEC = DEC.Contains('.') ? DEC : DEC + ".0";
+                    if (Regex.IsMatch(DEC, @"^[+-]?\d{1,2} \d{1,2} \d{1,2}\.\d+"))
+                    {
+                        // We matched [hh mm ss] string format
+                        degrees = ConvertHoursMinutesSecondsToDecimal((string)objectDEC);
+                        xFile.KeywordList.AddKeyword("DEC", degrees, "Hours Declination");
+                    }
+                    else
+                    {
+                    }
+                }
+                else
+                {
+                    // objectDEC is a number. Is it in hours or degrees?
+
+                    double number;
+                    bool status = double.TryParse(objectDEC.ToString(), out number);
+                    if (status)
+                    {
+                        // Assume its a packed hhmmss format
+                        string result = UnpackTimeString(number.ToString());
+
+                        if (Regex.IsMatch(result, @"^[+-]?\d{1,2} \d{1,2} \d{1,2}\.\d+"))
+                        {
+                            xFile.KeywordList.AddKeyword("OBJCTDEC", result, "[d m s] Target Declination");
+                            degrees = ConvertHoursMinutesSecondsToDecimal(result);
+                            xFile.KeywordList.AddKeyword("DEC", degrees, "Hours Declination");
+                        }
+                    }
+                }
+
+                xFile.KeywordList.RemoveKeyword("RA");
+                xFile.KeywordList.RemoveKeyword("DEC");
+                xFile.KeywordList.RemoveKeyword("PROTECT");
+                xFile.KeywordList.RemoveKeyword("Protect");
+
+            }
+
+
+            // DEBUG to find missing RA or DEC
+            var tsRA = mTargetList[0].ra * 15.0;
+            var tsDEC = mTargetList[0].dec;
+            /*
+            var skyPposition = xFileList
+                .Where(obj =>
+                    IsWithinPercent((double)obj.KeywordList.GetKeywordValue("RA"), mTargetList[0].ra * 15.0, 0.1) &&
+                    IsWithinPercent((double)obj.KeywordList.GetKeywordValue("DEC"), mTargetList[0].dec, 0.1))
+                   .ToList();
+
+            var name = xFileList.Where(obj => obj.FilePath.Contains(mTargetList[1].name)).ToList();
+            */
+            static double ConvertHoursMinutesSecondsToDegrees(string input)
+            {
+                string[] parts = input.Split(' ');
+                if (parts.Length != 3)
+                {
+                    return -360.0;
+                }
+
+                double hours = double.Parse(parts[0]);
+                double minutes = double.Parse(parts[1]);
+                double seconds = double.Parse(parts[2]);
+
+                double degrees = (((hours + minutes) / 60.0) + (seconds / 3600.0)) * 15.0;
+
+                if (hours < 0)
+                {
+                    degrees = -degrees;
+                }
+
+                return degrees;
+            }
+
+            static double ConvertHoursMinutesSecondsToDecimal(string input)
+            {
+                string[] parts = input.Split(' ');
+                if (parts.Length != 3)
+                {
+                    return -360.0;
+                }
+
+                double hours = double.Parse(parts[0]);
+                double minutes = double.Parse(parts[1]);
+                double seconds = double.Parse(parts[2]);
+
+                double degrees = Math.Abs(hours) + (minutes / 60.0) + (seconds / 3600.0);
+
+                if (hours < 0)
+                {
+                    degrees = -degrees;
+                }
+
+                return degrees;
+            }
+
+            static string UnpackTimeString(string input)
+            {
+                int decimalPoint = input.IndexOf('.');
+                if (decimalPoint < 0)
+                {
+                    input += ".0";
+                    decimalPoint = input.IndexOf('.');
+                }
+                int length = input.Length - (decimalPoint - 2);
+
+                string seconds = input.Substring(decimalPoint - 2, length);
+                string minutes = input.Substring(decimalPoint - 4, 2);
+
+                length = decimalPoint - 4;
+                string hours = input.Substring(0, length);
+
+                if (hours == string.Empty)
+                    hours = "00";
+
+                if (hours.Contains('-'))
+                    return hours.PadLeft(2, '0') + " " + minutes.PadLeft(2, '0') + " " + seconds.PadLeft(2, '0');
+                else
+                    return "+" + hours.PadLeft(2, '0') + " " + minutes.PadLeft(2, '0') + " " + seconds.PadLeft(2, '0');
+            }
+        }
+
+        public static bool IsWithinPercent(double value, double target, double percent)
+        {
+            double absoluteDifference = Math.Abs(value - target);
+            double threshold = (percent / 100) * Math.Abs(target);
+            return absoluteDifference <= threshold;
+        }
     }
 }

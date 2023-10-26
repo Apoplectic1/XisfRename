@@ -282,7 +282,7 @@ namespace XisfFileManager.FileOperations
 
                 // Alphabetize the KeywordData FITSKeywords
                 // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (minus explicit removals and changes)
-                List<Keyword> keywords = mFile.mKeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
+                List<Keyword> keywords = mFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
 
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
                 foreach (Keyword keyword in keywords)

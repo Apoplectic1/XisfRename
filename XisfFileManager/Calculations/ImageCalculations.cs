@@ -66,7 +66,6 @@ namespace XisfFileManager.Calculations
                     mAmbientTemperatureList.Add(-273);
                 }
 
-
                 //FileSSWeight.Add(Convert.ToDouble(Keywords.AmbientTemperature()));
             }
         }

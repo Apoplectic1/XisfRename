@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0-windows10.0.22621.0</TargetFramework>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>ftp://192.168.1.2/Qweb/SkyhawkConsulting/ProjectDeploy/XisfFileManager/</PublishUrl>
     <Install>true</Install>
@@ -106,7 +106,6 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\MasterFormat.jpg" />
     <Content Include="XisfFileManager.ico" />
   </ItemGroup>
   <ItemGroup>

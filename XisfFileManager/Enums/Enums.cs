@@ -29,4 +29,6 @@
 
     public enum eOperation { NEW_WEIGHTS, KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
 
+    public enum eCoordinates { DEGREES, HMS }
+
 }
