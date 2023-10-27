@@ -301,7 +301,6 @@ namespace XisfFileManager
                 return;
             }
 
-            XisfFileReader fileReader = new();
 
             // Upate the UI with data from the .xisf recursive directory search
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
@@ -318,10 +317,7 @@ namespace XisfFileManager
                     FilePath = xFile.FullName
                 };
 
-                await Task.Run(async () =>
-                {
-                    await fileReader.ReadXisfFile(mFile);
-                });
+                await mFileReader.ReadXisfFile(mFile);
 
                 mFileList.Add(mFile);
             }
@@ -2505,25 +2501,18 @@ namespace XisfFileManager
         {
             ClearCameraForm();
 
-            //Z183CustomComboBox.OutlineColor = Color.Red;
-
-            // If no files, just return
-            if (mFileList.Count == 0) return;
-
-            // ****************************************************************
-
             // cameraList should contain an entry for each file
-            List<string> CameraList = mFileList.Where(c => c.Camera == "A144" || c.Camera == "Q178" || c.Camera == "Z183" || c.Camera == "Z533").Select(c => c.Camera).ToList();
-            bool bFoundZ183 = CameraList.Any(c => c == "Z183");
-            bool bFoundZ533 = CameraList.Any(c => c == "Z533");
-            bool bFoundQ178 = CameraList.Any(c => c == "Q178");
-            bool bFoundA144 = CameraList.Any(c => c == "A144");
+            List<string> CameraList = mFileList.Select(c => c.Camera).ToList();
+            bool bFoundZ183 = CameraList.Any(c => c.Contains("183"));
+            bool bFoundZ533 = CameraList.Any(c => c.Contains("533"));
+            bool bFoundQ178 = CameraList.Any(c => c.Contains("178"));
+            bool bFoundA144 = CameraList.Any(c => c.Contains("144"));
 
             bool bNoCameras = CameraList.Count == 0;
             bool bMissingCameras = (CameraList.Count != mFileList.Count) && !bNoCameras;
             bool bDifferentCameras = ((bFoundZ183 ? 1 : 0) + (bFoundZ533 ? 1 : 0) + (bFoundQ178 ? 1 : 0) + (bFoundA144 ? 1 : 0) >= 2) && !bMissingCameras;
             bool bUniqueCamera = !bMissingCameras && !bDifferentCameras && !bNoCameras;
-            //bool bUniqueCamera = !bMissingCameras && !bNoCameras;
+
 
             CheckBox_KeywordUpdateTab_Camera_A144.Checked = bFoundA144;
             CheckBox_KeywordUpdateTab_Camera_Q178.Checked = bFoundQ178;
@@ -2574,9 +2563,9 @@ namespace XisfFileManager
 
             if (bFoundZ533)
             {
-                List<double> SecondsListZ533 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z533").Select(i => i.ExposureSeconds).ToList();
+                List<double> SecondsListZ533 = mFileList.Where(i => i.ExposureSeconds >= 0 && i.Camera.Contains("533")).Select(i => i.ExposureSeconds).ToList();
                 bNoSecondsZ533 = SecondsListZ533.Count == 0;
-                bMissingSecondsZ533 = SecondsListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoSecondsZ533;
+                bMissingSecondsZ533 = SecondsListZ533.Count != CameraList.Count(c => c.Contains("533")) && !bNoSecondsZ533;
                 bDifferentSecondsZ533 = SecondsListZ533.Distinct().Count() > 1;
                 bUniqueSecondsZ533 = !bMissingSecondsZ533 && !bDifferentSecondsZ533 && !bNoSecondsZ533;
 
@@ -2602,9 +2591,9 @@ namespace XisfFileManager
 
             if (bFoundZ183)
             {
-                List<double> SecondsListZ183 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Z183").Select(i => i.ExposureSeconds).ToList();
+                List<double> SecondsListZ183 = mFileList.Where(i => i.ExposureSeconds >= 0 && i.Camera.Contains("183")).Select(i => i.ExposureSeconds).ToList();
                 bNoSecondsZ183 = SecondsListZ183.Count == 0;
-                bMissingSecondsZ183 = SecondsListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoSecondsZ183;
+                bMissingSecondsZ183 = SecondsListZ183.Count != CameraList.Count(c => c.Contains("183")) && !bNoSecondsZ183;
                 bDifferentSecondsZ183 = SecondsListZ183.Distinct().Count() > 1;
                 bUniqueSecondsZ183 = !bMissingSecondsZ183 && !bDifferentSecondsZ183 && !bNoSecondsZ183;
 
@@ -2630,9 +2619,9 @@ namespace XisfFileManager
 
             if (bFoundQ178)
             {
-                List<double> SecondsListQ178 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "Q178").Select(i => i.ExposureSeconds).ToList();
+                List<double> SecondsListQ178 = mFileList.Where(i => i.ExposureSeconds >= 0 && i.Camera.Contains("178")).Select(i => i.ExposureSeconds).ToList();
                 bNoSecondsQ178 = SecondsListQ178.Count == 0;
-                bMissingSecondsQ178 = SecondsListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoSecondsQ178;
+                bMissingSecondsQ178 = SecondsListQ178.Count != CameraList.Count(c => c.Contains("178")) && !bNoSecondsQ178;
                 bDifferentSecondsQ178 = SecondsListQ178.Distinct().Count() > 1;
                 bUniqueSecondsQ178 = !bMissingSecondsQ178 && !bDifferentSecondsQ178 && !bNoSecondsQ178;
 
@@ -2657,9 +2646,9 @@ namespace XisfFileManager
 
             if (bFoundA144)
             {
-                List<double> SecondsListA144 = mFileList.Where(i => i.ExposureSeconds > 0 && i.Camera == "A144").Select(i => i.ExposureSeconds).ToList();
+                List<double> SecondsListA144 = mFileList.Where(i => i.ExposureSeconds >= 0 && i.Camera.Contains("A44")).Select(i => i.ExposureSeconds).ToList();
                 bNoSecondsA144 = SecondsListA144.Count == 0;
-                bMissingSecondsA144 = SecondsListA144.Count != CameraList.Count(c => c == "A144") && !bNoSecondsA144;
+                bMissingSecondsA144 = SecondsListA144.Count != CameraList.Count(c => c.Contains("144")) && !bNoSecondsA144;
                 bDifferentSecondsA144 = SecondsListA144.Distinct().Count() > 1;
                 bUniqueSecondsA144 = !bMissingSecondsA144 && !bDifferentSecondsA144 && !bNoSecondsA144;
 
@@ -2692,9 +2681,9 @@ namespace XisfFileManager
 
             if (bFoundZ533)
             {
-                List<int> GainListZ533 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z533").Select(i => i.Gain).ToList();
+                List<int> GainListZ533 = mFileList.Where(i => i.Gain >= 0 && i.Camera.Contains("533")).Select(i => i.Gain).ToList();
                 bNoGainsZ533 = GainListZ533.Count == 0;
-                bMissingGainsZ533 = GainListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoGainsZ533;
+                bMissingGainsZ533 = GainListZ533.Count != CameraList.Count(c => c.Contains("533")) && !bNoGainsZ533;
                 bDifferentGainsZ533 = GainListZ533.Distinct().Count() > 1 && !bMissingGainsZ533;
                 bUniqueGainZ533 = !bMissingGainsZ533 && !bDifferentGainsZ533 && !bNoGainsZ533;
 
@@ -2720,9 +2709,9 @@ namespace XisfFileManager
 
             if (bFoundZ183)
             {
-                List<int> GainListZ183 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Z183").Select(i => i.Gain).ToList();
+                List<int> GainListZ183 = mFileList.Where(i => i.Gain >= 0 && i.Camera.Contains("183")).Select(i => i.Gain).ToList();
                 bNoGainsZ183 = GainListZ183.Count == 0;
-                bMissingGainsZ183 = GainListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoGainsZ183;
+                bMissingGainsZ183 = GainListZ183.Count != CameraList.Count(c => c.Contains("183")) && !bNoGainsZ183;
                 bDifferentGainsZ183 = GainListZ183.Distinct().Count() > 1;
                 bUniqueGainZ183 = !bMissingGainsZ183 && !bDifferentGainsZ183 && !bNoGainsZ183;
 
@@ -2748,9 +2737,9 @@ namespace XisfFileManager
 
             if (bFoundQ178)
             {
-                List<int> GainListQ178 = mFileList.Where(i => i.Gain > 0 && i.Camera == "Q178").Select(i => i.Gain).ToList();
+                List<int> GainListQ178 = mFileList.Where(i => i.Gain >= 0 && i.Camera.Contains("178")).Select(i => i.Gain).ToList();
                 bNoGainsQ178 = GainListQ178.Count == 0;
-                bMissingGainsQ178 = GainListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoGainsQ178;
+                bMissingGainsQ178 = GainListQ178.Count != CameraList.Count(c => c.Contains("178")) && !bNoGainsQ178;
                 bDifferentGainsQ178 = GainListQ178.Distinct().Count() > 1 && !bMissingGainsQ178;
                 bUniqueGainQ178 = !bMissingGainsQ178 && !bDifferentGainsQ178 && !bNoGainsQ178;
 
@@ -2785,9 +2774,9 @@ namespace XisfFileManager
 
             if (bFoundZ533)
             {
-                List<int> OffsetListZ533 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z533").Select(i => i.Offset).ToList();
+                List<int> OffsetListZ533 = mFileList.Where(i => i.Offset >= 0 && i.Camera.Contains("533")).Select(i => i.Offset).ToList();
                 bNoOffsetsZ533 = OffsetListZ533.Count == 0;
-                bMissingOffsetsZ533 = OffsetListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoOffsetsZ533;
+                bMissingOffsetsZ533 = OffsetListZ533.Count != CameraList.Count(c => c.Contains("533")) && !bNoOffsetsZ533;
                 bDifferentOffsetsZ533 = OffsetListZ533.Distinct().Count() > 1 && !bMissingOffsetsZ533;
                 bUniqueOffsetZ533 = !bMissingOffsetsZ533 && !bDifferentOffsetsZ533 && !bNoOffsetsZ533;
 
@@ -2813,9 +2802,9 @@ namespace XisfFileManager
 
             if (bFoundZ183)
             {
-                List<int> OffsetListZ183 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Z183").Select(i => i.Offset).ToList();
+                List<int> OffsetListZ183 = mFileList.Where(i => i.Offset >= 0 && i.Camera.Contains("183")).Select(i => i.Offset).ToList();
                 bNoOffsetsZ183 = OffsetListZ183.Count == 0;
-                bMissingOffsetsZ183 = OffsetListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoOffsetsZ183;
+                bMissingOffsetsZ183 = OffsetListZ183.Count != CameraList.Count(c => c.Contains("183")) && !bNoOffsetsZ183;
                 bDifferentOffsetsZ183 = OffsetListZ183.Distinct().Count() > 1;
                 bUniqueOffsetZ183 = !bMissingOffsetsZ183 && !bDifferentOffsetsZ183 && !bNoOffsetsZ183;
 
@@ -2840,9 +2829,9 @@ namespace XisfFileManager
 
             if (bFoundQ178)
             {
-                List<int> OffsetListQ178 = mFileList.Where(i => i.Offset > 0 && i.Camera == "Q178").Select(i => i.Offset).ToList();
+                List<int> OffsetListQ178 = mFileList.Where(i => i.Offset >= 0 && i.Camera.Contains("178")).Select(i => i.Offset).ToList();
                 bNoOffsetsQ178 = OffsetListQ178.Count == 0;
-                bMissingOffsetsQ178 = OffsetListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoOffsetsQ178;
+                bMissingOffsetsQ178 = OffsetListQ178.Count != CameraList.Count(c => c.Contains("178")) && !bNoOffsetsQ178;
                 bDifferentOffsetsQ178 = OffsetListQ178.Distinct().Count() > 1 && !bMissingOffsetsQ178;
                 bUniqueOffsetQ178 = !bMissingOffsetsQ178 && !bDifferentOffsetsQ178 && !bNoOffsetsQ178;
 
@@ -2876,9 +2865,9 @@ namespace XisfFileManager
 
             if (bFoundZ533)
             {
-                List<double> SensorTempListZ533 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z533").Select(i => i.SensorTemperature).ToList();
+                List<double> SensorTempListZ533 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera.Contains("533")).Select(i => i.SensorTemperature).ToList();
                 bNoSensorTempsZ533 = SensorTempListZ533.Count == 0;
-                bMissingSensorTempsZ533 = SensorTempListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoSensorTempsZ533;
+                bMissingSensorTempsZ533 = SensorTempListZ533.Count != CameraList.Count(c => c.Contains("533")) && !bNoSensorTempsZ533;
                 bDifferentSensorTempsZ533 = SensorTempListZ533.Distinct().Count() > 1 && !bMissingSensorTempsZ533;
                 bUniqueSensorTempZ533 = !bMissingSensorTempsZ533 && !bDifferentSensorTempsZ533 && !bNoSensorTempsZ533;
 
@@ -2903,9 +2892,9 @@ namespace XisfFileManager
 
             if (bFoundZ183)
             {
-                List<double> SensorTempListZ183 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera == "Z183").Select(i => i.SensorTemperature).ToList();
+                List<double> SensorTempListZ183 = mFileList.Where(i => i.SensorTemperature != -273 && i.Camera.Contains("183")).Select(i => i.SensorTemperature).ToList();
                 bNoSensorTempsZ183 = SensorTempListZ183.Count == 0;
-                bMissingSensorTempsZ183 = SensorTempListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoSensorTempsZ183;
+                bMissingSensorTempsZ183 = SensorTempListZ183.Count != CameraList.Count(c => c.Contains("183")) && !bNoSensorTempsZ183;
                 bDifferentSensorTempsZ183 = SensorTempListZ183.Distinct().Count() > 1;
                 bUniqueSensorTempZ183 = !bMissingSensorTempsZ183 && !bDifferentSensorTempsZ183 && !bNoSensorTempsZ183;
 
@@ -2930,9 +2919,9 @@ namespace XisfFileManager
 
             if (bFoundQ178)
             {
-                List<double> SensorTempListQ178 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "Q178").Select(i => i.FocuserTemperature).ToList();
+                List<double> SensorTempListQ178 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera.Contains("178")).Select(i => i.FocuserTemperature).ToList();
                 bNoSensorTempsQ178 = SensorTempListQ178.Count == 0;
-                bMissingSensorTempsQ178 = SensorTempListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoSensorTempsQ178;
+                bMissingSensorTempsQ178 = SensorTempListQ178.Count != CameraList.Count(c => c.Contains("178")) && !bNoSensorTempsQ178;
                 bDifferentSensorTempsQ178 = SensorTempListQ178.Distinct().Count() > 1 && !bMissingSensorTempsQ178;
                 bUniqueSensorTempQ178 = !bMissingSensorTempsQ178 && !bDifferentSensorTempsQ178 && !bNoSensorTempsQ178;
 
@@ -2957,9 +2946,9 @@ namespace XisfFileManager
 
             if (bFoundA144)
             {
-                List<double> SensorTempListA144 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera == "A144").Select(i => i.FocuserTemperature).ToList();
+                List<double> SensorTempListA144 = mFileList.Where(i => i.FocuserTemperature != -273 && i.Camera.Contains("144")).Select(i => i.FocuserTemperature).ToList();
                 bNoSensorTempsA144 = SensorTempListA144.Count == 0;
-                bMissingSensorTempsA144 = SensorTempListA144.Count != CameraList.Count(c => c == "A144") && !bNoSensorTempsA144;
+                bMissingSensorTempsA144 = SensorTempListA144.Count != CameraList.Count(c => c.Contains("144")) && !bNoSensorTempsA144;
                 bDifferentSensorTempsA144 = SensorTempListA144.Distinct().Count() > 1 && !bMissingSensorTempsA144;
                 bUniqueSensorTempA144 = !bMissingSensorTempsA144 && !bDifferentSensorTempsA144 && !bNoSensorTempsA144;
 
@@ -2992,9 +2981,9 @@ namespace XisfFileManager
 
             if (bFoundZ533)
             {
-                List<int> BinningListZ533 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z533").Select(i => i.Binning).ToList();
+                List<int> BinningListZ533 = mFileList.Where(i => i.Binning > 0 && i.Camera.Contains("533")).Select(i => i.Binning).ToList();
                 bNoBinningsZ533 = BinningListZ533.Count == 0;
-                bMissingBinningsZ533 = BinningListZ533.Count != CameraList.Count(c => c == "Z533") && !bNoBinningsZ533;
+                bMissingBinningsZ533 = BinningListZ533.Count != CameraList.Count(c => c.Contains("533")) && !bNoBinningsZ533;
                 bDifferentBinningsZ533 = BinningListZ533.Distinct().Count() > 1;
                 bUniqueBinningZ533 = !bMissingBinningsZ533 && !bDifferentBinningsZ533 && !bNoBinningsZ533;
 
@@ -3019,9 +3008,9 @@ namespace XisfFileManager
 
             if (bFoundZ183)
             {
-                List<int> BinningListZ183 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Z183").Select(i => i.Binning).ToList();
+                List<int> BinningListZ183 = mFileList.Where(i => i.Binning > 0 && i.Camera.Contains("183")).Select(i => i.Binning).ToList();
                 bNoBinningsZ183 = BinningListZ183.Count == 0;
-                bMissingBinningsZ183 = BinningListZ183.Count != CameraList.Count(c => c == "Z183") && !bNoBinningsZ183;
+                bMissingBinningsZ183 = BinningListZ183.Count != CameraList.Count(c => c.Contains("183")) && !bNoBinningsZ183;
                 bDifferentBinningsZ183 = BinningListZ183.Distinct().Count() > 1;
                 bUniqueBinningZ183 = !bMissingBinningsZ183 && !bDifferentBinningsZ183 && !bNoBinningsZ183;
 
@@ -3046,9 +3035,9 @@ namespace XisfFileManager
 
             if (bFoundQ178)
             {
-                List<int> BinningListQ178 = mFileList.Where(i => i.Binning > 0 && i.Camera == "Q178").Select(i => i.Binning).ToList();
+                List<int> BinningListQ178 = mFileList.Where(i => i.Binning > 0 && i.Camera.Contains("178")).Select(i => i.Binning).ToList();
                 bNoBinningsQ178 = BinningListQ178.Count == 0;
-                bMissingBinningsQ178 = BinningListQ178.Count != CameraList.Count(c => c == "Q178") && !bNoBinningsQ178;
+                bMissingBinningsQ178 = BinningListQ178.Count != CameraList.Count(c => c.Contains("178")) && !bNoBinningsQ178;
                 bDifferentBinningsQ178 = BinningListQ178.Distinct().Count() > 1;
                 bUniqueBinningQ178 = !bMissingBinningsQ178 && !bDifferentBinningsQ178 && !bNoBinningsQ178;
 
@@ -3073,9 +3062,9 @@ namespace XisfFileManager
 
             if (bFoundA144)
             {
-                List<int> BinningsListA144 = mFileList.Where(i => i.Binning > 0 && i.Camera == "A144").Select(i => i.Binning).ToList();
+                List<int> BinningsListA144 = mFileList.Where(i => i.Binning > 0 && i.Camera.Contains("144")).Select(i => i.Binning).ToList();
                 bNoBinningsA144 = BinningsListA144.Count == 0;
-                bMissingBinningsA144 = BinningsListA144.Count != CameraList.Count(c => c == "A144") && !bNoBinningsA144;
+                bMissingBinningsA144 = BinningsListA144.Count != CameraList.Count(c => c.Contains("144")) && !bNoBinningsA144;
                 bDifferentBinningsA144 = BinningsListA144.Distinct().Count() > 1;
                 bUniqueBinningsA144 = !bMissingBinningsA144 && !bDifferentBinningsA144 && !bNoBinningsA144;
 
@@ -3159,6 +3148,7 @@ namespace XisfFileManager
             double value;
             int parseInt;
             int checkedCount = 0;
+            bool bStatus;
 
             if (mFileList.Count == 0)
                 return;
@@ -3178,19 +3168,8 @@ namespace XisfFileManager
                 file.AddKeyword("BITPIX", 16, "Bits Per Pixel");
                 file.AddKeyword("BSCALE", 1, "Multiply Raw Values by BSCALE");
                 file.AddKeyword("BZERO", 32768, "Add value to scale to 65536 (16 bit) values");
-
-                bool status = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
-                if (status)
-                    file.AddKeyword("CCD-TEMP", value, "Actual Sensor Temperature");
-
                 file.AddKeyword("NAXIS", 2, "XISF File Manager");
 
-                status = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text, out value);
-                if (status)
-                {
-                    file.AddKeyword("EXPTIME", value, "Exposure Time in Seconds");
-                    file.ExposureSeconds = value;
-                }
 
                 if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
@@ -3202,20 +3181,25 @@ namespace XisfFileManager
                     file.AddKeyword("BAYERPAT", "RGGB");
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
-                    if (status)
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text, out value);
+                    if (bStatus)
+                        file.ExposureSeconds = value;
+
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
+                    if (bStatus)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
-                    if (status)
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
+                    if (bStatus)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
-                    if (status)
-                    {
-                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
-                    }
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
+                    if (bStatus)
+                        file.Binning = parseInt;
+
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
+                    if (bStatus)
+                        file.SensorTemperature = value;
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
@@ -3227,20 +3211,25 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
-                    if (status)
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Text, out value);
+                    if (bStatus)
+                        file.ExposureSeconds = value;
+
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
+                    if (bStatus)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
-                    if (status)
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
+                    if (bStatus)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
-                    if (status)
-                    {
-                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
-                    }
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Binning.Text, out parseInt);
+                    if (bStatus)
+                        file.Binning = parseInt;
+
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Text, out value);
+                    if (bStatus)
+                        file.SensorTemperature = value;
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
@@ -3252,20 +3241,26 @@ namespace XisfFileManager
                     file.AddKeyword("YPIXSZ", 2.4, "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
-                    if (status)
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Text, out value);
+                    if (bStatus)
+                        file.ExposureSeconds = value;
+
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
+                    if (bStatus)
                         file.Gain = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
-                    if (status)
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
+                    if (bStatus)
                         file.Offset = parseInt;
 
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
-                    if (status)
-                    {
-                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
-                    }
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Binning.Text, out parseInt);
+                    if (bStatus)
+                        if (bStatus)
+                            file.Binning = parseInt;
+
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text, out value);
+                    if (bStatus)
+                        file.SensorTemperature = value;
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)
@@ -3279,12 +3274,18 @@ namespace XisfFileManager
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.AddKeyword("GAIN", 0.37);
                     file.RemoveKeyword("OFFSET");
-                    status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
-                    if (status)
-                    {
-                        file.AddKeyword("XBINNING", parseInt, "Horizontal Binning");
-                        file.AddKeyword("YBINNING", parseInt, "Vertical Binning");
-                    }
+
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_A144Seconds.Text, out value);
+                    if (bStatus)
+                        file.ExposureSeconds = value;
+
+                    bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_A144Binning.Text, out parseInt);
+                    if (bStatus)
+                        file.Binning = parseInt;
+
+                    bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Text, out value);
+                    if (bStatus)
+                        file.SensorTemperature = value;
                 }
             }
 

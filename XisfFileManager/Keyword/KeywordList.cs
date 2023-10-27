@@ -813,7 +813,7 @@ namespace XisfFileManager
             {
                 object Object = GetKeywordValue("GAIN");
                 if (Object != null)
-                    return (int)Object;
+                    return Convert.ToInt32(Object);
                 return -1;
             }
             set
@@ -831,7 +831,7 @@ namespace XisfFileManager
             {
                 object Object = GetKeywordValue("OFFSET");
                 if (Object != null)
-                    return (int)Object;
+                    return Convert.ToInt32(Object);
 
                 return -1;
             }

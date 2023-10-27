@@ -146,15 +146,7 @@ namespace XisfFileManager
                 // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
                 // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
 
-                fileReader.ReadXisfFile(calibrationFile);
-
-                /*
-                await Task.Run(async () =>
-                {
-                    await fileReader.ReadXisfFile(calibrationFile);
-                });
-                */
-                
+                await fileReader.ReadXisfFile(calibrationFile);
 
                 calibrationFileList.Add(calibrationFile);
             }
