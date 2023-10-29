@@ -210,7 +210,6 @@
             TabPage_Calibration = new System.Windows.Forms.TabPage();
             CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
             TreeView_CalibrationTab_TargetFileTree = new System.Windows.Forms.TreeView();
-            Label_CalibrationTab_TotalMatchedFiles = new System.Windows.Forms.Label();
             TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
             GroupBox_CalibrationTab_MatchingTolerance = new System.Windows.Forms.GroupBox();
             Label_CalibrationTab_MatchingTolerance_TemperatureTolerance = new System.Windows.Forms.Label();
@@ -333,8 +332,8 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             button1 = new System.Windows.Forms.Button();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -642,7 +641,7 @@
             // Label_FileSelection_Statistics_SubFrameOverhead
             // 
             Label_FileSelection_Statistics_SubFrameOverhead.AutoSize = true;
-            Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(16, 78);
+            Label_FileSelection_Statistics_SubFrameOverhead.Location = new System.Drawing.Point(16, 86);
             Label_FileSelection_Statistics_SubFrameOverhead.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_FileSelection_Statistics_SubFrameOverhead.Name = "Label_FileSelection_Statistics_SubFrameOverhead";
             Label_FileSelection_Statistics_SubFrameOverhead.Size = new System.Drawing.Size(200, 15);
@@ -707,7 +706,7 @@
             TabPage_SubFrameWeights.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_SubFrameWeights.Name = "TabPage_SubFrameWeights";
             TabPage_SubFrameWeights.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_SubFrameWeights.Size = new System.Drawing.Size(1139, 477);
+            TabPage_SubFrameWeights.Size = new System.Drawing.Size(1139, 498);
             TabPage_SubFrameWeights.TabIndex = 2;
             TabPage_SubFrameWeights.Text = "SubFrame Weights";
             // 
@@ -2465,7 +2464,6 @@
             TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
             TabPage_Calibration.Controls.Add(CheckBox_CalibrationTab_CreateNew);
             TabPage_Calibration.Controls.Add(TreeView_CalibrationTab_TargetFileTree);
-            TabPage_Calibration.Controls.Add(Label_CalibrationTab_TotalMatchedFiles);
             TabPage_Calibration.Controls.Add(TextBox_CalibrationTab_Messgaes);
             TabPage_Calibration.Controls.Add(GroupBox_CalibrationTab_MatchingTolerance);
             TabPage_Calibration.Controls.Add(Label_CalibrationTab_TotalFiles);
@@ -2478,7 +2476,7 @@
             TabPage_Calibration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_Calibration.Name = "TabPage_Calibration";
             TabPage_Calibration.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_Calibration.Size = new System.Drawing.Size(1139, 477);
+            TabPage_Calibration.Size = new System.Drawing.Size(1139, 498);
             TabPage_Calibration.TabIndex = 1;
             TabPage_Calibration.Text = "Calibration";
             // 
@@ -2497,25 +2495,15 @@
             // 
             // TreeView_CalibrationTab_TargetFileTree
             // 
-            TreeView_CalibrationTab_TargetFileTree.Location = new System.Drawing.Point(579, 7);
+            TreeView_CalibrationTab_TargetFileTree.Location = new System.Drawing.Point(575, 6);
             TreeView_CalibrationTab_TargetFileTree.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TreeView_CalibrationTab_TargetFileTree.Name = "TreeView_CalibrationTab_TargetFileTree";
             TreeView_CalibrationTab_TargetFileTree.Size = new System.Drawing.Size(535, 257);
             TreeView_CalibrationTab_TargetFileTree.TabIndex = 10;
             // 
-            // Label_CalibrationTab_TotalMatchedFiles
-            // 
-            Label_CalibrationTab_TotalMatchedFiles.AutoSize = true;
-            Label_CalibrationTab_TotalMatchedFiles.Location = new System.Drawing.Point(29, 277);
-            Label_CalibrationTab_TotalMatchedFiles.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            Label_CalibrationTab_TotalMatchedFiles.Name = "Label_CalibrationTab_TotalMatchedFiles";
-            Label_CalibrationTab_TotalMatchedFiles.Size = new System.Drawing.Size(175, 15);
-            Label_CalibrationTab_TotalMatchedFiles.TabIndex = 9;
-            Label_CalibrationTab_TotalMatchedFiles.Text = "No Matched Calibration Frames";
-            // 
             // TextBox_CalibrationTab_Messgaes
             // 
-            TextBox_CalibrationTab_Messgaes.Location = new System.Drawing.Point(29, 306);
+            TextBox_CalibrationTab_Messgaes.Location = new System.Drawing.Point(25, 274);
             TextBox_CalibrationTab_Messgaes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_Messgaes.Multiline = true;
             TextBox_CalibrationTab_Messgaes.Name = "TextBox_CalibrationTab_Messgaes";
@@ -2694,7 +2682,7 @@
             // 
             // ProgressBar_CalibrationTab
             // 
-            ProgressBar_CalibrationTab.Location = new System.Drawing.Point(20, 520);
+            ProgressBar_CalibrationTab.Location = new System.Drawing.Point(20, 476);
             ProgressBar_CalibrationTab.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ProgressBar_CalibrationTab.Name = "ProgressBar_CalibrationTab";
             ProgressBar_CalibrationTab.Size = new System.Drawing.Size(1099, 13);
@@ -2703,7 +2691,7 @@
             // Label_CalibrationTab_ReadFileName
             // 
             Label_CalibrationTab_ReadFileName.AutoSize = true;
-            Label_CalibrationTab_ReadFileName.Location = new System.Drawing.Point(20, 485);
+            Label_CalibrationTab_ReadFileName.Location = new System.Drawing.Point(16, 440);
             Label_CalibrationTab_ReadFileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_ReadFileName.Name = "Label_CalibrationTab_ReadFileName";
             Label_CalibrationTab_ReadFileName.Size = new System.Drawing.Size(121, 15);
@@ -2712,7 +2700,7 @@
             // 
             // Button_CalibrationTab_CreateCalibrationDirectory
             // 
-            Button_CalibrationTab_CreateCalibrationDirectory.Location = new System.Drawing.Point(52, 178);
+            Button_CalibrationTab_CreateCalibrationDirectory.Location = new System.Drawing.Point(48, 177);
             Button_CalibrationTab_CreateCalibrationDirectory.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_CalibrationTab_CreateCalibrationDirectory.Name = "Button_CalibrationTab_CreateCalibrationDirectory";
             Button_CalibrationTab_CreateCalibrationDirectory.Size = new System.Drawing.Size(88, 87);
@@ -2757,7 +2745,7 @@
             TabPage_KeywordUpdate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_KeywordUpdate.Name = "TabPage_KeywordUpdate";
             TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 477);
+            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 498);
             TabPage_KeywordUpdate.TabIndex = 0;
             TabPage_KeywordUpdate.Text = "Keyword Update";
             // 
@@ -3901,7 +3889,7 @@
             TabControl_Update_TargetScheduler.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabControl_Update_TargetScheduler.Name = "TabControl_Update_TargetScheduler";
             TabControl_Update_TargetScheduler.SelectedIndex = 0;
-            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 505);
+            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 526);
             TabControl_Update_TargetScheduler.TabIndex = 23;
             // 
             // TabPage_TargetScheduler
@@ -3911,7 +3899,7 @@
             TabPage_TargetScheduler.Location = new System.Drawing.Point(4, 24);
             TabPage_TargetScheduler.Name = "TabPage_TargetScheduler";
             TabPage_TargetScheduler.Padding = new System.Windows.Forms.Padding(3);
-            TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 477);
+            TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 498);
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
@@ -3929,7 +3917,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1170, 758);
+            ClientSize = new System.Drawing.Size(1170, 775);
             Controls.Add(TabControl_Update_TargetScheduler);
             Controls.Add(GroupBox_FileSelection);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -4191,7 +4179,6 @@
         private System.Windows.Forms.TabPage TabPage_Calibration;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_CreateNew;
         private System.Windows.Forms.TreeView TreeView_CalibrationTab_TargetFileTree;
-        private System.Windows.Forms.Label Label_CalibrationTab_TotalMatchedFiles;
         private System.Windows.Forms.TextBox TextBox_CalibrationTab_Messgaes;
         private System.Windows.Forms.GroupBox GroupBox_CalibrationTab_MatchingTolerance;
         private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_TemperatureTolerance;

@@ -92,7 +92,7 @@ namespace XisfFileManager
                 foreach (System.IO.DirectoryInfo dirInfo in subDirs)
                 {
                     // Resursive call for each subdirectory.
-                    _ = RecuseDirectories(dirInfo);
+                    RecuseDirectories(dirInfo);
                 }
             }
 

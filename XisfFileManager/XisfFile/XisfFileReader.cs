@@ -18,7 +18,6 @@ namespace XisfFileManager.FileOperations
         private int bytesRead;
         private Match keywordBlock;
         private string modifiedString;
-        private bool bIsPreamble;
 
         public async Task ReadXisfFile(XisfFile xFile)
         {
@@ -28,7 +27,7 @@ namespace XisfFileManager.FileOperations
                 {
                     
                     string xmlString = string.Empty;
-                    mBufferSize = 25000;
+                    mBufferSize = 10000;
                     mBuffer = new byte[mBufferSize];
                     keywordBlock = Match.Empty;
                     bytesRead = 0;
@@ -46,12 +45,9 @@ namespace XisfFileManager.FileOperations
 
                         if (!keywordBlock.Success)
                         {
-                            // We did not find the closing "xisf> in xmlString
-
-                            // Expand the buffer size if it has been filled
                             mBufferSize += mBufferSize;
+                            //Console.WriteLine("Final Buffersize: " + mBufferSize.ToString() + " " + Path.GetFileName(xFile.FilePath));
                             Array.Resize(ref mBuffer, mBufferSize);
-                            bIsPreamble = true;
                         }
                     }
              
@@ -65,13 +61,13 @@ namespace XisfFileManager.FileOperations
                     }
                     catch (Exception ex)
                     {
-                        _ = MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
+                        MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
                             "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
                             "Parse XISF File",
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);
 
-                        Application.Exit();
+                        return;
                     }
 
                     XElement root = xFile.mXDoc.Root;

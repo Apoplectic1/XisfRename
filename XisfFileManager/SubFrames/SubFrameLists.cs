@@ -41,7 +41,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.EccentricityMeanDeviation.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordFwhm(KeywordList keywords)
         {
@@ -50,7 +50,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.FwhmList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordFwhmMeanDeviation(KeywordList keywords)
         {
@@ -59,7 +59,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.FwhmMeanDeviationList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordMedian(KeywordList keywords)
         {
@@ -68,7 +68,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.MedianList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordMedianMeanDeviation(KeywordList keywords)
         {
@@ -77,7 +77,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.MedianMeanDeviationList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordNoise(KeywordList keywords)
         {
@@ -86,7 +86,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.NoiseList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordNoiseRatio(KeywordList keywords)
         {
@@ -95,7 +95,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.NoiseRatioList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordSnrWeight(KeywordList keywords)
         {
@@ -104,7 +104,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.SnrWeightList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordStarResidual(KeywordList keywords)
         {
@@ -113,7 +113,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.StarResidualList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordStarResidualMeanDeviation(KeywordList keywords)
         {
@@ -122,7 +122,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.StarResidualMeanDeviationList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordStars(KeywordList keywords)
         {
@@ -131,7 +131,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.StarsList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordWeight(KeywordList keywords)
         {
@@ -140,7 +140,7 @@ namespace XisfFileManager.Keywords
             if (node == null) return;
 
             SubFrameList.WeightList.Add(node);
-            _ = keywords.mKeywordList.Remove(node);
+            keywords.mKeywordList.Remove(node);
         }
         public void AddKeywordFileName(string fileName)
         {

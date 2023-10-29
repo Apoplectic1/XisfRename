@@ -1,11 +1,14 @@
 ﻿using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
+using MathNet.Numerics.LinearRegression;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using XisfFileManager.Enums;
 using XisfFileManager.FileOperations;
+using Microsoft.AspNetCore.Mvc;
+using Windows.Storage.Provider;
 
 namespace XisfFileManager.Calculations
 {
@@ -135,66 +138,107 @@ namespace XisfFileManager.Calculations
             double overheadPercent = ((totalIntervalTime - totalExposureTime) / totalExposureTime) * 100.0;
             double overheadSeconds = (totalIntervalTime - totalExposureTime) / exposureList.Count;
 
-            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % over " + overheadSeconds.ToString("F0") + " Seconds/Frame\n" +
-                   "Average Exposure:     " + (totalExposureTime / exposureList.Count).ToString("F0") + " Seconds" + " over " + exposureList.Count + " Frames";
+            return "SubFrame Overhead: " + overheadPercent.ToString("F0") + " % at " + overheadSeconds.ToString("F0") + " Seconds/Frame\n" +
+                   "Average Exposure:     " + (totalExposureTime / exposureList.Count).ToString("F0") + " Seconds" + " over " + fileList.Count + " Frames";
         }
 
-        public string CalculateFocuserTemperatureCompensationCoefficient()
+        public Dictionary<int, double> BuildUnsortedPositionDictionary(List<XisfFile> xFileList)
         {
-            int index;
+            Dictionary<int, double> focuserDictionary = new Dictionary<int, double>();
 
-            if ((mFocuserPositionList.Count != mFocuserTemperatureList.Count) || (mFocuserPositionList.Count < 3) || mFocuserTemperatureList.Contains(-273))
+            foreach (XisfFile xFile in xFileList)
             {
-                return "No Focuser Position Data";
-            }
+                int focuserPosition = xFile.FocuserPosition;
+                double focuserTemperature = xFile.FocuserTemperature;
 
-            try
-            {
-                List<PositionTemperature> ptList = new List<PositionTemperature>();
-
-                for (index = 0; index < mFocuserPositionList.Count; index++)
+                if (focuserDictionary.ContainsKey(focuserPosition))
                 {
-                    PositionTemperature pt = new PositionTemperature
-                    {
-                        Position = mFocuserPositionList[index],
-                        Temperature = mFocuserTemperatureList[index]
-                    };
-                    ptList.Add(pt);
-                }
-
-                ptList.Sort((x, y) => x.Position.CompareTo(y.Position));
-
-                var DistinctItems = ptList.GroupBy(x => x.Position).Select(y => y.First());
-
-                double[] position = new double[DistinctItems.Count()];
-                double[] temperature = new double[DistinctItems.Count()];
-
-                index = 0;
-                foreach (var item in DistinctItems)
-                {
-                    position[index] = item.Position;
-                    temperature[index] = item.Temperature;
-                    index++;
-                }
-
-                Tuple<double, double> p = Fit.Line(temperature, position).ToTuple();
-
-                double maxTemperature = temperature.Max();
-                double minTemperature = temperature.Min();
-
-                if (p.Item2 >= 0)
-                {
-                    return p.Item2.ToString("F0") + " Steps/Degree IN over " + position.Length + " positions from " + maxTemperature.ToString("F1") + " to " + minTemperature.ToString("F1") + " C";
+                    if (focuserDictionary[focuserPosition] > focuserTemperature)
+                        focuserDictionary[focuserPosition] = focuserTemperature;
                 }
                 else
+                    if (focuserPosition < 40000)
+                    focuserDictionary[focuserPosition] = focuserTemperature;
+            }
+
+            return focuserDictionary;
+        }
+
+        public SortedDictionary<double, int> BuildSortedTemperatureDictionary(Dictionary<int, double> unsortedPositionTemperaturePairs)
+        {
+            SortedDictionary<double, int> focuserDictionary = new SortedDictionary<double, int>();
+
+            foreach (var positionTemperature in unsortedPositionTemperaturePairs)
+            {
+                int focuserPosition = positionTemperature.Key;
+                double focuserTemperature = positionTemperature.Value;
+
+                if (focuserDictionary.ContainsKey(focuserTemperature))
                 {
-                    return p.Item2.ToString("F0") + " Steps/Degree OUT over " + position.Length + " positions from " + maxTemperature.ToString("F1") + " to " + minTemperature.ToString("F1") + " C";
+                    if (focuserDictionary[focuserTemperature] > focuserPosition)
+                        focuserDictionary[focuserTemperature] = focuserPosition;
+                }
+                else
+                    focuserDictionary[focuserTemperature] = focuserPosition;
+            }
+
+            return focuserDictionary;
+        }
+
+        public string CalculateFocuserTemperatureCompensationCoefficient(List<XisfFile> xFileList)
+        {
+            // The temperature coefficient needs to be computed per imaging session - not an averal average.
+            // Group source images into capture days. Capture Day: 4 pm today to 9 am tomorrow
+
+            TimeSpan fourPM = new TimeSpan(16, 0, 0); // 4 pm
+            TimeSpan nineAM = new TimeSpan(9, 0, 0);  // 9 am the next day
+
+            // Filter and group xFiles based on capture day
+            var groupedByDateFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime);
+
+            var groupedByEveningFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay >= fourPM);
+            var groupedByMorningFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay <= nineAM);
+            //var groupedBySessionFiles = IEnumerable<List<XisfFile>>;  // = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay <= nineAM);
+
+            foreach (var evening in groupedByEveningFiles)
+            {
+                foreach (var morning in groupedByMorningFiles)
+                {
+                    if (evening.Key == morning.Key)
+                    {
+                        //groupedBySessionFiles.Add(evening);
+                        //groupedBySessionFiles.Add(morning);
+                    }
                 }
             }
-            catch
-            {
-                return "No Focuser Position Data";
-            }
+
+            // Find the minimum temperature at each unique focus position
+            Dictionary<int, double> unsortedPositionTemperaturePairs = BuildUnsortedPositionDictionary(xFileList);
+
+            // Find the minimum position of each unique temperature then sort by temperature
+            SortedDictionary<double, int> sortedTemperaturePositionPairs = BuildSortedTemperatureDictionary(unsortedPositionTemperaturePairs);
+
+            double minTemperature = xFileList.Select(temperature => temperature.FocuserTemperature).Min();
+            double maxTemperature = xFileList.Select(temperature => temperature.FocuserTemperature).Max();
+
+            double minPosition = sortedTemperaturePositionPairs.First().Value;
+            double maxPosition = sortedTemperaturePositionPairs.Last().Value;
+
+
+            // Linear fit position vs temperature
+            int degree = 1;
+
+            double[] x = sortedTemperaturePositionPairs.Select(temperature => temperature.Key).ToArray();
+            double[] y = sortedTemperaturePositionPairs.Select(temperature => (double)temperature.Value).ToArray();
+
+            // Create y = mx + b
+            // b = polynomial[0]
+            // m = polynomial[1]
+
+            double[] polynomial = Fit.Polynomial(x, y, degree);
+
+            return polynomial[1].ToString("F0") + " Steps/Degree IN computed from " + sortedTemperaturePositionPairs.Count + " unique focuser positions:\n" +
+                  "                                             " + maxPosition + "@" + maxTemperature.FormatTemperature() + "C to " + minPosition + "@" + minTemperature.FormatTemperature() + "C";
         }
     }
 }

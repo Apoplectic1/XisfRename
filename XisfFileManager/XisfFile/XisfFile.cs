@@ -6,6 +6,7 @@ using System.Xml.Linq;
 
 using XisfFileManager.Enums;
 using XisfFileManager.TargetScheduler.Tables;
+using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager.FileOperations
 {
@@ -157,10 +158,31 @@ namespace XisfFileManager.FileOperations
             get { return KeywordList.Rejection; }
             set { KeywordList.Rejection = value; }
         }
-        public double RotatorAngle
+        public string RotationAngle
         {
-            get { return KeywordList.RotatorAngle; }
-            set { KeywordList.RotatorAngle = value; }
+            get 
+            {
+                double angle = RotatorSkyAngle;
+                if (angle != double.MinValue)
+                    return "S" + angle.FormatRotationAngle();
+
+                angle = RotatorMechanicalAngle;
+                if (angle != double.MinValue)
+                    return "M" + angle.FormatRotationAngle();
+
+                return string.Empty;
+            }
+        }
+
+        public double RotatorMechanicalAngle
+        {
+            get { return KeywordList.RotatorMechanicalAngle; }
+            set { KeywordList.RotatorMechanicalAngle = value; }
+        }
+        public double RotatorSkyAngle
+        {
+            get { return KeywordList.RotatorSkyAngle; }
+            set { KeywordList.RotatorSkyAngle = value; }
         }
         public double SensorTemperature
         {
@@ -311,56 +333,6 @@ namespace XisfFileManager.FileOperations
                     "\tKeyword Comment:" + elementComment.ToString() +
                     "\n\n" + ex.Message);
             }
-            return;
-
-
-            bool bStatus;
-
-            // TODO: Do we really need to find Keyword value types? Can we remove this code?
-
-            // First remove Keyword characteritics that interfere with later processing
-            elementValue = elementValue.Replace("'", "");
-
-            // Now get rid of an extra decimal point at the end of what should be integers
-            elementValue = elementValue.TrimEnd('.');
-
-            // Now actually parse the keyword based on Value into bools, integers, doubles and finally strings
-
-            // Boolean?
-            bStatus = bool.TryParse(elementValue, out bool bBool);
-            if (bStatus)
-            {
-                if (elementValue == "T")
-                {
-                    AddKeyword("true", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-                if (elementValue == "F")
-                {
-                    AddKeyword("false", bBool, element.Attribute("comment").Value);
-                    return;
-                }
-            }
-
-            // Integer?
-            bStatus = Int32.TryParse(elementValue, out int iInt32);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, iInt32, element.Attribute("comment").Value);
-                return;
-            }
-
-            // Double?
-            bStatus = double.TryParse(elementValue, out double dDouble);
-            if (bStatus)
-            {
-                AddKeyword(element.Attribute("name").Value, dDouble, element.Attribute("comment").Value);
-                return;
-            }
-
-            // String?
-            // Pixinsight will add multiple Keywords using the same name
-            AddKeywordKeepDuplicates(element.Attribute("name").Value, elementValue, element.Attribute("comment").Value);
         }
 
         // *********************************************************************************************************

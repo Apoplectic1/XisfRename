@@ -41,7 +41,7 @@ namespace XisfFileManager
 
 
                 var result = UIForm.ShowDialog();
-                _ = UIForm.TextBox_Text.Focus();
+                UIForm.TextBox_Text.Focus();
 
                 if (result == DialogResult.OK)
                 {
@@ -108,13 +108,13 @@ namespace XisfFileManager
 
         public void RemoveKeyword(string sName)
         {
-            _ = mKeywordList.RemoveAll(i => i.Name.Equals(sName));
+            mKeywordList.RemoveAll(i => i.Name.Equals(sName));
         }
 
         // ----------------------------------------------------------------------------------------------------------
         public void RemoveKeyword(string sName, object oValue)
         {
-            _ = mKeywordList.RemoveAll(i => i.Name.Equals(sName) && i.Value.Equals(oValue));
+            mKeywordList.RemoveAll(i => i.Name.Equals(sName) && i.Value.Equals(oValue));
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ namespace XisfFileManager
 
         public void AddKeyword(string sName, object oValue, string sComment = "XISF File Manager")
         {
-            _ = mKeywordList.RemoveAll(i => i.Name == sName);
+            mKeywordList.RemoveAll(i => i.Name == sName);
 
             Keyword newKeyword = NewKeyword(sName, oValue, sComment);
 
@@ -583,7 +583,7 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("ECCENTRICITY", value, "Number of atmospheres this image is looking through");
+                AddKeyword("ECCENTRICITY", value, "Airmass at frame center");
             }
         }
 
@@ -838,30 +838,31 @@ namespace XisfFileManager
 
             set
             {
-                if (Camera.Contains('Z'))
-                    AddKeyword("OFFSET", value, "Actual Camera Offset is this value times 10");
-                else
-                    AddKeyword("OFFSET", value, "Camera Offset");
-            }
-        }
+                if (Camera.Contains("183"))
+                {
+                    AddKeyword("OFFSET", value, "ADU Offset divided by 5");
+                    return;
+                }
 
-        // *********************************************************************************************************
-        // *********************************************************************************************************
+                if (Camera.Contains("533"))
+                {
+                    AddKeyword("OFFSET", value, "ADU Offset divided by 40");
+                    return;
+                }
 
-        public bool Protect
-        {
-            get
-            {
-                object Object = GetKeywordValue("PROTECT");
-                if (Object != null)
-                    return (bool)Object;
+                if (Camera.Contains("178"))
+                {
+                    AddKeyword("OFFSET", value, "ADU Offset divided by 18.33");
+                    return;
+                }
 
-                return false;
-            }
+                if (Camera.Contains("144"))
+                {
+                    RemoveKeyword("OFFSET");
+                    return;
+                }
 
-            set
-            {
-                AddKeyword("PROTECT", value, "Xisf File Manager Protected File Status");
+
             }
         }
 
@@ -920,31 +921,37 @@ namespace XisfFileManager
         // *********************************************************************************************************
         // *********************************************************************************************************
 
-        public double RotatorAngle
+        public double RotatorMechanicalAngle
         {
             get
             {
                 object Object = GetKeywordValue("POSANGLE");
-                if (Object == null)
-                {
-                    Object = GetKeywordValue("ROTATANG");
-                    if (Object != null)
-                    {
-                        RemoveKeyword("ROTATANG");
-                        AddKeyword("POSANGLE", (double)Object, "MoonLite NightCrawler 360 Degree Rotator Mechanical Angle");
-                    }
-                    else
-                        return double.MinValue;
-                }
+                if (Object != null)
+                    return Convert.ToDouble(Object);
 
-                return Convert.ToDouble(Object);
+                return double.MinValue;
             }
 
             set
             {
-                AddKeyword("POSANGLE", value, "MoonLite NightCrawler Rotator Posistion");
+                AddKeyword("POSANGLE", value, "MoonLite NightCrawler Rotator Mechanical Posistion");
             }
+        }
 
+        public double RotatorSkyAngle
+        {
+            get
+            {
+                object Object = GetKeywordValue("OBJCTROT");
+                if (Object != null)
+                    return Convert.ToDouble(Object);
+
+                return double.MinValue;
+            }
+            set
+            {
+                AddKeyword("POSANGLE", value, "[deg] Sky Angle at Frame Center");
+            }
         }
 
         // *********************************************************************************************************

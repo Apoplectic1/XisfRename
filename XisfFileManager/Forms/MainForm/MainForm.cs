@@ -92,11 +92,11 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = $"XISF File Manager - Version: {version} - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            this.Text = $"XISF File Manager - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
 
 
-            _ = Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
-            _ = Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
+            Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
         }
 
         // ****************************************************************************************************************
@@ -130,14 +130,6 @@ namespace XisfFileManager
 
             }
             data.MessageMode = eMessageMode.KEEP;
-
-
-            Label_CalibrationTab_TotalMatchedFiles.Text = "Matched " + data.TotalMatchedCalibrationFiles.ToString() + " Calibration Files: " +
-                data.TotalUniqueDarkCalibrationFiles.ToString() + " Unique Darks, " +
-                data.TotalUniqueFlatCalibrationFiles.ToString() + " Unique Flats and " +
-                data.TotalUniqueBiasCalibrationFiles.ToString() + " Unique Bias Files " +
-                "from " + mFileList.Count.ToString() + " Target Frames";
-
 
             TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = mCalibration.ExposureTolerance.ToString();
             TextBox_CalibrationTab_MatchingTolerance_Gain.Text = mCalibration.GainTolerance.ToString();
@@ -287,7 +279,7 @@ namespace XisfFileManager
             mDirectoryOps.Frame = eFrame.ALL;
             mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            _ = mDirectoryOps.RecuseDirectories(diDirectoryTree);
+            mDirectoryOps.RecuseDirectories(diDirectoryTree);
 
             Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
@@ -297,7 +289,7 @@ namespace XisfFileManager
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                _ = MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
+                MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
                 return;
             }
 
@@ -430,7 +422,7 @@ namespace XisfFileManager
 
                 foreach (string item in TargetNames)
                 {
-                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
                 }
 
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
@@ -455,7 +447,7 @@ namespace XisfFileManager
 
                 foreach (var item in WeightKeywords)
                 {
-                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
                 if (WeightKeywords.Count > 1)
@@ -493,7 +485,7 @@ namespace XisfFileManager
 
             foreach (var name in keywordNamelist)
             {
-                _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
 
             // **********************************************************************
@@ -516,18 +508,18 @@ namespace XisfFileManager
                 Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + mDirectoryOps.Files.Count + " Image Files";
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
-            string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient();
+            string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // **********************************************************************
 
             SetUISubFrameGroupBoxState();
 
-            // **********************************************************************
             FindCaptureSoftware();
             FindFilterFrameType();
             FindTelescope();
             FindCamera();
+
             // **********************************************************************
 
             // TreeView_CalibrationTab_Dates
@@ -724,6 +716,9 @@ namespace XisfFileManager
 
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
+            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
+                return;
+
             bool bStatus;
             GroupBox_FileSelection.Enabled = false;
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = false;
@@ -792,10 +787,6 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked)
                     // Rename everything to the ComboBox Text value
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
-                else
-                {
-                    xFile.TargetName = xFile.TargetName.Trim();
-                }
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(xFile, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
@@ -862,7 +853,7 @@ namespace XisfFileManager
 
             if (bStatus == false)
             {
-                _ = MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
+                MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
                 return;
             }
 
@@ -873,15 +864,15 @@ namespace XisfFileManager
             switch (eSubFrameValidListsValid)
             {
                 case eValidation.EMPTY:
-                    _ = MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
+                    MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
                     return;
 
                 case eValidation.MISMATCH:
-                    _ = MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
+                    MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
                     return;
 
                 case eValidation.INVALD:
-                    _ = MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString(CultureInfo.InvariantCulture) + " items.\n\n", mFileCsv.FileName);
+                    MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString(CultureInfo.InvariantCulture) + " items.\n\n", mFileCsv.FileName);
                     return;
             }
 
@@ -3214,22 +3205,32 @@ namespace XisfFileManager
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Text, out value);
                     if (bStatus)
                         file.ExposureSeconds = value;
+                    else
+                        file.ExposureSeconds = file.ExposureSeconds;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out parseInt);
                     if (bStatus)
                         file.Gain = parseInt;
+                    else
+                        file.Gain = file.Gain;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text, out parseInt);
                     if (bStatus)
                         file.Offset = parseInt;
+                    else
+                        file.Offset = file.Offset;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Binning.Text, out parseInt);
                     if (bStatus)
                         file.Binning = parseInt;
+                    else
+                        file.Binning = file.Binning;
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
+                    else
+                        file.SensorTemperature = file.SensorTemperature;
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
@@ -3810,7 +3811,7 @@ namespace XisfFileManager
 
                 foreach (var item in WeightKeywords)
                 {
-                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
                 }
 
                 if (WeightKeywords.Count > 1)
@@ -3854,7 +3855,7 @@ namespace XisfFileManager
                     file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 }
 
-                _ = WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
@@ -3883,7 +3884,7 @@ namespace XisfFileManager
             mFileType = eFile.MASTERS;
         }
 
-        private void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
+        private async void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
             bool bMatchedAllFiles = false;
             string calibrationFileMasterLibraryLocation;
@@ -3894,9 +3895,9 @@ namespace XisfFileManager
             calibrationFileMasterLibraryLocation = @"E:\Photography\Astro Photography\Calibration";
 
             if (!bMatchedAllFiles)
-                _ = mCalibration.ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, calibrationFileMasterLibraryLocation);
+                await mCalibration.ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, calibrationFileMasterLibraryLocation);
 
-            _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
+            mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
         void ExpandAllNodes(TreeNodeCollection nodes)
@@ -3912,7 +3913,7 @@ namespace XisfFileManager
         {
             TextBox_CalibrationTab_Messgaes.Clear();
 
-            _ = mCalibration.MatchCalibrationLibraryFrames(mFileList);
+            mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
@@ -3924,10 +3925,10 @@ namespace XisfFileManager
                 if (Directory.Exists(targetCalibrationDirectory))
                     Directory.Delete(targetCalibrationDirectory, true);
 
-                _ = Directory.CreateDirectory(targetCalibrationDirectory);
+                Directory.CreateDirectory(targetCalibrationDirectory);
             }
 
-            _ = mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
+            mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
         }
 
         private void TextBox_CalibrationTab_ExposureTolerance_TextChanged(object sender, EventArgs e)
@@ -4063,7 +4064,7 @@ namespace XisfFileManager
             {
                 if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == value.Name)
                 {
-                    _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
+                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = value.Value.ToString();
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = value.Comment;
                 }
@@ -4148,7 +4149,7 @@ namespace XisfFileManager
 
             foreach (var name in keywordNamelist)
             {
-                _ = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
             }
         }
 

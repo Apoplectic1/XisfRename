@@ -13,7 +13,7 @@ namespace XisfFileManager.FileOperations
         private int mDupIndex;
 
         public List<XisfFile> mFileList;
-       
+
         public eOrder RenameOrder;
 
         private string RecurseDupFileName(string dupFileName)
@@ -58,7 +58,7 @@ namespace XisfFileManager.FileOperations
                 }
                 else
                 {
-                    _ = Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
+                    Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
 
                     dupFileName = BuildFileName(file.Index - 1, file);
                     int lastParen = dupFileName.LastIndexOf(')');
@@ -74,7 +74,7 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex)
             {
-                _ = MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
+                MessageBox.Show(ex.ToString(), " RenameFiles(List<XisfFile.XisfFile> fileList)");
                 return new Tuple<int, string>(-1, "");
             }
         }
@@ -259,11 +259,10 @@ namespace XisfFileManager.FileOperations
                     newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
                 }
 
-                if (mFile.RotatorAngle != int.MinValue)
-                    newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
+                if (mFile.RotationAngle.StartsWith("S"))
+                    newName += "  " + mFile.RotationAngle + "  ";
                 else
                     newName += "  ";
-
 
                 newName += "(" + mFile.CaptureDateTime.ToString("yyyy-MM-dd  hh-mm-ss tt") + "  ";
                 newName += mFile.CaptureSoftware;
@@ -320,15 +319,16 @@ namespace XisfFileManager.FileOperations
 
                 newName += mFile.Telescope + "@";
                 newName += mFile.FocalLength.ToString("F0");
-                
+
                 if (mFile.AmbientTemperature != -273.0)
                     newName += mFile.AmbientTemperature.FormatTemperature() + "C  ";
                 else
                     newName += mFile.FocuserTemperature.FormatTemperature() + "C  ";
 
                 newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
-                if (mFile.RotatorAngle != double.MinValue)
-                    newName += "  R" + mFile.RotatorAngle.FormatRotationAngle() + "  ";
+
+                if (mFile.RotationAngle.StartsWith("S"))
+                    newName += "  " + mFile.RotationAngle + "  ";
                 else
                     newName += "  ";
 
@@ -350,7 +350,7 @@ namespace XisfFileManager.FileOperations
             {
                 mDupIndex++;
 
-                _ = Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
+                Directory.CreateDirectory(sourceFilePath + "\\" + "Duplicates");
 
                 int last = currentFile.FilePath.LastIndexOf(@"\");
 
@@ -358,7 +358,7 @@ namespace XisfFileManager.FileOperations
                 string duplicateFileName = newFileName.Remove(0, 4).Insert(0, mDupIndex.ToString("D3") + " ");
 
                 File.Move(entry.FilePath, sourceFilePath + "\\" + "Duplicates" + "\\" + duplicateFileName);
-                _ = mFileList.Remove(entry);
+                mFileList.Remove(entry);
             }
         }
 
