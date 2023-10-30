@@ -28,6 +28,9 @@ namespace XisfFileManager.TargetScheduler
             {
                 connection.Open();
 
+                // Read the contents of all database tables
+
+                // profilepreference Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM profilepreference", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -55,6 +58,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // project Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM project", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -88,6 +92,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // target Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM target", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -113,6 +118,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // exposureplan Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM exposureplan", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -136,6 +142,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // exposuretemplate Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM exposuretemplate", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -165,6 +172,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // acquiredimage Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM acquiredimage", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -188,7 +196,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
-
+                // ruleweight Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM ruleweight", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())
@@ -208,6 +216,7 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
+                // imagedata Table
                 using (SqliteCommand command = new SqliteCommand("SELECT * FROM imagedata", connection))
                 {
                     using (SqliteDataReader reader = command.ExecuteReader())

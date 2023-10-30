@@ -15,6 +15,7 @@ using System.Reflection;
 using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
 using System.Globalization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace XisfFileManager
 {
@@ -58,6 +59,7 @@ namespace XisfFileManager
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
+        private XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
 
         private DirectoryProperties mDirectoryProperties;
 
@@ -66,10 +68,12 @@ namespace XisfFileManager
         {
             InitializeComponent();
             CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
+            TreeView_SchedulerTab_ProfileTree.NodeMouseClick += TreeView_SchedulerTab_ProfileTree_NodeMouseClick_NodeMouseClick;
             mDirectoryProperties = new DirectoryProperties();
             mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
             mFileReader = new XisfFileReader();
+            mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
 
             Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
@@ -267,7 +271,10 @@ namespace XisfFileManager
                 if (result == DialogResult.OK)
                     selectedFolder = folderBrowserDialog.SelectedPath;
                 else
+                {
+                    TabControl_Update_TargetScheduler.Enabled = true;
                     return;
+                }
             }
 
             DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
@@ -4153,13 +4160,35 @@ namespace XisfFileManager
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button_SchedulerTab_OpenDatabase_Click(object sender, EventArgs e)
         {
-            XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
+            mSchedulerDB.mSqlReader.ReadDataBaseFile(@"\\BIRDWATCHER\SchedulerPlugin\schedulerdbTest.sqlite");
 
-            mSchedulerDB.ReadTargetSchedulerDataBaseFile(@"E:\Temp\schedulerdb.sqlite");
+            TreeView_SchedulerTab_ProfileTree.Nodes.Clear();
+            TreeNode TreeView_SchedulerTab_ProfileTree_RootNode = new TreeNode("Profiles");
+            TreeView_SchedulerTab_ProfileTree.Nodes.Add(TreeView_SchedulerTab_ProfileTree_RootNode);
+            foreach (var node in mSchedulerDB.mProfilePreferenceList)
+            {
+                TreeNode itemNode = new TreeNode(node.profileId.Substring(node.profileId.LastIndexOf('-')) + 1);
+                TreeView_SchedulerTab_ProfileTree_RootNode.Nodes.Add(itemNode);
+            }
+            TreeView_SchedulerTab_ProfileTree.ExpandAll();
 
+            // Do Things
             mSchedulerDB.UpdateTargetImageCounts(mFileList);
+        }
+
+        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            // Get the clicked TreeNode
+            TreeNode clickedNode = e.Node;
+
+            if (clickedNode == null)
+                return;
+            
+                string clickedItem = clickedNode.Text;
+                MessageBox.Show($"You clicked on: {clickedItem}");
+            
         }
     }
 }

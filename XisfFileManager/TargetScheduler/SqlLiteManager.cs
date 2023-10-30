@@ -43,11 +43,6 @@ namespace XisfFileManager.TargetScheduler
             mSqlUpdater = new SqlLiteUpdater(this);
         }
 
-        public bool ReadTargetSchedulerDataBaseFile(string databaseFilePath)
-        {
-            return mSqlReader.ReadDataBaseFile(databaseFilePath);
-        }
-
         public void UpdateTargetImageCounts(List<XisfFile> xFileList)
         {
             foreach (XisfFile xFile in xFileList)
