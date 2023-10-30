@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using XisfFileManager.TargetScheduler.Tables;
 
@@ -90,6 +91,8 @@ namespace XisfFileManager.TargetScheduler
                             mSqlManager.mProjectList.Add(projectRow);
                         }
                     }
+
+                    mSqlManager.mProjectList = mSqlManager.mProjectList.OrderBy(project => project.name).ToList();
                 }
 
                 // target Table
@@ -116,6 +119,7 @@ namespace XisfFileManager.TargetScheduler
                             mSqlManager.mTargetList.Add(targetRow);
                         }
                     }
+                    mSqlManager.mTargetList = mSqlManager.mTargetList.OrderBy(target => target.name).ToList();
                 }
 
                 // exposureplan Table

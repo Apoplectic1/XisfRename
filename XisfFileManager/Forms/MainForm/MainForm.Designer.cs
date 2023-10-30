@@ -332,6 +332,10 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
+            Label_SchedulerTab_PlansText = new System.Windows.Forms.Label();
+            TreeView_SchedulerTab_PlansTree = new System.Windows.Forms.TreeView();
+            Label_SchedulerTab_TargetsText = new System.Windows.Forms.Label();
+            TreeView_SchedulerTab_TargetTree = new System.Windows.Forms.TreeView();
             Label_SchedulerTab_ProjectsText = new System.Windows.Forms.Label();
             Label_SchedulerTab_ProfilesText = new System.Windows.Forms.Label();
             TreeView_SchedulerTab_ProjectTree = new System.Windows.Forms.TreeView();
@@ -3899,6 +3903,10 @@
             // TabPage_TargetScheduler
             // 
             TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_PlansText);
+            TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_PlansTree);
+            TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_TargetsText);
+            TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_TargetTree);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_ProjectsText);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_ProfilesText);
             TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_ProjectTree);
@@ -3911,10 +3919,42 @@
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
+            // Label_SchedulerTab_PlansText
+            // 
+            Label_SchedulerTab_PlansText.AutoSize = true;
+            Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(574, 21);
+            Label_SchedulerTab_PlansText.Name = "Label_SchedulerTab_PlansText";
+            Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(86, 15);
+            Label_SchedulerTab_PlansText.TabIndex = 8;
+            Label_SchedulerTab_PlansText.Text = "Exposure Plans";
+            // 
+            // TreeView_SchedulerTab_PlansTree
+            // 
+            TreeView_SchedulerTab_PlansTree.Location = new System.Drawing.Point(531, 38);
+            TreeView_SchedulerTab_PlansTree.Name = "TreeView_SchedulerTab_PlansTree";
+            TreeView_SchedulerTab_PlansTree.Size = new System.Drawing.Size(208, 444);
+            TreeView_SchedulerTab_PlansTree.TabIndex = 7;
+            // 
+            // Label_SchedulerTab_TargetsText
+            // 
+            Label_SchedulerTab_TargetsText.AutoSize = true;
+            Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(402, 21);
+            Label_SchedulerTab_TargetsText.Name = "Label_SchedulerTab_TargetsText";
+            Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(44, 15);
+            Label_SchedulerTab_TargetsText.TabIndex = 6;
+            Label_SchedulerTab_TargetsText.Text = "Targets";
+            // 
+            // TreeView_SchedulerTab_TargetTree
+            // 
+            TreeView_SchedulerTab_TargetTree.Location = new System.Drawing.Point(338, 38);
+            TreeView_SchedulerTab_TargetTree.Name = "TreeView_SchedulerTab_TargetTree";
+            TreeView_SchedulerTab_TargetTree.Size = new System.Drawing.Size(173, 444);
+            TreeView_SchedulerTab_TargetTree.TabIndex = 5;
+            // 
             // Label_SchedulerTab_ProjectsText
             // 
             Label_SchedulerTab_ProjectsText.AutoSize = true;
-            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(199, 21);
+            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(207, 21);
             Label_SchedulerTab_ProjectsText.Name = "Label_SchedulerTab_ProjectsText";
             Label_SchedulerTab_ProjectsText.Size = new System.Drawing.Size(49, 15);
             Label_SchedulerTab_ProjectsText.TabIndex = 4;
@@ -3923,7 +3963,7 @@
             // Label_SchedulerTab_ProfilesText
             // 
             Label_SchedulerTab_ProfilesText.AutoSize = true;
-            Label_SchedulerTab_ProfilesText.Location = new System.Drawing.Point(30, 65);
+            Label_SchedulerTab_ProfilesText.Location = new System.Drawing.Point(44, 72);
             Label_SchedulerTab_ProfilesText.Name = "Label_SchedulerTab_ProfilesText";
             Label_SchedulerTab_ProfilesText.Size = new System.Drawing.Size(46, 15);
             Label_SchedulerTab_ProfilesText.TabIndex = 3;
@@ -3931,23 +3971,23 @@
             // 
             // TreeView_SchedulerTab_ProjectTree
             // 
-            TreeView_SchedulerTab_ProjectTree.Location = new System.Drawing.Point(199, 38);
+            TreeView_SchedulerTab_ProjectTree.Location = new System.Drawing.Point(145, 38);
             TreeView_SchedulerTab_ProjectTree.Name = "TreeView_SchedulerTab_ProjectTree";
             TreeView_SchedulerTab_ProjectTree.Size = new System.Drawing.Size(173, 444);
             TreeView_SchedulerTab_ProjectTree.TabIndex = 2;
             // 
             // TreeView_SchedulerTab_ProfileTree
             // 
-            TreeView_SchedulerTab_ProfileTree.Location = new System.Drawing.Point(30, 82);
+            TreeView_SchedulerTab_ProfileTree.Location = new System.Drawing.Point(10, 89);
             TreeView_SchedulerTab_ProfileTree.Name = "TreeView_SchedulerTab_ProfileTree";
-            TreeView_SchedulerTab_ProfileTree.Size = new System.Drawing.Size(141, 97);
+            TreeView_SchedulerTab_ProfileTree.Size = new System.Drawing.Size(115, 141);
             TreeView_SchedulerTab_ProfileTree.TabIndex = 1;
             // 
             // Button_SchedulerTab_OpenDatabase
             // 
-            Button_SchedulerTab_OpenDatabase.Location = new System.Drawing.Point(10, 26);
+            Button_SchedulerTab_OpenDatabase.Location = new System.Drawing.Point(10, 15);
             Button_SchedulerTab_OpenDatabase.Name = "Button_SchedulerTab_OpenDatabase";
-            Button_SchedulerTab_OpenDatabase.Size = new System.Drawing.Size(161, 23);
+            Button_SchedulerTab_OpenDatabase.Size = new System.Drawing.Size(115, 40);
             Button_SchedulerTab_OpenDatabase.TabIndex = 0;
             Button_SchedulerTab_OpenDatabase.Text = "Open Scheduler Database";
             Button_SchedulerTab_OpenDatabase.UseVisualStyleBackColor = true;
@@ -4348,5 +4388,9 @@
         private System.Windows.Forms.Label Label_SchedulerTab_ProfilesText;
         private System.Windows.Forms.TreeView TreeView_SchedulerTab_ProjectTree;
         private System.Windows.Forms.TreeView TreeView_SchedulerTab_ProfileTree;
+        private System.Windows.Forms.Label Label_SchedulerTab_TargetsText;
+        private System.Windows.Forms.TreeView TreeView_SchedulerTab_TargetTree;
+        private System.Windows.Forms.Label Label_SchedulerTab_PlansText;
+        private System.Windows.Forms.TreeView TreeView_SchedulerTab_PlansTree;
     }
 }

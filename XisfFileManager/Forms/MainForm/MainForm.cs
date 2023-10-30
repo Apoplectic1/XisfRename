@@ -16,6 +16,11 @@ using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
 using System.Globalization;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using XisfFileManager.TargetScheduler.Tables;
+using static System.Net.Mime.MediaTypeNames;
+using TreeView = System.Windows.Forms.TreeView;
 
 namespace XisfFileManager
 {
@@ -68,7 +73,10 @@ namespace XisfFileManager
         {
             InitializeComponent();
             CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
-            TreeView_SchedulerTab_ProfileTree.NodeMouseClick += TreeView_SchedulerTab_ProfileTree_NodeMouseClick_NodeMouseClick;
+            TreeView_SchedulerTab_ProfileTree.NodeMouseClick += TreeView_SchedulerTab_ProfileTree_NodeMouseClick;
+            TreeView_SchedulerTab_ProjectTree.NodeMouseClick += TreeView_SchedulerTab_ProjectTree_NodeMouseClick;
+            TreeView_SchedulerTab_TargetTree.NodeMouseClick += TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick;
+            TreeView_SchedulerTab_PlansTree.NodeMouseClick += TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick;
             mDirectoryProperties = new DirectoryProperties();
             mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
@@ -303,7 +311,7 @@ namespace XisfFileManager
 
             // Upate the UI with data from the .xisf recursive directory search
             ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
 
             foreach (var xFile in mDirectoryOps.Files)
             {
@@ -705,7 +713,7 @@ namespace XisfFileManager
 
                 Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
 
-                Application.DoEvents(); // Update UI
+                System.Windows.Forms.Application.DoEvents(); // Update UI
             }
 
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
@@ -798,7 +806,7 @@ namespace XisfFileManager
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
                 bStatus = XisfFileUpdate.UpdateFile(xFile, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
-                Application.DoEvents();
+                System.Windows.Forms.Application.DoEvents();
 
                 if (bStatus == false)
                 {
@@ -4160,35 +4168,173 @@ namespace XisfFileManager
             }
         }
 
+        // **********************************************************************************************************************************
+        // **********************************************************************************************************************************
+        // Target Scheduler Methods
+        // **********************************************************************************************************************************
+        // **********************************************************************************************************************************
+
         private void Button_SchedulerTab_OpenDatabase_Click(object sender, EventArgs e)
         {
             mSchedulerDB.mSqlReader.ReadDataBaseFile(@"\\BIRDWATCHER\SchedulerPlugin\schedulerdbTest.sqlite");
 
             TreeView_SchedulerTab_ProfileTree.Nodes.Clear();
-            TreeNode TreeView_SchedulerTab_ProfileTree_RootNode = new TreeNode("Profiles");
-            TreeView_SchedulerTab_ProfileTree.Nodes.Add(TreeView_SchedulerTab_ProfileTree_RootNode);
-            foreach (var node in mSchedulerDB.mProfilePreferenceList)
+            TreeView_SchedulerTab_ProjectTree.Nodes.Clear();
+
+            foreach (var profilePreference in mSchedulerDB.mProfilePreferenceList)
             {
-                TreeNode itemNode = new TreeNode(node.profileId.Substring(node.profileId.LastIndexOf('-')) + 1);
-                TreeView_SchedulerTab_ProfileTree_RootNode.Nodes.Add(itemNode);
+                TreeNode TreeView_SchedulerTab_ProfileTree_RootNode = new TreeNode(profilePreference.profileId.Substring(profilePreference.profileId.LastIndexOf('-') + 5));
+                TreeView_SchedulerTab_ProfileTree.Nodes.Add(TreeView_SchedulerTab_ProfileTree_RootNode);
+
+                TreeNode TreeView_SchedulerTab_ProjectTree_RootNode = new TreeNode(profilePreference.profileId.Substring(profilePreference.profileId.LastIndexOf('-') + 5));
+                TreeView_SchedulerTab_ProjectTree.Nodes.Add(TreeView_SchedulerTab_ProjectTree_RootNode);
+
+                foreach (var project in mSchedulerDB.mProjectList)
+                {
+                    if (project.profileId == profilePreference.profileId)
+                    {
+                        TreeNode projectNode = new TreeNode(project.name);
+                        TreeView_SchedulerTab_ProjectTree_RootNode.Nodes.Add(projectNode);
+                    }
+                }
             }
+
+            foreach (var target in mSchedulerDB.mTargetList)
+            {
+                TreeNode TreeView_SchedulerTab_TargetTree_RootNode = new TreeNode(target.name);
+                TreeView_SchedulerTab_TargetTree.Nodes.Add(TreeView_SchedulerTab_TargetTree_RootNode);
+            }
+
+            RefineExposurePlans();
+
             TreeView_SchedulerTab_ProfileTree.ExpandAll();
+            TreeView_SchedulerTab_ProjectTree.ExpandAll();
+
 
             // Do Things
             mSchedulerDB.UpdateTargetImageCounts(mFileList);
         }
 
-        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             // Get the clicked TreeNode
             TreeNode clickedNode = e.Node;
 
             if (clickedNode == null)
                 return;
-            
-                string clickedItem = clickedNode.Text;
-                MessageBox.Show($"You clicked on: {clickedItem}");
-            
+
+            string clickedItem = clickedNode.Text;
+            MessageBox.Show($"You clicked on: {clickedItem}");
+
         }
+
+        private void TreeView_SchedulerTab_ProjectTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode clickedNode = e.Node;
+            if (clickedNode == null) return;
+
+            if (clickedNode.Parent == null)
+                // We clicked on a Profile
+                RefineSelectedProjectTreeView(clickedNode);
+            else
+                // We clicked on a Target
+                RefineSelectedTargetTreeView(clickedNode);
+
+            RefineExposurePlans();
+        }
+
+        private void TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            // Get the clicked TreeNode
+            TreeNode clickedNode = e.Node;
+
+            if (clickedNode == null)
+                return;
+
+            RefineExposurePlans();
+        }
+
+        private void TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            // Get the clicked TreeNode
+            TreeNode clickedNode = e.Node;
+
+            if (clickedNode == null)
+                return;
+
+            string clickedItem = clickedNode.Text;
+            MessageBox.Show($"You clicked on: {clickedItem}");
+        }
+
+        private void RefineSelectedProjectTreeView(TreeNode clickedNode)
+        {
+            TreeView_SchedulerTab_ProjectTree.Nodes.Clear();
+            TreeView_SchedulerTab_TargetTree.Nodes.Clear();
+
+            string profilePreference = mSchedulerDB.mProfilePreferenceList.Find(profile => profile.profileId.Contains(clickedNode.Text)).profileId;
+
+            TreeNode TreeView_SchedulerTab_ProjectTree_RootNode = new TreeNode(profilePreference.Substring(profilePreference.LastIndexOf('-') + 5));
+            TreeView_SchedulerTab_ProjectTree.Nodes.Add(TreeView_SchedulerTab_ProjectTree_RootNode);
+
+            foreach (var project in mSchedulerDB.mProjectList)
+            {
+                if (project.profileId == profilePreference)
+                {
+                    TreeNode projectNode = new TreeNode(project.name);
+                    TreeView_SchedulerTab_ProjectTree_RootNode.Nodes.Add(projectNode);
+                }
+            }
+
+            TreeView_SchedulerTab_ProjectTree.ExpandAll();
+        }
+
+        private void RefineSelectedTargetTreeView(TreeNode clickedNode)
+        {
+            TreeNode profileNode = clickedNode.Parent;
+
+            TreeView_SchedulerTab_TargetTree.Nodes.Clear();
+
+            string projectProfileId = mSchedulerDB.mProjectList.Find(project => project.profileId.Contains(profileNode.Text)).profileId;
+
+            int projectId = mSchedulerDB.mProjectList.Find(project => project.name == clickedNode.Text && project.profileId == projectProfileId).Id;
+
+            string profileId = mSchedulerDB.mProjectList.Find(project => project.profileId == projectProfileId).profileId;
+
+            foreach (var profilePreference in mSchedulerDB.mProfilePreferenceList)
+            {
+                foreach (var target in mSchedulerDB.mTargetList)
+                {
+                    if ((projectId == target.projectid) && (projectProfileId == profilePreference.profileId))
+                    {
+                        TreeNode TreeView_SchedulerTab_TargetTree_RootNode = new TreeNode(target.name);
+                        TreeView_SchedulerTab_TargetTree.Nodes.Add(TreeView_SchedulerTab_TargetTree_RootNode);
+                    }
+                }
+            }
+        }
+
+        private void RefineExposurePlans() 
+        {
+            TreeView_SchedulerTab_PlansTree.Nodes.Clear();
+
+            foreach (TreeNode targetNode in TreeView_SchedulerTab_TargetTree.Nodes)
+            {
+                int targetId = mSchedulerDB.mTargetList.Find(target => target.name.Equals(targetNode.Text)).Id;
+                string targetName = targetNode.Text;
+
+                List<int> exposureTemplateIdList = mSchedulerDB.mExposurePlanList
+                                .Where(plan => plan.targetid == targetId)
+                                .Select(plan => plan.exposureTemplateId)
+                                .ToList();
+
+                foreach (var plan in exposureTemplateIdList)
+                {
+                    string exposurePlanName = targetName + " " + mSchedulerDB.mExposureTemplateList.Find(template => template.Id == plan).filtername;
+                    TreeNode TreeView_SchedulerTab_PlansTree_RootNode = new TreeNode(exposurePlanName);
+                    TreeView_SchedulerTab_PlansTree.Nodes.Add(TreeView_SchedulerTab_PlansTree_RootNode);
+                }
+            }
+        }
+
     }
 }
