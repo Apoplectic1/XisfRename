@@ -332,6 +332,12 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
+            GroupBox_SchedulerTab_Project = new System.Windows.Forms.GroupBox();
+            CheckBox_Project_Active = new System.Windows.Forms.CheckBox();
+            GroupBox_Project_Priority = new System.Windows.Forms.GroupBox();
+            RadioButton_ProjectPriority_High = new System.Windows.Forms.RadioButton();
+            RadioButton_ProjectPriority_Normal = new System.Windows.Forms.RadioButton();
+            RadioButton_ProjectPriority_Low = new System.Windows.Forms.RadioButton();
             Label_SchedulerTab_PlansText = new System.Windows.Forms.Label();
             TreeView_SchedulerTab_PlansTree = new System.Windows.Forms.TreeView();
             Label_SchedulerTab_TargetsText = new System.Windows.Forms.Label();
@@ -383,6 +389,8 @@
             GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
             TabControl_Update_TargetScheduler.SuspendLayout();
             TabPage_TargetScheduler.SuspendLayout();
+            GroupBox_SchedulerTab_Project.SuspendLayout();
+            GroupBox_Project_Priority.SuspendLayout();
             SuspendLayout();
             // 
             // ProgressBar_FileSelection_ReadProgress
@@ -3903,6 +3911,7 @@
             // TabPage_TargetScheduler
             // 
             TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_TargetScheduler.Controls.Add(GroupBox_SchedulerTab_Project);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_PlansText);
             TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_PlansTree);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_TargetsText);
@@ -3919,10 +3928,76 @@
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
+            // GroupBox_SchedulerTab_Project
+            // 
+            GroupBox_SchedulerTab_Project.Controls.Add(CheckBox_Project_Active);
+            GroupBox_SchedulerTab_Project.Controls.Add(GroupBox_Project_Priority);
+            GroupBox_SchedulerTab_Project.Location = new System.Drawing.Point(759, 38);
+            GroupBox_SchedulerTab_Project.Name = "GroupBox_SchedulerTab_Project";
+            GroupBox_SchedulerTab_Project.Size = new System.Drawing.Size(360, 121);
+            GroupBox_SchedulerTab_Project.TabIndex = 9;
+            GroupBox_SchedulerTab_Project.TabStop = false;
+            GroupBox_SchedulerTab_Project.Text = "Project";
+            // 
+            // CheckBox_Project_Active
+            // 
+            CheckBox_Project_Active.AutoSize = true;
+            CheckBox_Project_Active.Location = new System.Drawing.Point(12, 22);
+            CheckBox_Project_Active.Name = "CheckBox_Project_Active";
+            CheckBox_Project_Active.Size = new System.Drawing.Size(59, 19);
+            CheckBox_Project_Active.TabIndex = 1;
+            CheckBox_Project_Active.Text = "Active";
+            CheckBox_Project_Active.UseVisualStyleBackColor = true;
+            // 
+            // GroupBox_Project_Priority
+            // 
+            GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_High);
+            GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Normal);
+            GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Low);
+            GroupBox_Project_Priority.Location = new System.Drawing.Point(6, 44);
+            GroupBox_Project_Priority.Name = "GroupBox_Project_Priority";
+            GroupBox_Project_Priority.Size = new System.Drawing.Size(197, 45);
+            GroupBox_Project_Priority.TabIndex = 0;
+            GroupBox_Project_Priority.TabStop = false;
+            GroupBox_Project_Priority.Text = "Priority";
+            // 
+            // RadioButton_ProjectPriority_High
+            // 
+            RadioButton_ProjectPriority_High.AutoSize = true;
+            RadioButton_ProjectPriority_High.Location = new System.Drawing.Point(139, 18);
+            RadioButton_ProjectPriority_High.Name = "RadioButton_ProjectPriority_High";
+            RadioButton_ProjectPriority_High.Size = new System.Drawing.Size(51, 19);
+            RadioButton_ProjectPriority_High.TabIndex = 2;
+            RadioButton_ProjectPriority_High.TabStop = true;
+            RadioButton_ProjectPriority_High.Text = "High";
+            RadioButton_ProjectPriority_High.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_ProjectPriority_Normal
+            // 
+            RadioButton_ProjectPriority_Normal.AutoSize = true;
+            RadioButton_ProjectPriority_Normal.Location = new System.Drawing.Point(67, 18);
+            RadioButton_ProjectPriority_Normal.Name = "RadioButton_ProjectPriority_Normal";
+            RadioButton_ProjectPriority_Normal.Size = new System.Drawing.Size(65, 19);
+            RadioButton_ProjectPriority_Normal.TabIndex = 1;
+            RadioButton_ProjectPriority_Normal.TabStop = true;
+            RadioButton_ProjectPriority_Normal.Text = "Normal";
+            RadioButton_ProjectPriority_Normal.UseVisualStyleBackColor = true;
+            // 
+            // RadioButton_ProjectPriority_Low
+            // 
+            RadioButton_ProjectPriority_Low.AutoSize = true;
+            RadioButton_ProjectPriority_Low.Location = new System.Drawing.Point(13, 18);
+            RadioButton_ProjectPriority_Low.Name = "RadioButton_ProjectPriority_Low";
+            RadioButton_ProjectPriority_Low.Size = new System.Drawing.Size(47, 19);
+            RadioButton_ProjectPriority_Low.TabIndex = 0;
+            RadioButton_ProjectPriority_Low.TabStop = true;
+            RadioButton_ProjectPriority_Low.Text = "Low";
+            RadioButton_ProjectPriority_Low.UseVisualStyleBackColor = true;
+            // 
             // Label_SchedulerTab_PlansText
             // 
             Label_SchedulerTab_PlansText.AutoSize = true;
-            Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(574, 21);
+            Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(590, 21);
             Label_SchedulerTab_PlansText.Name = "Label_SchedulerTab_PlansText";
             Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(86, 15);
             Label_SchedulerTab_PlansText.TabIndex = 8;
@@ -3930,7 +4005,7 @@
             // 
             // TreeView_SchedulerTab_PlansTree
             // 
-            TreeView_SchedulerTab_PlansTree.Location = new System.Drawing.Point(531, 38);
+            TreeView_SchedulerTab_PlansTree.Location = new System.Drawing.Point(529, 38);
             TreeView_SchedulerTab_PlansTree.Name = "TreeView_SchedulerTab_PlansTree";
             TreeView_SchedulerTab_PlansTree.Size = new System.Drawing.Size(208, 444);
             TreeView_SchedulerTab_PlansTree.TabIndex = 7;
@@ -3938,7 +4013,7 @@
             // Label_SchedulerTab_TargetsText
             // 
             Label_SchedulerTab_TargetsText.AutoSize = true;
-            Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(402, 21);
+            Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(403, 21);
             Label_SchedulerTab_TargetsText.Name = "Label_SchedulerTab_TargetsText";
             Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(44, 15);
             Label_SchedulerTab_TargetsText.TabIndex = 6;
@@ -3946,15 +4021,15 @@
             // 
             // TreeView_SchedulerTab_TargetTree
             // 
-            TreeView_SchedulerTab_TargetTree.Location = new System.Drawing.Point(338, 38);
+            TreeView_SchedulerTab_TargetTree.Location = new System.Drawing.Point(332, 38);
             TreeView_SchedulerTab_TargetTree.Name = "TreeView_SchedulerTab_TargetTree";
-            TreeView_SchedulerTab_TargetTree.Size = new System.Drawing.Size(173, 444);
+            TreeView_SchedulerTab_TargetTree.Size = new System.Drawing.Size(187, 444);
             TreeView_SchedulerTab_TargetTree.TabIndex = 5;
             // 
             // Label_SchedulerTab_ProjectsText
             // 
             Label_SchedulerTab_ProjectsText.AutoSize = true;
-            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(207, 21);
+            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(204, 21);
             Label_SchedulerTab_ProjectsText.Name = "Label_SchedulerTab_ProjectsText";
             Label_SchedulerTab_ProjectsText.Size = new System.Drawing.Size(49, 15);
             Label_SchedulerTab_ProjectsText.TabIndex = 4;
@@ -3971,10 +4046,12 @@
             // 
             // TreeView_SchedulerTab_ProjectTree
             // 
-            TreeView_SchedulerTab_ProjectTree.Location = new System.Drawing.Point(145, 38);
+            TreeView_SchedulerTab_ProjectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            TreeView_SchedulerTab_ProjectTree.Location = new System.Drawing.Point(135, 38);
             TreeView_SchedulerTab_ProjectTree.Name = "TreeView_SchedulerTab_ProjectTree";
-            TreeView_SchedulerTab_ProjectTree.Size = new System.Drawing.Size(173, 444);
+            TreeView_SchedulerTab_ProjectTree.Size = new System.Drawing.Size(187, 444);
             TreeView_SchedulerTab_ProjectTree.TabIndex = 2;
+            TreeView_SchedulerTab_ProjectTree.DrawNode += TreeView_SchedulerTab_ProjectTree_DrawNode;
             // 
             // TreeView_SchedulerTab_ProfileTree
             // 
@@ -4075,6 +4152,10 @@
             TabControl_Update_TargetScheduler.ResumeLayout(false);
             TabPage_TargetScheduler.ResumeLayout(false);
             TabPage_TargetScheduler.PerformLayout();
+            GroupBox_SchedulerTab_Project.ResumeLayout(false);
+            GroupBox_SchedulerTab_Project.PerformLayout();
+            GroupBox_Project_Priority.ResumeLayout(false);
+            GroupBox_Project_Priority.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -4392,5 +4473,11 @@
         private System.Windows.Forms.TreeView TreeView_SchedulerTab_TargetTree;
         private System.Windows.Forms.Label Label_SchedulerTab_PlansText;
         private System.Windows.Forms.TreeView TreeView_SchedulerTab_PlansTree;
+        private System.Windows.Forms.GroupBox GroupBox_SchedulerTab_Project;
+        private System.Windows.Forms.GroupBox GroupBox_Project_Priority;
+        private System.Windows.Forms.CheckBox CheckBox_Project_Active;
+        private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_High;
+        private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_Normal;
+        private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_Low;
     }
 }

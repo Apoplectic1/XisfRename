@@ -4199,6 +4199,8 @@ namespace XisfFileManager
                 }
             }
 
+            TreeView_SchedulerTab_TargetTree.Nodes.Clear();
+
             foreach (var target in mSchedulerDB.mTargetList)
             {
                 TreeNode TreeView_SchedulerTab_TargetTree_RootNode = new TreeNode(target.name);
@@ -4217,39 +4219,98 @@ namespace XisfFileManager
 
         private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            // Get the clicked TreeNode
             TreeNode clickedNode = e.Node;
-
-            if (clickedNode == null)
-                return;
 
             string clickedItem = clickedNode.Text;
             MessageBox.Show($"You clicked on: {clickedItem}");
-
         }
 
         private void TreeView_SchedulerTab_ProjectTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             TreeNode clickedNode = e.Node;
-            if (clickedNode == null) return;
 
             if (clickedNode.Parent == null)
                 // We clicked on a Profile
                 RefineSelectedProjectTreeView(clickedNode);
             else
-                // We clicked on a Target
+            {
+                // We clicked on a Project
+                SetProjectActiveCheckBox(clickedNode);
+                SetProjectPriorityRadioButtons(clickedNode);
+
                 RefineSelectedTargetTreeView(clickedNode);
+            }
 
             RefineExposurePlans();
+        }
+        private string ProfilePreference(TreeNode projectNode) { return mSchedulerDB.mProfilePreferenceList.Find(profile => profile.profileId.Contains(projectNode.Parent.Text)).profileId; }
+        private bool ProjectState(TreeNode projectNode, string sProfilePreference) { return mSchedulerDB.mProjectList.Any(project => project.name == projectNode.Text && project.profileId == sProfilePreference); }
+        private int ProjectPriority(TreeNode projectNode, string sProfilePreference) { return mSchedulerDB.mProjectList.Find(project => (project.name == projectNode.Text) && (project.profileId == sProfilePreference)).priority; }
+
+        private void SetProjectActiveCheckBox(TreeNode projectNode)
+        {
+            string profilePreference = ProfilePreference(projectNode);
+            CheckBox_Project_Active.Checked = ProjectState(projectNode, profilePreference);
+        }
+
+        private void SetProjectPriorityRadioButtons(TreeNode projectNode)
+        {
+            string profilePreference = ProfilePreference(projectNode);
+            int priority = ProjectPriority(projectNode, profilePreference);
+            switch (priority)
+            {
+                case (int)eProjectPriority.LOW:
+                    RadioButton_ProjectPriority_Low.Checked = true;
+                    break;
+                case (int)eProjectPriority.NORMAL:
+                    RadioButton_ProjectPriority_Normal.Checked = true;
+                    break;
+                case (int)eProjectPriority.HIGH:
+                    RadioButton_ProjectPriority_High.Checked = true;
+                    break;
+            }
+
+
+            RefineSelectedProjectTreeView(projectNode);
+        }
+
+        private void TreeView_SchedulerTab_ProjectTree_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        {
+            if (e.Node.Parent == null)
+            {
+                e.DrawDefault = true;
+                return;
+            }
+            string profilePreference = ProfilePreference(e.Node);
+
+            Font nodeFont;
+            bool bActive = ProjectState(e.Node, profilePreference);
+            if (bActive)
+                nodeFont = ((TreeView)sender).Font;
+            else
+                nodeFont = new Font(((TreeView)sender).Font, FontStyle.Strikeout);
+
+
+            int priority = ProjectPriority(e.Node, profilePreference);
+            switch (priority)
+            {
+                case (int)eProjectPriority.LOW:
+                    e.Graphics.DrawString(e.Node.Text, nodeFont, Brushes.SandyBrown, e.Bounds);
+                    break;
+                case (int)eProjectPriority.NORMAL:
+                    e.Graphics.DrawString(e.Node.Text, nodeFont, Brushes.Black, e.Bounds);
+                    break;
+                case (int)eProjectPriority.HIGH:
+                    e.Graphics.DrawString(e.Node.Text, nodeFont, Brushes.DarkMagenta, e.Bounds);
+                    break;
+            }
         }
 
         private void TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            // Get the clicked TreeNode
             TreeNode clickedNode = e.Node;
 
-            if (clickedNode == null)
-                return;
+            TreeNode targetNodeParent = clickedNode.Parent;
 
             RefineExposurePlans();
         }
@@ -4271,7 +4332,7 @@ namespace XisfFileManager
             TreeView_SchedulerTab_ProjectTree.Nodes.Clear();
             TreeView_SchedulerTab_TargetTree.Nodes.Clear();
 
-            string profilePreference = mSchedulerDB.mProfilePreferenceList.Find(profile => profile.profileId.Contains(clickedNode.Text)).profileId;
+            string profilePreference = ProfilePreference(clickedNode);
 
             TreeNode TreeView_SchedulerTab_ProjectTree_RootNode = new TreeNode(profilePreference.Substring(profilePreference.LastIndexOf('-') + 5));
             TreeView_SchedulerTab_ProjectTree.Nodes.Add(TreeView_SchedulerTab_ProjectTree_RootNode);
@@ -4313,7 +4374,7 @@ namespace XisfFileManager
             }
         }
 
-        private void RefineExposurePlans() 
+        private void RefineExposurePlans()
         {
             TreeView_SchedulerTab_PlansTree.Nodes.Clear();
 
@@ -4335,6 +4396,5 @@ namespace XisfFileManager
                 }
             }
         }
-
     }
 }

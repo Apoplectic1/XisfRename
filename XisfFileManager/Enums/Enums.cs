@@ -31,4 +31,7 @@
 
     public enum eCoordinates { DEGREES, HMS }
 
+
+    // Target Scheduler 
+    public enum eProjectPriority {LOW = 0, NORMAL = 1, HIGH = 2 }
 }
