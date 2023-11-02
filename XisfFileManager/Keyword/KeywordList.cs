@@ -151,12 +151,14 @@ namespace XisfFileManager
             {
                 object Object = GetKeywordValue("AIRMASS");
                 if (Object != null)
-                    return (double)Object;
+                    return Convert.ToDouble(Object);
+
+                AddKeyword("AIRMASS", -1, "Not Computed. Ratio of absolute air mass to that at zenith");
                 return -1;
             }
             set
             {
-                AddKeyword("AIRMASS", value, "Number of atmospheres this image is looking through");
+                AddKeyword("AIRMASS", value, "Ratio of absolute air mass to that at zenith");
             }
         }
 
@@ -173,7 +175,7 @@ namespace XisfFileManager
                 if (Object != null)
                 {
                     double ambientTemperture = Convert.ToDouble(Object);
-                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F1"), "Local Temerature from Open Weather API");
 
                     RemoveKeyword("AMBTEMP");
                     RemoveKeyword("TEMPERAT");
@@ -186,7 +188,7 @@ namespace XisfFileManager
                 if (Object != null)
                 {
                     double ambientTemperture = Convert.ToDouble(Object);
-                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F1"), "Local Temerature from Open Weather API");
 
                     RemoveKeyword("AMBTEMP");
                     RemoveKeyword("TEMPERAT");
@@ -199,7 +201,7 @@ namespace XisfFileManager
                 if (Object != null)
                 {
                     double ambientTemperture = Convert.ToDouble(Object);
-                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F1"), "Local Temerature from Open Weather API");
 
                     RemoveKeyword("AMBTEMP");
                     RemoveKeyword("TEMPERAT");
@@ -213,7 +215,7 @@ namespace XisfFileManager
                 if (Object != null)
                 {
                     double ambientTemperture = Convert.ToDouble(Object);
-                    AddKeyword("AMB-TEMP", ambientTemperture, "Local Temerature from Open Weather API");
+                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F1"), "Local Temerature from Open Weather API");
 
                     RemoveKeyword("AMBTEMP");
                     RemoveKeyword("TEMPERAT");
@@ -226,7 +228,7 @@ namespace XisfFileManager
             }
             set
             {
-                AddKeyword("AMB-TEMP", value, "Local Temerature from Open Weather API");
+                AddKeyword("AMB-TEMP", value.ToString("F1"), "Local Temerature from Open Weather API");
             }
         }
 
@@ -366,7 +368,7 @@ namespace XisfFileManager
                 // Keywords are now correct
                 // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
 
-                string localTime = (string)Object;
+                string localTime = Convert.ToString(Object);
                 localTime = localTime.Replace("'", "").Replace("T", " ");
 
                 bool status;
@@ -576,9 +578,9 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("AIRMASS");
+                object Object = GetKeywordValue("ECCENTRICITY");
                 if (Object != null)
-                    return (double)Object;
+                    return Convert.ToDouble(Object);
                 return -1;
             }
             set
@@ -618,24 +620,7 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        // This is the name of the File itself - Does not contain the path
-        public string FileName
-        {
-            get
-            {
-                object Object = GetKeywordValue("FILENAME");
-                if (Object != null)
-                    return (string)GetKeywordComment("FILENAME");
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("FILENAME", value, "Original Filename");
-            }
-        }
 
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public string FilterName
         {
             get
@@ -874,20 +859,9 @@ namespace XisfFileManager
             if (Object != null)
                 return Convert.ToDouble(Object);
 
-            UserInputFormData formData = new UserInputFormData
-            {
-                FormName = "Cammera Pixel Size",
-                FormText = "Camera Pixel Size Not Set (Assumes Square Pixels)",
-                FormEntryText = "Enter Camera Pixel Size (2.4, 3.76, 6.45):",
-                FileName = FileName
-            };
-
-
-            UserInputFormData FormValue = OpenUIForm(formData);
-            AddKeyword("XPIXSZ", Convert.ToDouble(FormValue.TextBox));
-            AddKeyword("YPIXSZ", Convert.ToDouble(FormValue.TextBox));
-
-            return Convert.ToDouble(FormValue.TextBox);
+            AddKeyword("XPIXSZ", "-1.0", "[um] Sensor pixel width");
+            AddKeyword("YPIXSZ", "-1.0", "[um] Sensor pixel height");
+            return -1;
         }
 
         // *********************************************************************************************************
@@ -1047,7 +1021,6 @@ namespace XisfFileManager
                     FormName = "Cammera Temperature",
                     FormText = "Camera Temperature Not Set",
                     FormEntryText = "Enter Camera Temperature Setpoint:",
-                    FileName = FileName
                 };
 
                 UserInputFormData returnData = OpenUIForm(formData);

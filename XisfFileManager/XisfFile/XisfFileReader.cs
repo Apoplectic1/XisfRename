@@ -93,6 +93,8 @@ namespace XisfFileManager.FileOperations
                     {
                         xFile.AddXMLKeyword(element);
                     }
+
+                    xFile.CloneKeywordList();
                 }
             });
         }

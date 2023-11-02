@@ -324,92 +324,15 @@ namespace XisfFileManager
                     FilePath = xFile.FullName
                 };
 
+                mFile.KeywordList.Clear();
+
                 await mFileReader.ReadXisfFile(mFile);
 
                 mFileList.Add(mFile);
             }
 
-            // Sort Image File Lists by Capture Time
-            // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
-            // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
-            //mFileList.Sort(XisfFile.CaptureTimeComparison);
-            mFileList.Sort((a, b) => a.CaptureDateTime.CompareTo(b.CaptureDateTime)); // Faster?
-
-
-            /*
-                 
-                    // FileSubFrameKeywordLists
-                    // This set of lists will conatin the data initially supplied by PixInsight's SubFrame Selector in the form of an exported .csv file.
-                    // This set of lists is not in mFile; rather it is global since it has data for each of the .xisf files that are read.
-                    // Once an exported subframe Selector .csv file is read, the file specific data will be added to the mFile keywords and saved by clicking the "Update" button.
-                    // If we are reading an .xisf file that already has these .csv keyords, add this files's csv specific data to each of FileSubFrameKeywordLists lists.
-                    // This list addition happens in read order. Assignement to the correct mFile is based in the FileName list element in FileSubFrameKeywordLists.
-                    // If this .csv data doesn't already exist in the current mFile, we will manually add it later by reading a selected .csv file from the UI.
-                    //
-                    // Note that each list in FileSubFrameKeywordLists contains a Keyword Class element that can be directly used to write keyword data back into an xisf file.
-                    // What I mean by this is that FileSubFrameKeywordLists is basically string data and is not in a form easily used for calculations (a major point of this program).
- 
-            // If the following Keywords exist in the source XISF file, add the keyword value to FileSubFrameKeywordLists
-            try
-            {
-                foreach (XisfFile file in mFileList)
-                {
-                    SubFrameLists.AddKeywordApproved(file.KeywordData);
-                    SubFrameLists.AddKeywordAirMass(file.KeywordData);
-                    SubFrameLists.AddKeywordEccentricity(file.KeywordData);
-                    SubFrameLists.AddKeywordEccentricityMeanDeviation(file.KeywordData);
-                    SubFrameLists.AddKeywordFileName(file.SourceFileName);
-                    SubFrameLists.AddKeywordFwhm(file.KeywordData);
-                    SubFrameLists.AddKeywordFwhmMeanDeviation(file.KeywordData);
-                    SubFrameLists.AddKeywordMedian(file.KeywordData);
-                    SubFrameLists.AddKeywordMedianMeanDeviation(file.KeywordData);
-                    SubFrameLists.AddKeywordNoise(file.KeywordData);
-                    SubFrameLists.AddKeywordNoiseRatio(file.KeywordData);
-                    SubFrameLists.AddKeywordSnrWeight(file.KeywordData);
-                    SubFrameLists.AddKeywordStarResidual(file.KeywordData);
-                    SubFrameLists.AddKeywordStarResidualMeanDeviation(file.KeywordData);
-                    SubFrameLists.AddKeywordStars(file.KeywordData);
-                    SubFrameLists.AddKeywordWeight(file.KeywordData);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                         "An exception occured during KeyWord assignments from source files.\n\n" + ex.ToString(),
-                         "\nMainForm.cs Button_Browse_Click()",
-                         MessageBoxButtons.OK,
-                         MessageBoxIcon.Error);
-
-                Label_FileSelection_Statistics_Task.Text = "Browse Aborted";
-                return;
-            }
-
-            Label_FileSelection_Statistics_Task.Text = "Found " + mFileList.Count.ToString() + " Images";
-
-            // Again, if the above Keywords exist in the source XISF file, add the keyword value to mNumericWeightLists
-            // Build a set of numeric lists from FileSubFrameKeywordLists with any .csv keyword actually data found in the set of .xisf files 
-            // we just read and parsed. mWeightLists will be used to mathaamatically generate actual weightings (SSWEIGHT) for PixInsight once they are written with the "Update" button.
-            SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
-
-            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (eSubFrameValidListsValid == eSubFrameNumericListsValid.VALID)
-            {
-                // SubFrame data is valid
-                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
-                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
-                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
-                NumericUpDown_Rejection_Noise.Value = Convert.ToDecimal(SubFrameNumericLists.Noise.Max());
-                NumericUpDown_Rejection_AirMass.Value = Convert.ToDecimal(SubFrameNumericLists.AirMass.Max());
-                NumericUpDown_Rejection_Stars.Value = Convert.ToDecimal(SubFrameNumericLists.Stars.Max());
-                NumericUpDown_Rejection_StarResidual.Value = Convert.ToDecimal(SubFrameNumericLists.StarResidual.Max());
-                NumericUpDown_Rejection_Snr.Value = Convert.ToDecimal(SubFrameNumericLists.Snr.Max());
-            }
-
-
-            */
-
             // **********************************************************************
-            // Get TargetName and and Weights to populate ComboBoxes
+            // Get TargetNames and WeightKeywords then populate ComboBoxes
 
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
@@ -792,6 +715,7 @@ namespace XisfFileManager
             targetNames = targetNames.Distinct().ToList();
 
 
+            bool bModified = false;
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
@@ -804,29 +728,34 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                bStatus = XisfFileUpdate.UpdateFile(xFile, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
-                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
-                System.Windows.Forms.Application.DoEvents();
 
-                if (bStatus == false)
+                bModified = xFile.HasKeywordListBeenModified();
+                if (bModified)
                 {
-                    Label_FileSelection_Statistics_Task.Text = "File Write Error";
+                    bStatus = XisfFileUpdate.UpdateFile(xFile, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
+                    Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
+                    System.Windows.Forms.Application.DoEvents();
 
-                    var result = MessageBox.Show(
-                        "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
-                        "\nMainForm.cs Button_Update_Click()",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    if (bStatus == false)
+                    {
+                        Label_FileSelection_Statistics_Task.Text = "File Write Error";
 
-                    GroupBox_FileSelection.Enabled = true;
-                    GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
-                    GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
-                    GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
-                    GroupBox_KeywordUpdateTab_Camera.Enabled = true;
-                    GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
-                    return;
+                        var result = MessageBox.Show(
+                            "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
+                            "\nMainForm.cs Button_Update_Click()",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+                        GroupBox_FileSelection.Enabled = true;
+                        GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
+                        GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
+                        GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
+                        GroupBox_KeywordUpdateTab_Camera.Enabled = true;
+                        GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
+                        return;
+                    }
                 }
-
+                System.Windows.Forms.Application.DoEvents();
                 count++;
             }
 
@@ -837,6 +766,8 @@ namespace XisfFileManager
             GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
             GroupBox_KeywordUpdateTab_Camera.Enabled = true;
             GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
+
+           
         }
 
         private void Button_ReadCSV_Click(object sender, EventArgs e)

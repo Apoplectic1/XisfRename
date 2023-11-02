@@ -1,25 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using System.Text.Json;
 
 using XisfFileManager.Enums;
 using XisfFileManager.TargetScheduler.Tables;
 using static System.Net.WebRequestMethods;
+using Newtonsoft.Json;
 
 namespace XisfFileManager.FileOperations
 {
     public class XisfFile
     {
         // Member Strutures
-        public XDocument mXDoc;
-        public KeywordList KeywordList;
+        public XDocument mXDoc {  get; set; }
+        public KeywordList KeywordList {  get; set; }
+        private string mClonedJsonKeywords { get; set; }
 
         public XisfFile()
         {
             mXDoc = new XDocument();
             KeywordList = new KeywordList();
+        }
+        public void CloneKeywordList()
+        {
+            mClonedJsonKeywords = JsonConvert.SerializeObject(KeywordList);
+        }
+        
+        public bool HasKeywordListBeenModified()
+        {
+            string jsonCurrentKeywordList = JsonConvert.SerializeObject(KeywordList);
+
+            return jsonCurrentKeywordList != mClonedJsonKeywords;
         }
 
         // Properties
@@ -27,6 +43,7 @@ namespace XisfFileManager.FileOperations
         {
             mXDoc = new XDocument();
             KeywordList.Clear();
+            mClonedJsonKeywords = string.Empty;
         }
 
         public void AddKeyword(string keyword, object value, string comment = "Xisf File Manager")
@@ -57,6 +74,12 @@ namespace XisfFileManager.FileOperations
         public object GetKeywordComment(string keyword)
         {
             return KeywordList.GetKeywordComment(keyword);
+        }
+
+        public double Airmass
+        {
+            get { return KeywordList.Airmass; }
+            set { KeywordList.Airmass = value; }
         }
         public double AmbientTemperature
         {
@@ -327,7 +350,7 @@ namespace XisfFileManager.FileOperations
             }
             catch (Exception ex )
             {
-                Console.WriteLine("\nXML to Keyword Exception Thrown:\n" + 
+                Console.WriteLine("\nAddXMLKeyword(XElement element) Exception Thrown:\n" + 
                     "\tKeyword Name:" + elementName.ToString() +
                     "\tKeyword Value:" + elementValue.ToString() +
                     "\tKeyword Comment:" + elementComment.ToString() +
@@ -353,7 +376,6 @@ namespace XisfFileManager.FileOperations
 
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
-
         public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
         {
             if (object1 == null) return 1;

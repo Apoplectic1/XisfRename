@@ -332,6 +332,12 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
+            TableLayoutPanel_SchedulerTab_ExposurePlan = new System.Windows.Forms.TableLayoutPanel();
+            CheckBox_SchedulerTab_ActiveProjects = new System.Windows.Forms.CheckBox();
+            CheckBox__SchedulerTab_EnabledPlans = new System.Windows.Forms.CheckBox();
+            CheckBox_SchedulerTab_ActiveTargets = new System.Windows.Forms.CheckBox();
+            Label_SchedulerTab_ExistingProjects = new System.Windows.Forms.Label();
+            Button_SchedulerTab_UpdateExposurePlans = new System.Windows.Forms.Button();
             GroupBox_SchedulerTab_Project = new System.Windows.Forms.GroupBox();
             CheckBox_Project_Active = new System.Windows.Forms.CheckBox();
             GroupBox_Project_Priority = new System.Windows.Forms.GroupBox();
@@ -3911,6 +3917,12 @@
             // TabPage_TargetScheduler
             // 
             TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_TargetScheduler.Controls.Add(TableLayoutPanel_SchedulerTab_ExposurePlan);
+            TabPage_TargetScheduler.Controls.Add(CheckBox_SchedulerTab_ActiveProjects);
+            TabPage_TargetScheduler.Controls.Add(CheckBox__SchedulerTab_EnabledPlans);
+            TabPage_TargetScheduler.Controls.Add(CheckBox_SchedulerTab_ActiveTargets);
+            TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_ExistingProjects);
+            TabPage_TargetScheduler.Controls.Add(Button_SchedulerTab_UpdateExposurePlans);
             TabPage_TargetScheduler.Controls.Add(GroupBox_SchedulerTab_Project);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_PlansText);
             TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_PlansTree);
@@ -3928,6 +3940,78 @@
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
+            // TableLayoutPanel_SchedulerTab_ExposurePlan
+            // 
+            TableLayoutPanel_SchedulerTab_ExposurePlan.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnCount = 6;
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.Location = new System.Drawing.Point(759, 182);
+            TableLayoutPanel_SchedulerTab_ExposurePlan.Name = "TableLayoutPanel_SchedulerTab_ExposurePlan";
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowCount = 8;
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            TableLayoutPanel_SchedulerTab_ExposurePlan.Size = new System.Drawing.Size(360, 177);
+            TableLayoutPanel_SchedulerTab_ExposurePlan.TabIndex = 15;
+            // 
+            // CheckBox_SchedulerTab_ActiveProjects
+            // 
+            CheckBox_SchedulerTab_ActiveProjects.AutoSize = true;
+            CheckBox_SchedulerTab_ActiveProjects.Location = new System.Drawing.Point(218, 19);
+            CheckBox_SchedulerTab_ActiveProjects.Name = "CheckBox_SchedulerTab_ActiveProjects";
+            CheckBox_SchedulerTab_ActiveProjects.Size = new System.Drawing.Size(87, 19);
+            CheckBox_SchedulerTab_ActiveProjects.TabIndex = 14;
+            CheckBox_SchedulerTab_ActiveProjects.Text = "Active Only";
+            CheckBox_SchedulerTab_ActiveProjects.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox__SchedulerTab_EnabledPlans
+            // 
+            CheckBox__SchedulerTab_EnabledPlans.AutoSize = true;
+            CheckBox__SchedulerTab_EnabledPlans.Location = new System.Drawing.Point(616, 19);
+            CheckBox__SchedulerTab_EnabledPlans.Name = "CheckBox__SchedulerTab_EnabledPlans";
+            CheckBox__SchedulerTab_EnabledPlans.Size = new System.Drawing.Size(128, 19);
+            CheckBox__SchedulerTab_EnabledPlans.TabIndex = 13;
+            CheckBox__SchedulerTab_EnabledPlans.Text = "For Enabled Targets";
+            CheckBox__SchedulerTab_EnabledPlans.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_SchedulerTab_ActiveTargets
+            // 
+            CheckBox_SchedulerTab_ActiveTargets.AutoSize = true;
+            CheckBox_SchedulerTab_ActiveTargets.Location = new System.Drawing.Point(391, 19);
+            CheckBox_SchedulerTab_ActiveTargets.Name = "CheckBox_SchedulerTab_ActiveTargets";
+            CheckBox_SchedulerTab_ActiveTargets.Size = new System.Drawing.Size(124, 19);
+            CheckBox_SchedulerTab_ActiveTargets.TabIndex = 12;
+            CheckBox_SchedulerTab_ActiveTargets.Text = "For Active Projects";
+            CheckBox_SchedulerTab_ActiveTargets.UseVisualStyleBackColor = true;
+            // 
+            // Label_SchedulerTab_ExistingProjects
+            // 
+            Label_SchedulerTab_ExistingProjects.AutoSize = true;
+            Label_SchedulerTab_ExistingProjects.Location = new System.Drawing.Point(11, 320);
+            Label_SchedulerTab_ExistingProjects.Name = "Label_SchedulerTab_ExistingProjects";
+            Label_SchedulerTab_ExistingProjects.Size = new System.Drawing.Size(112, 15);
+            Label_SchedulerTab_ExistingProjects.TabIndex = 11;
+            Label_SchedulerTab_ExistingProjects.Text = "In-Memory Projects";
+            // 
+            // Button_SchedulerTab_UpdateExposurePlans
+            // 
+            Button_SchedulerTab_UpdateExposurePlans.Location = new System.Drawing.Point(10, 338);
+            Button_SchedulerTab_UpdateExposurePlans.Name = "Button_SchedulerTab_UpdateExposurePlans";
+            Button_SchedulerTab_UpdateExposurePlans.Size = new System.Drawing.Size(115, 40);
+            Button_SchedulerTab_UpdateExposurePlans.TabIndex = 10;
+            Button_SchedulerTab_UpdateExposurePlans.Text = "Update Exposure Plans";
+            Button_SchedulerTab_UpdateExposurePlans.UseVisualStyleBackColor = true;
+            // 
             // GroupBox_SchedulerTab_Project
             // 
             GroupBox_SchedulerTab_Project.Controls.Add(CheckBox_Project_Active);
@@ -3942,7 +4026,7 @@
             // CheckBox_Project_Active
             // 
             CheckBox_Project_Active.AutoSize = true;
-            CheckBox_Project_Active.Location = new System.Drawing.Point(12, 22);
+            CheckBox_Project_Active.Location = new System.Drawing.Point(12, 34);
             CheckBox_Project_Active.Name = "CheckBox_Project_Active";
             CheckBox_Project_Active.Size = new System.Drawing.Size(59, 19);
             CheckBox_Project_Active.TabIndex = 1;
@@ -3954,7 +4038,7 @@
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_High);
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Normal);
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Low);
-            GroupBox_Project_Priority.Location = new System.Drawing.Point(6, 44);
+            GroupBox_Project_Priority.Location = new System.Drawing.Point(79, 15);
             GroupBox_Project_Priority.Name = "GroupBox_Project_Priority";
             GroupBox_Project_Priority.Size = new System.Drawing.Size(197, 45);
             GroupBox_Project_Priority.TabIndex = 0;
@@ -3997,9 +4081,10 @@
             // Label_SchedulerTab_PlansText
             // 
             Label_SchedulerTab_PlansText.AutoSize = true;
-            Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(590, 21);
+            Label_SchedulerTab_PlansText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(526, 20);
             Label_SchedulerTab_PlansText.Name = "Label_SchedulerTab_PlansText";
-            Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(86, 15);
+            Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(89, 15);
             Label_SchedulerTab_PlansText.TabIndex = 8;
             Label_SchedulerTab_PlansText.Text = "Exposure Plans";
             // 
@@ -4013,9 +4098,10 @@
             // Label_SchedulerTab_TargetsText
             // 
             Label_SchedulerTab_TargetsText.AutoSize = true;
-            Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(403, 21);
+            Label_SchedulerTab_TargetsText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(341, 20);
             Label_SchedulerTab_TargetsText.Name = "Label_SchedulerTab_TargetsText";
-            Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(44, 15);
+            Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(48, 15);
             Label_SchedulerTab_TargetsText.TabIndex = 6;
             Label_SchedulerTab_TargetsText.Text = "Targets";
             // 
@@ -4029,20 +4115,22 @@
             // Label_SchedulerTab_ProjectsText
             // 
             Label_SchedulerTab_ProjectsText.AutoSize = true;
-            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(204, 21);
+            Label_SchedulerTab_ProjectsText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Label_SchedulerTab_ProjectsText.Location = new System.Drawing.Point(165, 20);
             Label_SchedulerTab_ProjectsText.Name = "Label_SchedulerTab_ProjectsText";
-            Label_SchedulerTab_ProjectsText.Size = new System.Drawing.Size(49, 15);
+            Label_SchedulerTab_ProjectsText.Size = new System.Drawing.Size(52, 15);
             Label_SchedulerTab_ProjectsText.TabIndex = 4;
             Label_SchedulerTab_ProjectsText.Text = "Projects";
             // 
             // Label_SchedulerTab_ProfilesText
             // 
             Label_SchedulerTab_ProfilesText.AutoSize = true;
-            Label_SchedulerTab_ProfilesText.Location = new System.Drawing.Point(44, 72);
+            Label_SchedulerTab_ProfilesText.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Label_SchedulerTab_ProfilesText.Location = new System.Drawing.Point(22, 121);
             Label_SchedulerTab_ProfilesText.Name = "Label_SchedulerTab_ProfilesText";
-            Label_SchedulerTab_ProfilesText.Size = new System.Drawing.Size(46, 15);
+            Label_SchedulerTab_ProfilesText.Size = new System.Drawing.Size(94, 15);
             Label_SchedulerTab_ProfilesText.TabIndex = 3;
-            Label_SchedulerTab_ProfilesText.Text = "Profiles";
+            Label_SchedulerTab_ProfilesText.Text = "N.I.N.A. Profiles";
             // 
             // TreeView_SchedulerTab_ProjectTree
             // 
@@ -4055,14 +4143,14 @@
             // 
             // TreeView_SchedulerTab_ProfileTree
             // 
-            TreeView_SchedulerTab_ProfileTree.Location = new System.Drawing.Point(10, 89);
+            TreeView_SchedulerTab_ProfileTree.Location = new System.Drawing.Point(10, 138);
             TreeView_SchedulerTab_ProfileTree.Name = "TreeView_SchedulerTab_ProfileTree";
             TreeView_SchedulerTab_ProfileTree.Size = new System.Drawing.Size(115, 141);
             TreeView_SchedulerTab_ProfileTree.TabIndex = 1;
             // 
             // Button_SchedulerTab_OpenDatabase
             // 
-            Button_SchedulerTab_OpenDatabase.Location = new System.Drawing.Point(10, 15);
+            Button_SchedulerTab_OpenDatabase.Location = new System.Drawing.Point(10, 64);
             Button_SchedulerTab_OpenDatabase.Name = "Button_SchedulerTab_OpenDatabase";
             Button_SchedulerTab_OpenDatabase.Size = new System.Drawing.Size(115, 40);
             Button_SchedulerTab_OpenDatabase.TabIndex = 0;
@@ -4479,5 +4567,11 @@
         private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_High;
         private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_Normal;
         private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_Low;
+        private System.Windows.Forms.Label Label_SchedulerTab_ExistingProjects;
+        private System.Windows.Forms.Button Button_SchedulerTab_UpdateExposurePlans;
+        private System.Windows.Forms.CheckBox CheckBox_SchedulerTab_ActiveTargets;
+        private System.Windows.Forms.CheckBox CheckBox_SchedulerTab_ActiveProjects;
+        private System.Windows.Forms.CheckBox CheckBox__SchedulerTab_EnabledPlans;
+        private System.Windows.Forms.TableLayoutPanel TableLayoutPanel_SchedulerTab_ExposurePlan;
     }
 }
