@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XisfFileManager.FileOperations;
-using XisfFileManager.Keywords;
 
 using XisfFileManager.Enums;
 
@@ -635,7 +634,7 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
-        public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList, SubFrameLists subFrameLists)
+        public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList)
         {
             string targetCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].FilePath);
 
@@ -655,7 +654,7 @@ namespace XisfFileManager
 
                 string fileNameHolder = darkFile.FilePath;
                 darkFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(darkFile, subFrameLists, true);
+                XisfFileUpdate.UpdateFile(darkFile);
                 darkFile.FilePath = fileNameHolder;
             }
 
@@ -675,7 +674,7 @@ namespace XisfFileManager
 
                     string fileNameHolder = flatFile.FilePath;
                     flatFile.FilePath = destinationCalibrationFile.FullName;
-                    XisfFileUpdate.UpdateFile(flatFile, subFrameLists, true);
+                    XisfFileUpdate.UpdateFile(flatFile);
                     flatFile.FilePath = fileNameHolder;
                 }
             }
@@ -693,7 +692,7 @@ namespace XisfFileManager
 
                 string fileNameHolder = biasFile.FilePath;
                 biasFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(biasFile, subFrameLists, true);
+                XisfFileUpdate.UpdateFile(biasFile);
                 biasFile.FilePath = fileNameHolder;
             }
 

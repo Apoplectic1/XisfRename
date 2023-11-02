@@ -36,15 +36,6 @@ namespace XisfFileManager.Calculations
             mFileSSWeightList.Clear();
         }
 
-        public double ReScaleFileSSWeight(double weight, double WeightRangeMin, double WeightRangeMax)
-        {
-            double WeightScaled;
-
-            WeightScaled = SubFrameNumericLists.Scale(weight, mFileSSWeightList.Min(), mFileSSWeightList.Max(), WeightRangeMin, WeightRangeMax);
-
-            return WeightScaled;
-        }
-
         public void BuildImageParameterValueLists(XisfFile xFile)
         {
 
@@ -142,7 +133,7 @@ namespace XisfFileManager.Calculations
                    "Average Exposure:     " + (totalExposureTime / exposureList.Count).ToString("F0") + " Seconds" + " over " + fileList.Count + " Frames";
         }
 
-        public Dictionary<int, double> BuildUnsortedPositionDictionary(List<XisfFile> xFileList)
+        public static Dictionary<int, double> BuildUnsortedPositionDictionary(List<XisfFile> xFileList)
         {
             Dictionary<int, double> focuserDictionary = new Dictionary<int, double>();
 

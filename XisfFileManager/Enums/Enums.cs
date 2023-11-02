@@ -19,18 +19,7 @@
     // In files streaming read and write operations, these define the type of data the buffer being read or written to will contain
     public enum eBufferData { ASCII, BINARY, ZEROS, POSITION }
 
-
-    // SubFrame Weight Calculations Section
-
-    public enum eValidation { EMPTY, INVALD, VALID, MISMATCH }
-    public enum eField { Master, FrameType, Filter, Date, Exposure, Binning, Frames, Camera, Gain, Offet, SensorTemp, Telescope, FocalLength, Algorithim, Software }
-
     public enum eCalibrationDirectory { LOCAL, LIBRARY }
-
-    public enum eOperation { NEW_WEIGHTS, KEEP_WEIGHTS, RESCALE_WEIGHTS, CALCULATED_WEIGHTS }
-
-    public enum eCoordinates { DEGREES, HMS }
-
 
     // Target Scheduler 
     public enum eProjectPriority {LOW = 0, NORMAL = 1, HIGH = 2 }

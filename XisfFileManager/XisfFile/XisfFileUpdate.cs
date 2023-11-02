@@ -8,7 +8,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using XisfFileManager.Calculations;
-using XisfFileManager.Keywords;
 
 using XisfFileManager.Enums;
 
@@ -16,15 +15,13 @@ namespace XisfFileManager.FileOperations
 {
     public static class XisfFileUpdate
     {
-        
-        public static eOperation Operation { get; set; } = eOperation.KEEP_WEIGHTS;
         private static Buffer mBuffer;
         private static List<Buffer> mBufferList;
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile xFile, SubFrameLists SubFrameKeywordLists, bool bPreserveProtectedFiles)
+        public static bool UpdateFile(XisfFile xFile)
         {
             int xisfStart;
             int xisfEnd;
@@ -88,7 +85,7 @@ namespace XisfFileManager.FileOperations
                     xFile.RemoveKeyword("PICTTYPE");
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
-                    ReplaceAllFitsKeywords(xmlDoc, xFile, SubFrameKeywordLists);
+                    ReplaceAllFitsKeywords(xmlDoc, xFile);
 
 
                     // *******************************************************************************************************************************
@@ -249,7 +246,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile, SubFrameLists SubFrameSelectorKeywordLists)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile)
         {
             // First remove all FITSKeywords (nodes) from the xml document
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
@@ -266,14 +263,6 @@ namespace XisfFileManager.FileOperations
 
             foreach (XmlNode item in nodeList)
             {
-                // If Operation != OperationEnum.KEEP_WEIGHTS, remove (if existing) and then add (i.e. replace) the keywords from PixInsight's SubFrame Selector.
-                // The "replaced" keywords are the orignal xisf file keywords and are replaced with the keywords stored in mFile.KeywordData.KeywordList.
-                // Existing Weights are kept by NOT replacing or adding new ones.
-                if (Operation != eOperation.KEEP_WEIGHTS)
-                {
-                    ReplaceSubFrameSelectorKeywords(SubFrameSelectorKeywordLists, mFile);
-                }
-
                 // Deal with SSWEIGHT and WEIGHT
                 // SSWEIGHT may already be part of mFile or not
                 // We want to selectively update an existing SSWEIGHT value, add a new one or leave it alone (leaving it alone inludes a non-existent SSWEIGHT by default)
@@ -293,53 +282,6 @@ namespace XisfFileManager.FileOperations
                     newElement.SetAttribute("value", keyword.Value.ToString());
                     item.AppendChild(newElement);
                 }
-            }
-        }
-
-        public static void UpdateCsvWeightList(SubFrameNumericLists WeightLists, SubFrameLists CsvWeightLists)
-        {
-            int index = 0;
-
-            foreach (double value in WeightLists.Weight)
-            {
-                CsvWeightLists.SubFrameList.WeightList[index].Value = WeightLists.Weight[index].ToString();
-                index++;
-            }
-        }
-
-        // ****************************************************************************************************
-        // ****************************************************************************************************
-
-        private static void ReplaceSubFrameSelectorKeywords(SubFrameLists CsvWeightLists, XisfFile mFile)
-        {
-            int indexer;
-            List<Keyword> fileNameList = CsvWeightLists.SubFrameList.FileNameList;
-
-            indexer = 0;
-            foreach (Keyword file in fileNameList)
-            {
-                string fileName = file.Value.ToString().Replace("\"", "").Replace("/", @"\");
-
-                // This equality check makes sure the correct data is used for the current file.
-                if (mFile.FilePath == fileName)
-                {
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.ApprovedList[indexer].Name, CsvWeightLists.SubFrameList.ApprovedList[indexer].Value, CsvWeightLists.SubFrameList.ApprovedList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.Eccentricity.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.EccentricityMeanDeviation.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.FwhmList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.FwhmMeanDeviationList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.MedianList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.MedianMeanDeviationList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.NoiseList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.NoiseRatioList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.SnrWeightList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidualList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarResidualMeanDeviationList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.StarsList.ElementAt(indexer).Comment);
-                    mFile.AddKeyword(CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Name, CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Value, CsvWeightLists.SubFrameList.WeightList.ElementAt(indexer).Comment);
-                }
-
-                indexer++;
             }
         }
 

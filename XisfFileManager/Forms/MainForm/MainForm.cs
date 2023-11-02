@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using XisfFileManager.FileOperations;
-using XisfFileManager.Keywords;
 using System.Drawing;
 using XisfFileManager.Calculations;
 using MathNet.Numerics.Statistics;
@@ -54,12 +53,9 @@ namespace XisfFileManager
         private double mStarsRangeLow;
         private double mUpdateStatisticsRangeHigh;
         private double mUpdateStatisticsRangeLow;
-        private eValidation eSubFrameValidListsValid;
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private readonly ImageCalculations ImageParameterLists;
-        private readonly SubFrameLists SubFrameLists;
-        private readonly SubFrameNumericLists SubFrameNumericLists;
         private readonly XisfFileReader mFileReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
@@ -89,13 +85,6 @@ namespace XisfFileManager
             {
                 RenameOrder = eOrder.INDEX
             };
-
-            // This set of lists conatin the data that was read from PixInsight's SubFrameSelector or from an image file that was updated with SubframeSlector Data.
-            // Data is stored as Keyword XML nodes - strings
-            SubFrameLists = new SubFrameLists();
-
-            // This set of lists contains only numeric values (not XML node strings) to be used for weight calculations  
-            SubFrameNumericLists = new SubFrameNumericLists();
 
             // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
@@ -180,23 +169,6 @@ namespace XisfFileManager
             mStarsRangeLow = Properties.Settings.Default.Persist_StarsRangeLowState;
             mUpdateStatisticsRangeHigh = Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState;
             mUpdateStatisticsRangeLow = Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState;
-
-            TextBox_EccentricityRangeHigh.Text = mEccentricityRangeHigh.ToString("F0");
-            TextBox_EccentricityRangeLow.Text = mEccentricityRangeLow.ToString("F0");
-            TextBox_FwhmRangeHigh.Text = mFwhmRangeHigh.ToString("F0");
-            TextBox_FwhmRangeLow.Text = mFwhmRangeLow.ToString("F0");
-            TextBox_MedianRangeHigh.Text = mMedianRangeHigh.ToString("F0");
-            TextBox_MedianRangeLow.Text = mMedianRangeLow.ToString("F0");
-            TextBox_NoiseRangeHigh.Text = mNoiseRangeHigh.ToString("F0");
-            TextBox_NoiseRangeLow.Text = mNoiseRangeLow.ToString("F0");
-            TextBox_SnrRangeHigh.Text = mSnrRangeHigh.ToString("F0");
-            TextBox_SnrRangeLow.Text = mSnrRangeLow.ToString("F0");
-            TextBox_StarResidualRangeHigh.Text = mStarResidualRangeHigh.ToString("F0");
-            TextBox_StarResidualRangeLow.Text = mStarResidualRangeLow.ToString("F0");
-            TextBox_StarRangeHigh.Text = mStarsRangeHigh.ToString("F0");
-            TextBox_StarRangeLow.Text = mStarsRangeLow.ToString("F0");
-            TextBox_UpdateStatisticsRangeHigh.Text = mUpdateStatisticsRangeHigh.ToString("F0");
-            TextBox_UpdateStatisticsRangeLow.Text = mUpdateStatisticsRangeLow.ToString("F0");
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -252,8 +224,6 @@ namespace XisfFileManager
         {
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
             mFileList.Clear();
-            SubFrameLists.Clear();
-            SubFrameNumericLists.Clear();
             ImageParameterLists.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Keyword";
@@ -324,15 +294,19 @@ namespace XisfFileManager
                     FilePath = xFile.FullName
                 };
 
-                mFile.KeywordList.Clear();
-
                 await mFileReader.ReadXisfFile(mFile);
 
                 mFileList.Add(mFile);
             }
 
+            // Sort Image File Lists by Capture Time
+            // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
+            // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
+            //mFileList.Sort(XisfFile.CaptureTimeComparison);
+            mFileList.Sort((a, b) => a.CaptureDateTime.CompareTo(b.CaptureDateTime)); // Faster?
+
             // **********************************************************************
-            // Get TargetNames and WeightKeywords then populate ComboBoxes
+            // Get TargetName and and Weights to populate ComboBoxes
 
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
@@ -450,8 +424,6 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // **********************************************************************
-
-            SetUISubFrameGroupBoxState();
 
             FindCaptureSoftware();
             FindFilterFrameType();
@@ -667,42 +639,6 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
 
-            // Only fill out the weight lists if in fact, we are actually updating them
-            if (XisfFileUpdate.Operation == eOperation.CALCULATED_WEIGHTS)
-            {
-                // If the data in at least one of the read source XISF files is bad or inconsistent, do not allow that data to be updated without
-                // re-reading a new PixInsight Subframe Selector generated CSV file (to either initially fill out or to correct bogus data)
-                eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-                if (eSubFrameValidListsValid == eValidation.INVALD)
-                {
-                    var result = MessageBox.Show(
-                        "SubFrame Numerical Weight List is Invalid.\n\nThere is a difference between the number of files contained in mFileList (" + mFileList.Count.ToString() + ")  " +
-                        "compared to the number files in at least one Numeric Weight list.\n\nExample:\n    mWeightLists.Approved.Count = " + SubFrameNumericLists.Approved.Count + "",
-                        "\nMainForm.cs Button_Update_Click()",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-
-                    Label_FileSelection_Statistics_Task.Text = "Update Aborted";
-                    GroupBox_FileSelection.Enabled = true;
-                    GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
-                    GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
-                    GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
-                    GroupBox_KeywordUpdateTab_Camera.Enabled = true;
-                    GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
-                    return;
-                }
-
-                // If we've got good consistent file and SubFrame data, then update the numerical lists 
-                if (eSubFrameValidListsValid == eValidation.VALID)
-                {
-                    // Fisrt calculate a new WEIGHT Keyword (not SSWEIGHT yet) based on the current state of the UI and file/list contents
-                    SubFrameNumericLists.CalculateNewSubFrameWeights(mFileList.Count);
-
-                    // Now copy the newly calculated WEIGHTs to the SubFrame Lists (the data structure that will be used to update file contents)
-                    XisfFileUpdate.UpdateCsvWeightList(SubFrameNumericLists, SubFrameLists);
-                }
-            }
-
             // If multiple Targets or if a Target has multiple Panels do not update with the ComboBox Text
             List<string> targetNames = new List<string>();
             targetNames.Clear();
@@ -715,7 +651,6 @@ namespace XisfFileManager
             targetNames = targetNames.Distinct().ToList();
 
 
-            bool bModified = false;
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
@@ -728,34 +663,29 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-
-                bModified = xFile.HasKeywordListBeenModified();
-                if (bModified)
-                {
-                    bStatus = XisfFileUpdate.UpdateFile(xFile, SubFrameLists, CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked);
-                    Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
-                    System.Windows.Forms.Application.DoEvents();
-
-                    if (bStatus == false)
-                    {
-                        Label_FileSelection_Statistics_Task.Text = "File Write Error";
-
-                        var result = MessageBox.Show(
-                            "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
-                            "\nMainForm.cs Button_Update_Click()",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-
-                        GroupBox_FileSelection.Enabled = true;
-                        GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
-                        GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
-                        GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
-                        GroupBox_KeywordUpdateTab_Camera.Enabled = true;
-                        GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
-                        return;
-                    }
-                }
+                bStatus = XisfFileUpdate.UpdateFile(xFile);
+                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
                 System.Windows.Forms.Application.DoEvents();
+
+                if (bStatus == false)
+                {
+                    Label_FileSelection_Statistics_Task.Text = "File Write Error";
+
+                    var result = MessageBox.Show(
+                        "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
+                        "\nMainForm.cs Button_Update_Click()",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+
+                    GroupBox_FileSelection.Enabled = true;
+                    GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
+                    GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
+                    GroupBox_KeywordUpdateTab_Camera.Enabled = true;
+                    GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
+                    return;
+                }
+
                 count++;
             }
 
@@ -766,179 +696,6 @@ namespace XisfFileManager
             GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
             GroupBox_KeywordUpdateTab_Camera.Enabled = true;
             GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
-
-           
-        }
-
-        private void Button_ReadCSV_Click(object sender, EventArgs e)
-        {
-            bool bStatus;
-
-            mFileCsv = new OpenFileDialog()
-            {
-                Title = "Select Calibarated SubFrameSelected CSV File",
-                AutoUpgradeEnabled = true,
-                CheckPathExists = false,
-                Filter = "CSV Files (*.csv) | *.csv",
-                InitialDirectory = mFolderCsvBrowseState, // @"E:\Photography\Astro Photography\Processing",
-                Multiselect = false,
-                RestoreDirectory = true
-            };
-
-            DialogResult result = mFileCsv.ShowDialog();
-
-            if (result.Equals(DialogResult.OK) == false)
-            {
-                return;
-            }
-
-            SubFrameLists.Clear();
-            SubFrameNumericLists.Clear();
-
-            bStatus = ReadSubFrameCsvData.ReadCsvFile(mFileCsv.FileName, SubFrameLists);
-
-            if (bStatus == false)
-            {
-                MessageBox.Show(mFileCsv.FileName, "CSV file data did not read and/or parse properly.");
-                return;
-            }
-
-            SubFrameNumericLists.BuildNumericSubFrameDataKeywordLists(SubFrameLists);
-
-            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-
-            switch (eSubFrameValidListsValid)
-            {
-                case eValidation.EMPTY:
-                    MessageBox.Show("Numeric weight lists contain zero items.\n\n", mFileCsv.FileName);
-                    return;
-
-                case eValidation.MISMATCH:
-                    MessageBox.Show("Numeric weight list file names do not match read file names.\n\n" + mFileCsv.FileName + "\n\nRerun PixInsight SubFrame Selector.", "CSV File Error");
-                    return;
-
-                case eValidation.INVALD:
-                    MessageBox.Show("Numeric weight lists do not each contain " + mFileList.Count.ToString(CultureInfo.InvariantCulture) + " items.\n\n", mFileCsv.FileName);
-                    return;
-            }
-
-            if (eSubFrameValidListsValid == eValidation.VALID)
-            {
-                // SubFrame data is valid
-                NumericUpDown_Rejection_FWHM.Value = Convert.ToDecimal(SubFrameNumericLists.Fwhm.Max());
-                NumericUpDown_Rejection_Eccentricity.Value = Convert.ToDecimal(SubFrameNumericLists.Eccentricity.Max());
-                NumericUpDown_Rejection_Median.Value = Convert.ToDecimal(SubFrameNumericLists.Median.Max());
-                NumericUpDown_Rejection_Noise.Value = Convert.ToDecimal(SubFrameNumericLists.Noise.Max());
-                NumericUpDown_Rejection_AirMass.Value = Convert.ToDecimal(SubFrameNumericLists.AirMass.Max());
-                NumericUpDown_Rejection_Stars.Value = Convert.ToDecimal(SubFrameNumericLists.Stars.Max());
-                NumericUpDown_Rejection_StarResidual.Value = Convert.ToDecimal(SubFrameNumericLists.StarResidual.Max());
-                NumericUpDown_Rejection_Snr.Value = Convert.ToDecimal(SubFrameNumericLists.Snr.Max());
-            }
-
-            SetUISubFrameGroupBoxState();
-
-            XisfFileUpdate.Operation = eOperation.NEW_WEIGHTS;
-        }
-
-        private void TextBox_FwhmRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmRangeHigh = ValidateRangeValue(TextBox_FwhmRangeHigh);
-        }
-
-        private void TextBox_FwhmRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mFwhmRangeLow = ValidateRangeValue(TextBox_FwhmRangeLow);
-        }
-
-        private void TextBox_EccentricityRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityRangeHigh = ValidateRangeValue(TextBox_EccentricityRangeHigh);
-        }
-
-        private void TextBox_EccentricityRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mEccentricityRangeLow = ValidateRangeValue(TextBox_EccentricityRangeLow);
-        }
-
-        private void TextBox_SnrRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mSnrRangeHigh = ValidateRangeValue(TextBox_SnrRangeHigh);
-        }
-
-        private void TextBox_SnrRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mSnrRangeLow = ValidateRangeValue(TextBox_SnrRangeLow);
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void TextBox_MedianRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mMedianRangeHigh = ValidateRangeValue(TextBox_MedianRangeHigh);
-        }
-
-        private void TextBox_MedianRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mMedianRangeLow = ValidateRangeValue(TextBox_MedianRangeLow);
-        }
-
-        private void TextBox_NoiseRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mNoiseRangeHigh = ValidateRangeValue(TextBox_NoiseRangeHigh);
-        }
-
-        private void TextBox_NoiseRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mNoiseRangeLow = ValidateRangeValue(TextBox_NoiseRangeLow);
-        }
-
-        private void TextBox_UpdateStatisticsRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mUpdateStatisticsRangeHigh = ValidateRangeValue(TextBox_UpdateStatisticsRangeHigh);
-        }
-
-        private void TextBox_UpdateStatisticsRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mUpdateStatisticsRangeLow = ValidateRangeValue(TextBox_UpdateStatisticsRangeLow);
-        }
-
-        private void TextBox_StarsRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mStarsRangeHigh = ValidateRangeValue(TextBox_StarRangeHigh);
-        }
-
-        private void TextBox_StarsRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mStarsRangeLow = ValidateRangeValue(TextBox_StarRangeLow);
-        }
-
-        private void TextBox_StarResidualRangeHigh_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualRangeHigh = ValidateRangeValue(TextBox_StarResidualRangeHigh);
-        }
-
-        private void TextBox_StarResidualRangeLow_TextChanged(object sender, EventArgs e)
-        {
-            mStarResidualRangeLow = ValidateRangeValue(TextBox_StarResidualRangeLow);
-        }
-
-        private static double ValidateRangeValue(System.Windows.Forms.TextBox textBox)
-        {
-            bool status;
-            double value;
-            double rangedValue;
-
-            textBox.Text = Regex.Match(textBox.Text, @"^[-+]?\d+$").Value;
-
-            status = double.TryParse(textBox.Text, out value);
-
-            rangedValue = status ? value : 0.0;
-
-            rangedValue = rangedValue > 500 ? 500 : rangedValue;
-            rangedValue = rangedValue < -500 ? -500 : rangedValue;
-
-            textBox.Text = rangedValue.ToString("F0", CultureInfo.InvariantCulture);
-
-            return rangedValue;
         }
 
         private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
@@ -971,237 +728,6 @@ namespace XisfFileManager
             {
                 mRenameFile.RenameOrder = eOrder.INDEXWEIGHT;
             }
-        }
-
-        private void SetUISubFrameGroupBoxState()
-        {
-            if (SubFrameNumericLists.ValidatenumericLists(mFileList.Count) == eValidation.VALID)
-            {
-                RadioButton_SetImageStatistics_KeepWeights.Text = "Keep Existing Weights";
-                RadioButton_SetImageStatistics_RescaleWeights.Enabled = true;
-                RadioButton_SetImageStatistics_CalculateWeights.Enabled = true;
-
-                UpdateWeightCalculations();
-            }
-            else
-            {
-                RadioButton_SetImageStatistics_KeepWeights.Text = "Read CSV File";
-                RadioButton_SetImageStatistics_RescaleWeights.Enabled = false;
-                RadioButton_SetImageStatistics_CalculateWeights.Enabled = false;
-            }
-
-            eSubFrameValidListsValid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-
-            if (eSubFrameValidListsValid != eValidation.VALID)
-            {
-                GroupBox_InitialRejectionCriteria.Enabled = false;
-                GroupBox_WeightCalculations.Enabled = false;
-            }
-
-            if (eSubFrameValidListsValid == eValidation.VALID)
-            {
-                // SubFrame data is valid
-                TextBox_Rejection_Total.Text = SubFrameNumericLists.SetRejectedSubFrames(
-                 NumericUpDown_Rejection_FWHM.Value,
-                 NumericUpDown_Rejection_Eccentricity.Value,
-                 NumericUpDown_Rejection_Median.Value,
-                 NumericUpDown_Rejection_Noise.Value,
-                 NumericUpDown_Rejection_AirMass.Value,
-                 NumericUpDown_Rejection_Stars.Value,
-                 NumericUpDown_Rejection_StarResidual.Value,
-                 NumericUpDown_Rejection_Snr.Value).ToString();
-            }
-
-
-            // Dan GroupBox_WeightsAndStatistics.Enabled = !RadioButton_SubFrameKeywords_AlphabetizeKeywords.Checked;
-
-            if (RadioButton_SetImageStatistics_KeepWeights.Checked)
-            {
-                GroupBox_WeightCalculations.Enabled = false;
-                Label_UpdateStatistics.Enabled = false;
-                Label_UpdateStatisticsRangeHigh.Enabled = false;
-                TextBox_UpdateStatisticsRangeHigh.Enabled = false;
-                Label_UpdateStatisticsRangeLow.Enabled = false;
-                TextBox_UpdateStatisticsRangeLow.Enabled = false;
-            }
-            else
-            {
-                GroupBox_WeightCalculations.Enabled = RadioButton_SetImageStatistics_CalculateWeights.Checked;
-                Label_UpdateStatistics.Enabled = true;
-                Label_UpdateStatisticsRangeHigh.Enabled = true;
-                TextBox_UpdateStatisticsRangeHigh.Enabled = true;
-                Label_UpdateStatisticsRangeLow.Enabled = true;
-                TextBox_UpdateStatisticsRangeLow.Enabled = true;
-            }
-
-            if (mFileList.Count != 0)
-            {
-                if (eSubFrameValidListsValid == eValidation.VALID)
-                {
-                    GroupBox_InitialRejectionCriteria.Enabled = true;
-
-                }
-                else
-                {
-                    GroupBox_InitialRejectionCriteria.Enabled = false;
-
-
-                    GroupBox_EccentricityWeight.Enabled = false;
-                    GroupBox_AirMassWeight.Enabled = false;
-                    GroupBox_FwhmWeight.Enabled = false;
-
-                    GroupBox_MedianWeight.Enabled = false;
-
-                    GroupBox_NoiseWeight.Enabled = false;
-                    GroupBox_SnrWeight.Enabled = false;
-                    GroupBox_StarResidual.Enabled = false;
-
-                    GroupBox_StarsWeight.Enabled = false;
-                }
-            }
-        }
-
-        private void RadioButton_SetImageStatistics_KeepWeights_CheckedChanged(object sender, EventArgs e)
-        {
-            if (RadioButton_SetImageStatistics_KeepWeights.Checked)
-            {
-                XisfFileUpdate.Operation = eOperation.KEEP_WEIGHTS;
-                SetUISubFrameGroupBoxState();
-            }
-        }
-
-        private void RadioButton_SetImageStatistics_RescaleWeights_CheckedChanged(object sender, EventArgs e)
-        {
-            if (RadioButton_SetImageStatistics_RescaleWeights.Checked)
-            {
-                XisfFileUpdate.Operation = eOperation.RESCALE_WEIGHTS;
-                SetUISubFrameGroupBoxState();
-            }
-        }
-
-        private void RadioButton_SetImageStatistics_CalculateWeights_CheckedChanged(object sender, EventArgs e)
-        {
-            if (RadioButton_SetImageStatistics_CalculateWeights.Checked)
-            {
-                XisfFileUpdate.Operation = eOperation.CALCULATED_WEIGHTS;
-                SetUISubFrameGroupBoxState();
-            }
-        }
-
-        private void NumericUpDown_Rejection_FWHM_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_Eccentricity_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_Median_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_Noise_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_AirMass_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_Stars_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_StarResidual_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void NumericUpDown_Rejection_Snr_ValueChanged(object sender, EventArgs e)
-        {
-            SetUISubFrameGroupBoxState();
-        }
-
-        private void Button_Rejection_RejectionSet_Click(object sender, EventArgs e)
-        {
-            eValidation valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != eValidation.VALID)
-            {
-                return;
-            }
-
-            int index = 0;
-            foreach (XisfFile file in mFileList)
-            {
-                // Add keyword will remove all instances of the keyword to be added and then add it
-                SubFrameLists.SubFrameList.ApprovedList[index].Value = SubFrameNumericLists.Approved[index].ToString();
-
-                index++;
-            }
-        }
-
-        private void UpdateWeightCalculations()
-        {
-            eValidation valid = SubFrameNumericLists.ValidatenumericLists(mFileList.Count);
-            if (valid != eValidation.VALID)
-            {
-                return;
-            }
-
-            Label_FwhmMeanValue.Text = SubFrameNumericLists.Fwhm.Average().ToString("F2");
-            Label_FwhmMedianValue.Text = SubFrameNumericLists.Fwhm.Median().ToString("F2");
-            Label_FwhmMinValue.Text = SubFrameNumericLists.Fwhm.Min().ToString("F2");
-            Label_FwhmMaxValue.Text = SubFrameNumericLists.Fwhm.Max().ToString("F2");
-            Label_FwhmSigmaValue.Text = SubFrameNumericLists.Fwhm.StandardDeviation().ToString("F2");
-
-            Label_EccentricityMeanValue.Text = SubFrameNumericLists.Eccentricity.Average().ToString("F2");
-            Label_EccentricityMedianValue.Text = SubFrameNumericLists.Eccentricity.Median().ToString("F2");
-            Label_EccentricityMinValue.Text = SubFrameNumericLists.Eccentricity.Min().ToString("F2");
-            Label_EccentricityMaxValue.Text = SubFrameNumericLists.Eccentricity.Max().ToString("F2");
-            Label_EccentricitySigmaValue.Text = SubFrameNumericLists.Eccentricity.StandardDeviation().ToString("F2");
-
-            Label_MedianMeanValue.Text = SubFrameNumericLists.Median.Average().ToString("F0");
-            Label_MedianMedianValue.Text = SubFrameNumericLists.Median.Median().ToString("F0");
-            Label_MedianMinValue.Text = SubFrameNumericLists.Median.Min().ToString("F0");
-            Label_MedianMaxValue.Text = SubFrameNumericLists.Median.Max().ToString("F0");
-            Label_MedianSigmaValue.Text = SubFrameNumericLists.Median.StandardDeviation().ToString("F2");
-
-            Label_NoiseMeanValue.Text = SubFrameNumericLists.Noise.Average().ToString("F2");
-            Label_NoiseMedianValue.Text = SubFrameNumericLists.Noise.Median().ToString("F2");
-            Label_NoiseMinValue.Text = SubFrameNumericLists.Noise.Min().ToString("F2");
-            Label_NoiseMaxValue.Text = SubFrameNumericLists.Noise.Max().ToString("F2");
-            Label_NoiseSigmaValue.Text = SubFrameNumericLists.Noise.StandardDeviation().ToString("F2");
-
-            Label_AirMassMeanValue.Text = SubFrameNumericLists.AirMass.Average().ToString("F2");
-            Label_AirMassMedianValue.Text = SubFrameNumericLists.AirMass.Median().ToString("F2");
-            Label_AirMassMinValue.Text = SubFrameNumericLists.AirMass.Min().ToString("F2");
-            Label_AirMassMaxValue.Text = SubFrameNumericLists.AirMass.Max().ToString("F2");
-            Label_AirMassSigmaValue.Text = SubFrameNumericLists.AirMass.StandardDeviation().ToString("F2");
-
-            Label_StarsMeanValue.Text = SubFrameNumericLists.Stars.Average().ToString("F0");
-            Label_StarsMedianValue.Text = SubFrameNumericLists.Stars.Median().ToString("F0");
-            Label_StarsMinValue.Text = SubFrameNumericLists.Stars.Min().ToString("F0");
-            Label_StarsMaxValue.Text = SubFrameNumericLists.Stars.Max().ToString("F0");
-            Label_StarsSigmaValue.Text = SubFrameNumericLists.Stars.StandardDeviation().ToString("F2");
-
-            Label_StarResidualMeanValue.Text = SubFrameNumericLists.StarResidual.Average().ToString("F2");
-            Label_StarResidualMedianValue.Text = SubFrameNumericLists.StarResidual.Median().ToString("F2");
-            Label_StarResidualMinValue.Text = SubFrameNumericLists.StarResidual.Min().ToString("F2");
-            Label_StarResidualMaxValue.Text = SubFrameNumericLists.StarResidual.Max().ToString("F2");
-            Label_StarResidualSigmaValue.Text = SubFrameNumericLists.StarResidual.StandardDeviation().ToString("F2");
-
-            Label_SnrMeanValue.Text = SubFrameNumericLists.Snr.Average().ToString("F2");
-            Label_SnrMedianValue.Text = SubFrameNumericLists.Snr.Median().ToString("F2");
-            Label_SnrMinValue.Text = SubFrameNumericLists.Snr.Min().ToString("F2");
-            Label_SnrMaxValue.Text = SubFrameNumericLists.Snr.Max().ToString("F2");
-            Label_SnrSigmaValue.Text = SubFrameNumericLists.Snr.StandardDeviation().ToString("F2");
-
         }
 
         private void FindCaptureSoftware()
@@ -3874,7 +3400,7 @@ namespace XisfFileManager
                 Directory.CreateDirectory(targetCalibrationDirectory);
             }
 
-            mCalibration.CreateTargetCalibrationDirectory(mFileList, SubFrameLists);
+            mCalibration.CreateTargetCalibrationDirectory(mFileList);
         }
 
         private void TextBox_CalibrationTab_ExposureTolerance_TextChanged(object sender, EventArgs e)
