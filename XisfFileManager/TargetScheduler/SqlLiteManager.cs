@@ -59,7 +59,7 @@ namespace XisfFileManager.TargetScheduler
                     {
                         // We matched [hh mm ss] string format
                         degrees = ConvertHoursMinutesSecondsToDecimal(RA);
-                        xFile.KeywordList.AddKeyword("RA", degrees, "Degrees Right Ascension");
+                        xFile.KeywordList.AddKeyword("RA", degrees.ToString(), "Degrees Right Ascension");
                     }
                     else
                     {
@@ -79,7 +79,7 @@ namespace XisfFileManager.TargetScheduler
                         {
                             xFile.KeywordList.AddKeyword("OBJCTRA", result, "[h m s] Target Right Ascension");
                             degrees = ConvertHoursMinutesSecondsToDecimal(result);
-                            xFile.KeywordList.AddKeyword("RA", degrees, "Degrees Right Ascension");
+                            xFile.KeywordList.AddKeyword("RA", degrees.ToString(), "Degrees Right Ascension");
                         }
                     }
                 }
@@ -96,7 +96,7 @@ namespace XisfFileManager.TargetScheduler
                     {
                         // We matched [hh mm ss] string format
                         degrees = ConvertHoursMinutesSecondsToDecimal((string)objectDEC);
-                        xFile.KeywordList.AddKeyword("DEC", degrees, "Hours Declination");
+                        xFile.KeywordList.AddKeyword("DEC", degrees.ToString(), "Hours Declination");
                     }
                     else
                     {
@@ -117,7 +117,7 @@ namespace XisfFileManager.TargetScheduler
                         {
                             xFile.KeywordList.AddKeyword("OBJCTDEC", result, "[d m s] Target Declination");
                             degrees = ConvertHoursMinutesSecondsToDecimal(result);
-                            xFile.KeywordList.AddKeyword("DEC", degrees, "Hours Declination");
+                            xFile.KeywordList.AddKeyword("DEC", degrees.ToString(), "Hours Declination");
                         }
                     }
                 }

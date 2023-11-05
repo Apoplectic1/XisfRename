@@ -13,8 +13,8 @@ namespace XisfFileManager.FileOperations
     public class XisfFile
     {
         // Member Strutures
-        public XDocument mXDoc;
-        public KeywordList KeywordList;
+        public XDocument mXDoc { get; set; }
+        public KeywordList KeywordList { get; set; }
 
         public XisfFile()
         {
@@ -29,12 +29,12 @@ namespace XisfFileManager.FileOperations
             KeywordList.Clear();
         }
 
-        public void AddKeyword(string keyword, object value, string comment = "Xisf File Manager")
+        public void AddKeyword(string keyword, string value, string comment = "Xisf File Manager")
         {
             KeywordList.AddKeyword(keyword, value, comment);
         }
 
-        public void AddXMLKeyword(string keyword, object value, string comment = "Xisf File Manager")
+        public void AddXMLKeyword(string keyword, string value, string comment = "Xisf File Manager")
         {
             KeywordList.AddKeyword(keyword, value, comment);
         }
@@ -62,11 +62,6 @@ namespace XisfFileManager.FileOperations
         {
             get { return KeywordList.AmbientTemperature; }
             set { KeywordList.AmbientTemperature = value; }
-        }
-        public bool Approved
-        {
-            get { return KeywordList.Approved; }
-            set { KeywordList.Approved = value; }
         }
         public int Binning
         {
@@ -137,7 +132,27 @@ namespace XisfFileManager.FileOperations
         public eFrame FrameType
         {
             get { return KeywordList.FrameType; }
-            set { KeywordList.AddKeyword("IMAGETYP", value); }
+            set
+            {
+                switch (value)
+                {
+                    case eFrame.LIGHT:
+                        AddKeyword("IMAGETYP", "Light", "Type of frame capture");
+                        break;
+                    case eFrame.DARK:
+                        AddKeyword("IMAGETYP", "Dark", "Type of frame capture");
+                        break;
+                    case eFrame.FLAT:
+                        AddKeyword("IMAGETYP", "Flat", "Type of frame capture");
+                        break;
+                    case eFrame.BIAS:
+                        AddKeyword("IMAGETYP", "Bias", "Type of frame capture");
+                        break;
+                    default:
+                        AddKeyword("IMAGETYP", "", "Type of frame capture");
+                        break;
+                }
+            }
         }
         public int Gain
         {
@@ -147,7 +162,7 @@ namespace XisfFileManager.FileOperations
         public int ImageAttachmentLength { get; set; }
         public int ImageAttachmentStart { get; set; }
         public int ImageAttachmentStartPadding { get; set; }
-        public int Index { get; set; }
+        public int FileNameNumberIndex { get; set; }
         public int Offset
         {
             get { return KeywordList.Offset; }
@@ -160,7 +175,7 @@ namespace XisfFileManager.FileOperations
         }
         public string RotationAngle
         {
-            get 
+            get
             {
                 double angle = RotatorSkyAngle;
                 if (angle != double.MinValue)
@@ -284,7 +299,7 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        public Keyword NewKeyWord(string sName, object oValue, string sComment)
+        public Keyword NewKeyWord(string sName, string oValue, string sComment)
         {
             Keyword newKeyword = new Keyword
             {
@@ -297,7 +312,7 @@ namespace XisfFileManager.FileOperations
         }
 
         // ----------------------------------------------------------------------------------------------------------
-        public void AddKeywordKeepDuplicates(string sName, object oValue, string sComment = "XISF File Manager")
+        public void AddKeywordKeepDuplicates(string sName, string oValue, string sComment = "XISF File Manager")
         {
             Keyword newKeyword = NewKeyWord(sName, oValue, sComment);
 
@@ -325,9 +340,9 @@ namespace XisfFileManager.FileOperations
 
                 AddKeywordKeepDuplicates(elementName, elementValue, elementComment);
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
-                Console.WriteLine("\nXML to Keyword Exception Thrown:\n" + 
+                Console.WriteLine("\nXML to Keyword Exception Thrown:\n" +
                     "\tKeyword Name:" + elementName.ToString() +
                     "\tKeyword Value:" + elementValue.ToString() +
                     "\tKeyword Comment:" + elementComment.ToString() +
@@ -341,9 +356,9 @@ namespace XisfFileManager.FileOperations
         public void SetObservationSite()
         {
             AddKeyword("SITENAME", "Penns Park, PA", "841 Durham Rd, Penns Park, PA 18943");
-            AddKeyword("SITELONG", -74.997372, "Logitude of observation site - Degrees East");
-            AddKeyword("SITELAT", 40.282852, "Latitude of observation site - Degrees North");
-            AddKeyword("SITEELEV", 80.0, "Altitude of observation site - MSL Meters");
+            AddKeyword("SITELONG", "-74.997372", "Logitude of observation site - Degrees East");
+            AddKeyword("SITELAT", "40.282852", "Latitude of observation site - Degrees North");
+            AddKeyword("SITEELEV", "80.0", "Altitude of observation site - MSL Meters");
             RemoveKeyword("LONG-OBS");
             RemoveKeyword("LAT-OBS");
             RemoveKeyword("ALT-OBS");

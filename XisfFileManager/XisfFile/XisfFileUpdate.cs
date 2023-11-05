@@ -27,7 +27,6 @@ namespace XisfFileManager.FileOperations
             int xisfEnd;
             byte[] rawFileData = new byte[(int)1e9];
             mBufferList = new List<Buffer>();
-            string sourceFilePath;
 
             FileInfo xFileInfo = new FileInfo(xFile.FilePath);
 
@@ -181,15 +180,6 @@ namespace XisfFileManager.FileOperations
                 if (status == DialogResult.OK)
                     return false;
                 Environment.Exit(-1);
-            }
-
-
-            // After Keyword update, move rejected file (Approved = false) to the "Rejected" subdirectory
-            if (xFile.Approved == false)
-            {
-                sourceFilePath = Path.GetDirectoryName(xFile.FilePath);
-                Directory.CreateDirectory(sourceFilePath + "\\Rejected");
-                File.Move(xFile.FilePath, sourceFilePath + "\\Rejected\\" + Path.GetFileName(xFile.FilePath));
             }
 
             return true;

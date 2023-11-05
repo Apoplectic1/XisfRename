@@ -41,7 +41,7 @@ namespace XisfFileManager.FileOperations
                 // Actually rename the file
                 if (file.Unique == true)
                 {
-                    newFileName = BuildFileName(file.Index, file);
+                    newFileName = BuildFileName(file.FileNameNumberIndex, file);
                     int lastParen = newFileName.LastIndexOf(')');
                     newFileName = newFileName.Remove(lastParen);
                     newFileName += ").xisf";
@@ -60,7 +60,7 @@ namespace XisfFileManager.FileOperations
                 {
                     Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
 
-                    dupFileName = BuildFileName(file.Index - 1, file);
+                    dupFileName = BuildFileName(file.FileNameNumberIndex - 1, file);
                     int lastParen = dupFileName.LastIndexOf(')');
                     dupFileName = dupFileName.Remove(lastParen);
                     dupFileName += ").xisf";
