@@ -15,49 +15,18 @@ namespace XisfFileManager
         private Regex onlyNumerics = new Regex(@"^[\+\-]?\d*\.?[Ee]?[\+\-]?\d*$", RegexOptions.Compiled);
         public List<Keyword> mKeywordList { get; set; }
 
+        // ----------------------------------------------------------------------------------------------------------
+
         public KeywordList()
         {
             mKeywordList = new List<Keyword>();
         }
 
+        // ----------------------------------------------------------------------------------------------------------
+
         public void Clear()
         {
             mKeywordList.Clear();
-        }
-        // ***********************************************************************************************************************************
-        public static Forms.UserInputForm.UserInputFormData OpenUIForm(UserInputFormData formData)
-        {
-            UserInputFormData nullFormData = new UserInputFormData();
-
-            using (var UIForm = new UserInputForm())
-            {
-                UIForm.Name = formData.FormName;
-                UIForm.Text = formData.FormText;
-                UIForm.Label_EntryText.Text = formData.FormEntryText;
-                UIForm.Label_FileName.Text = formData.FileName;
-
-                UIForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                UIForm.StartPosition = FormStartPosition.CenterScreen;
-
-
-                var result = UIForm.ShowDialog();
-                UIForm.TextBox_Text.Focus();
-
-                if (result == DialogResult.OK)
-                {
-                    formData.GlobalCheckBox = UIForm.CheckBox_Global.Checked;
-                    return UIForm.mData;
-                }
-                else
-                {
-                    Environment.Exit(0);
-                }
-            }
-
-            nullFormData.TextBox = string.Empty;
-            nullFormData.GlobalCheckBox = false;
-
-            return nullFormData;
         }
 
         // ----------------------------------------------------------------------------------------------------------
@@ -125,7 +94,7 @@ namespace XisfFileManager
 
         public void AddKeyword(string sName, string oValue, string sComment = "XISF File Manager")
         {
-            mKeywordList.RemoveAll(i => i.Name == sName);
+            mKeywordList.RemoveAll(i => i.Name.Equals(sName));
 
             Keyword newKeyword = NewKeyword(sName, oValue, sComment);
 
@@ -152,15 +121,14 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("AIRMASS");
-                if (Object != null)
-                    return (double)Object;
-                return -1;
+                string value = GetKeywordValue("AIRMASS");
+                if (value == string.Empty)
+                    return -1.0;
+
+                double airmass = Convert.ToDouble(value);
+                return airmass;
             }
-            set
-            {
-                AddKeyword("AIRMASS", value.ToString("F2"), "Number of atmospheres this image is looking through");
-            }
+            set { AddKeyword("AIRMASS", value.ToString("F3"), "[#] Line-of-sight Atmospheres"); }
         }
 
         // *********************************************************************************************************
@@ -171,64 +139,13 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("AMB-TEMP");
-                if (value != null)
-                {
-                    double ambientTemperture = Convert.ToDouble(value);
-                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F2"), "Local Temerature from Open Weather API");
+                if (value == string.Empty)
+                    return -273.0;
 
-                    RemoveKeyword("AMBTEMP");
-                    RemoveKeyword("TEMPERAT");
-                    RemoveKeyword("AOCAMBT");
-
-                    return ambientTemperture;
-                }
-
-                value = GetKeywordValue("AOCAMBT");
-                if (value != null)
-                {
-                    double ambientTemperture = Convert.ToDouble(value);
-                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F2"), "Local Temerature from Open Weather API");
-
-                    RemoveKeyword("AMBTEMP");
-                    RemoveKeyword("TEMPERAT");
-                    RemoveKeyword("AOCAMBT");
-
-                    return ambientTemperture;
-                }
-
-                value = GetKeywordValue("AMBTEMP");
-                if (value != null)
-                {
-                    double ambientTemperture = Convert.ToDouble(value);
-                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F2"), "Local Temerature from Open Weather API");
-
-                    RemoveKeyword("AMBTEMP");
-                    RemoveKeyword("TEMPERAT");
-                    RemoveKeyword("AOCAMBT");
-
-                    return ambientTemperture;
-                }
-
-                // Did not find the prefered air temeprature keyword so look for other keyword synonyms
-                value = GetKeywordValue("TEMPERAT");
-                if (value != null)
-                {
-                    double ambientTemperture = Convert.ToDouble(value);
-                    AddKeyword("AMB-TEMP", ambientTemperture.ToString("F2"), "Local Temerature from Open Weather API");
-
-                    RemoveKeyword("AMBTEMP");
-                    RemoveKeyword("TEMPERAT");
-                    RemoveKeyword("AOCAMBT");
-
-                    return ambientTemperture;
-                }
-
-                return -273.0;
+                double ambientTemperture = Convert.ToDouble(value);
+                return ambientTemperture;
             }
-            set
-            {
-                AddKeyword("AMB-TEMP", value.ToString("F2"), "Local Temerature from Open Weather API");
-            }
+            set { AddKeyword("AMB-TEMP", value.ToString("F1"), "[deg C] Local Temerature from Open Weather API"); }
         }
 
         // *********************************************************************************************************
@@ -237,58 +154,48 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("XBINNING");
-                if (Object != null)
-                    return Convert.ToInt32(Object);
-                return -1;
+                string value = GetKeywordValue("XBINNING");
+                if (value == string.Empty)
+                    return -1;
+
+                int binning = Convert.ToInt32(value);
+                return binning;
             }
             set
             {
-                AddKeyword("XBINNING", value.ToString(), "Camera Binning Mode 1-4 - Square modes only");
-                AddKeyword("YBINNING", value.ToString(), "Camera Binning Mode 1-4 - Square modes only");
+                AddKeyword("XBINNING", value.ToString(), "[#] Camera Binning");
+                AddKeyword("YBINNING", value.ToString(), "[#] Camera Binning");
             }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
         public string Camera
         {
-            get
-            {
-                object Object = GetKeywordValue("INSTRUME");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("INSTRUME", value.ToString(), "Camera used to take the exposure");
-            }
+            get { return GetKeywordValue("INSTRUME"); }
+            set { AddKeyword("INSTRUME", value, "[name] Imaging Camera"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
-        public DateTime CaptureDateTime
+        public DateTime CaptureTime
         {
             get
             {
-                object Object = GetKeywordValue("DATE-LOC");
-                if (Object == null)
-                {
-                    // DATE-LOC does not exist
-                    Object = GetKeywordValue("LOCALTIM");
-                    if (Object == null)
-                    {
-                        // Local Time does not exist
-                        Object = GetKeywordValue("DATE-OBS");
-                        if (Object == null)
-                        {
-                            // No LOC, No OBS and No LOCALTIME - Make a time up
-                            Object = "2000-01-01T12:00:00.000";
-                        }
-                    }
-                }
+                string value = GetKeywordValue("DATE-LOC");
+                if (value == string.Empty)
+                    return DateTime.MinValue;
 
+                DateTime Local = DateTime.Parse(value);
+                //DateTime UTC = Local.ToUniversalTime();
+
+                //AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
+               // AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
+
+                return Local;
+            }
+            /*
                 DateTime Local;
                 DateTime UTC;
 
@@ -297,7 +204,7 @@ namespace XisfFileManager
                     // "7/18/202010:19:28.000PMDST";
 
                     // Remove the "DST" part from the end of the string
-                    string dateString = Object.ToString().Replace("DST", "").Trim();
+                    string dateString = value.Replace("DST", "").Trim();
 
                     // Find the positions of slashes and the last space
                     int firstSlash = dateString.IndexOf('/');
@@ -337,7 +244,9 @@ namespace XisfFileManager
                 else
                 {
                     // if '6/8/2020 01:22:44.119 AM DST'
-                    string result = Regex.Replace(Object.ToString(), @"(\.\d+)[^.]*$", "$1");
+                    string result = Regex.Replace(value, @"(\.\d+)[^.]*$", "$1");
+
+                    if (result.Equals("")) return DateTime.Now;
 
                     // Build LOC from OBS or made up Object
                     Local = DateTime.Parse(result);
@@ -351,7 +260,7 @@ namespace XisfFileManager
                 // Keywords are now correct
                 // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
 
-                string localTime = (string)Object;
+                string localTime = value;
                 localTime = localTime.Replace("'", "").Replace("T", " ");
 
                 bool status;
@@ -401,221 +310,81 @@ namespace XisfFileManager
                     return DateTime.ParseExact(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
                 }
 
-                Local = DateTime.Parse(Object.ToString());
+                Local = DateTime.Parse(value);
                 return DateTime.ParseExact(Local.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             }
-
-            set
-            {
-                AddKeyword("DATE-LOC", value.ToString(), "Local capture time");
-            }
+            */
+            set { AddKeyword("DATE-LOC", value.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time"); }
         }
+            
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CaptureSoftware
         {
-            get
-            {
-                object Object = GetKeywordValue("SWCREATE");
-                string software = (string)Object;
-
-                // Nina 3 Format
-                if (Object != null)
-                    if (software.Contains("N.I.N.A"))
-                        return "NINA";
-
-
-                Object = GetKeywordValue("CREATOR");
-                software = (string)Object;
-
-                if (Object != null)
-                {
-                    if (software.Contains("Sequence"))
-                    {
-                        AddKeyword("CREATOR", "SGP", software);
-                        return "SGP";
-                    }
-
-                    if (software.Contains("VOYAGER"))
-                    {
-                        AddKeyword("CREATOR", "VOY", software);
-                        return "VOY";
-                    }
-
-                    if (software.Contains("Sky"))
-                    {
-                        AddKeyword("CREATOR", "TSX", software);
-                        return "TSX";
-                    }
-
-                    if (software.Contains("N.I.N.A."))
-                    {
-                        AddKeyword("CREATOR", "NINA", software);
-                        return "NINA";
-                    }
-
-                    if (software.Contains("Sharp"))
-                    {
-                        AddKeyword("CREATOR", "SCP", software);
-                        return "SCP";
-                    }
-
-                    if (software.Equals("SGP") || software.Equals("VOY") || software.Equals("TSX") || software.Equals("SCP") || software.Equals("NINA"))
-                        return (software);
-                }
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CREATOR", value.ToString(), "Software that captured this image");
-            }
+            get { RemoveKeyword("CREATOR"); return GetKeywordValue("SWCREATE"); }
+            set { AddKeyword("SWCREATE", value.ToString(), "[name] Equipment Control and Automation Application"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CBIAS
         {
-            get
-            {
-                object Object = GetKeywordValue("CBIAS");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CBIAS", value, "WBPP: Match this file with other CBIAS" + CBIAS + " files");
-            }
+            get { return GetKeywordValue("CBIAS"); }
+            set { AddKeyword("CBIAS", value.ToString(), "[#] PixInsight WBPP PreProcessing Group Keyword"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CDARK
         {
-            get
-            {
-                object Object = GetKeywordValue("CDARK");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CDARK", value, "WBPP: Match this file with other CDARK" + CDARK + " files");
-            }
+            get { return GetKeywordValue("CDARK"); }
+            set { AddKeyword("CDARK", value.ToString(), "[#] PixInsight WBPP PreProcessing Group Keyword"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CFLAT
         {
-            get
-            {
-                object Object = GetKeywordValue("CFLAT");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CFLAT", value, "WBPP: Match this file with other CFLAT" + CFLAT + " files");
-            }
+            get { return GetKeywordValue("CFLAT"); }
+            set { AddKeyword("CFLAT", value.ToString(), "[#] PixInsight WBPP PreProcessing Group Keyword"); }
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CPANEL
         {
-            get
-            {
-                object Object = GetKeywordValue("CPANEL");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CPANEL", value, "Match this file with other CPANEL" + CPANEL + " files");
-            }
+            get { return GetKeywordValue("CPANEL"); }
+            set { AddKeyword("CPANEL", value.ToString(), "[name] PixInsight WBPP PostProcessing Group Keyword"); }
         }
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string CSTARS
         {
-            get
-            {
-                object Object = GetKeywordValue("CSTARS");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("CSTARS", value, "Match this file with other CPANEL Stars" + CPANEL + " files");
-            }
+            get { return GetKeywordValue("CSTARS"); }
+            set { AddKeyword("CSTARS", value.ToString(), "[name] PixInsight WBPP PostProcessing Group Keyword"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public double ExposureSeconds
         {
-            get
+            get 
             {
-                object value = GetKeywordValue("EXPTIME");
-                if (value != null)
-                {
-                    RemoveKeyword("EXPOSURE");
-                    return Convert.ToDouble(value);
-                }
-
-                value = GetKeywordValue("EXPOSURE");
-                if (value != null)
-                {
-                    RemoveKeyword("EXPOSURE");
-                    AddKeyword("EXPTIME", value.ToString(), "Exposure Time in Seconds");
-                    return Convert.ToDouble(value);
-                }
-                return -1;
+                string value = GetKeywordValue("EXPTIME");
+                if (value == string.Empty)
+                    return -1.0;
+                
+                double seconds = Convert.ToDouble(value);
+                return seconds;
             }
-            set
-            {
-                AddKeyword("EXPTIME", value.ToString(), "Frame Exposure Time in Seconds");
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-        // This is the name of the File itself - Does not contain the path
-        public string FileName
-        {
-            get
-            {
-                object Object = GetKeywordValue("FILENAME");
-                if (Object != null)
-                    return (string)GetKeywordComment("FILENAME");
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("FILENAME", value, "Original Filename");
-            }
+            set { AddKeyword("EXPTIME", value.ToString("F6"), "[seconds] Imaging Camera Exposure Time"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string FilterName
         {
-            get
-            {
-                object Object = GetKeywordValue("FILTER");
-                if (Object != null)
-                {
-                    return (string)Object;
-                }
-
-                return string.Empty;
-            }
-
+            get { return GetKeywordValue("FILTER"); }
             set
             {
                 string filterName = string.Empty;
@@ -661,18 +430,13 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("FOCALLEN");
-                if (value == null) return -1.0;
-                return Convert.ToDouble(value);
+                if (value == string.Empty)
+                    return -1.0;
+    
+                double length = Convert.ToDouble(value);
+                return length;
             }
-            set
-            {
-                double Value;
-                bool bStatus = double.TryParse(value.ToString(), out Value);
-                if (bStatus)
-                    AddKeyword("FOCALLEN", value.ToString("F1"), Telescope + " Focal length in mm");
-                else
-                    AddKeyword("FOCALLEN", "-1.0", "*** SET VALUE ERROR ***");
-            }
+            set { AddKeyword("FOCALLEN", value.ToString("F1"), "[mm] OTA Focal length"); }
         }
 
         // *********************************************************************************************************
@@ -682,18 +446,13 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("FOCPOS");
-                if (value == null) return -1;
-                return Convert.ToInt32(value);
+                if (value == string.Empty)
+                    return -1;
+                
+                int position = Convert.ToInt32(value);
+                return position;
             }
-            set
-            {
-                int Value;
-                bool bStatus = int.TryParse(value.ToString(), out Value);
-                if (bStatus)
-                    AddKeyword("FOCPOS", value.ToString(), "MoonLite Focuser Position");
-                else
-                    AddKeyword("FOCPOS", "-1.0", "*** SET VALUE ERROR ***");
-            }
+            set { AddKeyword("FOCPOS", value.ToString(), "[um] NiteCrawler Position - 94580 Steps 0.2667 um/Step"); }
         }
 
         // *********************************************************************************************************
@@ -703,14 +462,13 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("FOCTEMP");
-                if (value == null) return -273.0;
-                return Convert.ToDouble(value);
+                if (value == string.Empty) return -273.0;
+                
+                double temperature = Convert.ToDouble(value);
+                return temperature;
             }
 
-            set
-            {
-                AddKeyword("FOCTEMP", value.ToString("F1"), "MoonLite NightCrawler Focuser Temperature");
-            }
+            set { AddKeyword("FOCTEMP", value.ToString("F1"), "[deg C] NightCrawler Focuser Temperature"); }
         }
 
         // *********************************************************************************************************
@@ -720,7 +478,8 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("IMAGETYP");
-                if (value == null) return eFrame.EMPTY;
+                if (value == string.Empty) 
+                    return eFrame.EMPTY;
 
                 if (value.ToLower().Contains("light")) return eFrame.LIGHT;
                 if (value.ToLower().Contains("dark")) return eFrame.DARK;
@@ -758,14 +517,16 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("GAIN");
-                if (Object != null)
-                    return Convert.ToInt32(Object);
-                return -1;
+                string value = GetKeywordValue("GAIN");
+                if (value == string.Empty)
+                    return -1;
+
+                int gain = Convert.ToInt32(value);
+                return gain;
             }
             set
             {
-                AddKeyword("GAIN", value.ToString(), "Camera Gain");
+                AddKeyword("GAIN", value.ToString(), "[#] Imaging Camera Gain");
                 SetEGain();
             }
         }
@@ -776,30 +537,31 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("OFFSET");
-                if (Object != null)
-                    return Convert.ToInt32(Object);
+                string value = GetKeywordValue("OFFSET");
+                if (value == string.Empty)
+                    return -1;
 
-                return -1;
+                int offset = Convert.ToInt32(value);
+                return offset;
             }
 
             set
             {
                 if (Camera.Contains("183"))
                 {
-                    AddKeyword("OFFSET", value.ToString(), "ADU Offset divided by 5");
+                    AddKeyword("OFFSET", value.ToString(), "[#] ADU Offset divided by 5");
                     return;
                 }
 
                 if (Camera.Contains("533"))
                 {
-                    AddKeyword("OFFSET", value.ToString(), "ADU Offset divided by 40");
+                    AddKeyword("OFFSET", value.ToString(), "[#] ADU Offset divided by 40");
                     return;
                 }
 
                 if (Camera.Contains("178"))
                 {
-                    AddKeyword("OFFSET", value.ToString(), "ADU Offset divided by 18.33");
+                    AddKeyword("OFFSET", value.ToString(), "[#] ADU Offset divided by 18.33");
                     return;
                 }
 
@@ -808,8 +570,6 @@ namespace XisfFileManager
                     RemoveKeyword("OFFSET");
                     return;
                 }
-
-
             }
         }
 
@@ -820,14 +580,16 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("XPIXSZ");
-                if (value == null) return 0;
-                return Convert.ToDouble(value);
-            }
+                if (value == string.Empty) 
+                    return -1;
 
+                double size = Convert.ToDouble(value);
+                return size;
+            }
             set
             {
-                AddKeyword("XPIXSZ", value.ToString(), "[um] Sensor photosite width");
-                AddKeyword("YPIXSZ", value.ToString(), "[um] Sensor photosite height");
+                AddKeyword("XPIXSZ", value.ToString(), "[um] Sensor Photosite Width");
+                AddKeyword("YPIXSZ", value.ToString(), "[um] Sensor Photosite Height");
             }
         }
 
@@ -852,11 +614,7 @@ namespace XisfFileManager
                     return (string)Object;
                 return string.Empty;
             }
-            set
-            {
-                SetIntegrationParamaters();
-                //AddKeyword("RJCT-ALG", value, "Rejection Integration Method");
-            }
+            set { SetIntegrationParamaters(); }
         }
 
         // *********************************************************************************************************
@@ -865,33 +623,30 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("POSANGLE");
-                if (Object != null)
-                    return Convert.ToDouble(Object);
+                string value = GetKeywordValue("POSANGLE");
+                if (value == string.Empty)
+                    return double.MinValue;
 
-                return double.MinValue;
+                double angle = Convert.ToDouble(value);
+                return angle;
             }
-
-            set
-            {
-                AddKeyword("POSANGLE", value.ToString(), "[deg] MoonLite NightCrawler Rotator Mechanical Posistion");
-            }
+            set { AddKeyword("POSANGLE", value.ToString("F3"), "[degrees] NightCrawler Mechanical Position 0.001 deg/Step"); }
         }
 
+        // *********************************************************************************************************
+        // *********************************************************************************************************
         public double RotatorSkyAngle
         {
             get
             {
-                object Object = GetKeywordValue("OBJCTROT");
-                if (Object != null)
-                    return Convert.ToDouble(Object);
+                string value = GetKeywordValue("OBJCTROT");
+                if (value == string.Empty)
+                    return double.MinValue;
 
-                return double.MinValue;
+                double angle = Convert.ToDouble(value);
+                return angle;
             }
-            set
-            {
-                AddKeyword("OBJCTROT", value.ToString(), "[deg] Sky Angle at Frame Center");
-            }
+            set { AddKeyword("OBJCTROT", value.ToString("F3"), "[degrees] Image Sky Angle at Frame Center"); }
         }
 
         // *********************************************************************************************************
@@ -923,7 +678,7 @@ namespace XisfFileManager
             if (camera == "A144")
                 egain = 0.37;
 
-            AddKeyword("EGAIN", egain.ToString(), "Electrons per ADU calculated using manufacturer graphs");
+            AddKeyword("EGAIN", egain.ToString(), "[#] Electrons per ADU per manufacturer graphs");
         }
 
         // *********************************************************************************************************
@@ -978,14 +733,14 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("SET-TEMP");
-                if (Object == null) return -273;
-                return Convert.ToDouble(Object);
+                string value = GetKeywordValue("SET-TEMP");
+                if (value == string.Empty)
+                    return -273.0;
+
+                double temperature = Convert.ToDouble(value);
+                return temperature;
             }
-            set
-            {
-                AddKeyword("SET-TEMP", value.ToString(), "Camera sensor temperature set point");
-            }
+            set { AddKeyword("SET-TEMP", value.ToString("F1"), "[deg C] Imaging Camera Temperature Set Point"); }
         }
 
         // *********************************************************************************************************
@@ -994,51 +749,35 @@ namespace XisfFileManager
         {
             get
             {
-                object Object = GetKeywordValue("CCD-TEMP");
-                if (Object == null) return -273;
-                return Convert.ToDouble(Object);
+                string value = GetKeywordValue("CCD-TEMP");
+                if (value == string.Empty) 
+                    return -273;
+                
+                double temperture = Convert.ToDouble(value);
+                return temperture;
             }
-            set
-            {
-                AddKeyword("CCD-TEMP", value.ToString(), "Actual sensor temperature");
-            }
+            set { AddKeyword("CCD-TEMP", value.ToString("F1"), "[deg C] Imaging Camera Sensor Temperature"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string SiteName
         {
-            get
-            {
-                object Object = GetKeywordValue("SITENAME");
-                if (Object != (object)null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("SITENAME", value.ToString(), "Location name of observation site");
-            }
+            get { return GetKeywordValue("SITENAME"); }
+            set { AddKeyword("SITENAME", value, "Location name of observation site"); }
         }
 
         // *********************************************************************************************************
         // *********************************************************************************************************
         public string TargetName
         {
-            get
-            {
-                object Object = GetKeywordValue("OBJECT");
-                if (Object != null)
-                    return Object.ToString();
-
-                return string.Empty;
-            }
+            get { return GetKeywordValue("OBJECT"); }
             set
             {
                 if (value.Contains("Master"))
-                    AddKeyword("OBJECT", "Master", "Master Calibration Frame");
+                    AddKeyword("OBJECT", "Master", "[name] Master Calibration Frame");
                 else
-                    AddKeyword("OBJECT", value.ToString(), "Target Object Name");
+                    AddKeyword("OBJECT", value, "[name] Target Object Name");
             }
         }
 
@@ -1046,18 +785,8 @@ namespace XisfFileManager
         // #########################################################################################################
         public string Telescope
         {
-            get
-            {
-                object Object = GetKeywordValue("TELESCOP");
-                if (Object != null)
-                    return (string)Object;
-
-                return string.Empty;
-            }
-            set
-            {
-                AddKeyword("TELESCOP", value.ToString(), "Telescope");
-            }
+            get { return GetKeywordValue("TELESCOP"); }
+            set { AddKeyword("TELESCOP", value.ToString(), "[name] Imaging OTA"); }
         }
 
         // *********************************************************************************************************
@@ -1066,20 +795,12 @@ namespace XisfFileManager
         {
             get
             {
-                // Temp
-                Keyword keyWord = GetKeyword("TOTALFRAMES");
-                if (keyWord != null)
-                {
-                    AddKeyword("NUM-FRMS", keyWord.Value, keyWord.Comment);
-                    RemoveKeyword("TOTALFRAMES");
-                }
-                // Temp
-
-                object Object = GetKeywordValue("NUM-FRMS");
-                if (Object != null)
-                    return Convert.ToInt32(Object);
-
-                return 0;
+                string value = GetKeywordValue("NUM-FRMS");
+                if (value == string.Empty)
+                    return -1;
+ 
+                int frames = Convert.ToInt32(value);
+                return frames;
             }
             set
             {
@@ -1095,47 +816,33 @@ namespace XisfFileManager
             {
                 List<string> wList = new List<string>();
 
-                object Obj = GetKeywordValue("SSWEIGHT");
-                if (Obj != null)
-                {
+                string value = GetKeywordValue("SSWEIGHT");
+                if (value != string.Empty)
                     wList.Add("SSWEIGHT");
-                }
 
-                Obj = GetKeywordValue("NWEIGHT");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("NWEIGHT");
+                if (value != string.Empty)
                     wList.Add("NWEIGHT");
-                }
 
-                Obj = GetKeywordValue("W_SNR");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("W_SNR");
+                if (value != string.Empty)
                     wList.Add("W_SNR");
-                }
 
-                Obj = GetKeywordValue("W_FWHM");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("W_FWHM");
+                if (value != string.Empty)
                     wList.Add("W_FWHM");
-                }
 
-                Obj = GetKeywordValue("W_ECC");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("W_ECC");
+                if (value != string.Empty)
                     wList.Add("W_ECC");
-                }
 
-                Obj = GetKeywordValue("W_PSFSNR");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("W_PSFSNR");
+                if (value != string.Empty)
                     wList.Add("W_PSFSNR");
-                }
 
-                Obj = GetKeywordValue("W_PSFS");
-                if (Obj != null)
-                {
+                value = GetKeywordValue("W_PSFS");
+                if (value != string.Empty)
                     wList.Add("W_PSFS");
-                }
 
                 return wList;
             }

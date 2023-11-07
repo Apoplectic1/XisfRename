@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading;
 //using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 using XisfFileManager.Calculations;
 
 using XisfFileManager.Enums;
+using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager.FileOperations
 {
@@ -18,74 +23,131 @@ namespace XisfFileManager.FileOperations
         private static Buffer mBuffer;
         private static List<Buffer> mBufferList;
 
+        private static bool KeywordsMatchXml(XisfFile xFile)
+        {
+            //bool bHasXmlVersion = xFile.XmlString.Contains("<?xml version=");
+            //if (!bHasXmlVersion)
+            //    return false;
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xFile.XmlString);
+
+            // Create an XmlNamespaceManager and add the necessary namespace
+            XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+            namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
+
+            // Select all FITSKeyword elements using the namespace
+            XmlNodeList fitsKeywordNodes = xmlDoc.SelectNodes("//ns:FITSKeyword", namespaceManager);
+
+
+            // Alphabetize KeywordList
+            List<Keyword> keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
+
+            // Check if fitsKeywordNodes and keywords have identical elements in the same order
+            bool bIdentical = keywords.Count == fitsKeywordNodes.Count && Enumerable.Range(0, keywords.Count)
+                                .All(index =>
+                                {
+                                    XmlNode fitsKeywordNode = fitsKeywordNodes[index];
+                                    string nameAttribute = fitsKeywordNode.Attributes["name"]?.Value;
+                                    string valueAttribute = fitsKeywordNode.Attributes["value"]?.Value;
+                                    string commentAttribute = fitsKeywordNode.Attributes["comment"]?.Value;
+
+                                    Keyword keyword = keywords[index];
+
+                                    return nameAttribute == keyword.Name && valueAttribute == keyword.Value && commentAttribute == keyword.Comment;
+                                });
+            return bIdentical;
+
+        }
+
+        private static void AddXmlVersion(XmlDocument xmlDoc)
+        {
+            // Check if the declaration element already exists
+            bool declarationExists = xmlDoc.SelectSingleNode("/*[local-name()='declaration']") != null;
+
+            // Create an XmlElement for the XML declaration if it doesn't exist
+            if (!declarationExists)
+            {
+                // Create an XmlElement for the declaration
+                XmlElement declarationElement = xmlDoc.CreateElement("declaration");
+
+                // Set the inner text of the declaration element to your XML declaration string
+                declarationElement.InnerText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
+                // Insert the declaration element as the first child of the root element
+                xmlDoc.DocumentElement.InsertBefore(declarationElement, xmlDoc.DocumentElement.FirstChild);
+            }
+        }
+
+        private static XmlDocument ValidateXml(XmlDocument xmlDoc)
+        {
+            try
+            {
+                // Create a new XmlDocument to hold the valid content
+                XmlDocument validXmlDoc = new XmlDocument();
+                validXmlDoc.AppendChild(validXmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
+
+                // Copy valid nodes to the new document
+                XmlNode root = validXmlDoc.ImportNode(xmlDoc.DocumentElement, true);
+                validXmlDoc.AppendChild(root);
+
+                return validXmlDoc;
+            }
+            catch 
+            {
+                return null; // Return null in case of an exception
+            }
+        }
+
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
         public static bool UpdateFile(XisfFile xFile)
         {
+            // Return if KeywordList and the original xml are identical 
+            if (KeywordsMatchXml(xFile))
+                return true;
+   
             int xisfStart;
             int xisfEnd;
-            byte[] rawFileData = new byte[(int)1e9];
+
+            byte[] binaryFileData = new byte[(int)1e9];
             mBufferList = new List<Buffer>();
 
             FileInfo xFileInfo = new FileInfo(xFile.FilePath);
-
             while (IsFileLocked(xFileInfo))
             {
                 Thread.Sleep(500);
                 xFileInfo = new FileInfo(xFile.FilePath);
             }
 
+            
 
             try
             {
                 using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
-                    mBufferList.Clear();
-
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
                     // Read entire XISF file (up to 1 GB) into rawFileData and create an xml document
                     BinaryReader br = new BinaryReader(stream);
-                    rawFileData = br.ReadBytes((int)1e9);
+                    binaryFileData = br.ReadBytes((int)1e9);
                     br.Close();
 
-                    // Set up pointers to xisf start and stop positions
-                    xisfStart = BinaryFind(rawFileData, "<xisf version"); // returns the position of '<'
-                    xisfEnd = BinaryFind(rawFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
+                    xisfStart = BinaryFind(binaryFileData, "<xisf"); // returns the position of '<'
+                    xisfEnd = BinaryFind(binaryFileData, "/xisf>") + "/xisf>".Length;  // returns the position immediately after '>'                
 
-                    // convert (including) from <xisf to </xisf> to a string and then parse string as xml into a new doc
-                    string xisfString = Encoding.UTF8.GetString(rawFileData, xisfStart, xisfEnd);
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.LoadXml(xisfString);
+                    // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
+                    string xisfString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
-                    // *******************************************************************************************************************************
-                    // *******************************************************************************************************************************
-                    // Keywords are added in this section
-                    // First, all the Keywords in mFile KeywordData are adjusted - add, remove, or otherwise changed.
-                    // Then all FITSKeywords are removed from the xmlDoc
-                    // Keywords are then added in this order:
-                    //    1. All keywords found in AddCsvKeywordList
-                    //       This is all the keywords found in the original file
-                    //    2. Add keywords from CSV File
+                    XmlDocument rawXmlDoc = new XmlDocument();
+                    rawXmlDoc.LoadXml(xisfString);
 
-                    // Remove keywords from KeywordData associated with each mFile. Note that this mFile instance's KeyWordData will be added in ReplaceAllFitsKeywords
-                    xFile.RemoveKeyword("COMMENT");
-                    xFile.RemoveKeyword("HISTORY");
-                    xFile.RemoveKeyword("ALIGNH");
-                    xFile.RemoveKeyword("Bandwidth setting");
-                    xFile.RemoveKeyword("BTP");
-                    xFile.RemoveKeyword("SBUUID");
-                    xFile.RemoveKeyword("READOUTM");
-                    xFile.RemoveKeyword("CDS");
-                    xFile.RemoveKeyword("DISPINCR");
-                    xFile.RemoveKeyword("EXTEND");
-                    xFile.RemoveKeyword("FOCTMPSC");
-                    xFile.RemoveKeyword("PICTTYPE");
+                    XmlDocument xmlDoc = ValidateXml(rawXmlDoc);
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
                     ReplaceAllFitsKeywords(xmlDoc, xFile);
-
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -96,33 +158,33 @@ namespace XisfFileManager.FileOperations
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
-                    // Begin setting up output XISF File
-                    // Create a mBuffer to hold our different data types (Binary, Text, Binary Zero's, etc.)
-                    // Add each mBuffer to a List and when complete, sequentially write each List element over our XISF File
 
-                    xisfString = xmlDoc.OuterXml;
+                    // Set the new length of the <xisf to /xisf> section
+                    int xmlLength = xmlDoc.OuterXml.Length + 16;
 
-                    // Add header (includes binary and string portions) up the start of "<xisf version"
+                    binaryFileData[9] = (byte)((xmlLength >> 8) & 0xFF); // Most significant byte
+                    binaryFileData[8] = (byte)(xmlLength & 0xFF); // Least significant byte
+
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
+                    mBufferList.Clear();
+
+                    // XISF Signature and length
                     mBuffer = new Buffer
                     {
-                        Type = eBufferData.ASCII,
-                        AsciiData = "XISF0100"
+                        Type = eBufferData.BINARY,
+                        BinaryDataStart = 0,
+                        BinaryByteLength = 16,
+                        BinaryData = binaryFileData
                     };
                     mBufferList.Add(mBuffer);
 
-                    // Write length (filled out later) and reserved bytes as 0's
-                    mBuffer = new Buffer
-                    {
-                        Type = eBufferData.ZEROS,
-                        BinaryByteLength = 8
-                    };
-                    mBufferList.Add(mBuffer);
-
-                    // Add the newly replaced XML ascii potortion to the buffer list 
+                    // Copy "<?xml" to  "/Xisf>"
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.ASCII,
-                        AsciiData = xisfString
+                        AsciiData = xmlDoc.OuterXml
                     };
                     mBufferList.Add(mBuffer);
 
@@ -130,7 +192,7 @@ namespace XisfFileManager.FileOperations
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.ZEROS,
-                        BinaryByteLength = xFile.ImageAttachmentStartPadding
+                        BinaryByteLength = xFile.ImageAttachmentStartPadding.First()
                     };
                     mBufferList.Add(mBuffer);
 
@@ -138,19 +200,19 @@ namespace XisfFileManager.FileOperations
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.BINARY,
-                        BinaryDataStart = xFile.ImageAttachmentStart,
-                        BinaryByteLength = xFile.ImageAttachmentLength,
-                        BinaryData = rawFileData
+                        BinaryDataStart = xFile.ImageAttachmentStart.First(),
+                        BinaryByteLength = xFile.ImageAttachmentLength.First(),
+                        BinaryData = binaryFileData
                     };
                     mBufferList.Add(mBuffer);
 
-                    if (xFile.ThumbnailAttachmentStartPadding > 0)
+                    if (xFile.ThumbnailAttachmentStartPadding.First() > 0)
                     {
                         // Pad from current position to the start of the thumbnail image data
                         mBuffer = new Buffer
                         {
                             Type = eBufferData.ZEROS,
-                            BinaryByteLength = xFile.ThumbnailAttachmentStartPadding
+                            BinaryByteLength = xFile.ThumbnailAttachmentStartPadding.First(),
                         };
                         mBufferList.Add(mBuffer);
 
@@ -158,9 +220,9 @@ namespace XisfFileManager.FileOperations
                         mBuffer = new Buffer
                         {
                             Type = eBufferData.BINARY,
-                            BinaryDataStart = xFile.ThumbnailAttachmentStart,
-                            BinaryByteLength = xFile.ThumbnailAttachmentLength,
-                            BinaryData = rawFileData
+                            BinaryDataStart = xFile.ThumbnailAttachmentStart.First(),
+                            BinaryByteLength = xFile.ThumbnailAttachmentLength.First(),
+                            BinaryData = binaryFileData
                         };
                         mBufferList.Add(mBuffer);
                     }
@@ -184,6 +246,32 @@ namespace XisfFileManager.FileOperations
 
             return true;
         }
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
+
+        private static int FindStringInByteArray(byte[] bByteArray, string sString, int nMaxSearchLength)
+        {
+            int stringLength = sString.Length;
+
+            for (int i = 0; i <= nMaxSearchLength; i++)
+            {
+                bool found = true;
+
+                for (int j = 0; j < stringLength; j++)
+                {
+                    if (bByteArray[i + j] != (byte)sString[j])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found)
+                    return i;
+            }
+
+            return -1;
+        }
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
@@ -197,36 +285,40 @@ namespace XisfFileManager.FileOperations
             if (imageNode == null)
                 return false;
 
-            // <Image geometry="5496:3672:1" sampleFormat="Float32" bounds="0:1" colorSpace="Gray" location="attachment:8192:80725248">
+            // <Image geometry="5496:3672:1" sampleFormat="UInt16" colorSpace="Gray" location="attachment:8192:40362624"><Resolution horizontal="72" vertical="72" unit="inch" />
             string[] imageLocationAttribute = imageNode.Attributes["location"].Value.Split(':');
+            // imageStart temporarily begins at the end of the modified xml section
             int imageStart = document.OuterXml.Length + 16;
             int imageLength = Convert.ToInt32(imageLocationAttribute[2]);
 
+
+            // <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096" />
+            // <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072" />    What is this?
             XmlNode propertyNode = document.SelectSingleNode("//ns:Metadata/ns:Property[@id='XISF:BlockAlignmentSize']", nsManager);
             string valueAttribute = propertyNode.Attributes["value"].Value;
             int blockAlignmentSize = Convert.ToInt32(valueAttribute);
 
-            xFile.ImageAttachmentStartPadding = blockAlignmentSize - (imageStart % blockAlignmentSize);
-            xFile.ImageAttachmentStart = imageStart + xFile.ImageAttachmentStartPadding;
-            xFile.ImageAttachmentLength = imageLength;
+            xFile.ImageAttachmentStartPadding.Add(blockAlignmentSize - (imageStart % blockAlignmentSize));
+            xFile.ImageAttachmentStart[0] = imageStart + xFile.ImageAttachmentStartPadding.First();
+            xFile.ImageAttachmentLength[0] = imageLength;
 
             // <Thumbnail geometry="400:267:1" sampleFormat="UInt8" colorSpace="Gray" location="attachment:80736256:106800"/>
             XmlNode thumbnailNode = imageNode.SelectSingleNode(".//ns:Thumbnail", nsManager);
             if (thumbnailNode != null)
             {
                 string[] thumbnailLocationAttribute = thumbnailNode.Attributes["location"].Value.Split(':');
-                imageStart = xFile.ImageAttachmentStart + xFile.ImageAttachmentLength;
+                imageStart = xFile.ThumbnailAttachmentStart[0] + xFile.ThumbnailAttachmentLength.First();
                 imageLength = Convert.ToInt32(thumbnailLocationAttribute[2]);
 
-                xFile.ThumbnailAttachmentStartPadding = blockAlignmentSize - (imageStart % blockAlignmentSize);
-                xFile.ThumbnailAttachmentStart = imageStart + xFile.ThumbnailAttachmentStartPadding;
-                xFile.ThumbnailAttachmentLength = imageLength;
+                xFile.ThumbnailAttachmentStartPadding.Add(blockAlignmentSize - (imageStart % blockAlignmentSize));
+                xFile.ThumbnailAttachmentStart[0] = imageStart + xFile.ThumbnailAttachmentStartPadding.First();
+                xFile.ThumbnailAttachmentLength[0] = imageLength;
             }
             else
             {
-                xFile.ThumbnailAttachmentStartPadding = 0;
-                xFile.ThumbnailAttachmentStart = 0;
-                xFile.ThumbnailAttachmentLength = 0;
+                xFile.ThumbnailAttachmentStartPadding.Add(0);
+                xFile.ThumbnailAttachmentStart.Add(-1);
+                xFile.ThumbnailAttachmentLength.Add(-1);
             }
 
             return true;
@@ -238,7 +330,6 @@ namespace XisfFileManager.FileOperations
 
         private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile)
         {
-            // First remove all FITSKeywords (nodes) from the xml document
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
             for (int i = nodeList.Count - 1; i >= 0; i--)
             {
@@ -253,12 +344,6 @@ namespace XisfFileManager.FileOperations
 
             foreach (XmlNode item in nodeList)
             {
-                // Deal with SSWEIGHT and WEIGHT
-                // SSWEIGHT may already be part of mFile or not
-                // We want to selectively update an existing SSWEIGHT value, add a new one or leave it alone (leaving it alone inludes a non-existent SSWEIGHT by default)
-                // For adding and updating, we need to consider SSWEIGHT vs WEIGHT
-                // WEIGHT is produced by this program while SSWEIGHT is produced by PixInsight
-
                 // Alphabetize the KeywordData FITSKeywords
                 // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (minus explicit removals and changes)
                 List<Keyword> keywords = mFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
@@ -356,21 +441,10 @@ namespace XisfFileManager.FileOperations
                         }
                     }
 
-                    // Fix Header length
                     int binaryDataLength = rawStream.ToArray().Length;
                     byte[] binaryData = new byte[binaryDataLength];
 
                     binaryData = rawStream.ToArray();
-
-                    int xisfStart = BinaryFind(binaryData, "<?xml"); // returns the position of '<'
-                    int xisfEnd = BinaryFind(binaryData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'             
-                    int xisfLength = xisfEnd - xisfStart;
-
-                    // Write '<'?xml to </xisf'>' length to XISF Header length portion - See PixInsight XISF Developer info 
-                    binaryData[8] = Convert.ToByte((xisfLength >> 0) & 0xff);
-                    binaryData[9] = Convert.ToByte((xisfLength >> 8) & 0xff);
-                    binaryData[10] = Convert.ToByte((xisfLength >> 16) & 0xff);
-                    binaryData[11] = Convert.ToByte((xisfLength >> 24) & 0xff);
 
                     using (Stream fileStream = new FileStream(fileName, FileMode.Create))
                     {
@@ -381,10 +455,8 @@ namespace XisfFileManager.FileOperations
                             binaryWriter.Close();
                         }
                     }
-
                     binaryData = null;
                 }
-
                 return true;
             }
             catch

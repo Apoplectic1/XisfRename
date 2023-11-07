@@ -16,10 +16,18 @@ namespace XisfFileManager.FileOperations
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
 
+        public string XmlString { get; set; }
+
         public XisfFile()
         {
             mXDoc = new XDocument();
             KeywordList = new KeywordList();
+            ImageAttachmentLength = new List<int>();
+            ImageAttachmentStart = new List<int>();
+            ImageAttachmentStartPadding = new List<int>();
+            ThumbnailAttachmentLength = new List<int>();
+            ThumbnailAttachmentStart = new List<int>();
+            ThumbnailAttachmentStartPadding = new List<int>();
         }
 
         // Properties
@@ -27,8 +35,16 @@ namespace XisfFileManager.FileOperations
         {
             mXDoc = new XDocument();
             KeywordList.Clear();
+            ImageAttachmentLength.Clear();
+            ImageAttachmentStart.Clear();
+            ImageAttachmentStartPadding.Clear();
+            ThumbnailAttachmentLength.Clear();
+            ThumbnailAttachmentStart.Clear();
+            ThumbnailAttachmentStartPadding.Clear();
         }
 
+        public string XmlVersionText { get; set; }
+        public string XmlCommentText { get; set; }
         public void AddKeyword(string keyword, string value, string comment = "Xisf File Manager")
         {
             KeywordList.AddKeyword(keyword, value, comment);
@@ -75,8 +91,8 @@ namespace XisfFileManager.FileOperations
         }
         public DateTime CaptureDateTime
         {
-            get { return KeywordList.CaptureDateTime; }
-            set { KeywordList.CaptureDateTime = value; }
+            get { return KeywordList.CaptureTime; }
+            set { KeywordList.CaptureTime = value; }
         }
         public string CaptureSoftware
         {
@@ -159,9 +175,9 @@ namespace XisfFileManager.FileOperations
             get { return KeywordList.Gain; }
             set { KeywordList.Gain = value; }
         }
-        public int ImageAttachmentLength { get; set; }
-        public int ImageAttachmentStart { get; set; }
-        public int ImageAttachmentStartPadding { get; set; }
+        public List<int> ImageAttachmentLength { get; set; }
+        public List<int> ImageAttachmentStart { get; set; }
+        public List<int> ImageAttachmentStartPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
@@ -205,9 +221,9 @@ namespace XisfFileManager.FileOperations
             set { KeywordList.SensorTemperature = value; }
         }
         public double SSWeight { get; set; }
-        public int ThumbnailAttachmentStartPadding { get; set; }
-        public int ThumbnailAttachmentLength { get; set; }
-        public int ThumbnailAttachmentStart { get; set; }
+        public List<int> ThumbnailAttachmentStartPadding { get; set; }
+        public List<int> ThumbnailAttachmentLength { get; set; }
+        public List<int> ThumbnailAttachmentStart { get; set; }
         public bool KeepPanel { get; set; }
         /// <summary>
         /// Updates an Xisf File Target Name.
@@ -279,8 +295,8 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                ImageAttachmentStart = Convert.ToInt32(values[1]);
-                ImageAttachmentLength = Convert.ToInt32(values[2]);
+                ImageAttachmentStart.Add(Convert.ToInt32(values[1]));
+                ImageAttachmentLength.Add(Convert.ToInt32(values[2]));
             }
         }
 
@@ -294,8 +310,8 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                ThumbnailAttachmentStart = Convert.ToInt32(values[1]);
-                ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
+                ThumbnailAttachmentStart.Add(Convert.ToInt32(values[1]));
+                ThumbnailAttachmentLength.Add(Convert.ToInt32(values[2]));
             }
         }
 
@@ -373,8 +389,8 @@ namespace XisfFileManager.FileOperations
         {
             if (object1 == null) return 1;
             if (object2 == null) return 1;
-            if (object1.KeywordList.CaptureDateTime > object2.KeywordList.CaptureDateTime) return 1;
-            if (object1.KeywordList.CaptureDateTime < object2.KeywordList.CaptureDateTime) return -1;
+            if (object1.KeywordList.CaptureTime > object2.KeywordList.CaptureTime) return 1;
+            if (object1.KeywordList.CaptureTime < object2.KeywordList.CaptureTime) return -1;
             return 0;
         };
     }

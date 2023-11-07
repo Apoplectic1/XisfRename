@@ -17,8 +17,10 @@ namespace XisfFileManager.FileOperations
         private byte[] mBuffer;
         private int mBufferSize;
         private int bytesRead;
-        private Match keywordBlock;
-        private string modifiedString;
+
+        private Match xmlVersionMatch;
+        private Match xmlCommentMatch;
+        private Match keywordBlockMatch;
 
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
@@ -27,26 +29,30 @@ namespace XisfFileManager.FileOperations
                 using (FileStream xFileStream = new FileStream(xFile.FilePath, FileMode.Open, FileAccess.Read))
                 {
                     // Try to read the minium amount of data from each Xisf File.
-                    // mBuffer size has been set read most Xisf files xml section in a single read pass. We MUST read enough to include the first "<xisf" delimiter
+                    // mBuffer size has been set read most Xisf files xml section in a single read pass. We MUST read enough to include the first "<xisf" delimiter (<xisf is after comment section)
                     // If we don't read the entire <xisf to xisf> section in one pass, double mBuffer size and re-read from start (start: being lazy; should use stream position)
-                    string xmlString = string.Empty;
                     mBufferSize = 10000;
                     mBuffer = new byte[mBufferSize];
-                    keywordBlock = Match.Empty;
+
+                    xmlVersionMatch = Match.Empty;
+                    xmlCommentMatch = Match.Empty;
+                    keywordBlockMatch = Match.Empty;
+
                     bytesRead = 0;
                     int nXisfSignatureBlockSize = 16;
+                    string xmlString;
 
                     // If the xml section is larger than mBufferSize, repeatedly double the buffer size and read again
-                    while (!keywordBlock.Success)
+                    while (!keywordBlockMatch.Success)
                     {
                         bytesRead = xFileStream.Read(mBuffer, bytesRead, mBufferSize - bytesRead);
 
                         xmlString = Encoding.UTF8.GetString(mBuffer.Skip(nXisfSignatureBlockSize).ToArray());
 
-                        // Did we read the entire <xisf to xisf> FITS Keyword section?
-                        keywordBlock = Regex.Match(xmlString, @"<xisf.*?xisf>", RegexOptions.Singleline);
-
-                        if (!keywordBlock.Success)
+                        xmlVersionMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
+                        xmlCommentMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
+                        keywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+                        if (!keywordBlockMatch.Success)
                         {
                             // We did not find the closing "xisf>. Expand mBuffer and try again
                             mBufferSize += mBufferSize;
@@ -57,13 +63,18 @@ namespace XisfFileManager.FileOperations
 
                     xFileStream.Close();
 
-                    modifiedString = keywordBlock.ToString().Replace("'", "");
+                    xFile.XmlVersionText = xmlVersionMatch.ToString();
+                    xFile.XmlCommentText = xmlCommentMatch.ToString();
+                    xmlString = keywordBlockMatch.ToString().Replace("'", "");
+
+                    // Make an isolated copy
+                    xFile.XmlString = xmlString.Clone() as string;
 
                     xFile.mXDoc = new XDocument();
 
                     try
                     {
-                        xFile.mXDoc = XDocument.Parse(modifiedString);
+                        xFile.mXDoc = XDocument.Parse(xmlString);
                     }
                     catch (Exception ex)
                     {

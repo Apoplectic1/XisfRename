@@ -215,7 +215,6 @@ namespace XisfFileManager.Calculations
             double minPosition = sortedTemperaturePositionPairs.First().Value;
             double maxPosition = sortedTemperaturePositionPairs.Last().Value;
 
-
             // Linear fit position vs temperature
             int degree = 1;
 
@@ -226,10 +225,15 @@ namespace XisfFileManager.Calculations
             // b = polynomial[0]
             // m = polynomial[1]
 
-            double[] polynomial = Fit.Polynomial(x, y, degree);
+            if (x.Length > 1)
+            {
+                double[] polynomial = Fit.Polynomial(x, y, degree);
 
-            return polynomial[1].ToString("F0") + " Steps/Degree IN computed from " + sortedTemperaturePositionPairs.Count + " unique focuser positions:\n" +
-                  "                                             " + maxPosition + "@" + maxTemperature.FormatTemperature() + "C to " + minPosition + "@" + minTemperature.FormatTemperature() + "C";
+                return polynomial[1].ToString("F0") + " Steps/Degree IN computed from " + sortedTemperaturePositionPairs.Count + " unique focuser positions:\n" +
+                      "                                             " + maxPosition + "@" + maxTemperature.FormatTemperature() + "C to " + minPosition + "@" + minTemperature.FormatTemperature() + "C";
+            }
+            else
+                return "Temperature Coefficient: Not Computed";
         }
     }
 }

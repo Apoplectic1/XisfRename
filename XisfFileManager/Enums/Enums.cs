@@ -17,7 +17,7 @@
     public enum eMessageMode { CLEAR, APPEND, NEW, KEEP }
 
     // In files streaming read and write operations, these define the type of data the buffer being read or written to will contain
-    public enum eBufferData { ASCII, BINARY, ZEROS, POSITION }
+    public enum eBufferData { ASCII, BINARY, ZEROS, USERDATA, POSITION }
 
     public enum eCalibrationDirectory { LOCAL, LIBRARY }
 

@@ -10,6 +10,5 @@ namespace XisfFileManager.FileOperations
         public int BinaryByteLength { get; set; }
         public long ToPosition { get; set; }
         public byte[] BinaryData { get; set; }
-
     }
 }

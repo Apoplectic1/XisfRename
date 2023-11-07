@@ -423,7 +423,7 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // **********************************************************************
-
+            
             FindCaptureSoftware();
             FindFilterFrameType();
             FindTelescope();
@@ -743,7 +743,7 @@ namespace XisfFileManager
             {
                 string softwareCreator = file.CaptureSoftware;
 
-                if (softwareCreator.Equals("NINA"))
+                if (softwareCreator.Equals("NINA") || softwareCreator.Contains("N.I.N.A"))
                 {
                     foundNINA++;
                     count++;
@@ -826,19 +826,19 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked)
-                    file.AddKeyword("CREATOR", "NINA");
+                    file.AddKeyword("SWCREATE", "NINA", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
-                    file.AddKeyword("CREATOR", "TSX");
+                    file.AddKeyword("SWCREATE", "TSX", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked)
-                    file.AddKeyword("CREATOR", "SGP");
+                    file.AddKeyword("SWCREATE", "SGP", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked)
-                    file.AddKeyword("CREATOR", "VOY");
+                    file.AddKeyword("SWCREATE", "VOY", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked)
-                    file.AddKeyword("CREATOR", "SCP");
+                    file.AddKeyword("SWCREATE", "SCP", "[name] Equipment Control and Automation Application");
             }
 
             FindCaptureSoftware();
