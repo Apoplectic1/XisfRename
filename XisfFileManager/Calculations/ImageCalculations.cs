@@ -148,7 +148,7 @@ namespace XisfFileManager.Calculations
                         focuserDictionary[focuserPosition] = focuserTemperature;
                 }
                 else
-                    if (focuserPosition < 40000)
+                    if (focuserPosition < 60000)
                     focuserDictionary[focuserPosition] = focuserTemperature;
             }
 

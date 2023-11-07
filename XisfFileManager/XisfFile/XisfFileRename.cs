@@ -33,44 +33,25 @@ namespace XisfFileManager.FileOperations
             try
             {
                 string newFileName;
-                string dupFileName;
                 string sourceFilePath;
 
                 sourceFilePath = Path.GetDirectoryName(file.FilePath);
 
-                // Actually rename the file
-                if (file.Unique == true)
-                {
-                    newFileName = BuildFileName(file.FileNameNumberIndex, file);
-                    int lastParen = newFileName.LastIndexOf(')');
-                    newFileName = newFileName.Remove(lastParen);
-                    newFileName += ").xisf";
+                newFileName = BuildFileName(file.FileNameNumberIndex, file);
+                int lastParen = newFileName.LastIndexOf(')');
+                newFileName = newFileName.Remove(lastParen);
+                newFileName += ").xisf";
 
-                    // Rename the file if its name actually changed
-                    if (file.FilePath != sourceFilePath + "\\" + newFileName)
+                // Rename the file if its name actually changed
+                if (file.FilePath != sourceFilePath + "\\" + newFileName)
+                {
+                    if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
                     {
-                        if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
-                        {
-                            File.Move(file.FilePath, sourceFilePath + "\\" + newFileName);
-                        }
+                        File.Move(file.FilePath, sourceFilePath + "\\" + newFileName);
                     }
-                    return new Tuple<int, string>(1, newFileName);
                 }
-                else
-                {
-                    Directory.CreateDirectory(sourceFilePath + "\\Duplicates");
+                return new Tuple<int, string>(1, newFileName);
 
-                    dupFileName = BuildFileName(file.FileNameNumberIndex - 1, file);
-                    int lastParen = dupFileName.LastIndexOf(')');
-                    dupFileName = dupFileName.Remove(lastParen);
-                    dupFileName += ").xisf";
-
-                    dupFileName = RecurseDupFileName(sourceFilePath + "\\Duplicates\\" + dupFileName);
-
-                    File.Move(file.FilePath, dupFileName);
-
-                    return new Tuple<int, string>(0, dupFileName);
-                }
             }
             catch (Exception ex)
             {
@@ -79,27 +60,46 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        public void MarkDuplicates(List<XisfFile> fileList)
+        public int MoveDuplicates(List<XisfFile> fileList)
         {
             // Duplicates are files with identical image capture times
             // Added fileExposureTime Time to further refine duplicates. This is due manually setting capture time to make old files process properly
+            var groupedDuplicates = fileList.GroupBy(item => item.CaptureDateTime)
+                                .Where(group => group.Skip(1).Any())
+                                .ToList();
 
-            foreach (var item in fileList)
+            // List to keep track of files that have been moved.
+            var movedFiles = new List<XisfFile>();
+
+            foreach (var group in groupedDuplicates)
             {
-                item.Unique = true;
+                var items = group.ToList();
+                for (int i = 1; i < items.Count; i++) // Skip the first item to keep it in place
+                {
+                    var item = items[i];
+                    string sourceFilePath = Path.GetDirectoryName(item.FilePath);
+                    string duplicatesPath = Path.Combine(sourceFilePath, "Duplicates");
+
+                    if (!Directory.Exists(duplicatesPath))
+                        Directory.CreateDirectory(duplicatesPath);
+
+                    string destinationFilePath = Path.Combine(duplicatesPath, Path.GetFileName(item.FilePath));
+
+                    // Move the file to the Duplicates directory
+                    File.Move(item.FilePath, destinationFilePath, overwrite: true); // overwrite if the file already exists
+
+                    // Add the file to the movedFiles list
+                    movedFiles.Add(item);
+                }
             }
 
-            // Group the list by mExposure and mDateTime
-            var duplicates = fileList.GroupBy(item => new { item.ExposureSeconds, item.CaptureDateTime, item.FrameType, item.Binning, item.FilterName, item.Camera })
-                                  .Where(group => group.Count() > 1)
-                                  .SelectMany(group => group);
+            // Remove the moved files from the original fileList.
+            fileList.RemoveAll(file => movedFiles.Contains(file));
 
-            // Mark duplicate items
-            foreach (var item in duplicates)
-            {
-                item.Unique = false;
-            }
+            // Return the count of groups that had duplicates.
+            return movedFiles.Count;
         }
+
 
         private string BuildFileName(int index, XisfFile mFile)
         {

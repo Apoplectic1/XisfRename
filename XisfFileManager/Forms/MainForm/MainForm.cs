@@ -60,6 +60,7 @@ namespace XisfFileManager
         private string mFolderBrowseState;
         private string mFolderCsvBrowseState;
         private XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
+        private bool mBCancel;
 
         private DirectoryProperties mDirectoryProperties;
 
@@ -222,6 +223,7 @@ namespace XisfFileManager
         private async void Button_Browse_Click(object sender, EventArgs e)
         {
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
+            mBCancel = false;
             mFileList.Clear();
             ImageParameterLists.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
@@ -317,31 +319,57 @@ namespace XisfFileManager
                 TargetNames.Add(file.TargetName);
             }
 
-            if (TargetNames.Count > 0)
+            TargetNames = TargetNames.Distinct().ToList();
+            TargetNames = TargetNames.OrderBy(q => q).ToList();
+
+            foreach (string item in TargetNames)
             {
-                TargetNames = TargetNames.Distinct().ToList();
-                TargetNames = TargetNames.OrderBy(q => q).ToList();
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
+            }
 
-                if (TargetNames.Count > 1)
-                {
-                    Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Red;
-                }
-                else
-                {
-                    Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Black;
-                }
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
 
-                foreach (string item in TargetNames)
-                {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
-                }
-
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
+            // Rule for single item
+            if (TargetNames.Count <= 1)
+            {
+                Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Black;
             }
             else
             {
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Clear();
-                Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.DarkViolet;
+                // Create a dictionary to count matching pairs
+                var matchCounts = new Dictionary<string, int>();
+                foreach (var item in TargetNames)
+                {
+                    var baseItem = item.EndsWith(" stars") ? item.Substring(0, item.Length - 6) : item;
+
+                    if (matchCounts.ContainsKey(baseItem))
+                        matchCounts[baseItem]++;
+                    else
+                        matchCounts[baseItem] = 1;
+                }
+
+                bool bGreen = true;
+
+                foreach (var count in matchCounts.Values)
+                {
+                    if (count == 1)
+                    {
+                        // Rule for items without a pair
+                        Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.DarkViolet;
+                        bGreen = false;
+                        break;
+                    }
+                    else if (count != 2)
+                    {
+                        // Rule for items that do not form exact pairs
+                        Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Red;
+                        bGreen = false;
+                        break;
+                    }
+                }
+
+                if (bGreen)
+                    Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Green;
             }
 
 
@@ -404,7 +432,6 @@ namespace XisfFileManager
 
             // **********************************************************************
             // Calculate Image paramters for UI
-            //ClearImageParameterLists();
             foreach (XisfFile xFile in mFileList)
             {
                 if (xFile.FilePath == string.Empty)
@@ -423,7 +450,7 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // **********************************************************************
-            
+
             FindCaptureSoftware();
             FindFilterFrameType();
             FindTelescope();
@@ -503,7 +530,7 @@ namespace XisfFileManager
 
                 foreach (XisfFile xFile in mFileList)
                 {
-                    xFile.FileNameNumberIndex = (xFile.Unique) ? ++index : index++;
+                    xFile.FileNameNumberIndex = ++index;
                 }
                 return;
             }
@@ -542,28 +569,28 @@ namespace XisfFileManager
                     if (xFile.FilePath.Contains(originalDirectory))
                     {
                         if (xFile.FilterName.Equals("Luma"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++lumaIndex : lumaIndex++;
+                            xFile.FileNameNumberIndex = ++lumaIndex;
 
                         if (xFile.FilterName.Equals("Red"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++redIndex : redIndex++;
+                            xFile.FileNameNumberIndex = ++redIndex;
 
                         if (xFile.FilterName.Equals("Green"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++greenIndex : greenIndex++;
+                            xFile.FileNameNumberIndex = ++greenIndex;
 
                         if (xFile.FilterName.Equals("Blue"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++blueIndex : blueIndex++;
+                            xFile.FileNameNumberIndex = ++blueIndex;
 
                         if (xFile.FilterName.Equals("Ha"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++haIndex : haIndex++;
+                            xFile.FileNameNumberIndex = ++haIndex;
 
                         if (xFile.FilterName.Equals("O3"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++o3Index : o3Index++;
+                            xFile.FileNameNumberIndex = ++o3Index;
 
                         if (xFile.FilterName.Equals("S2"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++s2Index : s2Index++;
+                            xFile.FileNameNumberIndex = ++s2Index;
 
                         if (xFile.FilterName.Equals("Shutter"))
-                            xFile.FileNameNumberIndex = (xFile.Unique) ? ++shutterIndex : shutterIndex++;
+                            xFile.FileNameNumberIndex = ++shutterIndex;
                     }
                 }
             }
@@ -580,7 +607,7 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
-            mRenameFile.MarkDuplicates(mFileList); // Does not move them
+            duplicates = mRenameFile.MoveDuplicates(mFileList);
 
             // SetFileIndex will preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
             // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
@@ -593,6 +620,8 @@ namespace XisfFileManager
 
             foreach (XisfFile xFile in mFileList)
             {
+                if (mBCancel) { mBCancel = false; return; }
+
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
                 string key = Path.GetDirectoryName(xFile.FilePath);
@@ -603,8 +632,6 @@ namespace XisfFileManager
 
                 Tuple<int, string> renameTuple = mRenameFile.RenameFile(xFile);
 
-                duplicates += (renameTuple.Item1 == 0) ? 1 : 0;
-
                 Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
 
                 System.Windows.Forms.Application.DoEvents(); // Update UI
@@ -613,9 +640,9 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
 
             if (duplicates == 1)
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
             else
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count - duplicates).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
+                Label_FileSelection_Statistics_Task.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
             mDirectoryProperties.DirectoryStatistics.Clear();
             mFileList.Clear();
@@ -643,6 +670,8 @@ namespace XisfFileManager
             targetNames.Clear();
             foreach (string target in ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items)
             {
+                if (mBCancel) { mBCancel = false; return; }
+
                 // Remove " Stars" from targetName so there is a single target name for the next foreach below (" Stars" will be added there)
                 string targetName = target.Replace(" Stars", "");
                 targetNames.Add(targetName.Trim());
@@ -653,6 +682,8 @@ namespace XisfFileManager
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
+                if (mBCancel) { mBCancel = false; return; }
+
                 xFile.SetObservationSite();
                 xFile.KeepPanel = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked;
 
@@ -741,8 +772,8 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                string softwareCreator = file.CaptureSoftware;
-
+                string softwareCreator = file.CaptureSoftware; // from SWCREATE
+                
                 if (softwareCreator.Equals("NINA") || softwareCreator.Contains("N.I.N.A"))
                 {
                     foundNINA++;
@@ -854,7 +885,7 @@ namespace XisfFileManager
                 if (global)
                 {
                     if (file.CaptureSoftware == string.Empty)
-                        file.AddKeyword("CREATOR", captureSoftware.ToString(), "XISF File Manager");
+                        file.AddKeyword("SWCREATE", captureSoftware.ToString(), "XISF File Manager");
                 }
                 else
                 {
@@ -3851,6 +3882,11 @@ namespace XisfFileManager
                     TreeView_SchedulerTab_PlansTree.Nodes.Add(TreeView_SchedulerTab_PlansTree_RootNode);
                 }
             }
+        }
+
+        private void Button_KeywordUpdateTab_Cancel_Click(object sender, EventArgs e)
+        {
+            mBCancel = true;
         }
     }
 }

@@ -272,7 +272,6 @@ namespace XisfFileManager.FileOperations
             get { return KeywordList.TotalFrames; }
             set { KeywordList.TotalFrames = value; }
         }
-        public bool Unique { get; set; }
         public List<string> WeightKeyword
         {
             get { return KeywordList.WeightKeyword; }

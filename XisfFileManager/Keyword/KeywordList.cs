@@ -187,133 +187,8 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return DateTime.MinValue;
 
-                DateTime Local = DateTime.Parse(value);
-                //DateTime UTC = Local.ToUniversalTime();
-
-                //AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
-               // AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
-
-                return Local;
+                return DateTime.Parse(value);
             }
-            /*
-                DateTime Local;
-                DateTime UTC;
-
-                if (CaptureSoftware == "TSX")
-                {
-                    // "7/18/202010:19:28.000PMDST";
-
-                    // Remove the "DST" part from the end of the string
-                    string dateString = value.Replace("DST", "").Trim();
-
-                    // Find the positions of slashes and the last space
-                    int firstSlash = dateString.IndexOf('/');
-                    int secondSlash = dateString.IndexOf('/', firstSlash + 1);
-                    int dpoint = dateString.LastIndexOf('.');
-
-                    if (firstSlash > 0)
-                    {
-                        // Extract date components
-                        string monthStr = dateString.Substring(0, firstSlash);
-                        string dayStr = dateString.Substring(firstSlash + 1, secondSlash - firstSlash - 1);
-                        string yearStr = dateString.Substring(secondSlash + 1, 4);
-
-                        // Extract time components
-                        string timeStr = dateString.Substring(secondSlash + 5, 12);
-
-                        // Convert PM time to 24-hour format
-                        if (dateString.Contains("PM"))
-                            timeStr = string.Concat((int.Parse(timeStr.Substring(0, 2)) + 12).ToString(), timeStr.AsSpan(2));
-
-                        // Fix a fix of mine: Hours sometimes has three digits - take the time from the file name
-                        timeStr = Regex.Replace(timeStr, @"^\d{3}:", m => string.Concat(m.Value.AsSpan(0, 2), ":"));
-
-                        // Combine date and time parts for parsing
-                        string dateTimeStr = $"{monthStr}/{dayStr}/{yearStr} {timeStr}";
-
-                        Local = DateTime.Parse(dateTimeStr);
-                    }
-                    else
-                    {
-                        Local = DateTime.Parse(dateString);
-                    }
-
-                    AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
-                    UTC = Local.ToUniversalTime();
-                }
-                else
-                {
-                    // if '6/8/2020 01:22:44.119 AM DST'
-                    string result = Regex.Replace(value, @"(\.\d+)[^.]*$", "$1");
-
-                    if (result.Equals("")) return DateTime.Now;
-
-                    // Build LOC from OBS or made up Object
-                    Local = DateTime.Parse(result);
-                    AddKeyword("DATE-LOC", Local.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local Time of observation");
-                    UTC = Local.ToUniversalTime();
-                }
-
-                AddKeyword("DATE-OBS", UTC.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "UTC Time of observation");
-                RemoveKeyword("LOCALTIM");
-
-                // Keywords are now correct
-                // Format returned date and time to yyyy-MM-dd HH:mm:ss.fff
-
-                string localTime = value;
-                localTime = localTime.Replace("'", "").Replace("T", " ");
-
-                bool status;
-                DateTime dt;
-
-                if (localTime.Contains("AM"))
-                {
-                    localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " AM";
-
-                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-
-                    if (status) return dt;
-
-                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-                    return dt;
-                }
-
-                if (localTime.Contains("PM"))
-                {
-                    localTime = localTime.Remove(localTime.IndexOf('.') + 4) + " PM";
-
-                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fffffff tt",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-                    if (status) return dt;
-
-                    status = DateTime.TryParseExact(localTime, "M/d/yyyy hh:mm:ss.fff tt",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-                    if (status) return dt;
-
-                    status = DateTime.TryParseExact(localTime, "M/d/yyyyhh:mm:ss.fff tt",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-                    return dt;
-                }
-
-                status = DateTime.TryParseExact(localTime, "yyyy-MM-dd HH:mm:ss.fffffff",
-                              CultureInfo.InvariantCulture,
-                              DateTimeStyles.None, out dt);
-                if (status)
-                {
-                    return DateTime.ParseExact(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                }
-
-                Local = DateTime.Parse(value);
-                return DateTime.ParseExact(Local.ToString("yyyy-MM-dd HH:mm:ss.fff"), "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            }
-            */
             set { AddKeyword("DATE-LOC", value.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time"); }
         }
             
@@ -322,7 +197,7 @@ namespace XisfFileManager
         // *********************************************************************************************************
         public string CaptureSoftware
         {
-            get { RemoveKeyword("CREATOR"); return GetKeywordValue("SWCREATE"); }
+            get { return GetKeywordValue("SWCREATE"); }
             set { AddKeyword("SWCREATE", value.ToString(), "[name] Equipment Control and Automation Application"); }
         }
 
