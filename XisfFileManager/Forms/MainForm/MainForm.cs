@@ -304,7 +304,7 @@ namespace XisfFileManager
             // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
             // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
             //mFileList.Sort(XisfFile.CaptureTimeComparison);
-            mFileList.Sort((a, b) => a.CaptureDateTime.CompareTo(b.CaptureDateTime)); // Faster?
+            mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // Faster?
 
             // **********************************************************************
             // Get TargetName and and Weights to populate ComboBoxes
@@ -455,6 +455,7 @@ namespace XisfFileManager
             FindFilterFrameType();
             FindTelescope();
             FindCamera();
+            FindMasterStatistics();
 
             // **********************************************************************
 
@@ -499,6 +500,8 @@ namespace XisfFileManager
                     }
                 }
             }
+
+
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
             TabControl_Update_TargetScheduler.Enabled = true;
@@ -773,7 +776,7 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 string softwareCreator = file.CaptureSoftware; // from SWCREATE
-                
+
                 if (softwareCreator.Equals("NINA") || softwareCreator.Contains("N.I.N.A"))
                 {
                     foundNINA++;
@@ -2584,7 +2587,9 @@ namespace XisfFileManager
             // ****************************************************************
             // ****************************************************************
         }
-
+        private void FindMasterStatistics()
+        {
+        }
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
         {
             if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
@@ -3224,7 +3229,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
             if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
@@ -3233,7 +3238,7 @@ namespace XisfFileManager
                 {
                     foreach (Keyword node in file.KeywordList.mKeywordList)
                     {
-                        if (node.Comment.ToLower(CultureInfo.InvariantCulture).Contains("numberofimages"))
+                        if (node.Comment.ToLower().Contains("numberofimages"))
                         {
                             numberOfImages = Convert.ToInt32(Regex.Match(node.Comment, @"\d+").Value);
                             foundNumberOfImages = true;
@@ -3439,7 +3444,7 @@ namespace XisfFileManager
 
             if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Exposure.Text, out value) == false)
             {
-                TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "0";
                 return;
             }
 
@@ -3452,7 +3457,7 @@ namespace XisfFileManager
 
             if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Gain.Text, out value) == false)
             {
-                TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "0";
                 return;
             }
 
@@ -3465,7 +3470,7 @@ namespace XisfFileManager
 
             if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Offset.Text, out value) == false)
             {
-                TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "10";
+                TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "0";
                 return;
             }
 
@@ -3479,7 +3484,7 @@ namespace XisfFileManager
 
             if (double.TryParse(TextBox_CalibrationTab_MatchingTolerance_Temperature.Text, out value) == false)
             {
-                TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = "25";
+                TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = "5";
                 return;
             }
 
@@ -3887,6 +3892,26 @@ namespace XisfFileManager
         private void Button_KeywordUpdateTab_Cancel_Click(object sender, EventArgs e)
         {
             mBCancel = true;
+        }
+
+        private void CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest_CheckedChanged(object sender, EventArgs e)
+        {
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Checked;
+        }
+
+        private void CheckBox_CalibrationTab_MatchingTolerance_GainNearest_CheckedChanged(object sender, EventArgs e)
+        {
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Checked;
+        }
+
+        private void CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest_CheckedChanged(object sender, EventArgs e)
+        {
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Checked;
+        }
+
+        private void CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest_CheckedChanged(object sender, EventArgs e)
+        {
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Checked;
         }
     }
 }

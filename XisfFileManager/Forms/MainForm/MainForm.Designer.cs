@@ -40,7 +40,6 @@
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.NumericUpDown();
             RadioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
             RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
             RadioButton_DirectorySelection_AlFiles = new System.Windows.Forms.RadioButton();
@@ -77,10 +76,14 @@
             TreeView_CalibrationTab_TargetFileTree = new System.Windows.Forms.TreeView();
             TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
             GroupBox_CalibrationTab_MatchingTolerance = new System.Windows.Forms.GroupBox();
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance = new System.Windows.Forms.Label();
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance = new System.Windows.Forms.Label();
-            Label_CalibrationTab_MatchingTolerance_GainTolerance = new System.Windows.Forms.Label();
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance = new System.Windows.Forms.Label();
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest = new System.Windows.Forms.CheckBox();
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest = new System.Windows.Forms.CheckBox();
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest = new System.Windows.Forms.CheckBox();
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest = new System.Windows.Forms.CheckBox();
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees = new System.Windows.Forms.Label();
+            Label_CalibrationTab_MatchingTolerance_OffsetADU = new System.Windows.Forms.Label();
+            Label_CalibrationTab_MatchingTolerance_GainUnits = new System.Windows.Forms.Label();
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds = new System.Windows.Forms.Label();
             Label_CalibrationTab_MatchingTolerance_Percentage = new System.Windows.Forms.Label();
             TextBox_CalibrationTab_MatchingTolerance_Temperature = new System.Windows.Forms.TextBox();
             TextBox_CalibrationTab_MatchingTolerance_Offset = new System.Windows.Forms.TextBox();
@@ -197,10 +200,10 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
+            ComboBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.ComboBox();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)NumericUpDown_FileSelection_DirectorySelection_TotalFrames).BeginInit();
             GroupBox_FileSelection_Statistics.SuspendLayout();
             GroupBox_FileSelection.SuspendLayout();
             TabPage_TargetScheduler.SuspendLayout();
@@ -336,8 +339,8 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(NumericUpDown_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_MastersOnly);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_ExcludeMasters);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_AlFiles);
@@ -363,16 +366,7 @@
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Name = "ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm";
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Size = new System.Drawing.Size(76, 23);
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.TabIndex = 8;
-            // 
-            // NumericUpDown_FileSelection_DirectorySelection_TotalFrames
-            // 
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(125, 102);
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Name = "NumericUpDown_FileSelection_DirectorySelection_TotalFrames";
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(62, 23);
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.TabIndex = 7;
-            NumericUpDown_FileSelection_DirectorySelection_TotalFrames.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text = "Rejection";
             // 
             // RadioButton_DirectorySelection_MastersOnly
             // 
@@ -742,7 +736,7 @@
             TreeView_CalibrationTab_TargetFileTree.Location = new System.Drawing.Point(575, 6);
             TreeView_CalibrationTab_TargetFileTree.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TreeView_CalibrationTab_TargetFileTree.Name = "TreeView_CalibrationTab_TargetFileTree";
-            TreeView_CalibrationTab_TargetFileTree.Size = new System.Drawing.Size(535, 257);
+            TreeView_CalibrationTab_TargetFileTree.Size = new System.Drawing.Size(514, 257);
             TreeView_CalibrationTab_TargetFileTree.TabIndex = 10;
             // 
             // TextBox_CalibrationTab_Messgaes
@@ -757,10 +751,14 @@
             // 
             // GroupBox_CalibrationTab_MatchingTolerance
             // 
-            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_TemperatureTolerance);
-            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_OffsetTolerance);
-            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_GainTolerance);
-            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_ExposureTolerance);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(CheckBox_CalibrationTab_MatchingTolerance_GainNearest);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_TemperatureDegrees);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_OffsetADU);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_GainUnits);
+            GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_ExposureSeconds);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Percentage);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(TextBox_CalibrationTab_MatchingTolerance_Temperature);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(TextBox_CalibrationTab_MatchingTolerance_Offset);
@@ -770,59 +768,103 @@
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Gain);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Exposure);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(TextBox_CalibrationTab_MatchingTolerance_Exposure);
-            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(253, 23);
+            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(198, 21);
             GroupBox_CalibrationTab_MatchingTolerance.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_CalibrationTab_MatchingTolerance.Name = "GroupBox_CalibrationTab_MatchingTolerance";
             GroupBox_CalibrationTab_MatchingTolerance.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_CalibrationTab_MatchingTolerance.Size = new System.Drawing.Size(303, 216);
+            GroupBox_CalibrationTab_MatchingTolerance.Size = new System.Drawing.Size(303, 180);
             GroupBox_CalibrationTab_MatchingTolerance.TabIndex = 7;
             GroupBox_CalibrationTab_MatchingTolerance.TabStop = false;
-            GroupBox_CalibrationTab_MatchingTolerance.Text = "Matching Tolerance";
+            GroupBox_CalibrationTab_MatchingTolerance.Text = "Match Tolerance";
             // 
-            // Label_CalibrationTab_MatchingTolerance_TemperatureTolerance
+            // CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest
             // 
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.Location = new System.Drawing.Point(194, 152);
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.Name = "Label_CalibrationTab_MatchingTolerance_TemperatureTolerance";
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.Size = new System.Drawing.Size(49, 15);
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.TabIndex = 12;
-            Label_CalibrationTab_MatchingTolerance_TemperatureTolerance.Text = "Degrees";
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.AutoSize = true;
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Location = new System.Drawing.Point(219, 138);
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest";
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Size = new System.Drawing.Size(66, 19);
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.TabIndex = 16;
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Text = "Nearest";
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.UseVisualStyleBackColor = true;
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest_CheckedChanged;
             // 
-            // Label_CalibrationTab_MatchingTolerance_OffsetTolerance
+            // CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest
             // 
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.Location = new System.Drawing.Point(194, 123);
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.Name = "Label_CalibrationTab_MatchingTolerance_OffsetTolerance";
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.Size = new System.Drawing.Size(31, 15);
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.TabIndex = 11;
-            Label_CalibrationTab_MatchingTolerance_OffsetTolerance.Text = "ADU";
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.AutoSize = true;
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Location = new System.Drawing.Point(219, 109);
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest";
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Size = new System.Drawing.Size(66, 19);
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.TabIndex = 15;
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Text = "Nearest";
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.UseVisualStyleBackColor = true;
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest_CheckedChanged;
             // 
-            // Label_CalibrationTab_MatchingTolerance_GainTolerance
+            // CheckBox_CalibrationTab_MatchingTolerance_GainNearest
             // 
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.Location = new System.Drawing.Point(194, 95);
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.Name = "Label_CalibrationTab_MatchingTolerance_GainTolerance";
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.Size = new System.Drawing.Size(34, 15);
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.TabIndex = 10;
-            Label_CalibrationTab_MatchingTolerance_GainTolerance.Text = "Units";
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.AutoSize = true;
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Location = new System.Drawing.Point(219, 81);
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_GainNearest";
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Size = new System.Drawing.Size(66, 19);
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.TabIndex = 14;
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Text = "Nearest";
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.UseVisualStyleBackColor = true;
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_GainNearest_CheckedChanged;
             // 
-            // Label_CalibrationTab_MatchingTolerance_ExposureTolerance
+            // CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest
             // 
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.Location = new System.Drawing.Point(194, 66);
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.Name = "Label_CalibrationTab_MatchingTolerance_ExposureTolerance";
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.Size = new System.Drawing.Size(51, 15);
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.TabIndex = 9;
-            Label_CalibrationTab_MatchingTolerance_ExposureTolerance.Text = "Seconds";
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.AutoSize = true;
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Location = new System.Drawing.Point(219, 52);
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest";
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Size = new System.Drawing.Size(66, 19);
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.TabIndex = 13;
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Text = "Nearest";
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.UseVisualStyleBackColor = true;
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest_CheckedChanged;
+            // 
+            // Label_CalibrationTab_MatchingTolerance_TemperatureDegrees
+            // 
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.AutoSize = true;
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.Location = new System.Drawing.Point(159, 140);
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.Name = "Label_CalibrationTab_MatchingTolerance_TemperatureDegrees";
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.Size = new System.Drawing.Size(49, 15);
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.TabIndex = 12;
+            Label_CalibrationTab_MatchingTolerance_TemperatureDegrees.Text = "Degrees";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_OffsetADU
+            // 
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.AutoSize = true;
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.Location = new System.Drawing.Point(159, 111);
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.Name = "Label_CalibrationTab_MatchingTolerance_OffsetADU";
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.Size = new System.Drawing.Size(31, 15);
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.TabIndex = 11;
+            Label_CalibrationTab_MatchingTolerance_OffsetADU.Text = "ADU";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_GainUnits
+            // 
+            Label_CalibrationTab_MatchingTolerance_GainUnits.AutoSize = true;
+            Label_CalibrationTab_MatchingTolerance_GainUnits.Location = new System.Drawing.Point(159, 83);
+            Label_CalibrationTab_MatchingTolerance_GainUnits.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Label_CalibrationTab_MatchingTolerance_GainUnits.Name = "Label_CalibrationTab_MatchingTolerance_GainUnits";
+            Label_CalibrationTab_MatchingTolerance_GainUnits.Size = new System.Drawing.Size(34, 15);
+            Label_CalibrationTab_MatchingTolerance_GainUnits.TabIndex = 10;
+            Label_CalibrationTab_MatchingTolerance_GainUnits.Text = "Units";
+            // 
+            // Label_CalibrationTab_MatchingTolerance_ExposureSeconds
+            // 
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.AutoSize = true;
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.Location = new System.Drawing.Point(159, 54);
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.Name = "Label_CalibrationTab_MatchingTolerance_ExposureSeconds";
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.Size = new System.Drawing.Size(51, 15);
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.TabIndex = 9;
+            Label_CalibrationTab_MatchingTolerance_ExposureSeconds.Text = "Seconds";
             // 
             // Label_CalibrationTab_MatchingTolerance_Percentage
             // 
             Label_CalibrationTab_MatchingTolerance_Percentage.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_Percentage.Location = new System.Drawing.Point(100, 38);
+            Label_CalibrationTab_MatchingTolerance_Percentage.Location = new System.Drawing.Point(88, 26);
             Label_CalibrationTab_MatchingTolerance_Percentage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Percentage.Name = "Label_CalibrationTab_MatchingTolerance_Percentage";
             Label_CalibrationTab_MatchingTolerance_Percentage.Size = new System.Drawing.Size(79, 15);
@@ -831,7 +873,7 @@
             // 
             // TextBox_CalibrationTab_MatchingTolerance_Temperature
             // 
-            TextBox_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(117, 148);
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(105, 136);
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Name = "TextBox_CalibrationTab_MatchingTolerance_Temperature";
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(48, 23);
@@ -842,30 +884,30 @@
             // 
             // TextBox_CalibrationTab_MatchingTolerance_Offset
             // 
-            TextBox_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(117, 119);
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(105, 107);
             TextBox_CalibrationTab_MatchingTolerance_Offset.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Offset.Name = "TextBox_CalibrationTab_MatchingTolerance_Offset";
             TextBox_CalibrationTab_MatchingTolerance_Offset.Size = new System.Drawing.Size(48, 23);
             TextBox_CalibrationTab_MatchingTolerance_Offset.TabIndex = 6;
-            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "5";
+            TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "0";
             TextBox_CalibrationTab_MatchingTolerance_Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Offset.TextChanged += TextBox_CalibrationTab_OffsetTolerance_TextChanged;
             // 
             // TextBox_CalibrationTab_MatchingTolerance_Gain
             // 
-            TextBox_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(117, 90);
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(105, 79);
             TextBox_CalibrationTab_MatchingTolerance_Gain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Gain.Name = "TextBox_CalibrationTab_MatchingTolerance_Gain";
             TextBox_CalibrationTab_MatchingTolerance_Gain.Size = new System.Drawing.Size(48, 23);
             TextBox_CalibrationTab_MatchingTolerance_Gain.TabIndex = 5;
-            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "10";
+            TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "0";
             TextBox_CalibrationTab_MatchingTolerance_Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Gain.TextChanged += TextBox_CalibrationTab_GainTolerance_TextChanged;
             // 
             // Label_CalibrationTab_MatchingTolerance_Temperature
             // 
             Label_CalibrationTab_MatchingTolerance_Temperature.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(36, 152);
+            Label_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(24, 140);
             Label_CalibrationTab_MatchingTolerance_Temperature.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Temperature.Name = "Label_CalibrationTab_MatchingTolerance_Temperature";
             Label_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(73, 15);
@@ -875,7 +917,7 @@
             // Label_CalibrationTab_MatchingTolerance_Offset
             // 
             Label_CalibrationTab_MatchingTolerance_Offset.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(36, 123);
+            Label_CalibrationTab_MatchingTolerance_Offset.Location = new System.Drawing.Point(24, 111);
             Label_CalibrationTab_MatchingTolerance_Offset.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Offset.Name = "Label_CalibrationTab_MatchingTolerance_Offset";
             Label_CalibrationTab_MatchingTolerance_Offset.Size = new System.Drawing.Size(39, 15);
@@ -885,7 +927,7 @@
             // Label_CalibrationTab_MatchingTolerance_Gain
             // 
             Label_CalibrationTab_MatchingTolerance_Gain.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(36, 95);
+            Label_CalibrationTab_MatchingTolerance_Gain.Location = new System.Drawing.Point(24, 83);
             Label_CalibrationTab_MatchingTolerance_Gain.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Gain.Name = "Label_CalibrationTab_MatchingTolerance_Gain";
             Label_CalibrationTab_MatchingTolerance_Gain.Size = new System.Drawing.Size(31, 15);
@@ -895,7 +937,7 @@
             // Label_CalibrationTab_MatchingTolerance_Exposure
             // 
             Label_CalibrationTab_MatchingTolerance_Exposure.AutoSize = true;
-            Label_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(36, 66);
+            Label_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(24, 54);
             Label_CalibrationTab_MatchingTolerance_Exposure.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Exposure.Name = "Label_CalibrationTab_MatchingTolerance_Exposure";
             Label_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(55, 15);
@@ -904,12 +946,12 @@
             // 
             // TextBox_CalibrationTab_MatchingTolerance_Exposure
             // 
-            TextBox_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(117, 61);
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(105, 50);
             TextBox_CalibrationTab_MatchingTolerance_Exposure.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Exposure.Name = "TextBox_CalibrationTab_MatchingTolerance_Exposure";
             TextBox_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(48, 23);
             TextBox_CalibrationTab_MatchingTolerance_Exposure.TabIndex = 0;
-            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "10";
+            TextBox_CalibrationTab_MatchingTolerance_Exposure.Text = "0";
             TextBox_CalibrationTab_MatchingTolerance_Exposure.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Exposure.TextChanged += TextBox_CalibrationTab_ExposureTolerance_TextChanged;
             // 
@@ -2146,6 +2188,18 @@
             TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 526);
             TabControl_Update_TargetScheduler.TabIndex = 23;
             // 
+            // ComboBox_FileSelection_DirectorySelection_TotalFrames
+            // 
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.FormattingEnabled = true;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Items.AddRange(new object[] { "MM", "PC", "SC", "WSC", "ASC", "LFC", "ESD", "RCR" });
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Name = "ComboBox_FileSelection_DirectorySelection_TotalFrames";
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(76, 23);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2166,7 +2220,6 @@
             GroupBox_FileSelection_Count.PerformLayout();
             GroupBox_FileSelection_DirectorySelection.ResumeLayout(false);
             GroupBox_FileSelection_DirectorySelection.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)NumericUpDown_FileSelection_DirectorySelection_TotalFrames).EndInit();
             GroupBox_FileSelection_Statistics.ResumeLayout(false);
             GroupBox_FileSelection_Statistics.PerformLayout();
             GroupBox_FileSelection.ResumeLayout(false);
@@ -2214,7 +2267,6 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightIndex;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm;
-        private System.Windows.Forms.NumericUpDown NumericUpDown_FileSelection_DirectorySelection_TotalFrames;
         private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_MastersOnly;
         private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_ExcludeMasters;
         private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_AlFiles;
@@ -2254,10 +2306,10 @@
         private System.Windows.Forms.TreeView TreeView_CalibrationTab_TargetFileTree;
         private System.Windows.Forms.TextBox TextBox_CalibrationTab_Messgaes;
         private System.Windows.Forms.GroupBox GroupBox_CalibrationTab_MatchingTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_TemperatureTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_OffsetTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_GainTolerance;
-        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_ExposureTolerance;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_TemperatureDegrees;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_OffsetADU;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_GainUnits;
+        private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_ExposureSeconds;
         private System.Windows.Forms.Label Label_CalibrationTab_MatchingTolerance_Percentage;
         private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Temperature;
         private System.Windows.Forms.TextBox TextBox_CalibrationTab_MatchingTolerance_Offset;
@@ -2374,5 +2426,10 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
         private System.Windows.Forms.TabControl TabControl_Update_TargetScheduler;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_Cancel;
+        private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest;
+        private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest;
+        private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_GainNearest;
+        private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest;
+        private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_TotalFrames;
     }
 }

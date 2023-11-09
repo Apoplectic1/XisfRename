@@ -33,10 +33,10 @@ namespace XisfFileManager
         public eFilter Filter { get; set; } = eFilter.ALL;
         public eFrame Frame { get; set; } = eFrame.ALL;
         public bool Recurse { get; set; } = true;
-        public double ExposureTolerance { get; set; } = 10;
+        public double ExposureTolerance { get; set; }
         public double FocuserTolerance { get; set; } = 10000;
-        public double GainTolerance { get; set; } = 10;
-        public double OffsetTolerance { get; set; } = 5;
+        public double GainTolerance { get; set; }
+        public double OffsetTolerance { get; set; }
         public double RotationTolerance { get; set; } = 180.0;
         public double TemperatureTolerance { get; set; } = 5;
 
@@ -217,7 +217,7 @@ namespace XisfFileManager
             if (GainList.Count == 0)
             {
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Gain "+ targetFile.Gain + " Tolerance: " + GainTolerance + "\r\n"
+                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Gain " + targetFile.Gain + " Tolerance: " + GainTolerance + "\r\n"
                                                               + "  " + Path.GetFileName(targetFile.FilePath) + "\r\n\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -249,12 +249,12 @@ namespace XisfFileManager
 
             // Refine FocuserList to match  match the target file rotator position
             // We ignore rotator position for DARKs and BIASs
-            List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorMechanicalAngle - targetFile.RotatorMechanicalAngle) <= RotationTolerance).ToList();
+            List<XisfFile> RotatorList = bIgnoreRotator ? FocuserList : FocuserList.Where(rotator => Math.Abs(rotator.RotatorPosition - targetFile.RotatorPosition) <= RotationTolerance).ToList();
             if (RotatorList.Count == 0) RotatorList.AddRange(FocuserList); // Deal with old Masters that dont include the Rotator position
             if (RotatorList.Count == 0)
             {
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Rotator Mechanical Position " + targetFile.RotatorMechanicalAngle + " Tolerance: " + RotationTolerance + "\r\n"
+                mCalibrationTabValues.MatchCalibrationMessage = "Match Failed: Rotator Mechanical Position " + targetFile.RotatorPosition + " Tolerance: " + RotationTolerance + "\r\n"
                                                                + "  " + Path.GetFileName(targetFile.FilePath) + "\r\n\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;
@@ -297,7 +297,7 @@ namespace XisfFileManager
             }
 
             // Return the single best and nearest calibration file
-            return ExposureToleranceList.OrderBy(nearest => Math.Abs((nearest.CaptureDateTime - targetFile.CaptureDateTime).TotalSeconds)).FirstOrDefault();
+            return ExposureToleranceList.OrderBy(nearest => Math.Abs((nearest.CaptureTime - targetFile.CaptureTime).TotalSeconds)).FirstOrDefault();
         }
 
         // ******************************************************************************************************************
@@ -413,7 +413,7 @@ namespace XisfFileManager
                 if (location == eCalibrationDirectory.LIBRARY)
                     mMatchedFlatList.Add((targetFile, FindNearestCalibrationFile(eFrame.FLAT, targetFile, mLibraryCalibrationFileList)));
                 else
-                    mMatchedDarkList.Add((targetFile, FindNearestCalibrationFile(eFrame.FLAT, targetFile, mLocalCalibrationFileList)));
+                    mMatchedFlatList.Add((targetFile, FindNearestCalibrationFile(eFrame.FLAT, targetFile, mLocalCalibrationFileList)));
 
                 if (mMatchedFlatList[mMatchedFlatList.Count - 1].CalibrationFile == null && errorMessageLimit > 0)
                 {
@@ -422,9 +422,9 @@ namespace XisfFileManager
                         mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
                         mCalibrationTabValues.MatchCalibrationMessage = "No matching Flat for target frame:\r\n" + targetFile.FilePath + "\r\n";
                         CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
-                        bAllFlatsMatched = false;
-                        errorMessageLimit--;
                     }
+                    bAllFlatsMatched = false;
+                    errorMessageLimit--;
                 }
             }
 
@@ -460,7 +460,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing DARK calibration file will be flagged later
 
-            bool bAllDarksMatched = MatchCalibrationDarkFrames(eCalibrationDirectory.LIBRARY, mUnmatchedDarkTargetFileList, true);
+            bool bAllDarksMatched = MatchCalibrationDarkFrames(eCalibrationDirectory.LIBRARY, mUnmatchedDarkTargetFileList, false);
 
             mUniqueDarkCalibrationFileList = mMatchedDarkList.Select(item => item.CalibrationFile).Distinct().ToList();
 
@@ -475,7 +475,7 @@ namespace XisfFileManager
             // This list will eventually be copied out and placed in the local target Calibration directory
             // Targets that don't match any existing FLAT calibration file will be flagged later
 
-            bool bAllFlatsMatched = MatchCalibrationFlatFrames(eCalibrationDirectory.LIBRARY, mUnmatchedFlatTargetFileList, true);
+            bool bAllFlatsMatched = MatchCalibrationFlatFrames(eCalibrationDirectory.LIBRARY, mUnmatchedFlatTargetFileList, false);
 
             mUniqueFlatCalibrationFileList = mMatchedFlatList.Select(item => item.CalibrationFile).Distinct().ToList();
 

@@ -91,7 +91,7 @@ namespace XisfFileManager.Calculations
 
             foreach (XisfFile file in fileList)
             {
-                secondInterval = file.CaptureDateTime;
+                secondInterval = file.CaptureTime;
                 double delta = secondInterval.Subtract(firstInterval).TotalSeconds;
                 firstInterval = secondInterval;
 
@@ -185,10 +185,10 @@ namespace XisfFileManager.Calculations
             TimeSpan nineAM = new TimeSpan(9, 0, 0);  // 9 am the next day
 
             // Filter and group xFiles based on capture day
-            var groupedByDateFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime);
+            var groupedByDateFiles = xFileList.GroupBy(xFile => xFile.CaptureTime);
 
-            var groupedByEveningFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay >= fourPM);
-            var groupedByMorningFiles = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay <= nineAM);
+            var groupedByEveningFiles = xFileList.GroupBy(xFile => xFile.CaptureTime.TimeOfDay >= fourPM);
+            var groupedByMorningFiles = xFileList.GroupBy(xFile => xFile.CaptureTime.TimeOfDay <= nineAM);
             //var groupedBySessionFiles = IEnumerable<List<XisfFile>>;  // = xFileList.GroupBy(xFile => xFile.CaptureDateTime.TimeOfDay <= nineAM);
 
             foreach (var evening in groupedByEveningFiles)

@@ -22,12 +22,6 @@ namespace XisfFileManager.FileOperations
         {
             mXDoc = new XDocument();
             KeywordList = new KeywordList();
-            ImageAttachmentLength = new List<int>();
-            ImageAttachmentStart = new List<int>();
-            ImageAttachmentStartPadding = new List<int>();
-            ThumbnailAttachmentLength = new List<int>();
-            ThumbnailAttachmentStart = new List<int>();
-            ThumbnailAttachmentStartPadding = new List<int>();
         }
 
         // Properties
@@ -35,12 +29,12 @@ namespace XisfFileManager.FileOperations
         {
             mXDoc = new XDocument();
             KeywordList.Clear();
-            ImageAttachmentLength.Clear();
-            ImageAttachmentStart.Clear();
-            ImageAttachmentStartPadding.Clear();
-            ThumbnailAttachmentLength.Clear();
-            ThumbnailAttachmentStart.Clear();
-            ThumbnailAttachmentStartPadding.Clear();
+            ImageAttachmentLength = 0;
+            InputImageAttachmentStart = 0;
+            OutputImageAttachmentPadding = 0;
+            ThumbnailAttachmentLength = 0;
+            InputThumbnailAttachmentStart = 0;
+            OutputThumbnailAttachmentPadding = 0;
         }
 
         public string XmlVersionText { get; set; }
@@ -66,88 +60,120 @@ namespace XisfFileManager.FileOperations
         {
             return KeywordList.GetKeyword(keyword);
         }
-        public object GetKeywordValue(string keyword)
+        public string GetKeywordValue(string keyword)
         {
             return KeywordList.GetKeywordValue(keyword);
         }
-        public object GetKeywordComment(string keyword)
+        public string GetKeywordComment(string keyword)
         {
             return KeywordList.GetKeywordComment(keyword);
         }
         public double AmbientTemperature
         {
-            get { return KeywordList.AmbientTemperature; }
-            set { KeywordList.AmbientTemperature = value; }
+            get => KeywordList.AmbientTemperature;
+            set => KeywordList.AmbientTemperature = value;
         }
         public int Binning
         {
-            get { return KeywordList.Binning; }
-            set { KeywordList.Binning = value; }
+            get => KeywordList.Binning;
+            set => KeywordList.Binning = value;
         }
         public string Camera
         {
-            get { return KeywordList.Camera; }
-            set { KeywordList.Camera = value; }
-        }
-        public DateTime CaptureDateTime
-        {
-            get { return KeywordList.CaptureTime; }
-            set { KeywordList.CaptureTime = value; }
+            get => KeywordList.Camera;
+            set => KeywordList.Camera = value;
         }
         public string CaptureSoftware
         {
-            get { return KeywordList.CaptureSoftware; }
-            set { KeywordList.CaptureSoftware = value; }
+            get
+            {
+                Keyword creator = GetKeyword("CREATOR");
+                if (creator != null)
+                {
+                    RemoveKeyword("CREATOR");
+
+                    if (creator.Value.Contains("N.I.N.A."))
+                    {
+                        AddKeyword("SWCREATE", "NINA", creator.Value);
+                        return "NINA";
+                    }
+                    if (creator.Value.Contains("SkyX"))
+                    {
+                        AddKeyword("SWCREATE", "TSX", creator.Value);
+                        return "TSX";
+                    }
+                    if (creator.Value.Contains("Sequence"))
+                    {
+                        AddKeyword("SWCREATE", "SGP", creator.Value);
+                        return "SGP";
+                    }
+                    if (creator.Value.Contains("Cap"))
+                    {
+                        AddKeyword("SWCREATE", "SCP", creator.Value);
+                        return "SCP";
+                    }
+
+                    AddKeyword("SWCREATE", creator.Value, creator.Comment);
+                    return creator.Value;
+                }
+                return GetKeywordValue("SWCREATE");
+            }
+            set { AddKeyword("SWCREATE", value, "[name] Equipment Control and Automation Application"); }
+        }
+        public DateTime CaptureTime
+        {
+            get => KeywordList.CaptureTime;
+            set => KeywordList.CaptureTime = value;
         }
         public string CBIAS
         {
-            get { return KeywordList.CBIAS; }
-            set { KeywordList.CBIAS = value; }
+            get => KeywordList.CBIAS;
+            set => KeywordList.CBIAS = value;
         }
         public string CDARK
         {
-            get { return KeywordList.CDARK; }
-            set { KeywordList.CDARK = value; }
+            get => KeywordList.CDARK;
+            set => KeywordList.CDARK = value;
         }
         public string CFLAT
         {
-            get { return KeywordList.CFLAT; }
-            set { KeywordList.CFLAT = value; }
+            get => KeywordList.CFLAT;
+            set => KeywordList.CFLAT = value;
         }
         public string CPANEL
         {
-            get { return KeywordList.CPANEL; }
-            set { KeywordList.CPANEL = value; }
+            get => KeywordList.CPANEL;
+            set => KeywordList.CPANEL = value;
         }
         public double ExposureSeconds
         {
-            get { return KeywordList.ExposureSeconds; }
-            set { KeywordList.ExposureSeconds = value; }
+            get => KeywordList.ExposureSeconds;
+            set => KeywordList.ExposureSeconds = value;
         }
         public string FilePath { get; set; } = string.Empty;
         public string FilterName
         {
-            get { return KeywordList.FilterName; }
-            set { KeywordList.AddKeyword("FILTER", value); }
+            get => KeywordList.FilterName;
+            set => KeywordList.FilterName = value;
         }
         public double FocalLength
         {
-            get { return KeywordList.FocalLength; }
-            set { KeywordList.FocalLength = value; }
+            get => KeywordList.FocalLength;
+            set => KeywordList.FocalLength = value;
         }
         public int FocuserPosition
         {
-            get { return KeywordList.FocuserPosition; }
-            set { KeywordList.FocuserPosition = value; }
+            get => KeywordList.FocuserPosition;
+            set => KeywordList.FocuserPosition = value;
         }
         public double FocuserTemperature
         {
-            get { return KeywordList.FocuserTemperature; }
-            set { KeywordList.FocuserTemperature = value; }
+            get => KeywordList.FocuserTemperature;
+            set => KeywordList.FocuserTemperature = value;
         }
         public eFrame FrameType
         {
-            get { return KeywordList.FrameType; }
+            get => KeywordList.FrameType;
             set
             {
                 switch (value)
@@ -172,22 +198,22 @@ namespace XisfFileManager.FileOperations
         }
         public int Gain
         {
-            get { return KeywordList.Gain; }
-            set { KeywordList.Gain = value; }
+            get => KeywordList.Gain;
+            set => KeywordList.Gain = value;
         }
-        public List<int> ImageAttachmentLength { get; set; }
-        public List<int> ImageAttachmentStart { get; set; }
-        public List<int> ImageAttachmentStartPadding { get; set; }
+        public int ImageAttachmentLength { get; set; }
+        public int InputImageAttachmentStart { get; set; }
+        public int OutputImageAttachmentPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
-            get { return KeywordList.Offset; }
-            set { KeywordList.Offset = value; }
+            get => KeywordList.Offset;
+            set => KeywordList.Offset = value;
         }
         public string Rejection
         {
-            get { return KeywordList.Rejection; }
-            set { KeywordList.Rejection = value; }
+            get => KeywordList.Rejection;
+            set => KeywordList.Rejection = value;
         }
         public string RotationAngle
         {
@@ -197,7 +223,7 @@ namespace XisfFileManager.FileOperations
                 if (angle != double.MinValue)
                     return "S" + angle.FormatRotationAngle();
 
-                angle = RotatorMechanicalAngle;
+                angle = RotatorPosition;
                 if (angle != double.MinValue)
                     return "M" + angle.FormatRotationAngle();
 
@@ -205,25 +231,25 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        public double RotatorMechanicalAngle
+        public double RotatorPosition
         {
-            get { return KeywordList.RotatorMechanicalAngle; }
-            set { KeywordList.RotatorMechanicalAngle = value; }
+            get => KeywordList.RotatorPosition;
+            set => KeywordList.RotatorPosition = value;
         }
         public double RotatorSkyAngle
         {
-            get { return KeywordList.RotatorSkyAngle; }
-            set { KeywordList.RotatorSkyAngle = value; }
+            get => KeywordList.RotatorSkyAngle;
+            set => KeywordList.RotatorSkyAngle = value;
         }
         public double SensorTemperature
         {
-            get { return KeywordList.SensorTemperature; }
-            set { KeywordList.SensorTemperature = value; }
+            get => KeywordList.SensorTemperature;
+            set => KeywordList.SensorTemperature = value;
         }
         public double SSWeight { get; set; }
-        public List<int> ThumbnailAttachmentStartPadding { get; set; }
-        public List<int> ThumbnailAttachmentLength { get; set; }
-        public List<int> ThumbnailAttachmentStart { get; set; }
+        public int OutputThumbnailAttachmentPadding { get; set; }
+        public int ThumbnailAttachmentLength { get; set; }
+        public int InputThumbnailAttachmentStart { get; set; }
         public bool KeepPanel { get; set; }
         /// <summary>
         /// Updates an Xisf File Target Name.
@@ -264,13 +290,13 @@ namespace XisfFileManager.FileOperations
         }
         public string Telescope
         {
-            get { return KeywordList.Telescope; }
-            set { KeywordList.Telescope = value; }
+            get => KeywordList.Telescope;
+            set => KeywordList.Telescope = value;
         }
         public int TotalFrames
         {
-            get { return KeywordList.TotalFrames; }
-            set { KeywordList.TotalFrames = value; }
+            get => KeywordList.TotalFrames;
+            set => KeywordList.TotalFrames = value;
         }
         public List<string> WeightKeyword
         {
@@ -294,8 +320,8 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                ImageAttachmentStart.Add(Convert.ToInt32(values[1]));
-                ImageAttachmentLength.Add(Convert.ToInt32(values[2]));
+                InputImageAttachmentStart = Convert.ToInt32(values[1]);
+                ImageAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
 
@@ -309,12 +335,12 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                ThumbnailAttachmentStart.Add(Convert.ToInt32(values[1]));
-                ThumbnailAttachmentLength.Add(Convert.ToInt32(values[2]));
+                InputThumbnailAttachmentStart = Convert.ToInt32(values[1]);
+                ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
 
-        public Keyword NewKeyWord(string sName, string oValue, string sComment)
+        public static Keyword NewKeyWord(string sName, string oValue, string sComment)
         {
             Keyword newKeyword = new Keyword
             {
@@ -421,7 +447,8 @@ namespace XisfFileManager.FileOperations
             }
             else
             {
-                return seconds.ToString("0000");
+                return seconds.ToString();
+                //return seconds.ToString("0000");
             }
         }
     }
