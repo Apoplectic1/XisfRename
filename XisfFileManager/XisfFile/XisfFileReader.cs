@@ -18,9 +18,9 @@ namespace XisfFileManager.FileOperations
         private int mBufferSize;
         private int bytesRead;
 
-        private Match xmlVersionMatch;
-        private Match xmlCommentMatch;
-        private Match keywordBlockMatch;
+        private Match xmlVersionBlockMatch;
+        private Match xmlCommentBlockMatch;
+        private Match xmlKeywordBlockMatch;
 
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
@@ -34,25 +34,25 @@ namespace XisfFileManager.FileOperations
                     mBufferSize = 10000;
                     mBuffer = new byte[mBufferSize];
 
-                    xmlVersionMatch = Match.Empty;
-                    xmlCommentMatch = Match.Empty;
-                    keywordBlockMatch = Match.Empty;
+                    xmlVersionBlockMatch = Match.Empty;
+                    xmlCommentBlockMatch = Match.Empty;
+                    xmlKeywordBlockMatch = Match.Empty;
 
                     bytesRead = 0;
                     int nXisfSignatureBlockSize = 16;
                     string xmlString;
 
                     // If the xml section is larger than mBufferSize, repeatedly double the buffer size and read again
-                    while (!keywordBlockMatch.Success)
+                    while (!xmlKeywordBlockMatch.Success)
                     {
                         bytesRead = xFileStream.Read(mBuffer, bytesRead, mBufferSize - bytesRead);
 
                         xmlString = Encoding.UTF8.GetString(mBuffer.Skip(nXisfSignatureBlockSize).ToArray());
 
-                        xmlVersionMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
-                        xmlCommentMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
-                        keywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
-                        if (!keywordBlockMatch.Success)
+                        xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
+                        xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
+                        xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+                        if (!xmlKeywordBlockMatch.Success)
                         {
                             // We did not find the closing "xisf>. Expand mBuffer and try again
                             mBufferSize += mBufferSize;
@@ -63,9 +63,9 @@ namespace XisfFileManager.FileOperations
 
                     xFileStream.Close();
 
-                    xFile.XmlVersionText = xmlVersionMatch.ToString();
-                    xFile.XmlCommentText = xmlCommentMatch.ToString();
-                    xmlString = keywordBlockMatch.ToString().Replace("'", "");
+                    xFile.XmlVersionText = xmlVersionBlockMatch.ToString().Clone() as string;
+                    xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
+                    xmlString = xmlKeywordBlockMatch.ToString().Replace("'", "");
 
                     // Make an isolated copy
                     xFile.XmlString = xmlString.Clone() as string;
@@ -78,9 +78,8 @@ namespace XisfFileManager.FileOperations
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath +
-                            "\n\nXisfRead.cs ReadXisfFile() ->\n\tmXDoc = XDocument.Parse(sXmlString)\n\n" + ex.Message,
-                            "Parse XISF File",
+                        MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath,
+                            "Parse XISF File Error",
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);
 
@@ -90,11 +89,18 @@ namespace XisfFileManager.FileOperations
                     XElement root = xFile.mXDoc.Root;
                     XNamespace ns = root.GetDefaultNamespace();
 
-                    
+                    // ***********************************************************************************
+
                     IEnumerable<XElement> image = xFile.mXDoc.Descendants(ns + "Image");
                     foreach (XElement element in image)
                     {
                         xFile.ImageAttachment(element);
+                    }
+
+                    IEnumerable<XElement> icc = xFile.mXDoc.Descendants(ns + "ICC");
+                    foreach (XElement element in icc)
+                    {
+                        xFile.IccAttachment(element);
                     }
 
                     IEnumerable<XElement> thumbnail = xFile.mXDoc.Descendants(ns + "Thumbnail");
@@ -105,12 +111,19 @@ namespace XisfFileManager.FileOperations
                     
                     // Place all XML formated FITS Keyword Name, Value, Comment triples into 'elements'
                     IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
-
-                    // Look at each XML FITS keyword triple and add it xFile.KeywordList 
                     foreach (XElement element in elements)
                     {
                         xFile.AddXMLKeyword(element);
                     }
+
+                    // Place Property triples into 'properties'
+                    IEnumerable<XElement> properties = xFile.mXDoc.Descendants(ns + "Property");
+                    foreach (XElement property in properties)
+                    {
+                        xFile.ParseProperties(property);
+                    }
+
+                    // ***********************************************************************************
                 }
             });
         }

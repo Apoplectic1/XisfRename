@@ -3187,45 +3187,10 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
-
-            bool globalTotalFrames = false;
-            int globalFrames = -1;
-
-            foreach (XisfFile file in mFileList)
-            {
-
-                int frames;
-                if (globalTotalFrames)
-                {
-
-                    frames = file.TotalFrames;
-                    if (frames < 0)
-                    {
-                        frames = globalFrames;
-                    }
-
-                }
-                else
-                {
-                    frames = file.TotalFrames;
-                    if (frames < 0)
-                    {
-                        globalTotalFrames = true;
-                        globalFrames = -frames;
-                        frames = globalFrames;
-                    }
-                }
-
-                file.AddKeyword("NUM-FRMS", frames.ToString(), "Number of Integrated SubFrames");
-            }
         }
 
         private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
         {
-            bool foundNumberOfImages = false;
-            bool foundRejection = false;
-
-            int numberOfImages = 0;
             string rejection = string.Empty;
             string comment = string.Empty;
 
@@ -3236,65 +3201,7 @@ namespace XisfFileManager
             {
                 foreach (XisfFile file in mFileList)
                 {
-                    foreach (Keyword node in file.KeywordList.mKeywordList)
-                    {
-                        if (node.Comment.ToLower().Contains("numberofimages"))
-                        {
-                            numberOfImages = Convert.ToInt32(Regex.Match(node.Comment, @"\d+").Value);
-                            foundNumberOfImages = true;
-
-                            if (foundRejection)
-                                break;
-                        }
-
-                        if (node.Comment.ToLower().Contains("pixelrejection"))
-                        {
-                            if (node.Comment.ToLower().Contains("linear"))
-                            {
-                                rejection = "LFC";
-                                comment = "PixInsight Linear Fit Clipping";
-                                foundRejection = true;
-
-                                if (foundNumberOfImages)
-                                    break;
-                            }
-
-                            if (node.Comment.ToLower().Contains("student"))
-                            {
-                                rejection = "ESD";
-                                comment = "PixInsight Extreme Studentized Deviation Clipping";
-                                foundRejection = true;
-
-                                if (foundNumberOfImages)
-                                    break;
-                            }
-
-                            if (node.Comment.ToLower().Contains("winsor"))
-                            {
-                                rejection = "WSC";
-                                comment = "PixInsight Winsorized Sigma Clipping";
-                                foundRejection = true;
-
-                                if (foundNumberOfImages)
-                                    break;
-                            }
-                            if (node.Comment.ToLower().Contains("sigma"))
-                            {
-                                rejection = "SC";
-                                comment = "PixInsight Sigma Clipping";
-                                foundRejection = true;
-
-                                if (foundNumberOfImages)
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (foundNumberOfImages)
-                        file.AddKeyword("NUM-FRMS", numberOfImages.ToString(), "Number of Integrated SubFrames");
-
-                    if (foundRejection)
-                        file.AddKeyword("RJCT-ALG", rejection.ToString(), comment.ToString());
+                    file.KeywordList.SetMasterFrameKeywords();
                 }
             }
         }

@@ -2192,8 +2192,7 @@
             // 
             ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
             ComboBox_FileSelection_DirectorySelection_TotalFrames.FormattingEnabled = true;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Items.AddRange(new object[] { "MM", "PC", "SC", "WSC", "ASC", "LFC", "ESD", "RCR" });
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
+             ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
             ComboBox_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_FileSelection_DirectorySelection_TotalFrames.Name = "ComboBox_FileSelection_DirectorySelection_TotalFrames";
             ComboBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(76, 23);

@@ -117,13 +117,13 @@ namespace XisfFileManager.FileOperations
             string targetName;
             eFrame frameType;
 
-            if (mFile.TargetName.Equals("Master"))
+            if (mFile.TargetName.Contains("Master"))
             {
                 newName = "Master ";
                 targetName = mFile.TargetName;
                 frameType = mFile.FrameType;
 
-                if (targetName.Contains("Master"))
+                if (targetName.Equals("Master"))
                 {
                     //mFile.KeywordData.TotalFrames(true);
 
@@ -131,16 +131,16 @@ namespace XisfFileManager.FileOperations
                     {
                         newName = targetName + "  Integration  L-" + mFile.FilterName + "  ";
 
-                        if (mFile.TotalFrames.ToString("D3") != string.Empty)
-                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "x" + mFile.TotalFrames.ToString() + "  ";
+                        if (mFile.MSTRFRMS.ToString() != string.Empty)
+                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "x" + mFile.MSTRFRMS + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "  ";
 
                         newName += mFile.Camera + "G" + mFile.Gain.ToString("D3") + "O" + mFile.Offset;
                         newName += "@" + mFile.SensorTemperature.FormatTemperature() + "C";
 
-                        if (mFile.Rejection != string.Empty)
-                            newName += "  (" + mFile.Rejection + "  " + mFile.CaptureTime.ToString("yyyy-MM-dd");
+                        if (mFile.MSTRALG != string.Empty)
+                            newName += "  (" + mFile.MSTRALG + "  " + mFile.CaptureTime.ToString("yyyy-MM-dd");
                         else
                             newName += "  (" + mFile.CaptureTime.ToString("yyyy-MM-dd");
 
@@ -156,8 +156,8 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Dark  " + mFile.CaptureTime.ToString("yyyy-MM-dd") + "  ";
 
-                        if (mFile.TotalFrames.ToString("D3") != string.Empty)
-                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "x" + mFile.TotalFrames + "  ";
+                        if (mFile.MSTRFRMS != -1)
+                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "x" + mFile.MSTRFRMS + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "  ";
 
@@ -169,8 +169,8 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Bias  " + mFile.CaptureTime.ToString("yyyy-MM-dd") + "  ";
 
-                        if (mFile.TotalFrames.ToString("D3") != string.Empty)
-                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "x" + mFile.TotalFrames.ToString() + "  ";
+                        if (mFile.MSTRFRMS != -1)
+                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "x" + mFile.MSTRFRMS + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "  ";
 
@@ -182,8 +182,8 @@ namespace XisfFileManager.FileOperations
                     {
                         newName += "Flat " + mFile.FilterName + "  " + mFile.CaptureTime.ToString("yyyy-MM-dd") + "  ";
 
-                        if (mFile.TotalFrames != 0)
-                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "x" + mFile.TotalFrames.ToString() + "  ";
+                        if (mFile.MSTRFRMS != -1)
+                            newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "x" + mFile.MSTRFRMS + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning.ToString() + "  ";
 
@@ -196,9 +196,9 @@ namespace XisfFileManager.FileOperations
 
                     newName += "  (";
 
-                    if (mFile.Rejection != string.Empty)
+                    if (mFile.MSTRALG != string.Empty)
                     {
-                        newName += mFile.Rejection;
+                        newName += mFile.MSTRALG;
 
                         if (mFile.CaptureSoftware != string.Empty)
                             newName += "  " + mFile.CaptureSoftware;

@@ -23,20 +23,18 @@ namespace XisfFileManager.FileOperations
             mXDoc = new XDocument();
             KeywordList = new KeywordList();
         }
-
         // Properties
         public void Clear()
         {
             mXDoc = new XDocument();
             KeywordList.Clear();
-            ImageAttachmentLength = 0;
-            InputImageAttachmentStart = 0;
-            OutputImageAttachmentPadding = 0;
+            TargetAttachmentLength = 0;
+            TargetAttachmentStart = 0;
+            TargetAttachmentPadding = 0;
             ThumbnailAttachmentLength = 0;
-            InputThumbnailAttachmentStart = 0;
-            OutputThumbnailAttachmentPadding = 0;
+            ThumbnailAttachmentStart = 0;
+            ThumbnailAttachmentPadding = 0;
         }
-
         public string XmlVersionText { get; set; }
         public string XmlCommentText { get; set; }
         public void AddKeyword(string keyword, string value, string comment = "Xisf File Manager")
@@ -78,6 +76,7 @@ namespace XisfFileManager.FileOperations
             get => KeywordList.Binning;
             set => KeywordList.Binning = value;
         }
+        public int BlockAlignmentSize { get; set; }
         public string Camera
         {
             get => KeywordList.Camera;
@@ -201,19 +200,22 @@ namespace XisfFileManager.FileOperations
             get => KeywordList.Gain;
             set => KeywordList.Gain = value;
         }
-        public int ImageAttachmentLength { get; set; }
-        public int InputImageAttachmentStart { get; set; }
-        public int OutputImageAttachmentPadding { get; set; }
+        public int IccAttachmentLength { get; set; }
+        public int IccAttachmentStart { get; set; }
+        public int IccAttachmentPadding { get; set; }
+        public int TargetAttachmentLength { get; set; }
+        public int TargetAttachmentStart { get; set; }
+        public int TargetAttachmentPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
             get => KeywordList.Offset;
             set => KeywordList.Offset = value;
         }
-        public string Rejection
+        public string MSTRALG
         {
-            get => KeywordList.Rejection;
-            set => KeywordList.Rejection = value;
+            get => KeywordList.MSTRALG;
+            set => KeywordList.MSTRALG = value;
         }
         public string RotationAngle
         {
@@ -247,9 +249,9 @@ namespace XisfFileManager.FileOperations
             set => KeywordList.SensorTemperature = value;
         }
         public double SSWeight { get; set; }
-        public int OutputThumbnailAttachmentPadding { get; set; }
+        public int ThumbnailAttachmentPadding { get; set; }
         public int ThumbnailAttachmentLength { get; set; }
-        public int InputThumbnailAttachmentStart { get; set; }
+        public int ThumbnailAttachmentStart { get; set; }
         public bool KeepPanel { get; set; }
         /// <summary>
         /// Updates an Xisf File Target Name.
@@ -293,10 +295,10 @@ namespace XisfFileManager.FileOperations
             get => KeywordList.Telescope;
             set => KeywordList.Telescope = value;
         }
-        public int TotalFrames
+        public int MSTRFRMS
         {
-            get => KeywordList.TotalFrames;
-            set => KeywordList.TotalFrames = value;
+            get => KeywordList.MSTRFRMS;
+            set => KeywordList.MSTRFRMS = value;
         }
         public List<string> WeightKeyword
         {
@@ -320,8 +322,23 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                InputImageAttachmentStart = Convert.ToInt32(values[1]);
-                ImageAttachmentLength = Convert.ToInt32(values[2]);
+                TargetAttachmentStart = Convert.ToInt32(values[1]);
+                TargetAttachmentLength = Convert.ToInt32(values[2]);
+            }
+        }
+
+        public void IccAttachment(XElement element)
+        {
+            XAttribute attribute = element.Attribute("location");
+
+            if (attribute != null)
+            {
+                string attachment = attribute.Value;
+
+                string[] values = attachment.Split(':');
+
+                IccAttachmentStart = Convert.ToInt32(values[1]);
+                IccAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
 
@@ -335,7 +352,7 @@ namespace XisfFileManager.FileOperations
 
                 string[] values = attachment.Split(':');
 
-                InputThumbnailAttachmentStart = Convert.ToInt32(values[1]);
+                ThumbnailAttachmentStart = Convert.ToInt32(values[1]);
                 ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
@@ -388,6 +405,25 @@ namespace XisfFileManager.FileOperations
                     "\tKeyword Value:" + elementValue.ToString() +
                     "\tKeyword Comment:" + elementComment.ToString() +
                     "\n\n" + ex.Message);
+            }
+        }
+
+        public void ParseProperties(XElement property)
+        { 
+            string propertyId = property.Attribute("id")?.Value;
+            string propertyType = property.Attribute("type")?.Value;
+            string propertyValue = property.Attribute("value")?.Value;
+            string value = property.Value; // specified as a floating string
+
+            // Handle the property based on its ID
+            switch (propertyId)
+            {
+                case "XISF:BlockAlignmentSize":
+                    BlockAlignmentSize = Convert.ToInt32(propertyValue);
+                    break;
+
+                default:
+                    break;
             }
         }
 

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -60,25 +62,6 @@ namespace XisfFileManager.FileOperations
 
         }
 
-        private static void AddXmlVersion(XmlDocument xmlDoc)
-        {
-            // Check if the declaration element already exists
-            bool declarationExists = xmlDoc.SelectSingleNode("/*[local-name()='declaration']") != null;
-
-            // Create an XmlElement for the XML declaration if it doesn't exist
-            if (!declarationExists)
-            {
-                // Create an XmlElement for the declaration
-                XmlElement declarationElement = xmlDoc.CreateElement("declaration");
-
-                // Set the inner text of the declaration element to your XML declaration string
-                declarationElement.InnerText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
-                // Insert the declaration element as the first child of the root element
-                xmlDoc.DocumentElement.InsertBefore(declarationElement, xmlDoc.DocumentElement.FirstChild);
-            }
-        }
-
         private static XmlDocument ValidateXml(XmlDocument xmlDoc)
         {
             try
@@ -93,7 +76,7 @@ namespace XisfFileManager.FileOperations
 
                 return validXmlDoc;
             }
-            catch 
+            catch
             {
                 return null; // Return null in case of an exception
             }
@@ -106,9 +89,9 @@ namespace XisfFileManager.FileOperations
         public static bool UpdateFile(XisfFile xFile)
         {
             // Return if KeywordList and the original xml are identical 
-            if (KeywordsMatchXml(xFile))
-                return true;
-   
+            //if (KeywordsMatchXml(xFile))
+            //    return true;
+
             int xisfStart;
             int xisfEnd;
 
@@ -143,9 +126,11 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
+                    // The xisfString does not include the comment section if present
                     XmlDocument rawXmlDoc = new XmlDocument();
                     rawXmlDoc.LoadXml(xisfString);
 
+                    // This will add an xml version if not present
                     XmlDocument xmlDoc = ValidateXml(rawXmlDoc);
 
                     // *******************************************************************************************************************************
@@ -159,13 +144,13 @@ namespace XisfFileManager.FileOperations
 
                     // We need to set the start address and length of the image and thumbnail attachements due to changes in the <xisf> to </xisf> length
                     // Both image and thumbnail attachements require being padded with 0's prior to the image to BlockAlign them  
-                    UpdateImageAttachmentPadding(xmlDoc, xFile);
+                    SetAttachmentPadding(xmlDoc, xFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // Set the new length of the <xisf to /xisf> section
-                    int xmlLength = xmlDoc.OuterXml.Length + 16;
+                    int xmlLength = xmlDoc.OuterXml.Length;
 
                     binaryFileData[9] = (byte)((xmlLength >> 8) & 0xFF); // Most significant byte
                     binaryFileData[8] = (byte)(xmlLength & 0xFF); // Least significant byte
@@ -197,36 +182,36 @@ namespace XisfFileManager.FileOperations
 
                     // Main Image
                     // In OUTPUT file, pad from current position to the start of image data
-                    int padding = xFile.OutputImageAttachmentPadding;
+                    int padding = xFile.TargetAttachmentPadding;
 
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.ZEROS,
-                        BinaryByteLength = xFile.OutputImageAttachmentPadding
+                        BinaryByteLength = xFile.TargetAttachmentPadding
                     };
                     mBufferList.Add(mBuffer);
 
                     // In INPUT file, Add the binary image data from rawFileData after padding
-                    int iStart = xFile.InputImageAttachmentStart;
-                    int iLength = xFile.ImageAttachmentLength;
+                    int iStart = xFile.TargetAttachmentStart;
+                    int iLength = xFile.TargetAttachmentLength;
 
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.BINARY,
-                        BinaryDataStart = xFile.InputImageAttachmentStart,
-                        BinaryByteLength = xFile.ImageAttachmentLength,
+                        BinaryDataStart = xFile.TargetAttachmentStart,
+                        BinaryByteLength = xFile.TargetAttachmentLength,
                         BinaryData = binaryFileData
                     };
                     mBufferList.Add(mBuffer);
 
                     // Thumbnail Image
-                    if (xFile.OutputThumbnailAttachmentPadding > 0)
+                    if (xFile.ThumbnailAttachmentPadding > 0)
                     {
                         // Pad from current position to the start of the thumbnail image data
                         mBuffer = new Buffer
                         {
                             Type = eBufferData.ZEROS,
-                            BinaryByteLength = xFile.OutputThumbnailAttachmentPadding,
+                            BinaryByteLength = xFile.ThumbnailAttachmentPadding,
                         };
                         mBufferList.Add(mBuffer);
 
@@ -234,7 +219,7 @@ namespace XisfFileManager.FileOperations
                         mBuffer = new Buffer
                         {
                             Type = eBufferData.BINARY,
-                            BinaryDataStart = xFile.InputThumbnailAttachmentStart,
+                            BinaryDataStart = xFile.ThumbnailAttachmentStart,
                             BinaryByteLength = xFile.ThumbnailAttachmentLength,
                             BinaryData = binaryFileData
                         };
@@ -289,10 +274,63 @@ namespace XisfFileManager.FileOperations
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
-
-        private static void UpdateImageAttachmentPadding(XmlDocument document, XisfFile xFile)
+        private static int GetPadding(int length, int alignment)
         {
-            // Image and Thumbnail start address and length are set when the input file is first read
+            // Find the difference between length and the nearest larger value that is evenly divisible by alignment
+
+            if ((length % alignment) == 0)
+                return 0;
+            else
+            {
+                int nextdivisible = length + (alignment - length % alignment);
+                return nextdivisible - length;
+            }
+        }
+        static void UpdateImageLocation(XElement imageNode, int newStartingAddress)
+        {
+            var locationAttribute = imageNode.Attribute("location");
+            if (locationAttribute != null)
+            {
+                string[] locationParts = locationAttribute.Value.Split(':');
+                locationParts[1] = newStartingAddress.ToString();
+                locationAttribute.Value = string.Join(":", locationParts);
+            }
+        }
+
+        private static void SetAttachmentPadding(XmlDocument document, XisfFile xFile)
+        {
+            int originalDocumentLength;
+            int modifiedDocumentLength;
+
+            XElement root = xFile.mXDoc.Root;
+            XNamespace ns = root.GetDefaultNamespace();
+
+
+            XElement imageNode = xFile.mXDoc.Descendants(ns + "Image").FirstOrDefault(); // Assuming 'Image' is the tag
+
+            if (imageNode != null)
+            {
+                originalDocumentLength = document.OuterXml.Length;
+
+                int padding = GetPadding(document.ToString().Length + 16, xFile.BlockAlignmentSize);
+
+                int newStartingAddress = document.ToString().Length + 16 + padding;
+                UpdateImageLocation(imageNode, newStartingAddress);
+
+                modifiedDocumentLength = document.OuterXml.Length;
+
+                // Recalculate padding if needed
+                xFile.TargetAttachmentPadding += modifiedDocumentLength - originalDocumentLength;
+
+                // Other processing...
+            }
+
+
+
+            /*
+
+
+            // Image, Icc Profile and Thumbnail start address and length are set when the input file is first read
             // We now need to compute how much padding is needed after Keyword replacement completes in the new output image
 
             // Xisf File Manager will take the first image in an Xisf File and throw out High and Low rejection images (or any other image) if they exist
@@ -302,21 +340,96 @@ namespace XisfFileManager.FileOperations
             XmlNode imageNode = document.SelectSingleNode("//ns:Image", nsManager);
 
             // <Property id="XISF:BlockAlignmentSize" type="UInt16" value="4096" />
-            // <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072" />    What is this?
+            // <Property id="XISF:MaxInlineBlockSize" type="UInt16" value="3072" />  This says any data block larger that 3072 needs to be included as an attachment
             XmlNode propertyNode = document.SelectSingleNode("//ns:Metadata/ns:Property[@id='XISF:BlockAlignmentSize']", nsManager);
             string valueAttribute = propertyNode.Attributes["value"].Value;
             int blockAlignmentSize = Convert.ToInt32(valueAttribute);
 
+            // *****************************************************************************************************************
+            // Target
+            // *****************************************************************************************************************
+
             // Image PAD THE OUTPUT FILE after the xml section
-            xFile.OutputImageAttachmentPadding = blockAlignmentSize - ((document.OuterXml.Length + 16) % blockAlignmentSize);
-            
+            // document.OuterXml.Length includes any XmlVersion and XmlComment
+            xFile.TargetAttachmentPadding = GetPadding(document.OuterXml.Length + 16, blockAlignmentSize);
+
+            // Now we need to update the starting address for the attachment 
+            // <Image geometry="3056:2048:1" sampleFormat="Float32" bounds="0:1" colorSpace="Gray" location="attachment:4096:25034752">
+
+            string targetImageElement = imageNode.OuterXml;
+
+            // The new starting address may require a different number of characters
+
+            int originalElementLength = targetImageElement.IndexOf('>') + 1;
+  
+            string locationAttribute = imageNode.Attributes["location"].Value;
+            string[] locationParts = locationAttribute.Split(':');
+
+            int targetImageLength = Convert.ToInt32(locationParts[2]);
+            int newTargetImageStartingAddress = (document.OuterXml.Length + 16) + xFile.TargetAttachmentPadding;
+
+            // Modify the first field after "attachment" with the new integer value
+            locationParts[1] = newTargetImageStartingAddress.ToString();
+            string newLocationAttribute = string.Join(":", locationParts);
+
+            // Update the attribute in the XML
+            imageNode.Attributes["location"].Value = newLocationAttribute;
+
+            targetImageElement = imageNode.OuterXml;
+
+            int modifiedElementLength = targetImageElement.IndexOf('>') + 1;
+           
+            // Update based on new xml length
+            xFile.TargetAttachmentPadding += modifiedElementLength - originalElementLength;
+
+
+            // *****************************************************************************************************************
+            // ICC Profile
+            // *****************************************************************************************************************
+
+            // *****************************************************************************************************************
+            // Thumbnail
+            // *****************************************************************************************************************
+
             // Thnumbnal PAD THE OUTPUT FILE after the main image 
             XmlNode thumbnailNode = imageNode.SelectSingleNode(".//ns:Thumbnail", nsManager);
             if (thumbnailNode != null)
                 // For padding, all we need to know is the main image length since it starts on a modulo blockAlignmentSize boundary
-                xFile.OutputThumbnailAttachmentPadding = blockAlignmentSize - (xFile.ImageAttachmentLength % blockAlignmentSize);
+                xFile.ThumbnailAttachmentPadding = (newTargetImageStartingAddress + xFile.TargetAttachmentLength) % blockAlignmentSize;
             else
-                xFile.OutputThumbnailAttachmentPadding = 0;
+                xFile.ThumbnailAttachmentPadding = 0;
+
+            if (thumbnailNode != null)
+            {
+                // Now we need to update the starting address for the Thumbnail attachment inside <Image
+                // <Thumbnail geometry="400:267:1" sampleFormat="UInt8" colorSpace="Gray" location="attachment:25042944:106800"/>
+
+                string thumbnailImageElement = thumbnailNode.OuterXml;
+
+                // The new starting address may require a different number of characters
+
+                originalElementLength = thumbnailImageElement.IndexOf('>') + 1;
+                
+                locationAttribute = thumbnailNode.Attributes["location"].Value;
+                locationParts = locationAttribute.Split(':');
+
+                int newThumbnailImageStartingAddress = newTargetImageStartingAddress + targetImageLength + xFile.ThumbnailAttachmentPadding;
+
+                // Modify the first field after "attachment" with the new integer value
+                locationParts[1] = newThumbnailImageStartingAddress.ToString();
+                newLocationAttribute = string.Join(":", locationParts);
+
+                // Update the attribute in the XML
+                thumbnailNode.Attributes["location"].Value = newLocationAttribute;
+
+                thumbnailImageElement = thumbnailNode.OuterXml;
+
+                modifiedElementLength = thumbnailImageElement.IndexOf('>') + 1;
+                
+                // Update based on new xml length
+                xFile.ThumbnailAttachmentPadding += modifiedElementLength - originalElementLength;
+            }
+            */
         }
 
         // ****************************************************************************************************

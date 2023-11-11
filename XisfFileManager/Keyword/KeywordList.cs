@@ -102,12 +102,14 @@ namespace XisfFileManager
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void AddKeywordKeepDuplicates(Keyword newKeyword)
         {
             mKeywordList.Add(newKeyword);
         }
 
         // ----------------------------------------------------------------------------------------------------------
+
         public void AddKeywordKeepDuplicates(string sName, string oValue, string sComment = "XISF File Manager")
         {
             Keyword newKeyword = NewKeyword(sName, oValue, sComment);
@@ -116,7 +118,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public double Airmass
         {
             get
@@ -125,15 +127,13 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return -1.0;
 
-                double airmass = Convert.ToDouble(value);
-                return airmass;
+                return Convert.ToDouble(value);
             }
             set { AddKeyword("AIRMASS", value.ToString("F3"), "[#] Line-of-sight Atmospheres"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
-        // Find the ambient temerature as reported by a local weather station
+ 
         public double AmbientTemperature
         {
             get
@@ -142,14 +142,13 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return -273.0;
 
-                double ambientTemperture = Convert.ToDouble(value);
-                return ambientTemperture;
+                return Convert.ToDouble(value);
             }
             set { AddKeyword("AMB-TEMP", value.ToString("F1"), "[deg C] Local Temerature from Open Weather API"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public int Binning
         {
             get
@@ -158,8 +157,7 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return -1;
 
-                int binning = Convert.ToInt32(value);
-                return binning;
+                return Convert.ToInt32(value);
             }
             set
             {
@@ -169,7 +167,6 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
 
         public string Camera
         {
@@ -178,7 +175,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public DateTime CaptureTime
         {
             get
@@ -191,10 +188,9 @@ namespace XisfFileManager
             }
             set { AddKeyword("DATE-LOC", value.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time"); }
         }
-            
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CaptureSoftware
         {
             get { return GetKeywordValue("SWCREATE"); }
@@ -202,7 +198,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CBIAS
         {
             get { return GetKeywordValue("CBIAS"); }
@@ -210,7 +206,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CDARK
         {
             get { return GetKeywordValue("CDARK"); }
@@ -218,21 +214,23 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CFLAT
         {
             get { return GetKeywordValue("CFLAT"); }
             set { AddKeyword("CFLAT", value.ToString(), "[#] PixInsight WBPP PreProcessing Group Keyword"); }
         }
+
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CPANEL
         {
             get { return GetKeywordValue("CPANEL"); }
             set { AddKeyword("CPANEL", value.ToString(), "[name] PixInsight WBPP PostProcessing Group Keyword"); }
         }
+
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string CSTARS
         {
             get { return GetKeywordValue("CSTARS"); }
@@ -240,7 +238,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public double ExposureSeconds
         {
             get 
@@ -256,7 +254,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string FilterName
         {
             get { return GetKeywordValue("FILTER"); }
@@ -299,7 +297,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public double FocalLength
         {
             get
@@ -315,7 +313,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public int FocuserPosition
         {
             get
@@ -327,11 +325,11 @@ namespace XisfFileManager
                 int position = Convert.ToInt32(value);
                 return position;
             }
-            set { AddKeyword("FOCPOS", value.ToString(), "[um] NiteCrawler Position - 94580 Steps 0.2667 um/Step"); }
+            set { AddKeyword("FOCPOS", value.ToString(), "[um] NiteCrawler Position - 94580 Steps, 0.2667 um/Step"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public double FocuserTemperature
         {
             get
@@ -342,12 +340,11 @@ namespace XisfFileManager
                 double temperature = Convert.ToDouble(value);
                 return temperature;
             }
-
-            set { AddKeyword("FOCTEMP", value.ToString("F1"), "[deg C] NightCrawler Focuser Temperature"); }
+            set { AddKeyword("FOCTEMP", value.ToString(), "[degC] NightCrawler Focuser Temperature"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+ 
         public eFrame FrameType
         {
             get
@@ -387,7 +384,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public int Gain
         {
             get
@@ -407,7 +404,30 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
+
+        public string MSTRALG
+        {
+            get { return GetKeywordValue("MSTRALG"); }
+            set { AddKeyword("MSTRALG", value, "[name] Master Frame Rejection Algorithm"); }
+        }
+
         // *********************************************************************************************************
+
+        public int MSTRFRMS
+        {
+            get 
+            { 
+                string value = GetKeywordValue("MSTRFRMS");
+                if (value == string.Empty)
+                    return - 1;
+
+                return Convert.ToInt32(value);
+            }
+            set { AddKeyword("MSTRFRMS", value.ToString(), "[#] Master Frame Integration Total"); }
+        }
+
+        // *********************************************************************************************************
+
         public int Offset
         {
             get
@@ -419,7 +439,6 @@ namespace XisfFileManager
                 int offset = Convert.ToInt32(value);
                 return offset;
             }
-
             set
             {
                 if (Camera.Contains("183"))
@@ -449,7 +468,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public double PixelSize
         {
             get
@@ -458,42 +477,17 @@ namespace XisfFileManager
                 if (value == string.Empty) 
                     return -1;
 
-                double size = Convert.ToDouble(value);
-                return size;
+                return Convert.ToDouble(value);
             }
             set
             {
-                AddKeyword("XPIXSZ", value.ToString(), "[um] Sensor Photosite Width");
-                AddKeyword("YPIXSZ", value.ToString(), "[um] Sensor Photosite Height");
+                AddKeyword("XPIXSZ", value.ToString(), "[um] Sensor Photosite Width Microns");
+                AddKeyword("YPIXSZ", value.ToString(), "[um] Sensor Photosite Height Microns");
             }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string Rejection
-        {
-            get
-            {
-                // Temp
-                Keyword keyWord = GetKeyword("REJECTION");
-                if (keyWord != null)
-                {
-                    AddKeyword("RJCT-ALG", keyWord.Value, keyWord.Comment);
-                    RemoveKeyword("REJECTION");
-                    RemoveKeyword("REJECTIO");
-                }
-                // Temp
 
-                object Object = GetKeywordValue("RJCT-ALG");
-                if (Object != null)
-                    return (string)Object;
-                return string.Empty;
-            }
-            set { SetIntegrationParamaters(); }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public double RotatorPosition
         {
             get
@@ -502,14 +496,13 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return double.MinValue;
 
-                double angle = Convert.ToDouble(value);
-                return angle;
+                return Convert.ToDouble(value);
             }
-            set { AddKeyword("POSANGLE", value.ToString("F3"), "[degrees] NightCrawler Mechanical Position 0.001 deg/Step"); }
+            set { AddKeyword("POSANGLE", value.ToString(), "[degrees] NightCrawler Mechanical Position 0.001 deg/Step"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+      
         public double RotatorSkyAngle
         {
             get
@@ -518,16 +511,13 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return double.MinValue;
 
-                double angle = Convert.ToDouble(value);
-                return angle;
+                return Convert.ToDouble(value);
             }
-            set { AddKeyword("OBJCTROT", value.ToString("F3"), "[degrees] Image Sky Angle at Frame Center"); }
+            set { AddKeyword("OBJCTROT", value.ToString(), "[degrees] Image Sky Angle at Frame Center"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
 
-        // Various programs appear to screw this up - fix it
         private void SetEGain()
         {
             // Use graphs found on manufacturer website
@@ -557,69 +547,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
 
-        public void SetIntegrationParamaters()
-        {
-            List<Keyword> keys = new List<Keyword>(mKeywordList);
-
-            foreach (Keyword node in keys)
-            {
-                if (node.Comment.ToLower().Contains("numberofimages"))
-                {
-                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
-
-                    AddKeyword("NUM-FRMS", totalFrames, "Number of Integrated SubFrames");
-                }
-
-                if (node.Comment.Contains("pixelrejection", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (node.Comment.ToLower().Contains("linear"))
-                    {
-                        AddKeyword("RJCT-ALG", "LFC", "PixInsight Linear Fit Clipping");
-                        break;
-                    }
-
-                    if (node.Comment.ToLower().Contains("student"))
-                    {
-                        AddKeyword("RJCT-ALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
-                        break;
-                    }
-
-                    if (node.Comment.ToLower().Contains("winsor"))
-                    {
-                        AddKeyword("RJCT-ALG", "WSC", "PixInsight Winsorized Sigma Clipping");
-                        break;
-                    }
-
-                    if (node.Comment.ToLower().Contains("sigma"))
-                    {
-                        AddKeyword("RJCT-ALG", "SC", "PixInsight Sigma Clipping");
-                        break;
-                    }
-                }
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
-
-        public double SensorSetPointTemperature
-        {
-            get
-            {
-                string value = GetKeywordValue("SET-TEMP");
-                if (value == string.Empty)
-                    return -273.0;
-
-                double temperature = Convert.ToDouble(value);
-                return temperature;
-            }
-            set { AddKeyword("SET-TEMP", value.ToString("F1"), "[deg C] Imaging Camera Temperature Set Point"); }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
         public double SensorTemperature
         {
             get
@@ -631,33 +559,41 @@ namespace XisfFileManager
                 double temperture = Convert.ToDouble(value);
                 return temperture;
             }
-            set { AddKeyword("CCD-TEMP", value.ToString("F1"), "[deg C] Imaging Camera Sensor Temperature"); }
+            set { AddKeyword("CCD-TEMP", value.ToString("F1"), "[degC] Imaging Camera Sensor Temperature"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
-        public string SiteName
+
+        public double SensorTemperatureSetPoint
         {
-            get { return GetKeywordValue("SITENAME"); }
-            set { AddKeyword("SITENAME", value, "Location name of observation site"); }
+            get
+            {
+                string value = GetKeywordValue("SET-TEMP");
+                if (value == string.Empty)
+                    return -273.0;
+
+                double temperature = Convert.ToDouble(value);
+                return temperature;
+            }
+            set { AddKeyword("SET-TEMP", value.ToString("F1"), "[degC] Imaging Camera Temperature Set Point"); }
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
+
         public string TargetName
         {
             get { return GetKeywordValue("OBJECT"); }
             set
             {
-                if (value.Contains("Master"))
+                if (value.Equals("Master"))
                     AddKeyword("OBJECT", "Master", "[name] Master Calibration Frame");
                 else
                     AddKeyword("OBJECT", value, "[name] Target Object Name");
             }
         }
 
-        // #########################################################################################################
-        // #########################################################################################################
+        // *********************************************************************************************************
+
         public string Telescope
         {
             get { return GetKeywordValue("TELESCOP"); }
@@ -665,26 +601,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        // *********************************************************************************************************
-        public int TotalFrames
-        {
-            get
-            {
-                string value = GetKeywordValue("NUM-FRMS");
-                if (value == string.Empty)
-                    return -1;
- 
-                int frames = Convert.ToInt32(value);
-                return frames;
-            }
-            set
-            {
-                SetIntegrationParamaters();
-            }
-        }
-
-        // *********************************************************************************************************
-        // *********************************************************************************************************
+        
         public List<string> WeightKeyword
         {
             get
@@ -725,6 +642,143 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
         // *********************************************************************************************************
+
+        public void SetMasterFrameKeywords()
+        {
+            List<Keyword> keys = new List<Keyword>(mKeywordList);
+
+            foreach (Keyword node in keys)
+            {
+                if (node.Comment.ToLower().Contains("numberofimages"))
+                {
+                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
+
+                    AddKeyword("MSTRFRMS", totalFrames, "Number of Integrated SubFrames");
+                }
+
+                if (node.Comment.Contains("pixelrejection", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (node.Comment.ToLower().Contains("linear"))
+                    {
+                        AddKeyword("MSTRALG", "LFC", "PixInsight Linear Fit Clipping");
+                        break;
+                    }
+
+                    if (node.Comment.ToLower().Contains("student"))
+                    {
+                        AddKeyword("MSTRALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+                        break;
+                    }
+
+                    if (node.Comment.ToLower().Contains("winsor"))
+                    {
+                        AddKeyword("MSTRALG", "WSC", "PixInsight Winsorized Sigma Clipping");
+                        break;
+                    }
+
+                    if (node.Comment.ToLower().Contains("sigma"))
+                    {
+                        AddKeyword("MSTRALG", "SC", "PixInsight Sigma Clipping");
+                        break;
+                    }
+                }
+            }
+
+
+            Keyword keyword;
+            Keyword algorithm;
+            keyword = GetKeyword("MSTRALG");
+            if (keyword == null)
+            {
+                algorithm = GetKeyword("REJECTION");
+                if (algorithm != null)
+                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+
+                algorithm = GetKeyword("Rejection");
+                if (algorithm != null)
+                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+
+                algorithm = GetKeyword("REJECTIO");
+                if (algorithm != null)
+                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+
+                // Make sure at least one rejection keyword was found
+                string value = GetKeywordValue("MSTRALG");
+                if (value == string.Empty)
+                    AddKeyword("MSTRALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+            }
+
+            string numFrames;
+            keyword = GetKeyword("MSTRFRMS");
+            if (keyword == null)
+            {
+                numFrames = GetKeywordValue("TOTALFRAMES");
+                if (numFrames != string.Empty && numFrames != "1")
+                    AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
+
+                numFrames = GetKeywordValue("NUM-FRMS");
+                if (numFrames != string.Empty && numFrames != "1")
+                    AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
+
+                // Make sure at least one number of frames keyword was found
+                string value = GetKeywordValue("MSTRFRMS");
+                if (value == string.Empty)
+                    AddKeyword("MSTRFRMS", "32", "Number of Integrated SubFrames");
+
+            }
+
+            RemoveKeyword("ALT-OBS");
+            RemoveKeyword("AOCAMBT");
+            RemoveKeyword("CBIAS");
+            RemoveKeyword("CDARK");
+            RemoveKeyword("CFLAT");
+            RemoveKeyword("COMMENT");
+            RemoveKeyword("Camera");
+            RemoveKeyword("CPANEL");
+            RemoveKeyword("CSTARS");
+            RemoveKeyword("Camera");
+            RemoveKeyword("DEC");
+            RemoveKeyword("FILENAME");
+            RemoveKeyword("HISTORYTORY");
+            RemoveKeyword("LAT-OBS");
+            RemoveKeyword("LONG-OBS");
+            RemoveKeyword("HISTORY");
+            RemoveKeyword("NOISE00");
+            RemoveKeyword("NOISEA00");
+            RemoveKeyword("NOISEH00");
+            RemoveKeyword("NOISEL00");
+            RemoveKeyword("NUM-FRMS");
+            RemoveKeyword("OBJCTDEC");
+            RemoveKeyword("OBJCTRA");
+            RemoveKeyword("OBSGEO-B");
+            RemoveKeyword("OBSGEO-H");
+            RemoveKeyword("OBSGEO-L");
+            RemoveKeyword("PROTECT");
+            RemoveKeyword("PSFFLP00");
+            RemoveKeyword("PSFFLX00");
+            RemoveKeyword("PSFMFL00");
+            RemoveKeyword("PSFMFP00");
+            RemoveKeyword("PSFMST00");
+            RemoveKeyword("PSFNST00");
+            RemoveKeyword("PSFSGL00");
+            RemoveKeyword("PSFSGN00");
+            RemoveKeyword("PSFSGP00");
+            RemoveKeyword("PSFSGTYP");
+            RemoveKeyword("Protected");
+            RemoveKeyword("RA");
+            RemoveKeyword("RADESYS");
+            RemoveKeyword("REJECTIO");
+            RemoveKeyword("REJECTION");
+            RemoveKeyword("Rejection");
+            RemoveKeyword("RESOUNIT");
+            RemoveKeyword("RJCT-ALG");
+            RemoveKeyword("TOTALFRA");
+            RemoveKeyword("TOTALFRAMES");
+            RemoveKeyword("XBAYROFF");
+            RemoveKeyword("XORGSUBF");
+            RemoveKeyword("YBAYROFF");
+            RemoveKeyword("YORGSUBF");
+        }
 
         // #########################################################################################################
         // #########################################################################################################
