@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using XisfFileManager.Forms.UserInputForm;
 
 using XisfFileManager.Enums;
+using static System.Windows.Forms.DataFormats;
 
 
 namespace XisfFileManager
@@ -182,8 +183,28 @@ namespace XisfFileManager
             {
                 string value = GetKeywordValue("DATE-LOC");
                 if (value == string.Empty)
-                    return DateTime.MinValue;
+                {
+                    value = GetKeywordValue("DATE-OBS");
+                    if (value != string.Empty)
+                    {
+                        // Convert UTC to Local Time
+                        DateTime dateTimeUtc = DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
 
+                        // Ensure that the DateTime is in UTC by setting its Kind property
+                        dateTimeUtc = DateTime.SpecifyKind(dateTimeUtc, DateTimeKind.Utc);
+
+                        // Specify the target time zone
+                        TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
+
+                        // Convert UTC time to local time
+                        DateTime dateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUtc, localTimeZone);
+
+                        AddKeyword("DATE-LOC", dateTimeLocal.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time");
+                        return DateTime.Parse(value);
+                    }
+                    else
+                        return DateTime.MinValue;
+                }
                 return DateTime.Parse(value);
             }
             set { AddKeyword("DATE-LOC", value.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time"); }
@@ -322,8 +343,7 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return -1;
                 
-                int position = Convert.ToInt32(value);
-                return position;
+                return Convert.ToInt32(value);
             }
             set { AddKeyword("FOCPOS", value.ToString(), "[um] NiteCrawler Position - 94580 Steps, 0.2667 um/Step"); }
         }
@@ -337,8 +357,7 @@ namespace XisfFileManager
                 string value = GetKeywordValue("FOCTEMP");
                 if (value == string.Empty) return -273.0;
                 
-                double temperature = Convert.ToDouble(value);
-                return temperature;
+                return Convert.ToDouble(value);
             }
             set { AddKeyword("FOCTEMP", value.ToString(), "[degC] NightCrawler Focuser Temperature"); }
         }
@@ -556,8 +575,7 @@ namespace XisfFileManager
                 if (value == string.Empty) 
                     return -273;
                 
-                double temperture = Convert.ToDouble(value);
-                return temperture;
+                return Convert.ToDouble(value);
             }
             set { AddKeyword("CCD-TEMP", value.ToString("F1"), "[degC] Imaging Camera Sensor Temperature"); }
         }

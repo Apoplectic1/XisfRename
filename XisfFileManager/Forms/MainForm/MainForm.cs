@@ -275,7 +275,7 @@ namespace XisfFileManager
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                MessageBox.Show("No .xisf Files Found\nIs this a 'Master' Directory?", "Select .xisf Folder");
+                MessageBox.Show("Duplicates, PreProcessing or Project  Directory" , "Select a different .xisf Folder");
                 return;
             }
 
@@ -681,7 +681,7 @@ namespace XisfFileManager
             }
             targetNames = targetNames.Distinct().ToList();
 
-
+            
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
@@ -2768,7 +2768,10 @@ namespace XisfFileManager
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text, out value);
                     if (bStatus)
+                    {
+                        file.FocuserTemperature = value;
                         file.SensorTemperature = value;
+                    }
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)

@@ -205,6 +205,7 @@ namespace XisfFileManager.FileOperations
         public int IccAttachmentPadding { get; set; }
         public int TargetAttachmentLength { get; set; }
         public int TargetAttachmentStart { get; set; }
+        public int TargetAttachmentNewStart { get; set; }
         public int TargetAttachmentPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
@@ -252,6 +253,7 @@ namespace XisfFileManager.FileOperations
         public int ThumbnailAttachmentPadding { get; set; }
         public int ThumbnailAttachmentLength { get; set; }
         public int ThumbnailAttachmentStart { get; set; }
+        public int ThumbnailAttachmentNewStart { get; set; }
         public bool KeepPanel { get; set; }
         /// <summary>
         /// Updates an Xisf File Target Name.
@@ -326,7 +328,7 @@ namespace XisfFileManager.FileOperations
                 TargetAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
-
+       
         public void IccAttachment(XElement element)
         {
             XAttribute attribute = element.Attribute("location");

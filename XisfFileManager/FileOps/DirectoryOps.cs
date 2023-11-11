@@ -50,7 +50,7 @@ namespace XisfFileManager
                 }
                 else
                 {
-                    mExceptionLog.Add("Duplicates Directory Found in " + rootDirectory.Parent.FullName);
+                    mExceptionLog.Add("Duplicates, PreProcessing, Project  Directory Found in " + rootDirectory.Parent.FullName);
                 }
             }
 
