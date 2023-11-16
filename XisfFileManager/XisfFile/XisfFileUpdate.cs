@@ -21,10 +21,10 @@ using Windows.ApplicationModel.VoiceCommands;
 
 namespace XisfFileManager.FileOperations
 {
-    public static class XisfFileUpdate
+    public class XisfFileUpdate
     {
-        private static Buffer mBuffer;
-        private static List<Buffer> mBufferList;
+        private Buffer mBuffer;
+        private List<Buffer> mBufferList;
 
         private static bool KeywordsMatchXml(XisfFile xFile)
         {
@@ -62,7 +62,7 @@ namespace XisfFileManager.FileOperations
             return bIdentical;
 
         }
-        private static void ValidateXml(XmlDocument document, XisfFile xFile)
+        private void ValidateXml(XmlDocument document, XisfFile xFile)
         {
             // Create a new XmlDocument to hold the valid content
             XmlDocument validXmlDoc = new XmlDocument();
@@ -77,15 +77,20 @@ namespace XisfFileManager.FileOperations
             document.LoadXml(validXmlDoc.OuterXml);
         }
 
-
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        public static bool UpdateFile(XisfFile xFile)
+        public bool UpdateFile(XisfFile xFile)
         {
             // Return if KeywordList and the original xml are identical 
-            if (KeywordsMatchXml(xFile))
-                return true;
+            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
+                return false;
+            else
+                if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW)
+                if (KeywordsMatchXml(xFile))
+                    return true;
+
+            // Not identical or force, so update the xml
 
             int xisfStart;
             int xisfEnd;
@@ -115,35 +120,46 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    xisfStart = BinaryFind(binaryFileData, "<xisf"); // returns the position of '<'
+                    xisfStart = BinaryFind(binaryFileData, "<xisf "); // returns the position of '<'
                     // NOTE: This value will change AFTER Keyword Replacement a few lines below
-                    xisfEnd = BinaryFind(binaryFileData, "/xisf>") + "/xisf>".Length;  // returns the position immediately after '>'                
+                    xisfEnd = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xisfString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
                     // The xisfString does not include the comment section if present
                     XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.LoadXml(xisfString);
+                    XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+                    namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
+
+                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xisfString);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // Remove all descendants from xFile.mXDoc that contain an "attachment" attribute that do not match the criteria specified by imageNode (our main image)
-                    RemoveUnwantedAttacments(xmlDoc, xFile);
+                    RemoveUnwantedAttachments(xmlDoc);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
+
                     ReplaceAllFitsKeywords(xmlDoc, xFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // We need to set the start address and length of the image and thumbnail attachements due to changes in the <xisf> to </xisf> length
-                    // Both image and thumbnail attachements require being padded with 0's prior to the image to BlockAlign them  
-                    SetImageAttachmentLocation(xmlDoc, xFile);
+                    // Both image and thumbnail attachements require being padded with 0's prior to the image to BlockAlign them
+
+                    int possibleBogusImageAttachmentLocation = FindExistingImageStartingLocation(binaryFileData);
+                    if (possibleBogusImageAttachmentLocation % xFile.BlockAlignmentSize != 0)
+                    {
+                        if ((possibleBogusImageAttachmentLocation - 1) % xFile.BlockAlignmentSize != 0)
+                            MessageBox.Show("Image Attachment Start Location may not be not Block Aligned");
+                    }
+                    xFile.TargetAttachmentPadding = SetImageAttachmentLocation(xmlDoc, xFile);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -165,8 +181,9 @@ namespace XisfFileManager.FileOperations
 
                     // Create a new Buffer List. The list will contain the XISF Signature and length, the xml, and the image data
                     // This ordered List sets up data to by written, its type and where to get it from
- 
+
                     mBufferList.Clear();
+
 
                     // XISF Signature and length
                     mBuffer = new Buffer
@@ -207,7 +224,7 @@ namespace XisfFileManager.FileOperations
                         BinaryData = binaryFileData
                     };
                     mBufferList.Add(mBuffer);
-                    
+
                     // Ignore any other attachments (e.g. thumbnail) in the input file
 
                     // *******************************************************************************************************************************
@@ -232,7 +249,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        private static int FindStringInByteArray(byte[] bByteArray, string sString, int nMaxSearchLength)
+        private int FindStringInByteArray(byte[] bByteArray, string sString, int nMaxSearchLength)
         {
             int stringLength = sString.Length;
 
@@ -258,7 +275,7 @@ namespace XisfFileManager.FileOperations
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################
-        private static int GetPadding(int length, int alignment)
+        private int GetNewPadding(int length, int alignment)
         {
             // Find the difference between length and the nearest larger value that is evenly divisible by alignment
 
@@ -270,7 +287,7 @@ namespace XisfFileManager.FileOperations
                 return nextdivisible - length;
             }
         }
-        static void UpdateImageLocation(XElement imageNode, int newStartingAddress)
+        static void UpdateXmlImageStartingAddress(ref XElement imageNode, int newStartingAddress)
         {
             var locationAttribute = imageNode.Attribute("location");
             if (locationAttribute != null)
@@ -281,93 +298,110 @@ namespace XisfFileManager.FileOperations
             }
         }
 
-        private static void RemoveUnwantedAttacments(XmlDocument document, XisfFile xFile)
+        private void RemoveUnwantedAttachments(XmlDocument document)
         {
-            // Remove all descendants from xFile.mXDoc that contain an "attachment" attribute that do not match the criteria specified by imageNode (our main image)
+            XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
+            string namespaceUri = document.DocumentElement.NamespaceURI;
+            nsManager.AddNamespace("ns", namespaceUri);
 
-            XElement root = xFile.mXDoc.Root;
-            XNamespace ns = root.GetDefaultNamespace();
+            document.SelectSingleNode("//ns:Image[@Id='integration' or not(@Id)]/*[@attachment]", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Image[@Id='integration' or not(@Id)]/*[@attachment]", nsManager));
+            document.SelectSingleNode("//ns:Thumbnail", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Thumbnail", nsManager));
+            document.SelectSingleNode("//ns:ICCProfile", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:ICCProfile", nsManager));
+            document.SelectSingleNode("//ns:DisplayFunction", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:DisplayFunction", nsManager));
+            document.SelectSingleNode("//ns:Resolution", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Resolution", nsManager));
+        }
 
-            XElement imageNode = xFile.mXDoc.Descendants(ns + "Image")
-                                    .Where(e => (string)e.Attribute("Id") == "integeration" || e.Attribute("Id") == null)
-                                    .FirstOrDefault();
+        public int FindExistingImageStartingLocation(byte[] binaryFileData)
+        {
+            // Ignore Image attachment start location, set and return the found location
+
+            // Find the end of the xml section, then walk through any run of 0's after the </xisf> tag
+            // Return the location of the first non-zero byte after the </xisf> tag
+
+            int xmlEndLocation = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;
+            // Walk through any run of 0's after the </xisf> tag
+            int padding = 0;
+            for (int i = xmlEndLocation; i < binaryFileData.Length; i++)
+            {
+                if (binaryFileData[i] == 0)
+                    padding++;
+                else
+                    break;
+            }
+
+            return xmlEndLocation + padding;
+        }
+
+        private int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
+        {
+            int documentLengthBeforeNewStartingAddress;
+            int documentLengthAfterNewStartingAddress;
+            int newPadding = -1;
+            int newStartingAddress;
+
+            XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
+            string namespaceUri = document.DocumentElement.NamespaceURI;
+            nsManager.AddNamespace("ns", namespaceUri);
+
+
+            // Find the first and only (ns + "Image") descendant
+            XmlNode imageNode = document.SelectSingleNode("//ns:Image", nsManager);
+            //XElement imageNode = xFile.mXDoc.Descendants(ns + "Image").FirstOrDefault();
 
             if (imageNode != null)
             {
-                // Remove descendants with "attachment" attribute not matching the criteria
-                xFile.mXDoc.Descendants()
-                    .Where(e => (string)e.Attribute("attachment") != null && !e.Equals(imageNode))
-                    .Remove();
+                // New Xml document length before padding
+                // Note the the new xml document may not contain the comment section or other changes (is the comment section needed?)
+                // We have also added or changed lots of keywords in this new xml document
 
-                // Find child elements within "Image" containing the "location" property with "attachment"
-                IEnumerable<XElement> attachmentsToRemove = imageNode.Elements()
-                    .Where(e => (string)e.Attribute("location") != null && ((string)e.Attribute("location")).Contains("attachment"));
-
-                // Remove the found child elements
-                foreach (XElement attachment in attachmentsToRemove.ToList())
+                // Iterate until the xml document length does not change
+                do
                 {
-                    attachment.Remove();
+                    documentLengthBeforeNewStartingAddress = document.OuterXml.Length;
+
+                    // Include the 16 byte XISF Signature. No Comment section in the padding calculation
+                    newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + 16, xFile.BlockAlignmentSize);
+
+                    // The starting address is the address in the new file (including XISF Signature); (not just in the Xml document section)
+                    newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + newPadding;
+
+                    // Update imageNode with the new starting address and can change the size of the xml document 
+                    // 1. This can push the image data to a new location - new start address
+                    // 2. This can change the padding - new padding
+                    // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
+
+                    //var locationAttribute = imageNode.Attribute("location");
+                    XmlAttribute locationAttribute = imageNode.Attributes["location"];
+                    if (locationAttribute != null)
+                    {
+                        string[] locationParts = locationAttribute.Value.Split(':');
+                        locationParts[1] = newStartingAddress.ToString();
+                        locationAttribute.Value = string.Join(":", locationParts);
+                    }
+
+                    documentLengthAfterNewStartingAddress = document.OuterXml.Length;
                 }
-
-                // Update the XmlDocument 'document' to reflect the changes
-                // Convert the updated xFile.mXDoc to an XmlDocument
-                XmlDocument updatedDocument = new XmlDocument();
-                updatedDocument.LoadXml(xFile.mXDoc.ToString());
-
-                // Clear the 'document' and copy the updated content
-                document.RemoveAll();
-                document.LoadXml(updatedDocument.OuterXml);
+                while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
             }
-        }
 
-        private static void SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
-        {
-            int originalDocumentLength;
-            int modifiedDocumentLength;
+            /*
+            // Update the XmlDocument 'document' to reflect the changes
+            // Convert the updated xFile.mXDoc to an XmlDocument
+            XmlDocument updatedDocument = new XmlDocument();
+            updatedDocument.RemoveAll();
+            updatedDocument.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xFile.mXDoc.ToString());
 
-            XElement root = xFile.mXDoc.Root;
-            XNamespace ns = root.GetDefaultNamespace();
-
-            // The xml "<!--" to "-->" comment section has been removed from the document
-
-            // Find the first (ns + "Image") descendant that either has an Id attribute equal to "integeration" or doesn't have an Id attribute at all.
-            XElement imageNode = xFile.mXDoc.Descendants(ns + "Image").FirstOrDefault();
-
-            //                    .Where(e => (string)e.Attribute("Id") == "integeration" || e.Attribute("Id") == null)
-            //                    .FirstOrDefault();
-
-            if (imageNode != null)
-            {
-                originalDocumentLength = document.OuterXml.Length;
-
-                int padding = GetPadding(originalDocumentLength + 16, xFile.BlockAlignmentSize);
-                xFile.TargetAttachmentPadding = padding;
-
-                int newStartingAddress = originalDocumentLength + 16 + padding;
-
-                xFile.TargetAttachmentNewStart = newStartingAddress;
-                UpdateImageLocation(imageNode, newStartingAddress);
-
-                // Update the XmlDocument 'document' to reflect the changes
-                // Convert the updated xFile.mXDoc to an XmlDocument
-                XmlDocument updatedDocument = new XmlDocument();
-                updatedDocument.LoadXml(xFile.mXDoc.ToString());
-
-                // Clear the 'document' and copy the updated content
-                document.RemoveAll();
-                document.LoadXml(updatedDocument.OuterXml);
-
-                modifiedDocumentLength = document.OuterXml.Length;
-
-                // Recalculate padding if needed
-                xFile.TargetAttachmentPadding += (modifiedDocumentLength - originalDocumentLength);
-            }
+            // Clear the 'document' and copy the updated content
+            document.RemoveAll();
+            document.LoadXml(updatedDocument.OuterXml);
+            */
+            return newPadding;
         }
 
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile mFile)
+        private void ReplaceAllFitsKeywords(XmlDocument document, XisfFile xFile)
         {
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
             for (int i = nodeList.Count - 1; i >= 0; i--)
@@ -384,8 +418,8 @@ namespace XisfFileManager.FileOperations
             foreach (XmlNode item in nodeList)
             {
                 // Alphabetize the KeywordData FITSKeywords
-                // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (minus explicit removals and changes)
-                List<Keyword> keywords = mFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
+                // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (with explicit removals and changes)
+                List<Keyword> keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
 
                 // Now add all FITSKeywords found in KeywordData to the xmlDocument
                 foreach (Keyword keyword in keywords)
@@ -397,21 +431,12 @@ namespace XisfFileManager.FileOperations
                     item.AppendChild(newElement);
                 }
             }
-
-            // Update the XmlDocument 'document' to reflect the changes
-            // Convert the updated xFile.mXDoc to an XmlDocument
-            XmlDocument updatedDocument = new XmlDocument();
-            updatedDocument.LoadXml(mFile.mXDoc.ToString());
-
-            // Clear the 'document' and copy the updated content
-            document.RemoveAll();
-            document.LoadXml(updatedDocument.OuterXml);
         }
 
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private static int BinaryFind(byte[] buffer, string findText)
+        private int BinaryFind(byte[] buffer, string findText)
         {
             byte[] xisfFind = Encoding.UTF8.GetBytes(findText);
             int i;
@@ -436,7 +461,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        private static bool WriteBinaryFile(string fileName)
+        private bool WriteBinaryFile(string fileName)
         {
             byte[] zero = { 0x00 };
 
@@ -517,7 +542,7 @@ namespace XisfFileManager.FileOperations
             // ##############################################################################################################################################
 
         }
-        private static bool IsFileLocked(FileInfo file)
+        private bool IsFileLocked(FileInfo file)
         {
             try
             {

@@ -17,15 +17,12 @@ namespace XisfFileManager.Calculations
         public List<double> mFocuserPositionList { get; set; }
         public List<double> mFocuserTemperatureList { get; set; }
         public List<double> mAmbientTemperatureList { get; set; }
-        public List<double> mFileSSWeightList { get; set; }
-
 
         public ImageCalculations()
         {
             mFocuserPositionList = new List<double>();
             mFocuserTemperatureList = new List<double>();
             mAmbientTemperatureList = new List<double>();
-            mFileSSWeightList = new List<double>();
         }
 
         public void Clear()
@@ -33,12 +30,10 @@ namespace XisfFileManager.Calculations
             mFocuserPositionList.Clear();
             mFocuserTemperatureList.Clear();
             mAmbientTemperatureList.Clear();
-            mFileSSWeightList.Clear();
         }
 
         public void BuildImageParameterValueLists(XisfFile xFile)
         {
-
             eFrame imageType = xFile.FrameType;
 
             if (imageType == eFrame.LIGHT)

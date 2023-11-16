@@ -23,4 +23,7 @@
 
     // Target Scheduler 
     public enum eProjectPriority {LOW = 0, NORMAL = 1, HIGH = 2 }
+
+    // Main Form Keyword Upadate Mode
+    public enum eKeywordUpdateMode { PROTECT, UPDATE_NEW, FORCE }
 }

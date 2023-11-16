@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 using XisfFileManager.TargetScheduler.Tables;
 
@@ -21,6 +22,15 @@ namespace XisfFileManager.FileOperations
         private Match xmlVersionBlockMatch;
         private Match xmlCommentBlockMatch;
         private Match xmlKeywordBlockMatch;
+
+        static bool IsWellFormedXml(string xml)
+        {
+            // Implement your custom XML validation logic here
+            // You can use libraries like HtmlAgilityPack for more robust validation
+
+            // For simplicity, this example checks if the XML starts and ends with proper tags
+            return xml.StartsWith('<') && xml.EndsWith('>');
+        }
 
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
@@ -67,6 +77,10 @@ namespace XisfFileManager.FileOperations
                     xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
                     xmlString = xmlKeywordBlockMatch.ToString().Replace("'", "");
 
+
+                    //xmlString = xmlString.Replace("com\" ", "");
+
+
                     // Make an isolated copy
                     xFile.XmlString = xmlString.Clone() as string;
 
@@ -78,7 +92,7 @@ namespace XisfFileManager.FileOperations
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not parse xml in file:\n\n" + xFile.FilePath,
+                        MessageBox.Show("Could not Read xml in file:\n\n" + xFile.FilePath + "\n\nin:\n\nReadXisfFileHeaderKeywords(XisfFile xFile)",
                             "Parse XISF File Error",
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);
@@ -97,8 +111,8 @@ namespace XisfFileManager.FileOperations
                         xFile.ImageAttachment(element);
                     }
 
-                    IEnumerable<XElement> icc = xFile.mXDoc.Descendants(ns + "ICC");
-                    foreach (XElement element in icc)
+                    IEnumerable<XElement> iccprofile = xFile.mXDoc.Descendants(ns + "ICCProfile");
+                    foreach (XElement element in iccprofile)
                     {
                         xFile.IccAttachment(element);
                     }
@@ -108,7 +122,7 @@ namespace XisfFileManager.FileOperations
                     {
                         xFile.ThumbnailAttachment(element);
                     }
-                    
+
                     // Place all XML formated FITS Keyword Name, Value, Comment triples into 'elements'
                     IEnumerable<XElement> elements = xFile.mXDoc.Descendants(ns + "FITSKeyword");
                     foreach (XElement element in elements)

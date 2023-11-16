@@ -35,8 +35,11 @@ namespace XisfFileManager.FileOperations
             ThumbnailAttachmentStart = 0;
             ThumbnailAttachmentPadding = 0;
         }
-        public string XmlVersionText { get; set; }
-        public string XmlCommentText { get; set; }
+
+        public eKeywordUpdateMode KeywordUpdateMode { get; set; } = eKeywordUpdateMode.PROTECT;
+
+        public string XmlVersionText { get; set; } = "<?xml version=\"1.0\" encoding=\"UTF-8\">";
+        public string XmlCommentText { get; set; } = "<!--\r\nExtensible Image Serialization Format - XISF version 1.0\r\nCreated with PixInsight software - http://pixinsight.com/\r\n-->";
         public void AddKeyword(string keyword, string value, string comment = "Xisf File Manager")
         {
             KeywordList.AddKeyword(keyword, value, comment);
@@ -337,6 +340,13 @@ namespace XisfFileManager.FileOperations
             {
                 string attachment = attribute.Value;
 
+                if (attachment.Contains("inline"))
+                {
+                    IccAttachmentStart = -1;     // ICC is inlined
+                    IccAttachmentLength = -1;    // ICC is inlined
+                    return;
+                }
+
                 string[] values = attachment.Split(':');
 
                 IccAttachmentStart = Convert.ToInt32(values[1]);
@@ -351,6 +361,13 @@ namespace XisfFileManager.FileOperations
             if (attribute != null)
             {
                 string attachment = attribute.Value;
+
+                if (attachment.Contains("inline"))
+                {
+                    ThumbnailAttachmentStart = -1;     // Thumbnail is inlined
+                    ThumbnailAttachmentLength = -1;    // Thumbnail is inlined
+                    return;
+                }
 
                 string[] values = attachment.Split(':');
 
@@ -473,20 +490,20 @@ namespace XisfFileManager.FileOperations
 
         public static string FormatExposureTime(this double seconds)
         {
-            if (seconds < 10)
+            if (seconds < 10.0)
             {
-                if (seconds < 0.00001)
-                    return "0.000";
+                if (seconds < 0.00001) // Less than 10 microseconds
+                    return "0.0";
 
-                if (seconds < 1)
-                    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.000");
+                if (seconds < 1) // Between 10 microseconds and 1 second
+                //    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.0####");
+                      return seconds.ToString("0.0####"); // Tens of microseconds
 
-                return seconds.ToString("0.000");
+                return seconds.ToString("0.0###"); // Milliseconds
             }
             else
             {
-                return seconds.ToString();
-                //return seconds.ToString("0000");
+                return seconds.ToString("0");
             }
         }
     }

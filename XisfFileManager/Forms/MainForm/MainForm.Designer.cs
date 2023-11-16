@@ -39,6 +39,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
+            ComboBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.ComboBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
             RadioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
             RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
@@ -129,9 +130,9 @@
             GroupBox_SubFrameKeywords_CalibrationFiles = new System.Windows.Forms.GroupBox();
             Button_SubFrameKeywords_CalibrationFiles_ClearAll = new System.Windows.Forms.Button();
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection = new System.Windows.Forms.GroupBox();
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All = new System.Windows.Forms.RadioButton();
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect = new System.Windows.Forms.CheckBox();
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force = new System.Windows.Forms.RadioButton();
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords = new System.Windows.Forms.CheckBox();
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights = new System.Windows.Forms.GroupBox();
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration = new System.Windows.Forms.RadioButton();
@@ -200,7 +201,6 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
-            ComboBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.ComboBox();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -355,6 +355,17 @@
             GroupBox_FileSelection_DirectorySelection.TabIndex = 7;
             GroupBox_FileSelection_DirectorySelection.TabStop = false;
             GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
+            // 
+            // ComboBox_FileSelection_DirectorySelection_TotalFrames
+            // 
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.FormattingEnabled = true;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Name = "ComboBox_FileSelection_DirectorySelection_TotalFrames";
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(76, 23);
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
+            ComboBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
             // 
             // ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm
             // 
@@ -1377,9 +1388,9 @@
             // 
             // GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection
             // 
+            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect);
+            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Location = new System.Drawing.Point(237, 48);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection";
@@ -1389,44 +1400,43 @@
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabStop = false;
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Text = "Keyword Protection";
             // 
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect
+            // 
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.AutoSize = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Location = new System.Drawing.Point(14, 20);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect";
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Size = new System.Drawing.Size(63, 19);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 25;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabStop = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Text = "Protect";
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.UseVisualStyleBackColor = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged;
+            // 
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew
             // 
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.AutoSize = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Checked = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Location = new System.Drawing.Point(136, 20);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Location = new System.Drawing.Point(85, 20);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Size = new System.Drawing.Size(90, 19);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabIndex = 24;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Text = "Update New";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.UseVisualStyleBackColor = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged;
             // 
-            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All
+            // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force
             // 
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.AutoSize = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Location = new System.Drawing.Point(91, 20);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All";
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Size = new System.Drawing.Size(39, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.TabIndex = 23;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Text = "All";
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.UseVisualStyleBackColor = true;
-            // 
-            // CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect
-            // 
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.AutoSize = true;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked = true;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckState = System.Windows.Forms.CheckState.Checked;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Location = new System.Drawing.Point(12, 21);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect";
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Size = new System.Drawing.Size(64, 19);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 22;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Text = "Protect";
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.UseVisualStyleBackColor = true;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckedChanged += CheckBox_KeywordUpdate_SubFrameKeywords_Protect_CheckedChanged;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.AutoSize = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Location = new System.Drawing.Point(183, 20);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force";
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Size = new System.Drawing.Size(54, 19);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.TabIndex = 23;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Text = "Force";
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.UseVisualStyleBackColor = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force_CheckedChanged;
             // 
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords
             // 
@@ -1562,12 +1572,12 @@
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName
             // 
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.AutoSize = true;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(47, 66);
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(2, 66);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName";
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(134, 19);
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(235, 19);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name";
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name (and include Stars)";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_UpdateXisfFileKeywords
@@ -2188,17 +2198,6 @@
             TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 526);
             TabControl_Update_TargetScheduler.TabIndex = 23;
             // 
-            // ComboBox_FileSelection_DirectorySelection_TotalFrames
-            // 
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.FormattingEnabled = true;
-             ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Name = "ComboBox_FileSelection_DirectorySelection_TotalFrames";
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(76, 23);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2354,8 +2353,7 @@
         private System.Windows.Forms.Button Button_SubFrameKeywords_CalibrationFiles_ClearAll;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All;
-        private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force;
         private System.Windows.Forms.CheckBox CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration;
@@ -2430,5 +2428,6 @@
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_GainNearest;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest;
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_TotalFrames;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
     }
 }

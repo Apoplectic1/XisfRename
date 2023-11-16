@@ -268,10 +268,9 @@ namespace XisfFileManager
                 if (value == string.Empty)
                     return -1.0;
                 
-                double seconds = Convert.ToDouble(value);
-                return seconds;
+                return Convert.ToDouble(value);
             }
-            set { AddKeyword("EXPTIME", value.ToString("F6"), "[seconds] Imaging Camera Exposure Time"); }
+            set { AddKeyword("EXPTIME", value.ToString(), "[seconds] Imaging Camera Exposure Time"); }
         }
 
         // *********************************************************************************************************

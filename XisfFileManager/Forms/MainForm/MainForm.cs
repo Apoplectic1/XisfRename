@@ -61,7 +61,8 @@ namespace XisfFileManager
         private string mFolderCsvBrowseState;
         private XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
         private bool mBCancel;
-
+        private XisfFileUpdate mXisfFileUpdate;
+        private eKeywordUpdateMode mKeywordUpdateProtection;
         private DirectoryProperties mDirectoryProperties;
 
 
@@ -78,7 +79,8 @@ namespace XisfFileManager
             mCalibration = new Calibration();
             mFileReader = new XisfFileReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
-
+            mXisfFileUpdate = new XisfFileUpdate();
+            mKeywordUpdateProtection = eKeywordUpdateMode.PROTECT;
             Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
@@ -275,7 +277,7 @@ namespace XisfFileManager
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                MessageBox.Show("Duplicates, PreProcessing or Project  Directory" , "Select a different .xisf Folder");
+                MessageBox.Show("Duplicates, PreProcessing or Project  Directory", "Select a different .xisf Folder");
                 return;
             }
 
@@ -655,7 +657,7 @@ namespace XisfFileManager
 
         private void Button_KeywordSubFrame_UpdateXisfFiles_Click(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
+            if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 return;
 
             bool bStatus;
@@ -681,10 +683,14 @@ namespace XisfFileManager
             }
             targetNames = targetNames.Distinct().ToList();
 
-            
+
             int count = 0;
             foreach (XisfFile xFile in mFileList)
             {
+                xFile.KeywordUpdateMode = mKeywordUpdateProtection;
+                if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
+                    return;
+
                 if (mBCancel) { mBCancel = false; return; }
 
                 xFile.SetObservationSite();
@@ -696,7 +702,7 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                bStatus = XisfFileUpdate.UpdateFile(xFile);
+                bStatus = mXisfFileUpdate.UpdateFile(xFile);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
                 System.Windows.Forms.Application.DoEvents();
 
@@ -1477,7 +1483,9 @@ namespace XisfFileManager
 
             foreach (XisfFile file in mFileList)
             {
-                filter = file.FilterName;
+                filter = file.FilterName.Trim();
+
+                file.FilterName = filter;
 
                 if (filter == "Luma")
                 {
@@ -3401,27 +3409,6 @@ namespace XisfFileManager
             mCalibration.TemperatureTolerance = value;
         }
 
-        private void CheckBox_KeywordUpdate_SubFrameKeywords_Protect_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Black;
-
-            if (CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
-            {
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = true;
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = true;
-            }
-            else
-            {
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_All.Enabled = false;
-                RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Enabled = false;
-            }
-        }
-
-        private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.ForeColor = Color.Black;
-        }
-
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {
             if (mFileList.Count == 0) return;
@@ -3822,6 +3809,19 @@ namespace XisfFileManager
         private void CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest_CheckedChanged(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Checked;
+        }
+
+        private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged(object sender, EventArgs e)
+        {
+            mKeywordUpdateProtection = (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked) ? eKeywordUpdateMode.PROTECT : mKeywordUpdateProtection;
+        }
+        private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged(object sender, EventArgs e)
+        {
+            mKeywordUpdateProtection = (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Checked) ? eKeywordUpdateMode.UPDATE_NEW : mKeywordUpdateProtection;
+        }
+        private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force_CheckedChanged(object sender, EventArgs e)
+        {
+            mKeywordUpdateProtection = (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Checked) ? eKeywordUpdateMode.FORCE : mKeywordUpdateProtection;
         }
     }
 }

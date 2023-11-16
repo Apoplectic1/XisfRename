@@ -26,6 +26,7 @@ namespace XisfFileManager
         private List<XisfFile> mUnmatchedBiasTargetFileList;
         private List<XisfFile> mUnmatchedDarkTargetFileList;
         private List<XisfFile> mUnmatchedFlatTargetFileList;
+        private XisfFileUpdate mXisfFileUpdate;
 
         private readonly CalibrationTabPageValues mCalibrationTabValues;
         private readonly DirectoryOps mDirectoryOps;
@@ -60,6 +61,7 @@ namespace XisfFileManager
             mUnmatchedBiasTargetFileList = new List<XisfFile>();
             mUnmatchedDarkTargetFileList = new List<XisfFile>();
             mUnmatchedFlatTargetFileList = new List<XisfFile>();
+            mXisfFileUpdate = new XisfFileUpdate();
         }
 
         // ******************************************************************************************************************
@@ -639,7 +641,7 @@ namespace XisfFileManager
 
                 string fileNameHolder = darkFile.FilePath;
                 darkFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(darkFile);
+                mXisfFileUpdate.UpdateFile(darkFile);
                 darkFile.FilePath = fileNameHolder;
             }
 
@@ -659,7 +661,7 @@ namespace XisfFileManager
 
                     string fileNameHolder = flatFile.FilePath;
                     flatFile.FilePath = destinationCalibrationFile.FullName;
-                    XisfFileUpdate.UpdateFile(flatFile);
+                    mXisfFileUpdate.UpdateFile(flatFile);
                     flatFile.FilePath = fileNameHolder;
                 }
             }
@@ -677,7 +679,7 @@ namespace XisfFileManager
 
                 string fileNameHolder = biasFile.FilePath;
                 biasFile.FilePath = destinationCalibrationFile.FullName;
-                XisfFileUpdate.UpdateFile(biasFile);
+                mXisfFileUpdate.UpdateFile(biasFile);
                 biasFile.FilePath = fileNameHolder;
             }
 
