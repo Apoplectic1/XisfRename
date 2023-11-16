@@ -237,6 +237,8 @@ namespace XisfFileManager
             TextBox_CalibrationTab_Messgaes.Clear();
             TreeView_CalibrationTab_TargetFileTree.Nodes.Clear();
 
+            mCalibration.ResetAll();
+
             ClearCameraForm();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
@@ -702,7 +704,7 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                bStatus = mXisfFileUpdate.UpdateFile(xFile);
+                bStatus = mXisfFileUpdate.UpdateFile(xFile, xFile.FilePath);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
                 System.Windows.Forms.Application.DoEvents();
 
@@ -783,7 +785,7 @@ namespace XisfFileManager
             {
                 string softwareCreator = file.CaptureSoftware; // from SWCREATE
 
-                if (softwareCreator.Equals("NINA") || softwareCreator.Contains("N.I.N.A"))
+                if (softwareCreator.Equals("NINA"))
                 {
                     foundNINA++;
                     count++;
@@ -866,19 +868,24 @@ namespace XisfFileManager
             foreach (XisfFile file in mFileList)
             {
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked)
-                    file.AddKeyword("SWCREATE", "NINA", "[name] Equipment Control and Automation Application");
+                    if (!file.CaptureSoftware.Equals("NINA"))
+                        file.AddKeyword("SWCREATE", "NINA", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked)
-                    file.AddKeyword("SWCREATE", "TSX", "[name] Equipment Control and Automation Application");
+                    if (!file.CaptureSoftware.Equals("TSX"))
+                        file.AddKeyword("SWCREATE", "TSX", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked)
-                    file.AddKeyword("SWCREATE", "SGP", "[name] Equipment Control and Automation Application");
+                    if (!file.CaptureSoftware.Equals("SGP"))
+                        file.AddKeyword("SWCREATE", "SGP", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked)
-                    file.AddKeyword("SWCREATE", "VOY", "[name] Equipment Control and Automation Application");
+                    if (!file.CaptureSoftware.Equals("VOY"))
+                        file.AddKeyword("SWCREATE", "VOY", "[name] Equipment Control and Automation Application");
 
                 if (RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked)
-                    file.AddKeyword("SWCREATE", "SCP", "[name] Equipment Control and Automation Application");
+                    if (!file.CaptureSoftware.Equals("SCP"))
+                        file.AddKeyword("SWCREATE", "SCP", "[name] Equipment Control and Automation Application");
             }
 
             FindCaptureSoftware();
@@ -3349,7 +3356,7 @@ namespace XisfFileManager
             calibrationFileMasterLibraryLocation = @"E:\Photography\Astro Photography\Calibration";
 
             if (!bMatchedAllFiles)
-                await mCalibration.ReadCalibrationFramesAsync(eCalibrationDirectory.LIBRARY, calibrationFileMasterLibraryLocation);
+                await mCalibration.ReadCalibrationFramesAsync(calibrationFileMasterLibraryLocation);
 
             mCalibration.MatchCalibrationLibraryFrames(mFileList);
         }

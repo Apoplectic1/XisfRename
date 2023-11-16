@@ -779,7 +779,7 @@
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Gain);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Exposure);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(TextBox_CalibrationTab_MatchingTolerance_Exposure);
-            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(198, 21);
+            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(237, 40);
             GroupBox_CalibrationTab_MatchingTolerance.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_CalibrationTab_MatchingTolerance.Name = "GroupBox_CalibrationTab_MatchingTolerance";
             GroupBox_CalibrationTab_MatchingTolerance.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);

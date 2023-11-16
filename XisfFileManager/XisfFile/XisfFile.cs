@@ -79,7 +79,7 @@ namespace XisfFileManager.FileOperations
             get => KeywordList.Binning;
             set => KeywordList.Binning = value;
         }
-        public int BlockAlignmentSize { get; set; }
+        public int BlockAlignmentSize { get; set; } = -1;
         public string Camera
         {
             get => KeywordList.Camera;
@@ -89,38 +89,57 @@ namespace XisfFileManager.FileOperations
         {
             get
             {
-                Keyword creator = GetKeyword("CREATOR");
+                string value = string.Empty;
+
+                Keyword creator = GetKeyword("SWCREATE");
                 if (creator != null)
                 {
+                    value = creator.Value;
                     RemoveKeyword("CREATOR");
-
-                    if (creator.Value.Contains("N.I.N.A."))
-                    {
-                        AddKeyword("SWCREATE", "NINA", creator.Value);
+                    if (value.Equals("NINA"))
                         return "NINA";
-                    }
-                    if (creator.Value.Contains("SkyX"))
-                    {
-                        AddKeyword("SWCREATE", "TSX", creator.Value);
-                        return "TSX";
-                    }
-                    if (creator.Value.Contains("Sequence"))
-                    {
-                        AddKeyword("SWCREATE", "SGP", creator.Value);
-                        return "SGP";
-                    }
-                    if (creator.Value.Contains("Cap"))
-                    {
-                        AddKeyword("SWCREATE", "SCP", creator.Value);
-                        return "SCP";
-                    }
-
-                    AddKeyword("SWCREATE", creator.Value, creator.Comment);
-                    return creator.Value;
                 }
-                return GetKeywordValue("SWCREATE");
+
+                creator = GetKeyword("CREATOR");
+                if (creator != null)
+                {
+                    value = creator.Value;
+                    RemoveKeyword("CREATOR");
+                }
+
+                if (value.Contains("N.I.N.A.") || value.Equals("NINA"))
+                {
+                    AddKeyword("SWCREATE", "NINA", value);  // Value is version number
+                    return "NINA";
+                }
+                if (value.Contains("SkyX") || value.Equals("TSX"))
+                {
+                    AddKeyword("SWCREATE", "TSX", "Software Bisque The SkyX");
+                    return "TSX";
+                }
+                if (value.Contains("Sequence") || value.Equals("SGP"))
+                {
+                    AddKeyword("SWCREATE", "SGP", "Sequence Generator Pro");
+                    return "SGP";
+                }
+                if (value.Contains("Voy") || value.Equals("VOY"))
+                {
+                    AddKeyword("SWCREATE", "VOY", "Starkeeper Voyager");
+                    return "VOY";
+                }
+                if (value.Contains("Cap") || value.Equals("SCP"))
+                {
+                    AddKeyword("SWCREATE", "SCP", "SharpCap");
+                    return "SCP";
+                }
+
+                AddKeyword("SWCREATE", "TBD", "Unknown Equipment Control and Automation Application");
+                return creator.Value;
             }
-            set { AddKeyword("SWCREATE", value, "[name] Equipment Control and Automation Application"); }
+            set
+            {
+                AddKeyword("SWCREATE", value, "[name] Equipment Control and Automation Application");
+            }
         }
         public DateTime CaptureTime
         {
@@ -287,7 +306,7 @@ namespace XisfFileManager.FileOperations
                         targetName = targetName + " Stars";
                 }
                 else
-                    KeywordList.CSTARS = "*"; // Wildcard by CPANEL
+                    KeywordList.RemoveKeyword("CSTARS"); // Wildcard by CPANEL
 
                 // After Stars, replace a TargetName containing the word "Panel" with "P" followed by one or more digits
                 // Return original string if replacement fails.
@@ -296,6 +315,8 @@ namespace XisfFileManager.FileOperations
 
                 if (!KeepPanel)
                     KeywordList.CPANEL = targetName.Replace(" Stars", ""); // Remove " Stars" so we Register and Intergrate by CPanel
+                else
+                    KeywordList.CPANEL = targetName;
 
                 KeywordList.TargetName = targetName;
             }
@@ -336,7 +357,7 @@ namespace XisfFileManager.FileOperations
                 TargetAttachmentLength = Convert.ToInt32(values[2]);
             }
         }
-       
+
         public void IccAttachment(XElement element)
         {
             XAttribute attribute = element.Attribute("location");
@@ -433,7 +454,7 @@ namespace XisfFileManager.FileOperations
         }
 
         public void ParseProperties(XElement property)
-        { 
+        {
             string propertyId = property.Attribute("id")?.Value;
             string propertyType = property.Attribute("type")?.Value;
             string propertyValue = property.Attribute("value")?.Value;
@@ -478,6 +499,14 @@ namespace XisfFileManager.FileOperations
             if (object1.KeywordList.CaptureTime < object2.KeywordList.CaptureTime) return -1;
             return 0;
         };
+        public static Comparison<XisfFile> CaptureTimeComparisonReverseOrder = delegate (XisfFile object1, XisfFile object2)
+        {
+            if (object1 == null) return 1;
+            if (object2 == null) return 1;
+            if (object2.KeywordList.CaptureTime > object1.KeywordList.CaptureTime) return 1;
+            if (object2.KeywordList.CaptureTime < object1.KeywordList.CaptureTime) return -1;
+            return 0;
+        };
     }
 
     public static class XisfFileExtensions
@@ -501,8 +530,8 @@ namespace XisfFileManager.FileOperations
                     return "0.0";
 
                 if (seconds < 1) // Between 10 microseconds and 1 second
-                //    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.0####");
-                      return seconds.ToString("0.0####"); // Tens of microseconds
+                                 //    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.0####");
+                    return seconds.ToString("0.0####"); // Tens of microseconds
 
                 return seconds.ToString("0.0###"); // Milliseconds
             }

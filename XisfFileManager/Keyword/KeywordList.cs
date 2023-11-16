@@ -212,14 +212,6 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
 
-        public string CaptureSoftware
-        {
-            get { return GetKeywordValue("SWCREATE"); }
-            set { AddKeyword("SWCREATE", value.ToString(), "[name] Equipment Control and Automation Application"); }
-        }
-
-        // *********************************************************************************************************
-
         public string CBIAS
         {
             get { return GetKeywordValue("CBIAS"); }
@@ -392,7 +384,7 @@ namespace XisfFileManager
                 if (value == string.Empty) 
                     return eFrame.EMPTY;
 
-                if (value.ToLower().Contains("light")) return eFrame.LIGHT;
+                if (value.Contains("light", StringComparison.CurrentCultureIgnoreCase)) return eFrame.LIGHT;
                 if (value.ToLower().Contains("dark")) return eFrame.DARK;
                 if (value.ToLower().Contains("flat")) return eFrame.FLAT;
                 if (value.ToLower().Contains("bias")) return eFrame.BIAS;

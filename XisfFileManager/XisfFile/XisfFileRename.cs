@@ -63,18 +63,20 @@ namespace XisfFileManager.FileOperations
         public int MoveDuplicates(List<XisfFile> fileList)
         {
             // Duplicates are files with identical GroupBy items.
-            var groupedDuplicates = fileList.GroupBy(item => {
-                                return new
-                                {
-                                    item.Camera,
-                                    item.FrameType,
-                                    item.Binning,
-                                    item.FilterName,
-                                    item.ExposureSeconds,
-                                    item.Gain,
-                                    item.Offset,
-                                    item.CaptureTime
-                                };})
+            var groupedDuplicates = fileList.GroupBy(item =>
+            {
+                return new
+                {
+                    item.Camera,
+                    item.FrameType,
+                    item.Binning,
+                    item.FilterName,
+                    item.ExposureSeconds,
+                    item.Gain,
+                    item.Offset,
+                    item.CaptureTime
+                };
+            })
                                 .Where(group => group.Skip(1).Any())
                                 .ToList();
 
@@ -144,10 +146,7 @@ namespace XisfFileManager.FileOperations
                         else
                             newName += "  (" + mFile.CaptureTime.ToString("yyyy-MM-dd");
 
-                        if (mFile.CaptureSoftware != string.Empty)
-                        {
-                            newName += "  " + mFile.CaptureSoftware;
-                        }
+                        newName += "  " + mFile.CaptureSoftware;
 
                         newName += ")";
                     }
@@ -197,17 +196,9 @@ namespace XisfFileManager.FileOperations
                     newName += "  (";
 
                     if (mFile.MSTRALG != string.Empty)
-                    {
-                        newName += mFile.MSTRALG;
-
-                        if (mFile.CaptureSoftware != string.Empty)
-                            newName += "  " + mFile.CaptureSoftware;
-                    }
+                        newName += mFile.MSTRALG + "  " + mFile.CaptureSoftware;
                     else
-                    {
-                        if (mFile.CaptureSoftware != string.Empty)
-                            newName += mFile.CaptureSoftware;
-                    }
+                        newName += mFile.CaptureSoftware;
 
                     newName += ")  ";
                 }

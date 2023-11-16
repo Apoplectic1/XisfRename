@@ -19,8 +19,6 @@
     // In files streaming read and write operations, these define the type of data the buffer being read or written to will contain
     public enum eBufferData { ASCII, BINARY, ZEROS, USERDATA, POSITION }
 
-    public enum eCalibrationDirectory { LOCAL, LIBRARY }
-
     // Target Scheduler 
     public enum eProjectPriority {LOW = 0, NORMAL = 1, HIGH = 2 }
 

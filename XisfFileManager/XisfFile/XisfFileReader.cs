@@ -69,7 +69,6 @@ namespace XisfFileManager.FileOperations
                     xmlString = xmlKeywordBlockMatch.ToString().Replace("'", "");
 
 
-
                     // Remove Processing History Property
                     string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
                     xmlString = Regex.Replace(xmlString, pattern, "");
