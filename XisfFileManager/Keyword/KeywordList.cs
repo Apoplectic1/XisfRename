@@ -264,13 +264,34 @@ namespace XisfFileManager
         {
             get 
             {
-                string value = GetKeywordValue("EXPTIME");
-                if (value == string.Empty)
-                    return -1.0;
+                double exposure;
+                bool bStatus;
+                string value = GetKeywordValue("EXPOSURE");
+                if (value != string.Empty)
+                {
+                    bStatus = double.TryParse(value, out exposure);
+                    if (bStatus)
+                    {
+                        RemoveKeyword("EXPTIME");
+                        return exposure;
+                    }
+                }
                 
-                return Convert.ToDouble(value);
+                value = GetKeywordValue("EXPTIME");
+                if (value != string.Empty)
+                {
+                    bStatus = double.TryParse(value, out exposure);
+                    if (bStatus)
+                    {
+                        AddKeyword("EXPOSURE", exposure.ToString(), "[seconds] Imaging Camera Exposure Time");
+                        RemoveKeyword("EXPTIME");
+                        return exposure;
+                    }
+                }
+                AddKeyword("EXPOSURE", "0.0", "[seconds] Imaging Camera Exposure Time");
+                return 0.0;
             }
-            set { AddKeyword("EXPTIME", value.ToString(), "[seconds] Imaging Camera Exposure Time"); }
+            set { AddKeyword("EXPOSURE", value.ToString(), "[seconds] Imaging Camera Exposure Time"); }
         }
 
         // *********************************************************************************************************

@@ -1403,13 +1403,11 @@
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect
             // 
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.AutoSize = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Location = new System.Drawing.Point(14, 20);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Size = new System.Drawing.Size(63, 19);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 25;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Text = "Protect";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.UseVisualStyleBackColor = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged;
@@ -1417,11 +1415,13 @@
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew
             // 
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.AutoSize = true;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Checked = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Location = new System.Drawing.Point(85, 20);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Size = new System.Drawing.Size(90, 19);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabIndex = 24;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Text = "Update New";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.UseVisualStyleBackColor = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew_CheckedChanged;

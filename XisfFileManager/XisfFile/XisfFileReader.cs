@@ -23,15 +23,6 @@ namespace XisfFileManager.FileOperations
         private Match xmlCommentBlockMatch;
         private Match xmlKeywordBlockMatch;
 
-        static bool IsWellFormedXml(string xml)
-        {
-            // Implement your custom XML validation logic here
-            // You can use libraries like HtmlAgilityPack for more robust validation
-
-            // For simplicity, this example checks if the XML starts and ends with proper tags
-            return xml.StartsWith('<') && xml.EndsWith('>');
-        }
-
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
             await Task.Run(async () =>
@@ -78,7 +69,10 @@ namespace XisfFileManager.FileOperations
                     xmlString = xmlKeywordBlockMatch.ToString().Replace("'", "");
 
 
-                    //xmlString = xmlString.Replace("com\" ", "");
+
+                    // Remove Processing History Property
+                    string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
+                    xmlString = Regex.Replace(xmlString, pattern, "");
 
 
                     // Make an isolated copy
@@ -130,7 +124,7 @@ namespace XisfFileManager.FileOperations
                         xFile.AddXMLKeyword(element);
                     }
 
-                    // Place Property triples into 'properties'
+                    // Extract various property values from the XISF file
                     IEnumerable<XElement> properties = xFile.mXDoc.Descendants(ns + "Property");
                     foreach (XElement property in properties)
                     {

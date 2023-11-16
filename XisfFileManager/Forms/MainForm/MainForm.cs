@@ -80,7 +80,7 @@ namespace XisfFileManager
             mFileReader = new XisfFileReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
             mXisfFileUpdate = new XisfFileUpdate();
-            mKeywordUpdateProtection = eKeywordUpdateMode.PROTECT;
+            mKeywordUpdateProtection = eKeywordUpdateMode.UPDATE_NEW;
             Label_FileSelection_Statistics_Task.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
@@ -313,34 +313,37 @@ namespace XisfFileManager
 
             // First get a list of all the target names found in the source files, then find unique names and sort.
             // Place culled list in the target name combobox
-            List<string> TargetNames = new();
-            List<string> WeightKeywords = new();
+            List<string> targetNameList = new();
+            List<string> weightKeywordList = new();
 
             foreach (XisfFile file in mFileList)
             {
-                TargetNames.Add(file.TargetName);
+                targetNameList.Add(file.TargetName);
             }
 
-            TargetNames = TargetNames.Distinct().ToList();
-            TargetNames = TargetNames.OrderBy(q => q).ToList();
+            targetNameList = targetNameList.Distinct().ToList();
+            targetNameList = targetNameList.OrderBy(q => q).ToList();
 
-            foreach (string item in TargetNames)
+            // Add the target names to the combobox
+            foreach (string item in targetNameList)
             {
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items.Add(item);
             }
 
+            // Select the first item in the combobox
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.SelectedIndex = 0;
 
-            // Rule for single item
-            if (TargetNames.Count <= 1)
+
+            if (targetNameList.Count <= 1)
             {
+                // Single name or blank
                 Label_KeywordUpdateTab_SubFrameKeywords_TagetName.ForeColor = Color.Black;
             }
             else
             {
-                // Create a dictionary to count matching pairs
+                // If target names are not unique, check for pairs
                 var matchCounts = new Dictionary<string, int>();
-                foreach (var item in TargetNames)
+                foreach (var item in targetNameList)
                 {
                     var baseItem = item.EndsWith(" stars") ? item.Substring(0, item.Length - 6) : item;
 
@@ -378,20 +381,20 @@ namespace XisfFileManager
             // Now find a list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
             foreach (XisfFile file in mFileList)
             {
-                WeightKeywords = file.WeightKeyword;
+                weightKeywordList = file.WeightKeyword;
             }
 
-            if (WeightKeywords.Count > 0)
+            if (weightKeywordList.Count > 0)
             {
-                WeightKeywords = WeightKeywords.Distinct().ToList();
-                WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
+                weightKeywordList = weightKeywordList.Distinct().ToList();
+                weightKeywordList = weightKeywordList.OrderBy(q => q).ToList();
 
-                foreach (var item in WeightKeywords)
+                foreach (var item in weightKeywordList)
                 {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item);
                 }
 
-                if (WeightKeywords.Count > 1)
+                if (weightKeywordList.Count > 1)
                 {
                     Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
                 }
@@ -503,8 +506,6 @@ namespace XisfFileManager
                 }
             }
 
-
-
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
             TabControl_Update_TargetScheduler.Enabled = true;
         }
@@ -523,7 +524,8 @@ namespace XisfFileManager
                 if (currentDirectory.Equals(newDirectory))
                     continue;
 
-                Directory.Move(currentDirectory, newDirectory);
+                if (!Directory.Exists(newDirectory))
+                    Directory.Move(currentDirectory, newDirectory);
             }
         }
 
@@ -675,8 +677,6 @@ namespace XisfFileManager
             targetNames.Clear();
             foreach (string target in ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Items)
             {
-                if (mBCancel) { mBCancel = false; return; }
-
                 // Remove " Stars" from targetName so there is a single target name for the next foreach below (" Stars" will be added there)
                 string targetName = target.Replace(" Stars", "");
                 targetNames.Add(targetName.Trim());
@@ -2690,22 +2690,32 @@ namespace XisfFileManager
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text, out value);
                     if (bStatus)
                         file.ExposureSeconds = value;
+                    else
+                        file.ExposureSeconds = file.ExposureSeconds;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out parseInt);
                     if (bStatus)
                         file.Gain = parseInt;
+                    else
+                        file.Gain = file.Gain;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text, out parseInt);
                     if (bStatus)
                         file.Offset = parseInt;
+                    else
+                        file.Offset = file.Offset;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text, out parseInt);
                     if (bStatus)
                         file.Binning = parseInt;
+                    else
+                        file.Binning = file.Binning;
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
+                    else
+                        file.SensorTemperature = file.SensorTemperature;
                 }
 
                 if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
@@ -2760,25 +2770,37 @@ namespace XisfFileManager
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Text, out value);
                     if (bStatus)
                         file.ExposureSeconds = value;
+                    else
+                        file.ExposureSeconds = file.ExposureSeconds;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out parseInt);
                     if (bStatus)
                         file.Gain = parseInt;
+                    else
+                        file.Gain = file.Gain;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out parseInt);
                     if (bStatus)
                         file.Offset = parseInt;
+                    else
+                        file.Offset = file.Offset;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Binning.Text, out parseInt);
                     if (bStatus)
-                        if (bStatus)
-                            file.Binning = parseInt;
+                        file.Binning = parseInt;
+                    else
+                        file.Binning = file.Binning;
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text, out value);
                     if (bStatus)
                     {
                         file.FocuserTemperature = value;
                         file.SensorTemperature = value;
+                    }
+                    else
+                    {
+                        file.FocuserTemperature = file.FocuserTemperature;
+                        file.SensorTemperature = file.SensorTemperature;
                     }
                 }
 
@@ -2797,14 +2819,20 @@ namespace XisfFileManager
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_A144Seconds.Text, out value);
                     if (bStatus)
                         file.ExposureSeconds = value;
+                    else
+                        file.ExposureSeconds = file.ExposureSeconds;
 
                     bStatus = int.TryParse(ComboBox_KeywordUpdateTab_Camera_A144Binning.Text, out parseInt);
                     if (bStatus)
                         file.Binning = parseInt;
+                    else
+                        file.Binning = file.Binning;
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
+                    else
+                        file.SensorTemperature = file.SensorTemperature;
                 }
             }
 
@@ -3198,6 +3226,7 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
+            CheckBox_FileSlection_NoTotals.Checked = true;
         }
 
         private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
@@ -3411,26 +3440,14 @@ namespace XisfFileManager
 
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {
-            if (mFileList.Count == 0) return;
-
             foreach (var file in mFileList)
             {
-                if (file.TargetName.Equals("Master"))
-                {
-                    file.AddKeyword("CDARK", string.Empty, "Xisf File Manager");
-                    file.CDARK = string.Empty;
-
-                    file.AddKeyword("CFLAT", string.Empty, "Xisf File Manager");
-                    file.CFLAT = string.Empty;
-
-                    file.AddKeyword("CBIAS", string.Empty, "Xisf File Manager");
-                    file.CBIAS = string.Empty;
-
-                    file.AddKeyword("CPANEL", string.Empty, "Xisf File Manager");
-                    file.CPANEL = string.Empty;
-
-                    file.AddKeyword("CLIGHT", string.Empty, "Xisf File Manager");
-                }
+                file.CDARK = string.Empty;
+                file.CFLAT = string.Empty;
+                file.CBIAS = string.Empty;
+                file.CPANEL = string.Empty;
+                file.CSTARS = string.Empty;
+                file.RemoveKeyword("CLIGHT");
             }
         }
 

@@ -275,6 +275,8 @@ namespace XisfFileManager
 
             // Refine TemperatureList to match  match the target file exposure time
             List<XisfFile> ExposureList = TemperatureList.Where(exposure => Math.Abs(exposure.ExposureSeconds - targetFile.ExposureSeconds) <= ExposureTolerance).ToList();
+            
+            // Refine ExposureList to inlcude calibration files with exposure times greater than or equal to the target file exposure time
             List<XisfFile> ExposureToleranceList = ExposureList.Where(value => value.ExposureSeconds >= targetFile.ExposureSeconds).ToList();
             if (!bIgnoreExposure)
             {
@@ -504,10 +506,7 @@ namespace XisfFileManager
                     {
                         // Number each Dark based on number of uniqueDarkCalibrationFiles
                         darkFile.TargetFile.CDARK = "D" + darkIndex.ToString();
-                        darkFile.TargetFile.AddKeyword("CDARK", darkFile.TargetFile.CDARK);
-
                         darkFile.CalibrationFile.CDARK = "D" + darkIndex.ToString();
-                        darkFile.CalibrationFile.AddKeyword("CDARK", darkFile.CalibrationFile.CDARK);
                     }
                 }
 
@@ -529,10 +528,7 @@ namespace XisfFileManager
                     {
                         // Number each Flat based on number of uniqueFlatCalibrationFiles
                         flatFile.TargetFile.CFLAT = "F" + flatIndex.ToString();
-                        flatFile.TargetFile.AddKeyword("CFLAT", flatFile.TargetFile.CFLAT);
-
                         flatFile.CalibrationFile.CFLAT = "F" + flatIndex.ToString();
-                        flatFile.CalibrationFile.AddKeyword("CFLAT", flatFile.CalibrationFile.CFLAT);
                     }
                 }
 

@@ -18,6 +18,7 @@ using XisfFileManager.Calculations;
 using XisfFileManager.Enums;
 using static System.Net.WebRequestMethods;
 using Windows.ApplicationModel.VoiceCommands;
+using System.Text.RegularExpressions;
 
 namespace XisfFileManager.FileOperations
 {
@@ -125,14 +126,18 @@ namespace XisfFileManager.FileOperations
                     xisfEnd = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
-                    string xisfString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
+                    string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
+
+                    // Remove Processing History Property
+                    string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
+                    xmlString = Regex.Replace(xmlString, pattern, "");
 
                     // The xisfString does not include the comment section if present
                     XmlDocument xmlDoc = new XmlDocument();
                     XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
                     namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
 
-                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xisfString);
+                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -167,8 +172,13 @@ namespace XisfFileManager.FileOperations
                     // Set the new length of the <xisf to /xisf> section
                     int xmlLength = xmlDoc.OuterXml.Length;
 
-                    binaryFileData[9] = (byte)((xmlLength >> 8) & 0xFF); // Most significant byte
-                    binaryFileData[8] = (byte)(xmlLength & 0xFF); // Least significant byte
+                    // "XISF0100" is the XISF Signature. The length of the xml section is stored in the 9th and 10th bytes of the signature
+                    // Assumes that xmlLength is less than 65536 bytes
+
+                    byte[] xisfSignature = new byte[16] { 0x58, 0x49, 0x53, 0x46, 0x30, 0x31, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+                    xisfSignature[8] = (byte)(xmlLength & 0xFF); // Least significant byte
+                    xisfSignature[9] = (byte)((xmlLength >> 8) & 0xFF); // Most significant byte
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -191,7 +201,7 @@ namespace XisfFileManager.FileOperations
                         Type = eBufferData.BINARY,
                         BinaryDataStart = 0,
                         BinaryByteLength = 16,
-                        BinaryData = binaryFileData
+                        BinaryData = xisfSignature
                     };
                     mBufferList.Add(mBuffer);
 

@@ -147,6 +147,11 @@ namespace XisfFileManager.FileOperations
             get => KeywordList.CPANEL;
             set => KeywordList.CPANEL = value;
         }
+        public string CSTARS
+        {
+            get => KeywordList.CSTARS;
+            set => KeywordList.CSTARS = value;
+        }
         public double ExposureSeconds
         {
             get => KeywordList.ExposureSeconds;
