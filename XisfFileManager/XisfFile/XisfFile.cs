@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-
+using Windows.Devices.Input;
 using XisfFileManager.Enums;
 using XisfFileManager.TargetScheduler.Tables;
 using static System.Net.WebRequestMethods;
@@ -133,8 +133,8 @@ namespace XisfFileManager.FileOperations
                     return "SCP";
                 }
 
-                AddKeyword("SWCREATE", "TBD", "Unknown Equipment Control and Automation Application");
-                return creator.Value;
+                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
+                return string.Empty;
             }
             set
             {
@@ -491,7 +491,7 @@ namespace XisfFileManager.FileOperations
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
 
-        public static Comparison<XisfFile> CaptureTimeComparison = delegate (XisfFile object1, XisfFile object2)
+        public static Comparison<XisfFile> CaptureTime_OldToNew = delegate (XisfFile object1, XisfFile object2)
         {
             if (object1 == null) return 1;
             if (object2 == null) return 1;
@@ -499,7 +499,7 @@ namespace XisfFileManager.FileOperations
             if (object1.KeywordList.CaptureTime < object2.KeywordList.CaptureTime) return -1;
             return 0;
         };
-        public static Comparison<XisfFile> CaptureTimeComparisonReverseOrder = delegate (XisfFile object1, XisfFile object2)
+        public static Comparison<XisfFile> CaptureTime_NewToOld = delegate (XisfFile object1, XisfFile object2)
         {
             if (object1 == null) return 1;
             if (object2 == null) return 1;
@@ -527,13 +527,13 @@ namespace XisfFileManager.FileOperations
             if (seconds < 10.0)
             {
                 if (seconds < 0.00001) // Less than 10 microseconds
-                    return "0.0";
+                    return "0";
 
                 if (seconds < 1) // Between 10 microseconds and 1 second
                                  //    return ((decimal)seconds / 1.000000000000000000000000000000000m).ToString("0.0####");
                     return seconds.ToString("0.0####"); // Tens of microseconds
 
-                return seconds.ToString("0.0###"); // Milliseconds
+                return seconds.ToString("0.0####"); // Milliseconds
             }
             else
             {

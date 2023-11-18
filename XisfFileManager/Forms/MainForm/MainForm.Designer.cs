@@ -122,6 +122,7 @@
             RadioButton_KeywordUpdateTab_Telescope_EvoStar150 = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_Telescope_APM107 = new System.Windows.Forms.RadioButton();
             GroupBox_KeywordUpdateTab_SubFrameKeywords = new System.Windows.Forms.GroupBox();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile = new System.Windows.Forms.ComboBox();
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName = new System.Windows.Forms.CheckBox();
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues = new System.Windows.Forms.RadioButton();
@@ -562,7 +563,7 @@
             TabPage_TargetScheduler.Location = new System.Drawing.Point(4, 24);
             TabPage_TargetScheduler.Name = "TabPage_TargetScheduler";
             TabPage_TargetScheduler.Padding = new System.Windows.Forms.Padding(3);
-            TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 498);
+            TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 507);
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
             // 
@@ -725,7 +726,7 @@
             TabPage_Calibration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_Calibration.Name = "TabPage_Calibration";
             TabPage_Calibration.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_Calibration.Size = new System.Drawing.Size(1139, 498);
+            TabPage_Calibration.Size = new System.Drawing.Size(1139, 507);
             TabPage_Calibration.TabIndex = 1;
             TabPage_Calibration.Text = "Calibration";
             // 
@@ -1043,13 +1044,13 @@
             TabPage_KeywordUpdate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_KeywordUpdate.Name = "TabPage_KeywordUpdate";
             TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 498);
+            TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 507);
             TabPage_KeywordUpdate.TabIndex = 0;
             TabPage_KeywordUpdate.Text = "Keyword Update";
             // 
             // Button_KeywordUpdateTab_Cancel
             // 
-            Button_KeywordUpdateTab_Cancel.Location = new System.Drawing.Point(1023, 416);
+            Button_KeywordUpdateTab_Cancel.Location = new System.Drawing.Point(1023, 441);
             Button_KeywordUpdateTab_Cancel.Name = "Button_KeywordUpdateTab_Cancel";
             Button_KeywordUpdateTab_Cancel.Size = new System.Drawing.Size(88, 27);
             Button_KeywordUpdateTab_Cancel.TabIndex = 23;
@@ -1060,7 +1061,7 @@
             // Label_KeywordUpdateTab_FileName
             // 
             Label_KeywordUpdateTab_FileName.AutoSize = true;
-            Label_KeywordUpdateTab_FileName.Location = new System.Drawing.Point(20, 416);
+            Label_KeywordUpdateTab_FileName.Location = new System.Drawing.Point(20, 441);
             Label_KeywordUpdateTab_FileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_FileName.Name = "Label_KeywordUpdateTab_FileName";
             Label_KeywordUpdateTab_FileName.Size = new System.Drawing.Size(77, 15);
@@ -1069,7 +1070,7 @@
             // 
             // ProgressBar_KeywordUpdateTab_WriteProgress
             // 
-            ProgressBar_KeywordUpdateTab_WriteProgress.Location = new System.Drawing.Point(20, 454);
+            ProgressBar_KeywordUpdateTab_WriteProgress.Location = new System.Drawing.Point(20, 479);
             ProgressBar_KeywordUpdateTab_WriteProgress.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ProgressBar_KeywordUpdateTab_WriteProgress.Name = "ProgressBar_KeywordUpdateTab_WriteProgress";
             ProgressBar_KeywordUpdateTab_WriteProgress.Size = new System.Drawing.Size(1094, 13);
@@ -1085,7 +1086,7 @@
             GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap);
             GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro);
             GroupBox_KeywordUpdateTab_CaptureSoftware.Controls.Add(RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX);
-            GroupBox_KeywordUpdateTab_CaptureSoftware.Location = new System.Drawing.Point(20, 187);
+            GroupBox_KeywordUpdateTab_CaptureSoftware.Location = new System.Drawing.Point(20, 212);
             GroupBox_KeywordUpdateTab_CaptureSoftware.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_CaptureSoftware.Name = "GroupBox_KeywordUpdateTab_CaptureSoftware";
             GroupBox_KeywordUpdateTab_CaptureSoftware.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1181,7 +1182,7 @@
             GroupBox_KeywordUpdateTab_Telescope.Controls.Add(RadioButton_KeywordUpdateTab_Telescope_Newtonian254);
             GroupBox_KeywordUpdateTab_Telescope.Controls.Add(RadioButton_KeywordUpdateTab_Telescope_EvoStar150);
             GroupBox_KeywordUpdateTab_Telescope.Controls.Add(RadioButton_KeywordUpdateTab_Telescope_APM107);
-            GroupBox_KeywordUpdateTab_Telescope.Location = new System.Drawing.Point(176, 187);
+            GroupBox_KeywordUpdateTab_Telescope.Location = new System.Drawing.Point(176, 212);
             GroupBox_KeywordUpdateTab_Telescope.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_Telescope.Name = "GroupBox_KeywordUpdateTab_Telescope";
             GroupBox_KeywordUpdateTab_Telescope.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1280,6 +1281,7 @@
             // 
             // GroupBox_KeywordUpdateTab_SubFrameKeywords
             // 
+            GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile);
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName);
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue);
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues);
@@ -1300,10 +1302,21 @@
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords";
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords.Size = new System.Drawing.Size(1092, 165);
+            GroupBox_KeywordUpdateTab_SubFrameKeywords.Size = new System.Drawing.Size(1092, 191);
             GroupBox_KeywordUpdateTab_SubFrameKeywords.TabIndex = 14;
             GroupBox_KeywordUpdateTab_SubFrameKeywords.TabStop = false;
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Text = "SubFrame Keywords";
+            // 
+            // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile
+            // 
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.FormattingEnabled = true;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Location = new System.Drawing.Point(517, 16);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile";
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Size = new System.Drawing.Size(252, 23);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Sorted = true;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.TabIndex = 32;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Text = "File";
             // 
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName
             // 
@@ -1319,7 +1332,7 @@
             // RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue
             // 
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.AutoSize = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Location = new System.Drawing.Point(631, 111);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Location = new System.Drawing.Point(639, 133);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Size = new System.Drawing.Size(97, 19);
@@ -1331,7 +1344,7 @@
             // 
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.AutoSize = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Checked = true;
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Location = new System.Drawing.Point(547, 111);
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Location = new System.Drawing.Point(555, 133);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Size = new System.Drawing.Size(75, 19);
@@ -1343,7 +1356,7 @@
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment
             // 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.FormattingEnabled = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Location = new System.Drawing.Point(517, 85);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Location = new System.Drawing.Point(517, 103);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Size = new System.Drawing.Size(252, 23);
@@ -1354,7 +1367,7 @@
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue
             // 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.FormattingEnabled = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Location = new System.Drawing.Point(517, 53);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Location = new System.Drawing.Point(517, 74);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Size = new System.Drawing.Size(252, 23);
@@ -1366,7 +1379,7 @@
             // GroupBox_SubFrameKeywords_CalibrationFiles
             // 
             GroupBox_SubFrameKeywords_CalibrationFiles.Controls.Add(Button_SubFrameKeywords_CalibrationFiles_ClearAll);
-            GroupBox_SubFrameKeywords_CalibrationFiles.Location = new System.Drawing.Point(237, 105);
+            GroupBox_SubFrameKeywords_CalibrationFiles.Location = new System.Drawing.Point(237, 108);
             GroupBox_SubFrameKeywords_CalibrationFiles.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_SubFrameKeywords_CalibrationFiles.Name = "GroupBox_SubFrameKeywords_CalibrationFiles";
             GroupBox_SubFrameKeywords_CalibrationFiles.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1391,7 +1404,7 @@
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Controls.Add(RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Location = new System.Drawing.Point(237, 48);
+            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Location = new System.Drawing.Point(237, 49);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection";
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1537,7 +1550,7 @@
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Delete
             // 
-            Button_KeywordUpdateTab_SubFrameKeywords_Delete.Location = new System.Drawing.Point(662, 132);
+            Button_KeywordUpdateTab_SubFrameKeywords_Delete.Location = new System.Drawing.Point(662, 158);
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Delete";
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Size = new System.Drawing.Size(108, 27);
@@ -1548,7 +1561,7 @@
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_AddReplace
             // 
-            Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Location = new System.Drawing.Point(517, 132);
+            Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Location = new System.Drawing.Point(517, 157);
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Name = "Button_KeywordUpdateTab_SubFrameKeywords_AddReplace";
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Size = new System.Drawing.Size(126, 27);
@@ -1560,7 +1573,7 @@
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName
             // 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.FormattingEnabled = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Location = new System.Drawing.Point(517, 21);
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Location = new System.Drawing.Point(517, 45);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Size = new System.Drawing.Size(252, 23);
@@ -1649,7 +1662,7 @@
             GroupBox_KeywordUpdateTab_Camera.Controls.Add(Label_KeywordUpdateTab_Camera_A144Gain);
             GroupBox_KeywordUpdateTab_Camera.Controls.Add(Label_KeywordUpdateTab_Camera_Offset);
             GroupBox_KeywordUpdateTab_Camera.Controls.Add(Label_KeywordUpdateTab_Camera_Gain);
-            GroupBox_KeywordUpdateTab_Camera.Location = new System.Drawing.Point(395, 187);
+            GroupBox_KeywordUpdateTab_Camera.Location = new System.Drawing.Point(395, 212);
             GroupBox_KeywordUpdateTab_Camera.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_Camera.Name = "GroupBox_KeywordUpdateTab_Camera";
             GroupBox_KeywordUpdateTab_Camera.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1965,7 +1978,7 @@
             GroupBox_KeywordUpdateTab_ImageType.Controls.Add(Button_KeywordUpdateTab_ImageType_SetAll);
             GroupBox_KeywordUpdateTab_ImageType.Controls.Add(GroupBox_KeywordUpdateTab_ImageType_Frame);
             GroupBox_KeywordUpdateTab_ImageType.Controls.Add(GroupBox_KeywordUpdateTab_ImageType_Filter);
-            GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(788, 187);
+            GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(788, 212);
             GroupBox_KeywordUpdateTab_ImageType.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_ImageType.Name = "GroupBox_KeywordUpdateTab_ImageType";
             GroupBox_KeywordUpdateTab_ImageType.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -2195,14 +2208,14 @@
             TabControl_Update_TargetScheduler.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabControl_Update_TargetScheduler.Name = "TabControl_Update_TargetScheduler";
             TabControl_Update_TargetScheduler.SelectedIndex = 0;
-            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 526);
+            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 535);
             TabControl_Update_TargetScheduler.TabIndex = 23;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1170, 775);
+            ClientSize = new System.Drawing.Size(1170, 785);
             Controls.Add(TabControl_Update_TargetScheduler);
             Controls.Add(GroupBox_FileSelection);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -2429,5 +2442,6 @@
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest;
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_TotalFrames;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
+        private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
     }
 }

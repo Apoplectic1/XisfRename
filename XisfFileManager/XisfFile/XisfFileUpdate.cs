@@ -69,12 +69,12 @@ namespace XisfFileManager.FileOperations
 
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
-
-                    // Remove Processing History Property
-                    string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
+                    
+                    // Remove Processing History Property if present
+                    string pattern = Regex.Escape("<Property id=\"PixInsight:ProcessingHistory\"") + @"(.*?)" + Regex.Escape("</Property>");
                     xmlString = Regex.Replace(xmlString, pattern, "");
 
-                    // The xisfString does not include the comment section if present
+                    // The new  does not include the comment section if present
                     XmlDocument xmlDoc = new XmlDocument();
                     XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
                     namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
@@ -106,7 +106,7 @@ namespace XisfFileManager.FileOperations
                         if (possibleBogusImageAttachmentLocation % xFile.BlockAlignmentSize != 0)
                         {
                             if ((possibleBogusImageAttachmentLocation - 1) % xFile.BlockAlignmentSize != 0)
-                                MessageBox.Show("Image Attachment Start Location may not be not Block Aligned");
+                                MessageBox.Show(Path.GetFileName(xFile.FilePath), "Image Attachment Start Location may not be not Block Aligned");
                         }
                     }
                     xFile.TargetAttachmentPadding = SetImageAttachmentLocation(xmlDoc, xFile);

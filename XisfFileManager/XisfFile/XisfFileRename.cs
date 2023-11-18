@@ -37,10 +37,7 @@ namespace XisfFileManager.FileOperations
 
                 sourceFilePath = Path.GetDirectoryName(file.FilePath);
 
-                newFileName = BuildFileName(file.FileNameNumberIndex, file);
-                int lastParen = newFileName.LastIndexOf(')');
-                newFileName = newFileName.Remove(lastParen);
-                newFileName += ").xisf";
+                newFileName = BuildFileName(file.FileNameNumberIndex, file) + ".xisf";
 
                 // Rename the file if its name actually changed
                 if (file.FilePath != sourceFilePath + "\\" + newFileName)
@@ -64,21 +61,21 @@ namespace XisfFileManager.FileOperations
         {
             // Duplicates are files with identical GroupBy items.
             var groupedDuplicates = fileList.GroupBy(item =>
-            {
-                return new
-                {
-                    item.Camera,
-                    item.FrameType,
-                    item.Binning,
-                    item.FilterName,
-                    item.ExposureSeconds,
-                    item.Gain,
-                    item.Offset,
-                    item.CaptureTime
-                };
-            })
-                                .Where(group => group.Skip(1).Any())
-                                .ToList();
+                                    {
+                                        return new
+                                        {
+                                            item.Camera,
+                                            item.FrameType,
+                                            item.Binning,
+                                            item.FilterName,
+                                            item.ExposureSeconds,
+                                            item.Gain,
+                                            item.Offset,
+                                            item.CaptureTime
+                                        };
+                                    })
+                                    .Where(group => group.Skip(1).Any())
+                                    .ToList();
 
             // List to keep track of files that have been moved.
             var movedFiles = new List<XisfFile>();
@@ -127,8 +124,6 @@ namespace XisfFileManager.FileOperations
 
                 if (targetName.Equals("Master"))
                 {
-                    //mFile.KeywordData.TotalFrames(true);
-
                     if (mFile.FrameType == eFrame.LIGHT)
                     {
                         newName = targetName + "  Integration  L-" + mFile.FilterName + "  ";
@@ -193,14 +188,17 @@ namespace XisfFileManager.FileOperations
                         newName += mFile.FocalLength.ToString("F0");
                     }
 
-                    newName += "  (";
-
                     if (mFile.MSTRALG != string.Empty)
-                        newName += mFile.MSTRALG + "  " + mFile.CaptureSoftware;
+                    {
+                        newName += "  (" + mFile.MSTRALG.Trim();
+                        if (mFile.CaptureSoftware != string.Empty)
+                            newName += " " + mFile.CaptureSoftware.Trim() + ")";
+                        else
+                            newName += ")";
+                    }
                     else
-                        newName += mFile.CaptureSoftware;
-
-                    newName += ")  ";
+                        if (mFile.CaptureSoftware != string.Empty)
+                            newName += "  (" + mFile.CaptureSoftware.Trim() + ")";
                 }
 
                 return newName;

@@ -269,7 +269,12 @@ namespace XisfFileManager
             mDirectoryOps.Frame = eFrame.ALL;
             mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            mDirectoryOps.RecuseDirectories(diDirectoryTree);
+            bool bStatus = mDirectoryOps.RecuseDirectories(diDirectoryTree);
+            if (!bStatus)
+            {
+                MessageBox.Show("No Files Found", "Select a different .xisf Folder");
+                return;
+            }
 
             Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
@@ -279,7 +284,7 @@ namespace XisfFileManager
 
             if (mDirectoryOps.Files.Count == 0)
             {
-                MessageBox.Show("Duplicates, PreProcessing or Project  Directory", "Select a different .xisf Folder");
+                MessageBox.Show("Masters, Duplicates, PreProcessing or Project  Directory", "Select a different .xisf Folder");
                 return;
             }
 
@@ -305,10 +310,9 @@ namespace XisfFileManager
             }
 
             // Sort Image File Lists by Capture Time
-            // Careful - make sure this doesn't screw up the SubFrameKeywordLists order later when writing back SubFrameKeyword data.
-            // When updating actual xisf files, the update method for SubFrameKeyword data must use the SubFrameKeyword data FileName field to make sure the correct data gets written to the currect file.
-            //mFileList.Sort(XisfFile.CaptureTimeComparison);
-            mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // Faster?
+            //mFileList.Sort(XisfFile.CaptureTime_OldToNew);
+            //mFileList.Sort(XisfFile.CaptureTime_NewToOld);
+            mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest if first
 
             // **********************************************************************
             // Get TargetName and and Weights to populate ComboBoxes
@@ -420,6 +424,8 @@ namespace XisfFileManager
 
             foreach (XisfFile xFile in mFileList)
             {
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Items.Add(Path.GetFileName(xFile.FilePath));
+
                 foreach (var keywordName in xFile.KeywordList.mKeywordList)
                 {
                     keywordNamelist.Add(keywordName.Name);
@@ -607,7 +613,6 @@ namespace XisfFileManager
 
         private void Button_Rename_Click(object sender, EventArgs e)
         {
-            int duplicates = 0;
             bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
             bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
 
@@ -616,7 +621,7 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
-            duplicates = mRenameFile.MoveDuplicates(mFileList);
+            int duplicates = mRenameFile.MoveDuplicates(mFileList);
 
             // SetFileIndex will preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
             // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
@@ -634,8 +639,7 @@ namespace XisfFileManager
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
                 string key = Path.GetDirectoryName(xFile.FilePath);
-                string newXisfFilePath = mDirectoryProperties.DirectoryStatistics[key] + "\\" + Path.GetFileName(xFile.FilePath);
-                xFile.FilePath = newXisfFilePath;
+                xFile.FilePath = mDirectoryProperties.DirectoryStatistics[key] + "\\" + Path.GetFileName(xFile.FilePath);
 
                 Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
@@ -3333,16 +3337,19 @@ namespace XisfFileManager
         private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
         {
             mFileType = eFile.ALL;
+            CheckBox_FileSlection_NoTotals.Checked = true;
         }
 
         private void RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged(object sender, EventArgs e)
         {
             mFileType = eFile.NO_MASTERS;
+            CheckBox_FileSlection_NoTotals.Checked = false;
         }
 
         private void RadioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
         {
             mFileType = eFile.MASTERS;
+            CheckBox_FileSlection_NoTotals.Checked = true;
         }
 
         private async void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
@@ -3358,7 +3365,7 @@ namespace XisfFileManager
             if (!bMatchedAllFiles)
                 await mCalibration.ReadCalibrationFramesAsync(calibrationFileMasterLibraryLocation);
 
-            mCalibration.MatchCalibrationLibraryFrames(mFileList);
+            mCalibration.MatchTargetsWithCalibrationLibraryFrames(mFileList);
         }
 
         void ExpandAllNodes(TreeNodeCollection nodes)
@@ -3374,7 +3381,7 @@ namespace XisfFileManager
         {
             TextBox_CalibrationTab_Messgaes.Clear();
 
-            mCalibration.MatchCalibrationLibraryFrames(mFileList);
+            mCalibration.MatchTargetsWithCalibrationLibraryFrames(mFileList);
         }
 
         private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
@@ -3487,6 +3494,10 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "";
 
 
+            //List<XisfFile> filesWithKeyword = mFileList
+            //            .Where(file => file.KeywordList.Any(keyword => keyword.Value == targetKeywordValue))
+            //            .ToList();
+
 
             foreach (var value in keywordList)
             {
@@ -3552,6 +3563,9 @@ namespace XisfFileManager
 
         private void RefreshComboBoxes()
         {
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Text = "File";
+
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Name";
 
