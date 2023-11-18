@@ -200,6 +200,8 @@ namespace XisfFileManager.Calculations
 
             // Find the minimum temperature at each unique focus position
             Dictionary<int, double> unsortedPositionTemperaturePairs = BuildUnsortedPositionDictionary(xFileList);
+            if (unsortedPositionTemperaturePairs.Count == 0)
+                return "Temperature Coefficient: Not Computed";
 
             // Find the minimum position of each unique temperature then sort by temperature
             SortedDictionary<double, int> sortedTemperaturePositionPairs = BuildSortedTemperatureDictionary(unsortedPositionTemperaturePairs);

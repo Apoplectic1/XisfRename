@@ -3,22 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using XisfFileManager.FileOperations;
 using System.Drawing;
 using XisfFileManager.Calculations;
-using MathNet.Numerics.Statistics;
-using System.Threading.Tasks;
 using System.Reflection;
 using XisfFileManager.Enums;
 using XisfFileManager.FileOps.DirectoryProperties;
-using System.Globalization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using XisfFileManager.TargetScheduler.Tables;
-using static System.Net.Mime.MediaTypeNames;
 using TreeView = System.Windows.Forms.TreeView;
 
 namespace XisfFileManager
@@ -32,26 +23,7 @@ namespace XisfFileManager
         private eFile mFileType = eFile.NO_MASTERS;
         private List<XisfFile> mFileList;
         private XisfFile mFile;
-        private double mEccentricityRangeHigh;
-        private double mEccentricityRangeLow;
-        private double mFwhmPercent;
-        private double mFwhmRangeHigh;
-        private double mFwhmRangeLow;
-        private double mMedianRangeHigh;
-        private double mMedianRangeLow;
-        private double mNoiseRangeHigh;
-        private double mNoiseRangeLow;
-        private double mNoiseRatioRangeHigh;
-        private double mNoiseRatioRangeLow;
-        private double mSnrPercent;
-        private double mSnrRangeHigh;
-        private double mSnrRangeLow;
-        private double mStarResidualRangeHigh;
-        private double mStarResidualRangeLow;
-        private double mStarsRangeHigh;
-        private double mStarsRangeLow;
-        private double mUpdateStatisticsRangeHigh;
-        private double mUpdateStatisticsRangeLow;
+  
         private Calibration mCalibration;
         private DirectoryOps mDirectoryOps;
         private readonly ImageCalculations ImageParameterLists;
@@ -149,56 +121,20 @@ namespace XisfFileManager
         {
             base.OnLoad(e);
 
-            mEccentricityRangeHigh = Properties.Settings.Default.Persist_EccentricityRangeHighState;
-            mEccentricityRangeLow = Properties.Settings.Default.Persist_EccentricityRangeLowState;
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
-            mFwhmPercent = Properties.Settings.Default.Persist_FwhmPercentState;
-            mFwhmRangeHigh = Properties.Settings.Default.Persist_FwhmRangeHighState;
-            mFwhmRangeLow = Properties.Settings.Default.Persist_FwhmRangeLowState;
-            mMedianRangeHigh = Properties.Settings.Default.Persist_MedianRangeHighState;
-            mMedianRangeLow = Properties.Settings.Default.Persist_MedianRangeLowState;
-            mNoiseRangeHigh = Properties.Settings.Default.Persist_NoiseRangeHighState;
-            mNoiseRangeLow = Properties.Settings.Default.Persist_NoiseRangeLowState;
-            mNoiseRatioRangeHigh = Properties.Settings.Default.Persist_NoiseRatioRangeHighState;
-            mNoiseRatioRangeLow = Properties.Settings.Default.Persist_NoiseRatioRangeLowState;
-            mSnrPercent = Properties.Settings.Default.Persist_SnrPercentState;
-            mSnrRangeHigh = Properties.Settings.Default.Persist_SnrRangeHighState;
-            mSnrRangeLow = Properties.Settings.Default.Persist_SnrRangeLowState;
-            mStarResidualRangeHigh = Properties.Settings.Default.Persist_StarResidualRangeHighState;
-            mStarResidualRangeLow = Properties.Settings.Default.Persist_StarResidualRangeLowState;
-            mStarsRangeHigh = Properties.Settings.Default.Persist_StarsRangeHighState;
-            mStarsRangeLow = Properties.Settings.Default.Persist_StarsRangeLowState;
-            mUpdateStatisticsRangeHigh = Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState;
-            mUpdateStatisticsRangeLow = Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState;
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
 
-            Properties.Settings.Default.Persist_EccentricityRangeHighState = mEccentricityRangeHigh;
-            Properties.Settings.Default.Persist_EccentricityRangeLowState = mEccentricityRangeLow;
             Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
             Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
-            Properties.Settings.Default.Persist_FwhmPercentState = mFwhmPercent;
-            Properties.Settings.Default.Persist_FwhmRangeHighState = mFwhmRangeHigh;
-            Properties.Settings.Default.Persist_FwhmRangeLowState = mFwhmRangeLow;
-            Properties.Settings.Default.Persist_MedianRangeHighState = mMedianRangeHigh;
-            Properties.Settings.Default.Persist_MedianRangeLowState = mMedianRangeLow;
-            Properties.Settings.Default.Persist_NoiseRangeHighState = mNoiseRangeHigh;
-            Properties.Settings.Default.Persist_NoiseRangeLowState = mNoiseRangeLow;
-            Properties.Settings.Default.Persist_NoiseRatioRangeHighState = mNoiseRatioRangeHigh;
-            Properties.Settings.Default.Persist_NoiseRatioRangeLowState = mNoiseRatioRangeLow;
-            Properties.Settings.Default.Persist_SnrPercentState = mSnrPercent;
-            Properties.Settings.Default.Persist_SnrRangeHighState = mSnrRangeHigh;
-            Properties.Settings.Default.Persist_SnrRangeLowState = mSnrRangeLow;
-            Properties.Settings.Default.Persist_StarResidualRangeHighState = mStarResidualRangeHigh;
-            Properties.Settings.Default.Persist_StarResidualRangeLowState = mStarResidualRangeLow;
-            Properties.Settings.Default.Persist_StarsRangeHighState = mStarsRangeHigh;
-            Properties.Settings.Default.Persist_StarsRangeLowState = mStarsRangeLow;
-            Properties.Settings.Default.Persist_UpdateStatisticsRangeHighState = mUpdateStatisticsRangeHigh;
-            Properties.Settings.Default.Persist_UpdateStatisticsRangeLowState = mUpdateStatisticsRangeLow;
+            Properties.Settings.Default.Persist_UpdateTargetNameState = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked;
+            Properties.Settings.Default.Persist_UpdatePanelNameState = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked;
 
             Properties.Settings.Default.Save();
         }
@@ -741,6 +677,9 @@ namespace XisfFileManager
             GroupBox_KeywordUpdateTab_Telescope.Enabled = true;
             GroupBox_KeywordUpdateTab_Camera.Enabled = true;
             GroupBox_KeywordUpdateTab_ImageType.Enabled = true;
+
+
+            FindFilterFrameType(); // Update UI - NOT SURE WHY I NEED THIS HERE
         }
 
         private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
@@ -1474,12 +1413,6 @@ namespace XisfFileManager
             Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
             Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Black;
 
-
-            if (mFileList.Count == 0)
-            {
-                return;
-            }
-
             // *****************************************************************************
 
             filterCount = 0;
@@ -1784,7 +1717,7 @@ namespace XisfFileManager
                     frameTypeCount++;
                 }
 
-                if (file.TargetName.Equals("Master", StringComparison.Ordinal))
+                if (file.TargetName.Equals("Master"))
                 {
                     foundMaster = true;
                     masterCount++;
@@ -1832,13 +1765,6 @@ namespace XisfFileManager
             }
             else
             {
-                /*
-                if (frameTypeCount == mFileList.Count)
-                {
-                    // Every source file has a FrameType. Make each found FrameType radio button DarkGreen
-                    if (foundLight) RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkGreen;
-                }
-                */
                 if (foundLight)
                 {
                     if (foundDark || foundFlat || foundBias)
@@ -3245,7 +3171,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
             if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
@@ -3260,6 +3186,15 @@ namespace XisfFileManager
         private void Button_KeywordSubFrameWeight_Remove_Click(object sender, EventArgs e)
         {
             List<string> WeightKeywords = new List<string>();
+
+            bool bStatus;
+            string frames = TextBox_FileSelection_DirectorySelection_TotalFrames.Text;
+            string algo = ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text;
+
+            int mTotalFrames = 0;
+            bStatus = int.TryParse(frames, out mTotalFrames);
+
+
 
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
 

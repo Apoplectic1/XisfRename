@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,7 +69,7 @@ namespace XisfFileManager.FileOperations
                     xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
                     xmlString = xmlKeywordBlockMatch.ToString().Replace("'", "");
 
-
+                    
                     // Remove Processing History Property
                     string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
                     xmlString = Regex.Replace(xmlString, pattern, "");
@@ -98,10 +99,33 @@ namespace XisfFileManager.FileOperations
 
                     // ***********************************************************************************
 
-                    IEnumerable<XElement> image = xFile.mXDoc.Descendants(ns + "Image");
-                    foreach (XElement element in image)
+                    // Find <Image> Attachments
+                    IEnumerable<XElement> imageElements = xFile.mXDoc.Descendants(ns + "Image")
+                                .Where(element =>
+                                    (element.Attribute("id") == null) ||
+                                    (element.Attribute("id") != null && (string)element.Attribute("id") == "integration") ||
+                                    (element.Attribute("id") != null && (string)element.Attribute("id") == "rejection_high") ||
+                                    (element.Attribute("id") != null && (string)element.Attribute("id") == "rejection_low"));
+
+                    foreach (XElement element in imageElements)
                     {
-                        xFile.ImageAttachment(element);
+                        XAttribute idAttribute = element.Attribute("id");
+                        if (idAttribute == null || idAttribute.Value == "integration")
+                        {
+                            // Both are main and should be first image
+                            xFile.ImageAttachment(element);
+                            continue;
+                        }
+                        else if (idAttribute != null && idAttribute.Value == "rejection_high")
+                        {
+                            xFile.ImageRejectionHighAttachment(element);
+                            continue;
+                        }
+                        else if (idAttribute != null && idAttribute.Value == "rejection_low")
+                        {
+                            xFile.ImageRejectionLowAttachment(element);
+                            continue;
+                        }
                     }
 
                     IEnumerable<XElement> iccprofile = xFile.mXDoc.Descendants(ns + "ICCProfile");
@@ -132,7 +156,65 @@ namespace XisfFileManager.FileOperations
 
                     // ***********************************************************************************
                 }
-            });
+
+
+            });   
+        }
+        public static bool ContainsNonAsciiOrInvalidChars(string input, out char firstInvalidChar)
+        {
+            // Check for non-ASCII characters
+            bool containsNonAscii = Regex.IsMatch(input, @"[^\x00-\x7F]");
+
+            // Check for characters other than the allowed set
+            Match match = Regex.Match(input, @"[^A-Za-z0-9+\-./:()_ .<>="",*%]");
+            if (match.Success)
+            {
+                firstInvalidChar = match.Value[0];
+                return true;
+            }
+
+            firstInvalidChar = '\0';
+
+            int quoteCount = 0;
+
+            foreach (char c in input)
+            {
+                if (c == '"')
+                {
+                    quoteCount++;
+                }
+            }
+
+            bool quotesMatch = quoteCount % 2 == 0;
+
+
+            return containsNonAscii;
+        }
+
+        public static string RemoveNonEvenPairs(string input, string openString, string closeString)
+        {
+            string pattern = $@"{Regex.Escape(openString)}[^{Regex.Escape(openString + closeString)}]*{Regex.Escape(closeString)}";
+            MatchCollection matches = Regex.Matches(input, pattern);
+
+            string result = "";
+
+            foreach (Match match in matches)
+            {
+                if (HasEvenPairs(match.Value, openString, closeString))
+                {
+                    result += match.Value;
+                }
+            }
+
+            return result;
+        }
+
+        public static bool HasEvenPairs(string input, string openString, string closeString)
+        {
+            int openCount = Regex.Matches(input, Regex.Escape(openString)).Count;
+            int closeCount = Regex.Matches(input, Regex.Escape(closeString)).Count;
+
+            return openCount == closeCount;
         }
     }
 }

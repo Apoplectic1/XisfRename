@@ -39,7 +39,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
-            ComboBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.ComboBox();
+            TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
             RadioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
             RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
@@ -340,7 +340,7 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_TotalFrames);
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_MastersOnly);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_ExcludeMasters);
@@ -357,16 +357,14 @@
             GroupBox_FileSelection_DirectorySelection.TabStop = false;
             GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
             // 
-            // ComboBox_FileSelection_DirectorySelection_TotalFrames
+            // TextBox_FileSelection_DirectorySelection_TotalFrames
             // 
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.FormattingEnabled = true;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(113, 102);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Name = "ComboBox_FileSelection_DirectorySelection_TotalFrames";
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(76, 23);
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
-            ComboBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(116, 102);
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Name = "TextBox_FileSelection_DirectorySelection_TotalFrames";
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(71, 23);
+            TextBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
             // 
             // ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm
             // 
@@ -2440,8 +2438,8 @@
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_GainNearest;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest;
-        private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_TotalFrames;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
+        private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_TotalFrames;
     }
 }

@@ -234,6 +234,14 @@ namespace XisfFileManager.FileOperations
         public int TargetAttachmentStart { get; set; }
         public int TargetAttachmentNewStart { get; set; }
         public int TargetAttachmentPadding { get; set; }
+        public int TargetAttachmentRejectionHighLength { get; set; }
+        public int TargetAttachmentRejectionHighStart { get; set; }
+        public int TargetAttachmentRejectionHighNewStart { get; set; }
+        public int TargetAttachmentRejectionHighPadding { get; set; }
+        public int TargetAttachmentRejectionLowLength { get; set; }
+        public int TargetAttachmentRejectionLowStart { get; set; }
+        public int TargetAttachmentRejectionLowNewStart { get; set; }
+        public int TargetAttachmentRejectionLowPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
@@ -355,6 +363,36 @@ namespace XisfFileManager.FileOperations
 
                 TargetAttachmentStart = Convert.ToInt32(values[1]);
                 TargetAttachmentLength = Convert.ToInt32(values[2]);
+            }
+        }
+
+        public void ImageRejectionHighAttachment(XElement element)
+        {
+            XAttribute attribute = element.Attribute("location");
+
+            if (attribute != null)
+            {
+                string attachment = attribute.Value;
+
+                string[] values = attachment.Split(':');
+
+                TargetAttachmentRejectionHighStart = Convert.ToInt32(values[1]);
+                TargetAttachmentRejectionHighLength = Convert.ToInt32(values[2]);
+            }
+        }
+
+        public void ImageRejectionLowAttachment(XElement element)
+        {
+            XAttribute attribute = element.Attribute("location");
+
+            if (attribute != null)
+            {
+                string attachment = attribute.Value;
+
+                string[] values = attachment.Split(':');
+
+                TargetAttachmentRejectionLowStart = Convert.ToInt32(values[1]);
+                TargetAttachmentRejectionLowLength = Convert.ToInt32(values[2]);
             }
         }
 

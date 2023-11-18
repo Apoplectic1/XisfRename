@@ -69,10 +69,13 @@ namespace XisfFileManager.FileOperations
 
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
-                    
+
                     // Remove Processing History Property if present
                     string pattern = Regex.Escape("<Property id=\"PixInsight:ProcessingHistory\"") + @"(.*?)" + Regex.Escape("</Property>");
                     xmlString = Regex.Replace(xmlString, pattern, "");
+
+                    // Remove anthing after </xisf> in xmlString
+                    xmlString = xmlString.Substring(0, xmlString.IndexOf("</xisf>") + "</xisf>".Length);
 
                     // The new  does not include the comment section if present
                     XmlDocument xmlDoc = new XmlDocument();
@@ -99,14 +102,14 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
 
                     // We need to set the start address and length of the image attachement due to any changes in the <xisf> to </xisf> length
-           
+
                     if (xFile.BlockAlignmentSize != -1)
                     {
                         int possibleBogusImageAttachmentLocation = FindExistingImageStartingLocation(binaryFileData);
                         if (possibleBogusImageAttachmentLocation % xFile.BlockAlignmentSize != 0)
                         {
                             if ((possibleBogusImageAttachmentLocation - 1) % xFile.BlockAlignmentSize != 0)
-                                MessageBox.Show(Path.GetFileName(xFile.FilePath), "Image Attachment Start Location may not be not Block Aligned");
+                                MessageBox.Show(Path.GetFileName(xFile.FilePath), "Image Attachment Start Location was not Block Aligned");
                         }
                     }
                     xFile.TargetAttachmentPadding = SetImageAttachmentLocation(xmlDoc, xFile);
@@ -114,14 +117,13 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    // Set the new length of the new <xisf to /xisf> section
-                    
-                    int xmlLength = xmlDoc.OuterXml.Length;
-
                     // "XISF0100" is the XISF Signature. The length of the xml section is stored in the 8th and 9th bytes of the signature
                     // Assumes that xmlLength is less than 65536 bytes
                     //                                    X     I     S     F     0     1     0     0     0     0     0     0     0     0     0     0
                     byte[] xisfSignature = new byte[16] { 0x58, 0x49, 0x53, 0x46, 0x30, 0x31, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+                    // Set the new length of the new <xisf to /xisf> section
+                    int xmlLength = xmlDoc.OuterXml.Length;
 
                     // Change Endianess
                     xisfSignature[8] = (byte)(xmlLength & 0xFF); // Least significant byte
@@ -222,7 +224,14 @@ namespace XisfFileManager.FileOperations
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
 
-            document.SelectSingleNode("//ns:Image[@Id='integration' or not(@Id)]/*[@attachment]", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Image[@Id='integration' or not(@Id)]/*[@attachment]", nsManager));
+            // Select all <Image> elements that have an id attribute with a value that is not 'integration' and then remove these selected elements
+            // This keeps <Image id="integration"> and <Image> (no id) elements
+            XmlNodeList imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager);
+            foreach (XmlNode imageNodeToRemove in imageNodesToRemove)
+            {
+                imageNodeToRemove.ParentNode?.RemoveChild(imageNodeToRemove);
+            }
+
             document.SelectSingleNode("//ns:Thumbnail", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Thumbnail", nsManager));
             document.SelectSingleNode("//ns:ICCProfile", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:ICCProfile", nsManager));
             document.SelectSingleNode("//ns:DisplayFunction", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:DisplayFunction", nsManager));
@@ -230,6 +239,53 @@ namespace XisfFileManager.FileOperations
 
         // ****************************************************************************************************
         // ****************************************************************************************************
+        /*
+        public int FindExistingImageStartingLocation(byte[] binaryFileData, XisfFile xFile)
+        {
+             // The only reason to do this is because I screwed up the image attachment start location in a few xml files. 
+             // Once this is fixed, this code will be removed.
+
+             // There could be may reasons for this, but the most likely is that I did not pad the xml section to a block boundary
+             // This code will find the image attachment start location in the binary file and set the image attachment start location in the xml file
+             // This code assumes that the image attachment start location in the xml file is wrong and the image attachment length is correct (I verify this below)
+
+
+             // This code assumes no attachments other than the main image are preset in the file.
+             // It also assumes that the main image is at the end of the file (after the xml section)
+
+             // Ignore Image attachment start location, set and return the found location
+
+             // Find the end of the xml section, then walk through any run of 0's after the </xisf> tag
+             // Return the starting address of the image attachment
+
+             int binaryImageEndAddress = binaryFileData.Length;
+             int binaryXmlSectionEndAddress = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;
+             int binaryImageLength = binaryImageEndAddress - binaryXmlSectionEndAddress;
+
+             int xmlSectionImageLength = xFile.TargetAttachmentLength; // This was set when the file was initally read - Why did that work and we have problems here?
+
+             if (binaryImageLength != xmlSectionImageLength)
+             {
+                 string title = "FindExistingImageStartingLocation(byte[] binaryFileData, XisfFile xFile) Error";
+                 string message = "\n\nThe computed image length does not match the image length in the xml file:\n" +
+                     "    File:                                " + xFile.FilePath + "\n" +
+                     "    Binary Image Length:                 " + binaryImageLength.ToString() + "\n" +
+                     "    Image Length from Xml (inital read): " + xmlSectionImageLength.ToString() + "\n\nAborting.";
+
+                 MessageBox.Show(message, title, MessageBoxButtons.OK);
+                 return -1;
+             }
+
+             // So at this point, we know the image length in the xml file and the image length in the binary file match
+
+             int binaryImageStartAddress = binaryImageEndAddress - binaryImageLength;
+
+             // Set the image attachment start location to the computed binary location
+             xFile.TargetAttachmentStart = binaryImageStartAddress;
+
+             return binaryImageStartAddress;
+        }
+        */
 
         public int FindExistingImageStartingLocation(byte[] binaryFileData)
         {
@@ -266,45 +322,44 @@ namespace XisfFileManager.FileOperations
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
 
-
-            // Find the first and only (ns + "Image") descendant
+            // Find the first (but not only for masters) (ns + "Image") descendant
             XmlNode imageNode = document.SelectSingleNode("//ns:Image", nsManager);
-            //XElement imageNode = xFile.mXDoc.Descendants(ns + "Image").FirstOrDefault();
 
-            if (imageNode != null)
+            if (imageNode == null)
+                return -1;
+
+            // New Xml document length before padding
+            // Note the the new xml document may not contain the comment section or other changes (is the comment section needed?)
+            // We have also added or changed lots of keywords in this new xml document
+
+            // Iterate until the xml document length does not change
+            do
             {
-                // New Xml document length before padding
-                // Note the the new xml document may not contain the comment section or other changes (is the comment section needed?)
-                // We have also added or changed lots of keywords in this new xml document
+                documentLengthBeforeNewStartingAddress = document.OuterXml.Length;
 
-                // Iterate until the xml document length does not change
-                do
+                // Include the 16 byte XISF Signature. No Comment section in the padding calculation
+                newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + 16, xFile.BlockAlignmentSize);
+
+                // The starting address is the address in the new file (including XISF Signature); (not just in the Xml document section)
+                newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + newPadding;
+
+                // Update imageNode with the new starting address and can change the size of the xml document 
+                // 1. This can push the image data to a new location - new start address
+                // 2. This can change the padding - new padding
+                // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
+
+                XmlAttribute locationAttribute = imageNode.Attributes["location"];
+                if (locationAttribute != null)
                 {
-                    documentLengthBeforeNewStartingAddress = document.OuterXml.Length;
-
-                    // Include the 16 byte XISF Signature. No Comment section in the padding calculation
-                    newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + 16, xFile.BlockAlignmentSize);
-
-                    // The starting address is the address in the new file (including XISF Signature); (not just in the Xml document section)
-                    newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + newPadding;
-
-                    // Update imageNode with the new starting address and can change the size of the xml document 
-                    // 1. This can push the image data to a new location - new start address
-                    // 2. This can change the padding - new padding
-                    // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
-                   
-                    XmlAttribute locationAttribute = imageNode.Attributes["location"];
-                    if (locationAttribute != null)
-                    {
-                        string[] locationParts = locationAttribute.Value.Split(':');
-                        locationParts[1] = newStartingAddress.ToString();
-                        locationAttribute.Value = string.Join(":", locationParts);
-                    }
-
-                    documentLengthAfterNewStartingAddress = document.OuterXml.Length;
+                    string[] locationParts = locationAttribute.Value.Split(':');
+                    locationParts[1] = newStartingAddress.ToString();
+                    locationAttribute.Value = string.Join(":", locationParts);
                 }
-                while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
+
+                documentLengthAfterNewStartingAddress = document.OuterXml.Length;
             }
+            while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
+
 
             return newPadding;
         }

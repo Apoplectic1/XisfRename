@@ -12,7 +12,7 @@ namespace XisfFileManager.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,265 +49,25 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("75")]
-        public double Persist_FwhmPercentState {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Persist_UpdateTargetNameState {
             get {
-                return ((double)(this["Persist_FwhmPercentState"]));
+                return ((bool)(this["Persist_UpdateTargetNameState"]));
             }
             set {
-                this["Persist_FwhmPercentState"] = value;
+                this["Persist_UpdateTargetNameState"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_FwhmRangeHighState {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Persist_UpdatePanelNameState {
             get {
-                return ((double)(this["Persist_FwhmRangeHighState"]));
+                return ((bool)(this["Persist_UpdatePanelNameState"]));
             }
             set {
-                this["Persist_FwhmRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_FwhmRangeLowState {
-            get {
-                return ((double)(this["Persist_FwhmRangeLowState"]));
-            }
-            set {
-                this["Persist_FwhmRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_EccentricityRangeHighState {
-            get {
-                return ((double)(this["Persist_EccentricityRangeHighState"]));
-            }
-            set {
-                this["Persist_EccentricityRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_EccentricityRangeLowState {
-            get {
-                return ((double)(this["Persist_EccentricityRangeLowState"]));
-            }
-            set {
-                this["Persist_EccentricityRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public double Persist_SnrPercentState {
-            get {
-                return ((double)(this["Persist_SnrPercentState"]));
-            }
-            set {
-                this["Persist_SnrPercentState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_SnrRangeHighState {
-            get {
-                return ((double)(this["Persist_SnrRangeHighState"]));
-            }
-            set {
-                this["Persist_SnrRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_SnrRangeLowState {
-            get {
-                return ((double)(this["Persist_SnrRangeLowState"]));
-            }
-            set {
-                this["Persist_SnrRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_MedianRangeHighState {
-            get {
-                return ((double)(this["Persist_MedianRangeHighState"]));
-            }
-            set {
-                this["Persist_MedianRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_MedianRangeLowState {
-            get {
-                return ((double)(this["Persist_MedianRangeLowState"]));
-            }
-            set {
-                this["Persist_MedianRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_NoiseRangeHighState {
-            get {
-                return ((double)(this["Persist_NoiseRangeHighState"]));
-            }
-            set {
-                this["Persist_NoiseRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_NoiseRangeLowState {
-            get {
-                return ((double)(this["Persist_NoiseRangeLowState"]));
-            }
-            set {
-                this["Persist_NoiseRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_UpdateStatisticsRangeHighState {
-            get {
-                return ((double)(this["Persist_UpdateStatisticsRangeHighState"]));
-            }
-            set {
-                this["Persist_UpdateStatisticsRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_UpdateStatisticsRangeLowState {
-            get {
-                return ((double)(this["Persist_UpdateStatisticsRangeLowState"]));
-            }
-            set {
-                this["Persist_UpdateStatisticsRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_NoiseRatioRangeHighState {
-            get {
-                return ((double)(this["Persist_NoiseRatioRangeHighState"]));
-            }
-            set {
-                this["Persist_NoiseRatioRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_NoiseRatioRangeLowState {
-            get {
-                return ((double)(this["Persist_NoiseRatioRangeLowState"]));
-            }
-            set {
-                this["Persist_NoiseRatioRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_StarResidualRangeHighState {
-            get {
-                return ((double)(this["Persist_StarResidualRangeHighState"]));
-            }
-            set {
-                this["Persist_StarResidualRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarResidualRangeLowState {
-            get {
-                return ((double)(this["Persist_StarResidualRangeLowState"]));
-            }
-            set {
-                this["Persist_StarResidualRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_StarsRangeHighState {
-            get {
-                return ((double)(this["Persist_StarsRangeHighState"]));
-            }
-            set {
-                this["Persist_StarsRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_StarsRangeLowState {
-            get {
-                return ((double)(this["Persist_StarsRangeLowState"]));
-            }
-            set {
-                this["Persist_StarsRangeLowState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public double Persist_AirMassRangeHighState {
-            get {
-                return ((double)(this["Persist_AirMassRangeHighState"]));
-            }
-            set {
-                this["Persist_AirMassRangeHighState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Persist_AirMassRangeLowState {
-            get {
-                return ((double)(this["Persist_AirMassRangeLowState"]));
-            }
-            set {
-                this["Persist_AirMassRangeLowState"] = value;
+                this["Persist_UpdatePanelNameState"] = value;
             }
         }
     }

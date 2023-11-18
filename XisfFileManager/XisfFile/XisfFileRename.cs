@@ -33,18 +33,18 @@ namespace XisfFileManager.FileOperations
             try
             {
                 string newFileName;
-                string sourceFilePath;
+                string sourceFileDirectory;
 
-                sourceFilePath = Path.GetDirectoryName(file.FilePath);
+                sourceFileDirectory = Path.GetDirectoryName(file.FilePath);
 
                 newFileName = BuildFileName(file.FileNameNumberIndex, file) + ".xisf";
 
                 // Rename the file if its name actually changed
-                if (file.FilePath != sourceFilePath + "\\" + newFileName)
+                if (file.FilePath != sourceFileDirectory + "\\" + newFileName)
                 {
-                    if (File.Exists(sourceFilePath + "\\" + newFileName) == false)
+                    if (File.Exists(sourceFileDirectory + "\\" + newFileName) == false)
                     {
-                        File.Move(file.FilePath, sourceFilePath + "\\" + newFileName);
+                        File.Move(file.FilePath, sourceFileDirectory + "\\" + newFileName);
                     }
                 }
                 return new Tuple<int, string>(1, newFileName);
@@ -128,7 +128,7 @@ namespace XisfFileManager.FileOperations
                     {
                         newName = targetName + "  Integration  L-" + mFile.FilterName + "  ";
 
-                        if (mFile.MSTRFRMS.ToString() != string.Empty)
+                        if (mFile.MSTRFRMS != -1)
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "x" + mFile.MSTRFRMS + "  ";
                         else
                             newName += mFile.ExposureSeconds.FormatExposureTime() + "x" + mFile.Binning + "  ";

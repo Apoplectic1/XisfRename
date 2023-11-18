@@ -353,7 +353,7 @@ namespace XisfFileManager
             {
                 string value = GetKeywordValue("FOCPOS");
                 if (value == string.Empty)
-                    return -1;
+                    return 0;
                 
                 return Convert.ToInt32(value);
             }
@@ -679,36 +679,37 @@ namespace XisfFileManager
 
             foreach (Keyword node in keys)
             {
-                if (node.Comment.ToLower().Contains("numberofimages"))
+                if (node.Comment.Contains("ImageIntegration.numberOfImages: "))
                 {
-                    var totalFrames = Regex.Match(node.Comment, @"\d+(?!\D*\d)").Value;
+                    // Capture all the consecutive digits at the end of the string.
+                    var totalFrames = Regex.Match(node.Comment, @"\d+$").Value;
 
                     AddKeyword("MSTRFRMS", totalFrames, "Number of Integrated SubFrames");
                 }
 
-                if (node.Comment.Contains("pixelrejection", StringComparison.OrdinalIgnoreCase))
+                if (node.Comment.Contains("ImageIntegration.pixelRejection: ", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (node.Comment.ToLower().Contains("linear"))
+                    if (node.Comment.Contains("Linear"))
                     {
-                        AddKeyword("MSTRALG", "LFC", "PixInsight Linear Fit Clipping");
+                        AddKeyword("MSTRALG", "LFC", "Linear Fit Clipping");
                         break;
                     }
 
-                    if (node.Comment.ToLower().Contains("student"))
+                    if (node.Comment.Contains("Studentized"))
                     {
-                        AddKeyword("MSTRALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+                        AddKeyword("MSTRALG", "ESD", "Generalized Extreme Studentized Deviate Clipping");
                         break;
                     }
 
-                    if (node.Comment.ToLower().Contains("winsor"))
+                    if (node.Comment.Contains("Winsor"))
                     {
-                        AddKeyword("MSTRALG", "WSC", "PixInsight Winsorized Sigma Clipping");
+                        AddKeyword("MSTRALG", "WSC", "Winsorized Sigma Clipping");
                         break;
                     }
 
-                    if (node.Comment.ToLower().Contains("sigma"))
+                    if (node.Comment.Contains("Sigma"))
                     {
-                        AddKeyword("MSTRALG", "SC", "PixInsight Sigma Clipping");
+                        AddKeyword("MSTRALG", "SC", "Sigma Clipping");
                         break;
                     }
                 }
@@ -722,20 +723,23 @@ namespace XisfFileManager
             {
                 algorithm = GetKeyword("REJECTION");
                 if (algorithm != null)
+                {
+                    RemoveKeyword("REJECTION");
                     AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+                }
 
-                algorithm = GetKeyword("Rejection");
-                if (algorithm != null)
-                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+                //algorithm = GetKeyword("Rejection");
+                //if (algorithm != null)
+                //    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
 
-                algorithm = GetKeyword("REJECTIO");
-                if (algorithm != null)
-                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
+                //algorithm = GetKeyword("REJECTIO");
+                //if (algorithm != null)
+                //    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
 
                 // Make sure at least one rejection keyword was found
                 string value = GetKeywordValue("MSTRALG");
                 if (value == string.Empty)
-                    AddKeyword("MSTRALG", "ESD", "PixInsight Extreme Studentized Deviation Clipping");
+                    AddKeyword("MSTRALG", "ESD", "Extreme Studentized Deviation Clipping");
             }
 
             string numFrames;
@@ -744,11 +748,17 @@ namespace XisfFileManager
             {
                 numFrames = GetKeywordValue("TOTALFRAMES");
                 if (numFrames != string.Empty && numFrames != "1")
+                {
+                    RemoveKeyword("TOTALFRAMES");
                     AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
+                }
 
                 numFrames = GetKeywordValue("NUM-FRMS");
                 if (numFrames != string.Empty && numFrames != "1")
+                {
+                    RemoveKeyword("NUM-FRMS");
                     AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
+                }
 
                 // Make sure at least one number of frames keyword was found
                 string value = GetKeywordValue("MSTRFRMS");

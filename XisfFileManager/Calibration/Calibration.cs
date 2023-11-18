@@ -416,7 +416,7 @@ namespace XisfFileManager
             List<XisfFile> GainList = FilterList.Where(gain => Math.Abs(gain.Gain - targetFile.Gain) <= GainTolerance).ToList();
             if (GainList.Count == 0)
             {
-                double smallestDifference = GainList.Min(gain => Math.Abs(gain.Gain - targetFile.Gain));
+                double smallestDifference = FilterList.Min(gain => Math.Abs(gain.Gain - targetFile.Gain));
 
                 GainList = FilterList.Where(offset => Math.Abs(offset.Offset - targetFile.Offset) <= smallestDifference).ToList();
 
@@ -492,9 +492,9 @@ namespace XisfFileManager
             List<XisfFile> TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= TemperatureTolerance).ToList();
             if (TemperatureList.Count == 0)
             {
-                double smallestDifference = TemperatureList.Min(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature));
+                double smallestDifference = RotatorList.Min(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature));
 
-                TemperatureList = TemperatureList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= smallestDifference).ToList();
+                TemperatureList = RotatorList.Where(temperature => Math.Abs(temperature.SensorTemperature - targetFile.SensorTemperature) <= smallestDifference).ToList();
 
                 if (TemperatureList.Count == 0)
                 {
@@ -511,12 +511,6 @@ namespace XisfFileManager
                                                                    + "  " + Path.GetFileName(targetFile.FilePath) + "\r\n\r\n";
                     CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 }
-
-                mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = calibrationFrameMatchType + " Match Failed: Target Sensor Temperature " + targetFile.SensorTemperature + " Tolerance: " + TemperatureTolerance + "\r\n"
-                                                                + "  " + Path.GetFileName(targetFile.FilePath) + "\r\n\r\n";
-                CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
-                return null;
             }
 
             // Refine TemperatureList to match  match the target file exposure time
