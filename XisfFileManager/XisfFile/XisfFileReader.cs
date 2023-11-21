@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using XisfFileManager.TargetScheduler.Tables;
 
 namespace XisfFileManager.FileOperations
@@ -75,14 +76,18 @@ namespace XisfFileManager.FileOperations
                         }
                     }
 
-                    xFile.XmlVersionText = xmlVersionBlockMatch.ToString().Clone() as string;
-                    xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
-
+                    // return <xisf>...</xisf> section
                     xmlString = xmlKeywordBlockMatch.ToString();
 
-                    ValidateXisfXml(xmlString);
+                    // Remove any blatent garbage from xmlString
+                    xmlString = FixXisfXml(xmlString);
 
-                    // Make an isolated copy
+                    // Remove any malformed xml from xmlString
+                    xmlString = ValidateXml(xmlString);
+
+                    // Make an isolated copies
+                    xFile.XmlVersionText = xmlVersionBlockMatch.ToString().Clone() as string;
+                    xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
                     xFile.XmlString = xmlString.Clone() as string;
 
                     xFile.mXDoc = new XDocument();
@@ -101,10 +106,10 @@ namespace XisfFileManager.FileOperations
                         return;
                     }
 
+                    // ***********************************************************************************
+
                     XElement root = xFile.mXDoc.Root;
                     XNamespace ns = root.GetDefaultNamespace();
-
-                    // ***********************************************************************************
 
                     FindXisfAttachments(xFile, ns);
 
@@ -123,7 +128,7 @@ namespace XisfFileManager.FileOperations
 
         // ***********************************************************************************
 
-        public static void ValidateXisfXml(string xmlString)
+        public static string FixXisfXml(string xmlString)
         {
             // Remove anthing after </xisf > in xmlString
             xmlString = xmlString.Substring(0, xmlString.IndexOf("</xisf>") + "</xisf>".Length);
@@ -132,11 +137,13 @@ namespace XisfFileManager.FileOperations
             xmlString = Regex.Replace(xmlString, @"[^\x00-\x7F]", "");
 
             // Some XISF files have single quotes inside FITS Keywords - Remove them.
-            xmlString = Regex.Replace(xmlString, "'", "");
+            xmlString = Regex.Replace(xmlString, @"'", "");
 
             // Remove Processing History Property if it exists
             string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
             xmlString = Regex.Replace(xmlString, pattern, "");
+
+            return xmlString;
         }
 
         // ***********************************************************************************
@@ -253,6 +260,54 @@ namespace XisfFileManager.FileOperations
 
             return containsNonAscii;
         }
+
+        // ***********************************************************************************
+        // ***********************************************************************************
+
+        static string ValidateXml(string xmlString)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+
+            while (!string.IsNullOrEmpty(xmlString))
+            {
+                using (XmlReader reader = XmlReader.Create(new StringReader(xmlString), settings))
+                {
+                    try
+                    {
+                        while (reader.Read())
+                        {
+                            // Reading the XML will trigger validation
+                        }
+                        return xmlString; // Return the modified string on successful parsing
+                    }
+                    catch (XmlSchemaValidationException ex)
+                    {
+                        // Handle schema validation error here
+                        return null; // Indicate failure by returning null
+                    }
+                    catch (XmlException ex)
+                    {
+                        int errorPosition = ex.LinePosition;
+                        int startIndex = xmlString.LastIndexOf('>', errorPosition) + 1;
+                        int endIndex = xmlString.IndexOf('<', errorPosition);
+
+                        if (startIndex >= 0 && endIndex >= 0)
+                            xmlString = xmlString.Remove(startIndex, endIndex - startIndex);
+                        else
+                            return null; // Indicate failure by returning nul
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle other exceptions here
+                        return null; // Indicate failure by returning null
+                    }
+                }
+            }
+
+            // Return null if parsing otherwise fails
+            return null;
+        }
+
 
         public static string RemoveNonEvenPairs(string input, string openString, string closeString)
         {
