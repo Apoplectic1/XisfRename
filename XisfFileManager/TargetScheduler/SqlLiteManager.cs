@@ -61,9 +61,6 @@ namespace XisfFileManager.TargetScheduler
                         degrees = ConvertHoursMinutesSecondsToDecimal(RA);
                         xFile.KeywordList.AddKeyword("RA", degrees.ToString(), "Degrees Right Ascension");
                     }
-                    else
-                    {
-                    }
                 }
                 else
                 {

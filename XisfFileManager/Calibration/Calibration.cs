@@ -108,13 +108,13 @@ namespace XisfFileManager
             // Recursively search sCalibrationFrameDirectory to find calibration frames
             // Add the frames to either mLocalCalibrationFileList or mLibraryCalibrationFileList
 
-            List<XisfFile> calibrationFileList = new List<XisfFile>();
             XisfFileReader fileReader = new XisfFileReader();
 
             mCalibrationTabValues.MessageMode = eMessageMode.CLEAR;
             mCalibrationTabValues.Progress = 0;
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
+            mLibraryCalibrationFileList.Clear();
 
             DirectoryInfo diDirectoryTree = new DirectoryInfo(sCalibrationFrameDirectory);
             mDirectoryOps.ClearFileList();
@@ -150,14 +150,14 @@ namespace XisfFileManager
 
                 await fileReader.ReadXisfFileHeaderKeywords(calibrationFile);
 
-                calibrationFileList.Add(calibrationFile);
+                mLibraryCalibrationFileList.Add(calibrationFile);
             }
  
 
             // There should not be any duplicate calibration files in the library but just in case...
-            mLibraryCalibrationFileList = calibrationFileList.Distinct().ToList();
+            mLibraryCalibrationFileList = mLibraryCalibrationFileList.Distinct().ToList();
             
-            mCalibrationTabValues.TotalFiles = calibrationFileList.Count;
+            mCalibrationTabValues.TotalFiles = mLibraryCalibrationFileList.Count;
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
         }
 
@@ -275,7 +275,7 @@ namespace XisfFileManager
             mCalibrationTabValues.TotalMatchedCalibrationFiles = mDarkCalibrationFileList.Count + mFlatCalibrationFileList.Count + mBiasCalibrationFileList.Count;
 
             if (bAllDarksMatched && bAllFlatsMatched)
-                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            Matched All Target Frames\r\n";
+                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            Matched All Target Frames\r\n\r\n\r\n";
 
             CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
@@ -292,7 +292,7 @@ namespace XisfFileManager
             if (targetFrameList.Count == 0)
             {
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            MatchCalibrationDarkFrames: No Target Frames Found\r\n";
+                mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n            MatchCalibrationDarkFrames: No Target Frames Found\r\n\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return false;
             }

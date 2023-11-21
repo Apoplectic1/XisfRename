@@ -3303,15 +3303,6 @@ namespace XisfFileManager
             mCalibration.MatchTargetsWithCalibrationLibraryFrames(mFileList);
         }
 
-        void ExpandAllNodes(TreeNodeCollection nodes)
-        {
-            foreach (TreeNode node in nodes)
-            {
-                node.Expand();
-                ExpandAllNodes(node.Nodes);
-            }
-        }
-
         private void CalibrationTab_ReMatchCalibrationFrames_Click(object sender, EventArgs e)
         {
             TextBox_CalibrationTab_Messgaes.Clear();
@@ -3634,6 +3625,15 @@ namespace XisfFileManager
 
 
             RefineSelectedProjectTreeView(projectNode);
+        }
+
+        private static void ExpandAllNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                node.Expand();
+                ExpandAllNodes(node.Nodes);
+            }
         }
 
         private void TreeView_SchedulerTab_ProjectTree_DrawNode(object sender, DrawTreeNodeEventArgs e)
