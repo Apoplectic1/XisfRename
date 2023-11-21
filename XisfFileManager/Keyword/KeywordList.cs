@@ -679,7 +679,7 @@ namespace XisfFileManager
 
             foreach (Keyword node in keys)
             {
-                if (node.Comment.Contains("ImageIntegration.numberOfImages: "))
+                if (node.Comment.Contains("numberOfImages:"))
                 {
                     // Capture all the consecutive digits at the end of the string.
                     var totalFrames = Regex.Match(node.Comment, @"\d+$").Value;
@@ -687,86 +687,31 @@ namespace XisfFileManager
                     AddKeyword("MSTRFRMS", totalFrames, "Number of Integrated SubFrames");
                 }
 
-                if (node.Comment.Contains("ImageIntegration.pixelRejection: ", StringComparison.OrdinalIgnoreCase))
+                if (node.Comment.Contains("ImageIntegration.pixelRejection:", StringComparison.OrdinalIgnoreCase))
                 {
                     if (node.Comment.Contains("Linear"))
                     {
                         AddKeyword("MSTRALG", "LFC", "Linear Fit Clipping");
-                        break;
                     }
 
                     if (node.Comment.Contains("Studentized"))
                     {
                         AddKeyword("MSTRALG", "ESD", "Generalized Extreme Studentized Deviate Clipping");
-                        break;
                     }
 
                     if (node.Comment.Contains("Winsor"))
                     {
                         AddKeyword("MSTRALG", "WSC", "Winsorized Sigma Clipping");
-                        break;
                     }
 
                     if (node.Comment.Contains("Sigma"))
                     {
                         AddKeyword("MSTRALG", "SC", "Sigma Clipping");
-                        break;
                     }
                 }
             }
 
-
-            Keyword keyword;
-            Keyword algorithm;
-            keyword = GetKeyword("MSTRALG");
-            if (keyword == null)
-            {
-                algorithm = GetKeyword("REJECTION");
-                if (algorithm != null)
-                {
-                    RemoveKeyword("REJECTION");
-                    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
-                }
-
-                //algorithm = GetKeyword("Rejection");
-                //if (algorithm != null)
-                //    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
-
-                //algorithm = GetKeyword("REJECTIO");
-                //if (algorithm != null)
-                //    AddKeyword("MSTRALG", algorithm.Value, algorithm.Comment);
-
-                // Make sure at least one rejection keyword was found
-                string value = GetKeywordValue("MSTRALG");
-                if (value == string.Empty)
-                    AddKeyword("MSTRALG", "ESD", "Extreme Studentized Deviation Clipping");
-            }
-
-            string numFrames;
-            keyword = GetKeyword("MSTRFRMS");
-            if (keyword == null)
-            {
-                numFrames = GetKeywordValue("TOTALFRAMES");
-                if (numFrames != string.Empty && numFrames != "1")
-                {
-                    RemoveKeyword("TOTALFRAMES");
-                    AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
-                }
-
-                numFrames = GetKeywordValue("NUM-FRMS");
-                if (numFrames != string.Empty && numFrames != "1")
-                {
-                    RemoveKeyword("NUM-FRMS");
-                    AddKeyword("MSTRFRMS", numFrames, "Number of Integrated SubFrames");
-                }
-
-                // Make sure at least one number of frames keyword was found
-                string value = GetKeywordValue("MSTRFRMS");
-                if (value == string.Empty)
-                    AddKeyword("MSTRFRMS", "32", "Number of Integrated SubFrames");
-
-            }
-
+            // Remove Leftover Keywords
             RemoveKeyword("ALT-OBS");
             RemoveKeyword("AOCAMBT");
             RemoveKeyword("CBIAS");
