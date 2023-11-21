@@ -472,9 +472,9 @@ namespace XisfFileManager.FileOperations
             try
             {
                 // Split the XML Keyword triple into elementName, elementValue, elementComment
-                elementName = element.Attribute("name").Value;
-                elementValue = element.Attribute("value").Value;
-                elementComment = element.Attribute("comment").Value;
+                elementName = element.Attribute("name").Value.Trim();
+                elementValue = element.Attribute("value").Value.Trim();
+                elementComment = element.Attribute("comment").Value.Trim();
 
                 // Get rid of an extra decimal point at the end of what should be integers
                 elementValue = elementValue.TrimEnd('.');

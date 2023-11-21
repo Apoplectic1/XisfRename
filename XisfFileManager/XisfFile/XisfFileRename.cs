@@ -190,15 +190,15 @@ namespace XisfFileManager.FileOperations
 
                     if (mFile.MSTRALG != string.Empty)
                     {
-                        newName += "  (" + mFile.MSTRALG.Trim();
+                        newName += "  (" + mFile.MSTRALG;
                         if (mFile.CaptureSoftware != string.Empty)
-                            newName += " " + mFile.CaptureSoftware.Trim() + ")";
+                            newName += " " + mFile.CaptureSoftware + ")";
                         else
                             newName += ")";
                     }
                     else
                         if (mFile.CaptureSoftware != string.Empty)
-                            newName += "  (" + mFile.CaptureSoftware.Trim() + ")";
+                            newName += "  (" + mFile.CaptureSoftware + ")";
                 }
 
                 return newName;
