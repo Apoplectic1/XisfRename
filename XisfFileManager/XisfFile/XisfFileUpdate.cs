@@ -19,6 +19,7 @@ using XisfFileManager.Enums;
 using static System.Net.WebRequestMethods;
 using Windows.ApplicationModel.VoiceCommands;
 using System.Text.RegularExpressions;
+using XisfFileManager.XML;
 
 namespace XisfFileManager.FileOperations
 {
@@ -70,12 +71,11 @@ namespace XisfFileManager.FileOperations
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
-                    // Remove Processing History Property if present
-                    string pattern = Regex.Escape("<Property id=\"PixInsight:ProcessingHistory\"") + @"(.*?)" + Regex.Escape("</Property>");
-                    xmlString = Regex.Replace(xmlString, pattern, "");
+                    // Remove any blatent garbage from xmlString
+                    xmlString = Xml.FixXisfXml(xmlString);
 
-                    // Remove anthing after </xisf> in xmlString
-                    xmlString = xmlString.Substring(0, xmlString.IndexOf("</xisf>") + "</xisf>".Length);
+                    // Remove any malformed xml from xmlString
+                    xmlString = Xml.ValidateXisfXml(xmlString);
 
                     // The new  does not include the comment section if present
                     XmlDocument xmlDoc = new XmlDocument();

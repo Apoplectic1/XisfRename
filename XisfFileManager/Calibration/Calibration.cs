@@ -20,7 +20,6 @@ namespace XisfFileManager
         private List<XisfFile> mDarkCalibrationFileList;
         private List<XisfFile> mFlatCalibrationFileList;
         private List<XisfFile> mLibraryCalibrationFileList;
-        private List<XisfFile> mLocalCalibrationFileList;
         private List<XisfFile> mUniqueDarkCalibrationFileList;
         private List<XisfFile> mUniqueFlatCalibrationFileList;
         private List<XisfFile> mUniqueBiasCalibrationFileList;

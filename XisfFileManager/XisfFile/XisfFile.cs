@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Windows.Devices.Input;
 using XisfFileManager.Enums;
-using XisfFileManager.TargetScheduler.Tables;
-using static System.Net.WebRequestMethods;
 
 namespace XisfFileManager.FileOperations
 {
     public class XisfFile
     {
-        // Member Strutures
+        // ************************************************************************************************
+        // ************************************************************************************************
+
+        // Member
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
-
         public string XmlString { get; set; }
+
+        // ************************************************************************************************
+        // ************************************************************************************************
 
         public XisfFile()
         {
