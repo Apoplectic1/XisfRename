@@ -20,6 +20,7 @@ using static System.Net.WebRequestMethods;
 using Windows.ApplicationModel.VoiceCommands;
 using System.Text.RegularExpressions;
 using XisfFileManager.XML;
+using Windows.Storage.Streams;
 
 namespace XisfFileManager.FileOperations
 {
@@ -95,6 +96,8 @@ namespace XisfFileManager.FileOperations
                     // *******************************************************************************************************************************
 
                     // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
+
+                    xFile.KeywordList.RemoveUnwantedKeywords();
 
                     ReplaceAllFitsKeywords(xmlDoc, xFile);
 
@@ -202,7 +205,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        private int GetNewPadding(int length, int alignment)
+        private static int GetNewPadding(int length, int alignment)
         {
             // Find the difference between length and the nearest larger value that is evenly divisible by alignment
 
@@ -218,7 +221,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void RemoveUnwantedAttachments(XmlDocument document)
+        private static void RemoveUnwantedAttachments(XmlDocument document)
         {
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
             string namespaceUri = document.DocumentElement.NamespaceURI;
@@ -239,54 +242,7 @@ namespace XisfFileManager.FileOperations
 
         // ****************************************************************************************************
         // ****************************************************************************************************
-        /*
-        public int FindExistingImageStartingLocation(byte[] binaryFileData, XisfFile xFile)
-        {
-             // The only reason to do this is because I screwed up the image attachment start location in a few xml files. 
-             // Once this is fixed, this code will be removed.
-
-             // There could be may reasons for this, but the most likely is that I did not pad the xml section to a block boundary
-             // This code will find the image attachment start location in the binary file and set the image attachment start location in the xml file
-             // This code assumes that the image attachment start location in the xml file is wrong and the image attachment length is correct (I verify this below)
-
-
-             // This code assumes no attachments other than the main image are preset in the file.
-             // It also assumes that the main image is at the end of the file (after the xml section)
-
-             // Ignore Image attachment start location, set and return the found location
-
-             // Find the end of the xml section, then walk through any run of 0's after the </xisf> tag
-             // Return the starting address of the image attachment
-
-             int binaryImageEndAddress = binaryFileData.Length;
-             int binaryXmlSectionEndAddress = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;
-             int binaryImageLength = binaryImageEndAddress - binaryXmlSectionEndAddress;
-
-             int xmlSectionImageLength = xFile.TargetAttachmentLength; // This was set when the file was initally read - Why did that work and we have problems here?
-
-             if (binaryImageLength != xmlSectionImageLength)
-             {
-                 string title = "FindExistingImageStartingLocation(byte[] binaryFileData, XisfFile xFile) Error";
-                 string message = "\n\nThe computed image length does not match the image length in the xml file:\n" +
-                     "    File:                                " + xFile.FilePath + "\n" +
-                     "    Binary Image Length:                 " + binaryImageLength.ToString() + "\n" +
-                     "    Image Length from Xml (inital read): " + xmlSectionImageLength.ToString() + "\n\nAborting.";
-
-                 MessageBox.Show(message, title, MessageBoxButtons.OK);
-                 return -1;
-             }
-
-             // So at this point, we know the image length in the xml file and the image length in the binary file match
-
-             int binaryImageStartAddress = binaryImageEndAddress - binaryImageLength;
-
-             // Set the image attachment start location to the computed binary location
-             xFile.TargetAttachmentStart = binaryImageStartAddress;
-
-             return binaryImageStartAddress;
-        }
-        */
-
+        
         public int FindExistingImageStartingLocation(byte[] binaryFileData)
         {
             // Ignore Image attachment start location, set and return the found location
@@ -311,7 +267,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
+        private static int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
         {
             int documentLengthBeforeNewStartingAddress;
             int documentLengthAfterNewStartingAddress;
@@ -367,7 +323,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private void ReplaceAllFitsKeywords(XmlDocument document, XisfFile xFile)
+        private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile xFile)
         {
             XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
             for (int i = nodeList.Count - 1; i >= 0; i--)
@@ -402,7 +358,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private int BinaryFind(byte[] buffer, string findText)
+        private static int BinaryFind(byte[] buffer, string findText)
         {
             byte[] xisfFind = Encoding.UTF8.GetBytes(findText);
             int i;
@@ -423,7 +379,7 @@ namespace XisfFileManager.FileOperations
         // ****************************************************************************************************
         // ****************************************************************************************************
 
-        private bool KeywordsMatchXml(XisfFile xFile)
+        private static bool KeywordsMatchXml(XisfFile xFile)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xFile.XmlString);
@@ -494,10 +450,10 @@ namespace XisfFileManager.FileOperations
                                     if ((int)position > buffer.ToPosition)
                                     {
                                         string title = "WriteBinaryFile(string fileName) POSITION Error";
-                                        string message = "\n\nThe length of xml xisfString is after the start of image data:\n" +
-                                            "    File:                            " + fileName + "\n" +
-                                            "    Current Write Position:          " + position.ToString() + "\n" +
-                                            "    Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
+                                        string message = "\n\nThe length of xml xisfString is after the start of image data:\n\n" +
+                                            fileName + "\n\n" +
+                                            "Current Write Position:          " + position.ToString() + "\n" +
+                                            "Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
 
                                         MessageBox.Show(message, title, MessageBoxButtons.OK);
                                         return false;
@@ -517,7 +473,7 @@ namespace XisfFileManager.FileOperations
 
                     binaryData = rawStream.ToArray();
 
-                    using (Stream fileStream = new FileStream(fileName, FileMode.Create))
+                    using (System.IO.FileStream fileStream = new FileStream(fileName, FileMode.Create))
                     {
                         using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
                         {
@@ -530,9 +486,11 @@ namespace XisfFileManager.FileOperations
                 }
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show(fileName, "WriteBinaryFile Failed");
+                string title = "WriteBinaryFile() XisfFileUpdate.cs Failed";
+                string message = "\n\n" + fileName + "\n\n" + ex.Message;
+                MessageBox.Show(message, title, MessageBoxButtons.OK);
                 return false;
             }
         }
@@ -540,7 +498,7 @@ namespace XisfFileManager.FileOperations
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
-        private bool IsFileLocked(FileInfo file)
+        private static bool IsFileLocked(FileInfo file)
         {
             try
             {

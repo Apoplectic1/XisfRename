@@ -61,6 +61,7 @@ namespace XisfFileManager.FileOperations
                         xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
                         xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
                         xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+
                         if (!xmlKeywordBlockMatch.Success)
                         {
                             // We did not find the closing "xisf> due to insuficient mBuffer size. Expand mBuffer and try again

@@ -1289,13 +1289,6 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.RemoveKeyword("ALT-OBS");
-                        file.RemoveKeyword("DATE-END");
-                        file.RemoveKeyword("LAT-OBS");
-                        file.RemoveKeyword("LONG-OBS");
-                        file.RemoveKeyword("OBSGEO-B");
-                        file.RemoveKeyword("OBSGEO-H");
-                        file.RemoveKeyword("OBSGEO-L");
                         file.AddKeyword("IMAGETYP", "Dark", "Integration Master");
                     }
                     else
@@ -1320,13 +1313,6 @@ namespace XisfFileManager
                 {
                     if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
                     {
-                        file.RemoveKeyword("ALT-OBS");
-                        file.RemoveKeyword("DATE-END");
-                        file.RemoveKeyword("LAT-OBS");
-                        file.RemoveKeyword("LONG-OBS");
-                        file.RemoveKeyword("OBSGEO-B");
-                        file.RemoveKeyword("OBSGEO-H");
-                        file.RemoveKeyword("OBSGEO-L");
                         file.AddKeyword("IMAGETYP", "Bias", "Integration Master");
                     }
                     else

@@ -134,7 +134,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
- 
+
         public double AmbientTemperature
         {
             get
@@ -254,7 +254,7 @@ namespace XisfFileManager
 
         public double ExposureSeconds
         {
-            get 
+            get
             {
                 double exposure;
                 bool bStatus;
@@ -268,7 +268,7 @@ namespace XisfFileManager
                         return exposure;
                     }
                 }
-                
+
                 value = GetKeywordValue("EXPTIME");
                 if (value != string.Empty)
                 {
@@ -338,7 +338,7 @@ namespace XisfFileManager
                 string value = GetKeywordValue("FOCALLEN");
                 if (value == string.Empty)
                     return -1.0;
-    
+
                 double length = Convert.ToDouble(value);
                 return length;
             }
@@ -354,7 +354,7 @@ namespace XisfFileManager
                 string value = GetKeywordValue("FOCPOS");
                 if (value == string.Empty)
                     return 0;
-                
+
                 return Convert.ToInt32(value);
             }
             set { AddKeyword("FOCPOS", value.ToString(), "[um] NiteCrawler Position - 94580 Steps, 0.2667 um/Step"); }
@@ -368,20 +368,20 @@ namespace XisfFileManager
             {
                 string value = GetKeywordValue("FOCTEMP");
                 if (value == string.Empty) return -273.0;
-                
+
                 return Convert.ToDouble(value);
             }
             set { AddKeyword("FOCTEMP", value.ToString(), "[degC] NightCrawler Focuser Temperature"); }
         }
 
         // *********************************************************************************************************
- 
+
         public eFrame FrameType
         {
             get
             {
                 string value = GetKeywordValue("IMAGETYP");
-                if (value == string.Empty) 
+                if (value == string.Empty)
                     return eFrame.EMPTY;
 
                 if (value.Contains("light", StringComparison.CurrentCultureIgnoreCase)) return eFrame.LIGHT;
@@ -446,11 +446,11 @@ namespace XisfFileManager
 
         public int MSTRFRMS
         {
-            get 
-            { 
+            get
+            {
                 string value = GetKeywordValue("MSTRFRMS");
                 if (value == string.Empty)
-                    return - 1;
+                    return -1;
 
                 return Convert.ToInt32(value);
             }
@@ -505,7 +505,7 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("XPIXSZ");
-                if (value == string.Empty) 
+                if (value == string.Empty)
                     return -1;
 
                 return Convert.ToDouble(value);
@@ -533,7 +533,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-      
+
         public double RotatorSkyAngle
         {
             get
@@ -584,9 +584,9 @@ namespace XisfFileManager
             get
             {
                 string value = GetKeywordValue("CCD-TEMP");
-                if (value == string.Empty) 
+                if (value == string.Empty)
                     return -273;
-                
+
                 return Convert.ToDouble(value);
             }
             set { AddKeyword("CCD-TEMP", value.ToString("F1"), "[degC] Imaging Camera Sensor Temperature"); }
@@ -631,7 +631,7 @@ namespace XisfFileManager
         }
 
         // *********************************************************************************************************
-        
+
         public List<string> WeightKeyword
         {
             get
@@ -710,24 +710,20 @@ namespace XisfFileManager
                     }
                 }
             }
-
-            // Remove Leftover Keywords
+        }
+        public void RemoveUnwantedKeywords()
+        {
             RemoveKeyword("ALT-OBS");
             RemoveKeyword("AOCAMBT");
-            RemoveKeyword("CBIAS");
-            RemoveKeyword("CDARK");
-            RemoveKeyword("CFLAT");
             RemoveKeyword("COMMENT");
             RemoveKeyword("Camera");
-            RemoveKeyword("CPANEL");
-            RemoveKeyword("CSTARS");
-            RemoveKeyword("Camera");
-            RemoveKeyword("DEC");
+            RemoveKeyword("DATE-END");
+            RemoveKeyword("DBLKEYWD");
             RemoveKeyword("FILENAME");
-            RemoveKeyword("HISTORYTORY");
+            RemoveKeyword("HISTORY");
+            RemoveKeyword("INTKEYWD");
             RemoveKeyword("LAT-OBS");
             RemoveKeyword("LONG-OBS");
-            RemoveKeyword("HISTORY");
             RemoveKeyword("NOISE00");
             RemoveKeyword("NOISEA00");
             RemoveKeyword("NOISEH00");
@@ -750,13 +746,13 @@ namespace XisfFileManager
             RemoveKeyword("PSFSGP00");
             RemoveKeyword("PSFSGTYP");
             RemoveKeyword("Protected");
-            RemoveKeyword("RA");
             RemoveKeyword("RADESYS");
             RemoveKeyword("REJECTIO");
             RemoveKeyword("REJECTION");
-            RemoveKeyword("Rejection");
             RemoveKeyword("RESOUNIT");
             RemoveKeyword("RJCT-ALG");
+            RemoveKeyword("Rejection");
+            RemoveKeyword("STRKEYWD");
             RemoveKeyword("TOTALFRA");
             RemoveKeyword("TOTALFRAMES");
             RemoveKeyword("XBAYROFF");

@@ -81,9 +81,6 @@ namespace XisfFileManager.TargetScheduler
                     }
                 }
 
-
-
-
                 object objectDEC = xFile.KeywordList.GetKeywordValue("OBJCTDEC");
                 if (objectDEC is string)
                 {
