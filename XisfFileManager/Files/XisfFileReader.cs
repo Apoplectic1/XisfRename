@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using XisfFileManager.XML;
 
-namespace XisfFileManager.FileOperations
+namespace XisfFileManager.Files
 {
     public class XisfFileReader
     {

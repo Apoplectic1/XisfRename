@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using XisfFileManager.Enums;
 
-namespace XisfFileManager.FileOperations
+namespace XisfFileManager.Files
 {
     public class XisfFileRename
     {

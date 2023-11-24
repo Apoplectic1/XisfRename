@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using XisfFileManager.TargetScheduler.Tables;
-using XisfFileManager.FileOperations;
+using XisfFileManager.Files;
 
 namespace XisfFileManager.TargetScheduler
 {

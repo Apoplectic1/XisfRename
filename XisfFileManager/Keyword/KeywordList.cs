@@ -381,9 +381,9 @@ namespace XisfFileManager
                     return eFrame.EMPTY;
 
                 if (value.Contains("light", StringComparison.CurrentCultureIgnoreCase)) return eFrame.LIGHT;
-                if (value.ToLower().Contains("dark")) return eFrame.DARK;
-                if (value.ToLower().Contains("flat")) return eFrame.FLAT;
-                if (value.ToLower().Contains("bias")) return eFrame.BIAS;
+                if (value.Contains("dark", StringComparison.CurrentCultureIgnoreCase)) return eFrame.DARK;
+                if (value.Contains("flat", StringComparison.CurrentCultureIgnoreCase)) return eFrame.FLAT;
+                if (value.Contains("bias", StringComparison.CurrentCultureIgnoreCase)) return eFrame.BIAS;
 
                 return eFrame.EMPTY;
             }

@@ -3,7 +3,7 @@ using MathNet.Numerics.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using XisfFileManager.FileOperations;
+using XisfFileManager.Files;
 using XisfFileManager.Enums;
 
 namespace XisfFileManager.Calculations

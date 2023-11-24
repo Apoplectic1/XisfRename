@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace XisfFileManager.FileOperations
+namespace XisfFileManager.Files
 {
-    public static class DirectoryOps
+    public static class DirectoryOperations
     {
         private static List<System.IO.FileInfo> mFileList;
 

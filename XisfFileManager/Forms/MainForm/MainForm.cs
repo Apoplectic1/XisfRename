@@ -4,13 +4,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using XisfFileManager.FileOperations;
+using XisfFileManager.Files;
 using System.Drawing;
 using XisfFileManager.Calculations;
 using System.Reflection;
 using XisfFileManager.Enums;
-using XisfFileManager.FileOps.DirectoryProperties;
 using TreeView = System.Windows.Forms.TreeView;
+using XisfFileManager.DirectoryOperations;
 
 namespace XisfFileManager
 {
@@ -22,13 +22,11 @@ namespace XisfFileManager
     {
         private List<XisfFile> mFileList;
         private XisfFile mFile;
-
         private Calibration mCalibration;
         private readonly ImageCalculations ImageParameterLists;
         private readonly XisfFileReader mFileReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
-        private string mFolderCsvBrowseState;
         private XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
         private bool mBCancel;
         private XisfFileUpdate mXisfFileUpdate;
@@ -169,29 +167,29 @@ namespace XisfFileManager
                     "Project"
                 };
 
-            DialogResult result = DirectoryOps.FindTargetfFiles(mFolderBrowseState, mXisfExclude);
+            DialogResult result = Files.DirectoryOperations.FindTargetfFiles(mFolderBrowseState, mXisfExclude);
 
-            if ((result != DialogResult.OK) || (DirectoryOps.FileInfoList.Count == 0))
+            if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
                 MessageBox.Show("No Xisf Files Found", "Select a different .xisf Folder");
                 return;
             }
 
-            DirectoryInfo diDirectoryTree = new DirectoryInfo(DirectoryOps.SelectedFolder);
+            DirectoryInfo diDirectoryTree = new DirectoryInfo(Files.DirectoryOperations.SelectedFolder);
 
-            Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.FileInfoList.Count.ToString() + " Image Files";
+            Label_FileSelection_Statistics_Task.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
             Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
-            ProgressBar_FileSelection_ReadProgress.Maximum = DirectoryOps.FileInfoList.Count;
+            ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
 
 
             // Upate the UI with data from the .xisf recursive directory search
-            ProgressBar_FileSelection_ReadProgress.Maximum = DirectoryOps.FileInfoList.Count;
+            ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
             System.Windows.Forms.Application.DoEvents();
 
-            foreach (var xFile in DirectoryOps.FileInfoList)
+            foreach (var xFile in Files.DirectoryOperations.FileInfoList)
             {
                 Label_FileSelection_BrowseFileName.Text = xFile.DirectoryName + "\n" + xFile.Name;
                 ProgressBar_FileSelection_ReadProgress.Value += 1;
@@ -348,10 +346,10 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
 
-            if (DirectoryOps.FileInfoList.Count == mFileList.Count)
+            if (Files.DirectoryOperations.FileInfoList.Count == mFileList.Count)
                 Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
             else
-                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + DirectoryOps.FileInfoList.Count + " Image Files";
+                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + Files.DirectoryOperations.FileInfoList.Count + " Image Files";
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
@@ -1782,6 +1780,7 @@ namespace XisfFileManager
                 else
                 {
                     CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
+                    CheckBox_FileSlection_NoTotals.Checked = true;
                 }
             }
 
@@ -3116,7 +3115,7 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
-            DirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
+            Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;

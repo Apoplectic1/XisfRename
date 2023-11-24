@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using XisfFileManager.FileOperations;
+using XisfFileManager.Files;
 
-namespace XisfFileManager.FileOps.DirectoryProperties;
+namespace XisfFileManager.DirectoryOperations;
 
 sealed class DirectoryProperties
 {

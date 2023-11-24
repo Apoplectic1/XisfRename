@@ -8,7 +8,7 @@ using System.Xml;
 using XisfFileManager.Enums;
 using XisfFileManager.XML;
 
-namespace XisfFileManager.FileOperations
+namespace XisfFileManager.Files
 {
     public class XisfFileUpdate
     {

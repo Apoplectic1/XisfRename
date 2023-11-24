@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using XisfFileManager.Enums;
 
-namespace XisfFileManager.FileOperations
+namespace XisfFileManager.Files
 {
     public class XisfFile
     {

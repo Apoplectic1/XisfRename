@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using XisfFileManager.FileOperations;
+using XisfFileManager.Files;
 
 using XisfFileManager.Enums;
 
@@ -122,18 +122,18 @@ namespace XisfFileManager
                     "Project"
                 };
 
-            bool bStatus = DirectoryOps.FindCalibrationFiles(sCalibrationFrameDirectory, mXisfExclude, true);
+            bool bStatus = Files.DirectoryOperations.FindCalibrationFiles(sCalibrationFrameDirectory, mXisfExclude, true);
 
-            if (DirectoryOps.FileInfoList.Count == 0)
+            if (Files.DirectoryOperations.FileInfoList.Count == 0)
             {
                 mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            No Calibration Files Found under " + sCalibrationFrameDirectory + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return;
             }
 
-            mCalibrationTabValues.TotalFiles = DirectoryOps.FileInfoList.Count;
+            mCalibrationTabValues.TotalFiles = Files.DirectoryOperations.FileInfoList.Count;
 
-            foreach (FileInfo file in DirectoryOps.FileInfoList)
+            foreach (FileInfo file in Files.DirectoryOperations.FileInfoList)
             {
                 Application.DoEvents();
 
@@ -143,7 +143,7 @@ namespace XisfFileManager
                     FilePath = file.FullName
                 };
 
-                mCalibrationTabValues.ProgressMax = DirectoryOps.FileInfoList.Count;
+                mCalibrationTabValues.ProgressMax = Files.DirectoryOperations.FileInfoList.Count;
                 mCalibrationTabValues.Progress += 1;
                 mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.FilePath) + "\n" + Path.GetFileName(calibrationFile.FilePath);
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
