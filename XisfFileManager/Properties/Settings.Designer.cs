@@ -37,18 +37,6 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("@\"E:\\Photography\\Astro Photography\\Processing\"")]
-        public string Persist_FolderCsvBrowseState {
-            get {
-                return ((string)(this["Persist_FolderCsvBrowseState"]));
-            }
-            set {
-                this["Persist_FolderCsvBrowseState"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Persist_UpdateTargetNameState {
             get {

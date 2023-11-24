@@ -258,7 +258,7 @@ namespace XisfFileManager.FileOperations
                     newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
                 }
 
-                if (mFile.RotationAngle.StartsWith("S"))
+                if (mFile.RotationAngle.StartsWith('S'))
                     newName += "  " + mFile.RotationAngle + "  ";
                 else
                     newName += "  ";
@@ -326,7 +326,7 @@ namespace XisfFileManager.FileOperations
 
                 newName += "F" + mFile.FocuserPosition.ToString("D5") + "@" + mFile.FocuserTemperature.FormatTemperature() + "C";
 
-                if (mFile.RotationAngle.StartsWith("S"))
+                if (mFile.RotationAngle.StartsWith('S'))
                     newName += "  " + mFile.RotationAngle + "  ";
                 else
                     newName += "  ";

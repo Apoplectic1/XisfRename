@@ -1,18 +1,12 @@
-﻿using MathNet.Numerics;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
-using XisfFileManager.TargetScheduler.Tables;
 using XisfFileManager.XML;
 
 namespace XisfFileManager.FileOperations
@@ -26,9 +20,6 @@ namespace XisfFileManager.FileOperations
         private Match xmlVersionBlockMatch;
         private Match xmlCommentBlockMatch;
         private Match xmlKeywordBlockMatch;
-
-        //private Xml mXml = new XisfFileManager.XML.Xml();
-
 
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {

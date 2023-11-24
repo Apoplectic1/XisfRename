@@ -1,26 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using System.Threading;
-//using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
-using XisfFileManager.Calculations;
-
 using XisfFileManager.Enums;
-using static System.Net.WebRequestMethods;
-using Windows.ApplicationModel.VoiceCommands;
-using System.Text.RegularExpressions;
 using XisfFileManager.XML;
-using Windows.Storage.Streams;
 
 namespace XisfFileManager.FileOperations
 {

@@ -11,8 +11,6 @@
 
     public enum eCamera { ALL, Z183, Z533, Q178, A144 }
 
-    public enum eFile { ALL, NO_MASTERS, MASTERS };
-
     // These control the display and clearing of the MessageBox for the results of finding and matching calibration files
     public enum eMessageMode { CLEAR, APPEND, NEW, KEEP }
 

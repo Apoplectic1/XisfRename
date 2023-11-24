@@ -28,9 +28,7 @@ namespace XisfFileManager
         private List<XisfFile> mUnmatchedFlatTargetFileList;
         private XisfFileUpdate mXisfFileUpdate;
         private readonly CalibrationTabPageValues mCalibrationTabValues;
-        private readonly DirectoryOps mDirectoryOps;
 
-        public eFile File { get; set; } = eFile.MASTERS;
         public eFilter Filter { get; set; } = eFilter.ALL;
         public eFrame Frame { get; set; } = eFrame.ALL;
         public bool Recurse { get; set; } = true;
@@ -48,7 +46,6 @@ namespace XisfFileManager
         public Calibration()
         {
             ExposureTolerance = 0;
-            File = eFile.MASTERS;
             Filter = eFilter.ALL;
             Frame = eFrame.ALL;
             FocuserTolerance = 10000;
@@ -60,7 +57,6 @@ namespace XisfFileManager
             mCalibrationTabValues = new CalibrationTabPageValues();
             mDarkCalibrationFileList = new List<XisfFile>();
             mDarkMatchedTargetPairList = new List<(XisfFile, XisfFile)>();
-            mDirectoryOps = new DirectoryOps();
             mFlatCalibrationFileList = new List<XisfFile>();
             mFlatMatchedTargetPairList = new List<(XisfFile, XisfFile)>();
             mLibraryCalibrationFileList = new List<XisfFile>();
@@ -78,7 +74,6 @@ namespace XisfFileManager
         public void ResetAll()
         {
             ExposureTolerance = 0;
-            File = eFile.MASTERS;
             Filter = eFilter.ALL;
             Frame = eFrame.ALL;
             FocuserTolerance = 10000;
@@ -117,23 +112,28 @@ namespace XisfFileManager
             mLibraryCalibrationFileList.Clear();
 
             DirectoryInfo diDirectoryTree = new DirectoryInfo(sCalibrationFrameDirectory);
-            mDirectoryOps.ClearFileList();
-            mDirectoryOps.Filter = Filter;
-            mDirectoryOps.File = File;
-            mDirectoryOps.Frame = Frame;
-            mDirectoryOps.Recurse = Recurse;
-            mDirectoryOps.RecuseDirectories(diDirectoryTree);
 
-            if (mDirectoryOps.Files.Count == 0)
+            List<string> mXisfExclude = new List<string>()
+                {
+                    "PreProcessing",
+                    "Duplicates",
+                    "Registered",
+                    "Calibrated",
+                    "Project"
+                };
+
+            bool bStatus = DirectoryOps.FindCalibrationFiles(sCalibrationFrameDirectory, mXisfExclude, true);
+
+            if (DirectoryOps.FileInfoList.Count == 0)
             {
                 mCalibrationTabValues.MatchCalibrationMessage = "\r\n\r\n\r\n\r\n            No Calibration Files Found under " + sCalibrationFrameDirectory + "\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return;
             }
 
-            mCalibrationTabValues.TotalFiles = mDirectoryOps.Files.Count;
+            mCalibrationTabValues.TotalFiles = DirectoryOps.FileInfoList.Count;
 
-            foreach (FileInfo file in mDirectoryOps.Files)
+            foreach (FileInfo file in DirectoryOps.FileInfoList)
             {
                 Application.DoEvents();
 
@@ -143,7 +143,7 @@ namespace XisfFileManager
                     FilePath = file.FullName
                 };
 
-                mCalibrationTabValues.ProgressMax = mDirectoryOps.Files.Count;
+                mCalibrationTabValues.ProgressMax = DirectoryOps.FileInfoList.Count;
                 mCalibrationTabValues.Progress += 1;
                 mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.FilePath) + "\n" + Path.GetFileName(calibrationFile.FilePath);
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);

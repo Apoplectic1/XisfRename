@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace XisfFileManager.TargetScheduler.Tables
+﻿namespace XisfFileManager.TargetScheduler.Tables
 {
-	/*
+    /*
     CREATE TABLE `exposureplan` (
 	`Id`					INTEGER NOT NULL,
 	`profileId`				TEXT NOT NULL,

@@ -20,12 +20,10 @@ namespace XisfFileManager
     // ##########################################################################################################################
     public partial class MainForm : Form
     {
-        private eFile mFileType = eFile.NO_MASTERS;
         private List<XisfFile> mFileList;
         private XisfFile mFile;
-  
+
         private Calibration mCalibration;
-        private DirectoryOps mDirectoryOps;
         private readonly ImageCalculations ImageParameterLists;
         private readonly XisfFileReader mFileReader;
         private readonly XisfFileRename mRenameFile;
@@ -47,7 +45,6 @@ namespace XisfFileManager
             TreeView_SchedulerTab_TargetTree.NodeMouseClick += TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick;
             TreeView_SchedulerTab_PlansTree.NodeMouseClick += TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick;
             mDirectoryProperties = new DirectoryProperties();
-            mDirectoryOps = new DirectoryOps();
             mCalibration = new Calibration();
             mFileReader = new XisfFileReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
@@ -122,7 +119,6 @@ namespace XisfFileManager
             base.OnLoad(e);
 
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
-            mFolderCsvBrowseState = Properties.Settings.Default.Persist_FolderCsvBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
         }
@@ -132,29 +128,11 @@ namespace XisfFileManager
             base.OnClosing(e);
 
             Properties.Settings.Default.Persist_FolderBrowseState = mFolderBrowseState;
-            Properties.Settings.Default.Persist_FolderCsvBrowseState = mFolderCsvBrowseState;
             Properties.Settings.Default.Persist_UpdateTargetNameState = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked;
             Properties.Settings.Default.Persist_UpdatePanelNameState = CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked;
 
             Properties.Settings.Default.Save();
         }
-
-
-        public void UserInputForm_DataAvailable(object sender, EventArgs e)
-        {
-            UserInputForm UIForm = sender as UserInputForm;
-            if (UIForm != null)
-            {
-                string FormName = UIForm.Name;
-                string FormText = UIForm.TextBox_Text.Text;
-            }
-        }
-
-        public void UserInputForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Close();
-        }
-
 
         // ##########################################################################################################################
         // ##########################################################################################################################
@@ -181,55 +159,39 @@ namespace XisfFileManager
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
             TabControl_Update_TargetScheduler.Enabled = false;
 
-            string selectedFolder;
-
-            using (var folderBrowserDialog = new FolderBrowserDialog())
-            {
-                DialogResult result = folderBrowserDialog.ShowDialog();
-
-                if (result == DialogResult.OK)
-                    selectedFolder = folderBrowserDialog.SelectedPath;
-                else
+            List<string> mXisfExclude = new List<string>()
                 {
-                    TabControl_Update_TargetScheduler.Enabled = true;
-                    return;
-                }
-            }
+                    "Calibration",
+                    "PreProcessing",
+                    "Duplicates",
+                    "Registered",
+                    "Calibrated",
+                    "Project"
+                };
 
-            DirectoryInfo diDirectoryTree = new DirectoryInfo(selectedFolder);
+            DialogResult result = DirectoryOps.FindTargetfFiles(mFolderBrowseState, mXisfExclude);
 
-            mDirectoryOps.ClearFileList();
-            mDirectoryOps.Filter = eFilter.ALL;
-            mDirectoryOps.File = mFileType;
-            mDirectoryOps.Camera = eCamera.ALL;
-            mDirectoryOps.Frame = eFrame.ALL;
-            mDirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
-
-            bool bStatus = mDirectoryOps.RecuseDirectories(diDirectoryTree);
-            if (!bStatus)
+            if ((result != DialogResult.OK) || (DirectoryOps.FileInfoList.Count == 0))
             {
-                MessageBox.Show("No Files Found", "Select a different .xisf Folder");
+                MessageBox.Show("No Xisf Files Found", "Select a different .xisf Folder");
                 return;
             }
 
-            Label_FileSelection_Statistics_Task.Text = "Reading " + mDirectoryOps.Files.Count.ToString() + " Image Files";
+            DirectoryInfo diDirectoryTree = new DirectoryInfo(DirectoryOps.SelectedFolder);
+
+            Label_FileSelection_Statistics_Task.Text = "Reading " + DirectoryOps.FileInfoList.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
             Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
-
-            if (mDirectoryOps.Files.Count == 0)
-            {
-                MessageBox.Show("Masters, Duplicates, PreProcessing or Project  Directory", "Select a different .xisf Folder");
-                return;
-            }
+            ProgressBar_FileSelection_ReadProgress.Maximum = DirectoryOps.FileInfoList.Count;
 
 
             // Upate the UI with data from the .xisf recursive directory search
-            ProgressBar_FileSelection_ReadProgress.Maximum = mDirectoryOps.Files.Count;
+            ProgressBar_FileSelection_ReadProgress.Maximum = DirectoryOps.FileInfoList.Count;
             System.Windows.Forms.Application.DoEvents();
 
-            foreach (var xFile in mDirectoryOps.Files)
+            foreach (var xFile in DirectoryOps.FileInfoList)
             {
                 Label_FileSelection_BrowseFileName.Text = xFile.DirectoryName + "\n" + xFile.Name;
                 ProgressBar_FileSelection_ReadProgress.Value += 1;
@@ -245,10 +207,7 @@ namespace XisfFileManager
                 mFileList.Add(mFile);
             }
 
-            // Sort Image File Lists by Capture Time
-            //mFileList.Sort(XisfFile.CaptureTime_OldToNew);
-            //mFileList.Sort(XisfFile.CaptureTime_NewToOld);
-            mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest if first
+            mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
 
             // **********************************************************************
             // Get TargetName and and Weights to populate ComboBoxes
@@ -389,10 +348,10 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
 
-            if (mDirectoryOps.Files.Count == mFileList.Count)
+            if (DirectoryOps.FileInfoList.Count == mFileList.Count)
                 Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
             else
-                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + mDirectoryOps.Files.Count + " Image Files";
+                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + DirectoryOps.FileInfoList.Count + " Image Files";
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageParameterLists.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageParameterLists.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
@@ -981,7 +940,7 @@ namespace XisfFileManager
                 if (telescope == string.Empty)
                     continue;
 
-                if (telescope.EndsWith("R"))
+                if (telescope.EndsWith('R'))
                 {
                     riccardiCount++;
                     foundRiccardi = true;
@@ -1193,7 +1152,7 @@ namespace XisfFileManager
                         globalTelescope = true;
                         telescope = telescope.Replace("Global_", "");
 
-                        if (telescope.EndsWith("R"))
+                        if (telescope.EndsWith('R'))
                             CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = true;
                         else
                             CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
@@ -2518,7 +2477,7 @@ namespace XisfFileManager
             // ****************************************************************
             // ****************************************************************
         }
-        private void FindMasterStatistics()
+        private static void FindMasterStatistics()
         {
         }
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
@@ -3157,6 +3116,8 @@ namespace XisfFileManager
             string rejection = string.Empty;
             string comment = string.Empty;
 
+            DirectoryOps.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
+
             TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
 
@@ -3253,24 +3214,6 @@ namespace XisfFileManager
                 if (WeightKeywords.Count > 0)
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
             }
-        }
-
-        private void RadioButton_DirectorySelection_AllFiles_CheckedChanged(object sender, EventArgs e)
-        {
-            mFileType = eFile.ALL;
-            CheckBox_FileSlection_NoTotals.Checked = true;
-        }
-
-        private void RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged(object sender, EventArgs e)
-        {
-            mFileType = eFile.NO_MASTERS;
-            CheckBox_FileSlection_NoTotals.Checked = false;
-        }
-
-        private void RadioButton_DirectorySelection_MastersOnly_CheckedChanged(object sender, EventArgs e)
-        {
-            mFileType = eFile.MASTERS;
-            CheckBox_FileSlection_NoTotals.Checked = true;
         }
 
         private async void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)

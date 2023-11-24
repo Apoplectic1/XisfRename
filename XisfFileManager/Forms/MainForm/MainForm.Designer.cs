@@ -41,9 +41,6 @@
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
             TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
-            RadioButton_DirectorySelection_MastersOnly = new System.Windows.Forms.RadioButton();
-            RadioButton_DirectorySelection_ExcludeMasters = new System.Windows.Forms.RadioButton();
-            RadioButton_DirectorySelection_AlFiles = new System.Windows.Forms.RadioButton();
             CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
             Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
             CheckBox_FileSelection_DirectorySelection_Recurse = new System.Windows.Forms.CheckBox();
@@ -342,9 +339,6 @@
             // 
             GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_MastersOnly);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_ExcludeMasters);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(RadioButton_DirectorySelection_AlFiles);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Master);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Browse);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Recurse);
@@ -360,7 +354,7 @@
             // TextBox_FileSelection_DirectorySelection_TotalFrames
             // 
             TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(116, 102);
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(116, 94);
             TextBox_FileSelection_DirectorySelection_TotalFrames.Name = "TextBox_FileSelection_DirectorySelection_TotalFrames";
             TextBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(71, 23);
             TextBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
@@ -371,55 +365,17 @@
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.FormattingEnabled = true;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Items.AddRange(new object[] { "MM", "PC", "SC", "WSC", "ASC", "LFC", "ESD", "RCR" });
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Location = new System.Drawing.Point(194, 102);
+            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Location = new System.Drawing.Point(194, 94);
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Name = "ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm";
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Size = new System.Drawing.Size(76, 23);
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.TabIndex = 8;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text = "Rejection";
             // 
-            // RadioButton_DirectorySelection_MastersOnly
-            // 
-            RadioButton_DirectorySelection_MastersOnly.AutoSize = true;
-            RadioButton_DirectorySelection_MastersOnly.Location = new System.Drawing.Point(156, 80);
-            RadioButton_DirectorySelection_MastersOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_DirectorySelection_MastersOnly.Name = "RadioButton_DirectorySelection_MastersOnly";
-            RadioButton_DirectorySelection_MastersOnly.Size = new System.Drawing.Size(94, 19);
-            RadioButton_DirectorySelection_MastersOnly.TabIndex = 6;
-            RadioButton_DirectorySelection_MastersOnly.Text = "Masters Only";
-            RadioButton_DirectorySelection_MastersOnly.UseVisualStyleBackColor = true;
-            RadioButton_DirectorySelection_MastersOnly.CheckedChanged += RadioButton_DirectorySelection_MastersOnly_CheckedChanged;
-            // 
-            // RadioButton_DirectorySelection_ExcludeMasters
-            // 
-            RadioButton_DirectorySelection_ExcludeMasters.AutoSize = true;
-            RadioButton_DirectorySelection_ExcludeMasters.Checked = true;
-            RadioButton_DirectorySelection_ExcludeMasters.Location = new System.Drawing.Point(156, 54);
-            RadioButton_DirectorySelection_ExcludeMasters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_DirectorySelection_ExcludeMasters.Name = "RadioButton_DirectorySelection_ExcludeMasters";
-            RadioButton_DirectorySelection_ExcludeMasters.Size = new System.Drawing.Size(110, 19);
-            RadioButton_DirectorySelection_ExcludeMasters.TabIndex = 5;
-            RadioButton_DirectorySelection_ExcludeMasters.TabStop = true;
-            RadioButton_DirectorySelection_ExcludeMasters.Text = "Exclude Masters";
-            RadioButton_DirectorySelection_ExcludeMasters.UseVisualStyleBackColor = true;
-            RadioButton_DirectorySelection_ExcludeMasters.CheckedChanged += RadioButton_DirectorySelection_ExcludeMasters_CheckedChanged;
-            // 
-            // RadioButton_DirectorySelection_AlFiles
-            // 
-            RadioButton_DirectorySelection_AlFiles.AutoSize = true;
-            RadioButton_DirectorySelection_AlFiles.Location = new System.Drawing.Point(156, 29);
-            RadioButton_DirectorySelection_AlFiles.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_DirectorySelection_AlFiles.Name = "RadioButton_DirectorySelection_AlFiles";
-            RadioButton_DirectorySelection_AlFiles.Size = new System.Drawing.Size(65, 19);
-            RadioButton_DirectorySelection_AlFiles.TabIndex = 4;
-            RadioButton_DirectorySelection_AlFiles.Text = "All Files";
-            RadioButton_DirectorySelection_AlFiles.UseVisualStyleBackColor = true;
-            RadioButton_DirectorySelection_AlFiles.CheckedChanged += RadioButton_DirectorySelection_AllFiles_CheckedChanged;
-            // 
             // CheckBox_FileSelection_DirectorySelection_Master
             // 
             CheckBox_FileSelection_DirectorySelection_Master.AutoSize = true;
-            CheckBox_FileSelection_DirectorySelection_Master.Location = new System.Drawing.Point(14, 104);
+            CheckBox_FileSelection_DirectorySelection_Master.Location = new System.Drawing.Point(14, 96);
             CheckBox_FileSelection_DirectorySelection_Master.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_FileSelection_DirectorySelection_Master.Name = "CheckBox_FileSelection_DirectorySelection_Master";
             CheckBox_FileSelection_DirectorySelection_Master.Size = new System.Drawing.Size(95, 19);
@@ -430,7 +386,7 @@
             // 
             // Button_FileSelection_DirectorySelection_Browse
             // 
-            Button_FileSelection_DirectorySelection_Browse.Location = new System.Drawing.Point(14, 24);
+            Button_FileSelection_DirectorySelection_Browse.Location = new System.Drawing.Point(14, 42);
             Button_FileSelection_DirectorySelection_Browse.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_FileSelection_DirectorySelection_Browse.Name = "Button_FileSelection_DirectorySelection_Browse";
             Button_FileSelection_DirectorySelection_Browse.Size = new System.Drawing.Size(88, 27);
@@ -444,7 +400,7 @@
             CheckBox_FileSelection_DirectorySelection_Recurse.AutoSize = true;
             CheckBox_FileSelection_DirectorySelection_Recurse.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Recurse.CheckState = System.Windows.Forms.CheckState.Checked;
-            CheckBox_FileSelection_DirectorySelection_Recurse.Location = new System.Drawing.Point(14, 60);
+            CheckBox_FileSelection_DirectorySelection_Recurse.Location = new System.Drawing.Point(135, 46);
             CheckBox_FileSelection_DirectorySelection_Recurse.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_FileSelection_DirectorySelection_Recurse.Name = "CheckBox_FileSelection_DirectorySelection_Recurse";
             CheckBox_FileSelection_DirectorySelection_Recurse.Size = new System.Drawing.Size(126, 19);
@@ -1044,7 +1000,7 @@
             TabPage_KeywordUpdate.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabPage_KeywordUpdate.Size = new System.Drawing.Size(1139, 507);
             TabPage_KeywordUpdate.TabIndex = 0;
-            TabPage_KeywordUpdate.Text = "Keyword Update";
+            TabPage_KeywordUpdate.Text = "Keywords";
             // 
             // Button_KeywordUpdateTab_Cancel
             // 
@@ -2276,9 +2232,6 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightIndex;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm;
-        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_MastersOnly;
-        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_ExcludeMasters;
-        private System.Windows.Forms.RadioButton RadioButton_DirectorySelection_AlFiles;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Master;
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Browse;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;

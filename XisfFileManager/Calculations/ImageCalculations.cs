@@ -1,14 +1,10 @@
 ﻿using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
-using MathNet.Numerics.LinearRegression;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using XisfFileManager.Enums;
 using XisfFileManager.FileOperations;
-using Microsoft.AspNetCore.Mvc;
-using Windows.Storage.Provider;
+using XisfFileManager.Enums;
 
 namespace XisfFileManager.Calculations
 {

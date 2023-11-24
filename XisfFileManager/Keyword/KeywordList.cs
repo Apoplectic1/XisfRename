@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using XisfFileManager.Forms.UserInputForm;
 
 using XisfFileManager.Enums;
-using static System.Windows.Forms.DataFormats;
 
 
 namespace XisfFileManager

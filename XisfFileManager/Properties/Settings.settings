@@ -5,9 +5,6 @@
     <Setting Name="Persist_FolderBrowseState" Type="System.String" Scope="User">
       <Value Profile="(Default)">@"E:\Photography\Astro Photography\Processing"</Value>
     </Setting>
-    <Setting Name="Persist_FolderCsvBrowseState" Type="System.String" Scope="User">
-      <Value Profile="(Default)">@"E:\Photography\Astro Photography\Processing"</Value>
-    </Setting>
     <Setting Name="Persist_UpdateTargetNameState" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

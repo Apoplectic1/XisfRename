@@ -12,7 +12,6 @@ namespace XisfFileManager.FileOperations
         // ************************************************************************************************
         // ************************************************************************************************
 
-        // Member
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
         public string XmlString { get; set; }
@@ -530,23 +529,6 @@ namespace XisfFileManager.FileOperations
 
             AddKeyword("OBSERVER", "Dan Stark", "P.O. Box 156, Penns Park, PA 18943 djstark@gmail.com (609) 575-5927");
         }
-
-        public static Comparison<XisfFile> CaptureTime_OldToNew = delegate (XisfFile object1, XisfFile object2)
-        {
-            if (object1 == null) return 1;
-            if (object2 == null) return 1;
-            if (object1.KeywordList.CaptureTime > object2.KeywordList.CaptureTime) return 1;
-            if (object1.KeywordList.CaptureTime < object2.KeywordList.CaptureTime) return -1;
-            return 0;
-        };
-        public static Comparison<XisfFile> CaptureTime_NewToOld = delegate (XisfFile object1, XisfFile object2)
-        {
-            if (object1 == null) return 1;
-            if (object2 == null) return 1;
-            if (object2.KeywordList.CaptureTime > object1.KeywordList.CaptureTime) return 1;
-            if (object2.KeywordList.CaptureTime < object1.KeywordList.CaptureTime) return -1;
-            return 0;
-        };
     }
 
     public static class XisfFileExtensions
