@@ -13,16 +13,21 @@ namespace XisfFileManager.TargetScheduler
             mSqlManager = manager;
         }
 
-        public bool ReadDataBaseFile(string sqlLightFileName)
+        private void ClearAllTables()
         {
+            mSqlManager.mAcquiredImageList.Clear();
+            mSqlManager.mExposurePlanList.Clear();
+            mSqlManager.mExposureTemplateList.Clear();
+            mSqlManager.mImageDataList.Clear();
             mSqlManager.mProfilePreferenceList.Clear();
             mSqlManager.mProjectList.Clear();
             mSqlManager.mRuleWeightList.Clear();
             mSqlManager.mTargetList.Clear();
-            mSqlManager.mExposurePlanList.Clear();
-            mSqlManager.mExposureTemplateList.Clear();
-            mSqlManager.mAcquiredImageList.Clear();
-            mSqlManager.mImageDataList.Clear();
+        }
+
+        public bool ReadDataBaseFile(string sqlLightFileName)
+        {
+            ClearAllTables();
 
             using (SqliteConnection connection = new SqliteConnection($"Data Source={sqlLightFileName};"))
             {

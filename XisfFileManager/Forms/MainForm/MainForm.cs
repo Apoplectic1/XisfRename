@@ -11,6 +11,8 @@ using System.Reflection;
 using XisfFileManager.Enums;
 using TreeView = System.Windows.Forms.TreeView;
 using XisfFileManager.DirectoryOperations;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+using System.Reflection.Metadata;
 
 namespace XisfFileManager
 {
@@ -151,13 +153,19 @@ namespace XisfFileManager
 
             mCalibration.ResetAll();
 
-            ClearCameraForm();
+            ClearCaptureSoftwareGroup();
+            ClearTelescopeGroup();
+            ClearCameraGroup();
+            ClearFilterFrameTypeGroup();
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
-            TabControl_Update_TargetScheduler.Enabled = false;
 
-            List<string> mXisfExclude = new List<string>()
+            // Exclude List
+            // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
+            // that contains the string BELOW the selected folder.
+
+            List<string> mExcludeList = new List<string>()
                 {
                     "Calibration",
                     "PreProcessing",
@@ -167,15 +175,13 @@ namespace XisfFileManager
                     "Project"
                 };
 
-            DialogResult result = Files.DirectoryOperations.FindTargetfFiles(mFolderBrowseState, mXisfExclude);
+            DialogResult result = Files.DirectoryOperations.FindTargetfFiles(mFolderBrowseState, mExcludeList);
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
-                MessageBox.Show("No Xisf Files Found", "Select a different .xisf Folder");
+                MessageBox.Show("No Xisf Files Found", "Select a different folder");
                 return;
             }
-
-            DirectoryInfo diDirectoryTree = new DirectoryInfo(Files.DirectoryOperations.SelectedFolder);
 
             Label_FileSelection_Statistics_Task.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
@@ -671,6 +677,24 @@ namespace XisfFileManager
             }
         }
 
+        public void ClearCaptureSoftwareGroup()
+        {
+            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Checked = false;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.Checked = false;
+
+            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_Voyager.ForeColor = Color.Black;
+
+            Button_KeywordUpdateTab_CaptureSoftware_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_CaptureSoftware_SetByFile.ForeColor = Color.Black;
+        }
+
         private void FindCaptureSoftware()
         {
             // Check each source file for different or the same capture software
@@ -894,6 +918,25 @@ namespace XisfFileManager
                     TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
             }
         }
+
+        public void ClearTelescopeGroup()
+        {
+            RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = false;
+            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = false;
+            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
+
+            RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
+
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
+            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
+
+            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Black;
+        }   
 
         private void FindTelescope()
         {
@@ -1307,30 +1350,8 @@ namespace XisfFileManager
             FindFilterFrameType();
         }
 
-        public void FindFilterFrameType()
+        public void ClearFilterFrameTypeGroup()
         {
-            string filter;
-            int filterCount;
-            int masterCount;
-            int lumaCount;
-            int redCount;
-            int greenCount;
-            int blueCount;
-            int haCount;
-            int o3Count;
-            int s2Count;
-            int shutterCount;
-
-            bool foundLuma = false;
-            bool foundRed = false;
-            bool foundGreen = false;
-            bool foundBlue = false;
-            bool foundHa = false;
-            bool foundO3 = false;
-            bool foundS2 = false;
-            bool foundShutter = false;
-            bool foundMaster = false;
-
             RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Black;
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.Black;
@@ -1355,6 +1376,43 @@ namespace XisfFileManager
             Button_KeywordUpdateTab_ImageType_Frame_SetMaster.ForeColor = Color.Black;
             Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
             Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Black;
+
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Black;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Black;
+
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
+            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+        }
+
+        public void FindFilterFrameType()
+        {
+            string filter;
+            int filterCount;
+            int masterCount;
+            int lumaCount;
+            int redCount;
+            int greenCount;
+            int blueCount;
+            int haCount;
+            int o3Count;
+            int s2Count;
+            int shutterCount;
+
+            bool foundLuma = false;
+            bool foundRed = false;
+            bool foundGreen = false;
+            bool foundBlue = false;
+            bool foundHa = false;
+            bool foundO3 = false;
+            bool foundS2 = false;
+            bool foundShutter = false;
+            bool foundMaster = false;
+
+            ClearFilterFrameTypeGroup();
 
             // *****************************************************************************
 
@@ -1667,8 +1725,6 @@ namespace XisfFileManager
                 }
             }
 
-
-
             if (frameTypeCount == mFileList.Count)
             {
                 // Every source file has a frameType.
@@ -1813,78 +1869,90 @@ namespace XisfFileManager
             }
         }
 
-        private void ClearCameraForm()
+        private void ClearCameraGroup()
         {
             Label_KeywordUpdateTab_Camera_Camera.ForeColor = Color.Black;
-
-            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = false;
-            CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
-
-            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = false;
-            CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
-
-            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = false;
-            CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
-
-            CheckBox_KeywordUpdateTab_Camera_A144.Checked = false;
-            CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
-
             Label_KeywordUpdateTab_Camera_SensorTemp.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Gain.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Offset.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Binning.ForeColor = Color.Black;
             Label_KeywordUpdateTab_Camera_Seconds.ForeColor = Color.Black;
 
-            Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Z533.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Z533.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Z183.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Z183.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_Q178.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_Q178.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Camera_A144.Checked = false;
+            CheckBox_KeywordUpdateTab_Camera_A144.ForeColor = Color.Black;
 
-            // Clear Form Camera Text Boxes
             ComboBox_KeywordUpdateTab_Camera_A144Binning.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_A144Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144Binning.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_A144Seconds.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_A144Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144Seconds.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Items.Clear();
 
             ComboBox_KeywordUpdateTab_Camera_Q178Binning.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Q178Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Binning.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Q178Gain.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Gain.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Q178Offset.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Offset.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Q178Seconds.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text = string.Empty;
-
+            ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Items.Clear();
 
             ComboBox_KeywordUpdateTab_Camera_Z183Binning.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z183Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Binning.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z183Gain.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Gain.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z183Offset.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z183Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Offset.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z183Seconds.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Items.Clear();
 
             ComboBox_KeywordUpdateTab_Camera_Z533Binning.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Binning.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z533Gain.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Gain.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z533Offset.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z533Offset.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Offset.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z533Seconds.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Items.Clear();
             ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.DataSource = null;
             ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text = string.Empty;
+            ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Items.Clear();
+
+            Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
+            Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
 
         }
 
         public void FindCamera()
         {
-            ClearCameraForm();
+            ClearCameraGroup();
 
             // cameraList should contain an entry for each file
             List<string> CameraList = mFileList.Select(c => c.Camera).ToList();
@@ -3461,6 +3529,7 @@ namespace XisfFileManager
 
             TreeView_SchedulerTab_ProfileTree.Nodes.Clear();
             TreeView_SchedulerTab_ProjectTree.Nodes.Clear();
+            TreeView_SchedulerTab_PlansTree.Nodes.Clear();
 
             foreach (var profilePreference in mSchedulerDB.mProfilePreferenceList)
             {

@@ -8,33 +8,31 @@ namespace XisfFileManager.TargetScheduler
 {
     internal class SqlLiteManager
     {
-        public List<ProfilePreference> mProfilePreferenceList;
-        public List<Project> mProjectList;
-        public List<Target> mTargetList;
-        public List<RuleWeight> mRuleWeightList;
+        public List<AcquiredImage> mAcquiredImageList;
         public List<ExposurePlan> mExposurePlanList;
         public List<ExposureTemplate> mExposureTemplateList;
-        public List<AcquiredImage> mAcquiredImageList;
         public List<ImageData> mImageDataList;
-
+        public List<ProfilePreference> mProfilePreferenceList;
+        public List<Project> mProjectList;
+        public List<RuleWeight> mRuleWeightList;
+        public List<Target> mTargetList;
         public SqlLiteReader mSqlReader { get; private set; }
-        public SqlLiteWriter mSqlWriter { get; private set; }
         public SqlLiteUpdater mSqlUpdater { get; private set; }
+        public SqlLiteWriter mSqlWriter { get; private set; }
 
         internal SqlLiteManager()
         {
-            mProfilePreferenceList = new List<ProfilePreference>();
-            mProjectList = new List<Project>();
-            mTargetList = new List<Target>();
-            mRuleWeightList = new List<RuleWeight>();
+            mAcquiredImageList = new List<AcquiredImage>();
             mExposurePlanList = new List<ExposurePlan>();
             mExposureTemplateList = new List<ExposureTemplate>();
-            mAcquiredImageList = new List<AcquiredImage>();
             mImageDataList = new List<ImageData>();
-
+            mProfilePreferenceList = new List<ProfilePreference>();
+            mProjectList = new List<Project>();
+            mRuleWeightList = new List<RuleWeight>();
             mSqlReader = new SqlLiteReader(this);
-            mSqlWriter = new SqlLiteWriter(this);
             mSqlUpdater = new SqlLiteUpdater(this);
+            mSqlWriter = new SqlLiteWriter(this);
+            mTargetList = new List<Target>();
         }
 
         public void UpdateTargetImageCounts(List<XisfFile> xFileList)
@@ -134,9 +132,7 @@ namespace XisfFileManager.TargetScheduler
             {
                 string[] parts = input.Split(' ');
                 if (parts.Length != 3)
-                {
                     return -360.0;
-                }
 
                 double hours = double.Parse(parts[0]);
                 double minutes = double.Parse(parts[1]);
@@ -145,9 +141,7 @@ namespace XisfFileManager.TargetScheduler
                 double degrees = (((hours + minutes) / 60.0) + (seconds / 3600.0)) * 15.0;
 
                 if (hours < 0)
-                {
                     degrees = -degrees;
-                }
 
                 return degrees;
             }
@@ -156,9 +150,7 @@ namespace XisfFileManager.TargetScheduler
             {
                 string[] parts = input.Split(' ');
                 if (parts.Length != 3)
-                {
                     return -360.0;
-                }
 
                 double hours = double.Parse(parts[0]);
                 double minutes = double.Parse(parts[1]);
@@ -167,9 +159,7 @@ namespace XisfFileManager.TargetScheduler
                 double degrees = Math.Abs(hours) + (minutes / 60.0) + (seconds / 3600.0);
 
                 if (hours < 0)
-                {
                     degrees = -degrees;
-                }
 
                 return degrees;
             }
