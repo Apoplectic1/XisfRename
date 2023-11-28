@@ -15,12 +15,13 @@ namespace XisfFileManager
         {
             mXisfToGpu = new GPU();
 
-            mXisfToGpu.WriteGpuFile(mFileList.First(), @"E:\Temp\input_data.dat");
+            mXisfToGpu.XisfToGpuData(mFileList.First(), @"E:\Temp\input_data.dat");
         }
 
         private void XisfToGpuTab_Button_ConvertToXisf_Click(object sender, EventArgs e)
         {
-
+            mXisfToGpu = new GPU();
+            mXisfToGpu.GpuDataToXisf(@"E:\Temp\output_data.dat", @"E:\Temp\output_data.xisf");
         }
     }
 }
