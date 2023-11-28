@@ -25,7 +25,7 @@ namespace XisfFileManager.TargetScheduler
             mSqlManager.mTargetList.Clear();
         }
 
-        public bool ReadDataBaseFile(string sqlLightFileName)
+        public bool ReadTargetSchedulerDataBaseFile(string sqlLightFileName)
         {
             ClearAllTables();
 

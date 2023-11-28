@@ -39,23 +39,22 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
+            CheckBox_FileSlection_NoTotals = new System.Windows.Forms.CheckBox();
             TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
             CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
+            Button_FileSlection_Rename = new System.Windows.Forms.Button();
             Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
             CheckBox_FileSelection_DirectorySelection_Recurse = new System.Windows.Forms.CheckBox();
-            Button_FileSlection_Rename = new System.Windows.Forms.Button();
             GroupBox_FileSelection_Statistics = new System.Windows.Forms.GroupBox();
             Label_FileSelection_Statistics_Task = new System.Windows.Forms.Label();
             Label_FileSelection_Statistics_SubFrameOverhead = new System.Windows.Forms.Label();
             Label_FileSelection_Statistics_TempratureCompensation = new System.Windows.Forms.Label();
             Label_FileSelection_BrowseFileName = new System.Windows.Forms.Label();
             GroupBox_FileSelection = new System.Windows.Forms.GroupBox();
-            CheckBox_FileSlection_NoTotals = new System.Windows.Forms.CheckBox();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
             GroupBox_SchedulerTab_Project = new System.Windows.Forms.GroupBox();
-            CheckBox_Project_Active = new System.Windows.Forms.CheckBox();
             GroupBox_Project_Priority = new System.Windows.Forms.GroupBox();
             RadioButton_ProjectPriority_High = new System.Windows.Forms.RadioButton();
             RadioButton_ProjectPriority_Normal = new System.Windows.Forms.RadioButton();
@@ -198,14 +197,16 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
-            TabControl_Update_TargetScheduler = new System.Windows.Forms.TabControl();
+            TabControl_Updater = new System.Windows.Forms.TabControl();
+            TabPage_GPU = new System.Windows.Forms.TabPage();
+            XisfToGpuTab_Button_ConvertToGpu = new System.Windows.Forms.Button();
+            XisfToGpuTab_Button_ConvertToXisf = new System.Windows.Forms.Button();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
             GroupBox_FileSelection_Statistics.SuspendLayout();
             GroupBox_FileSelection.SuspendLayout();
             TabPage_TargetScheduler.SuspendLayout();
-            GroupBox_SchedulerTab_Project.SuspendLayout();
             GroupBox_Project_Priority.SuspendLayout();
             TabPage_Calibration.SuspendLayout();
             GroupBox_CalibrationTab_MatchingTolerance.SuspendLayout();
@@ -220,7 +221,8 @@
             GroupBox_KeywordUpdateTab_ImageType.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
-            TabControl_Update_TargetScheduler.SuspendLayout();
+            TabControl_Updater.SuspendLayout();
+            TabPage_GPU.SuspendLayout();
             SuspendLayout();
             // 
             // ProgressBar_FileSelection_ReadProgress
@@ -353,6 +355,16 @@
             GroupBox_FileSelection_DirectorySelection.TabStop = false;
             GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
             // 
+            // CheckBox_FileSlection_NoTotals
+            // 
+            CheckBox_FileSlection_NoTotals.AutoSize = true;
+            CheckBox_FileSlection_NoTotals.Location = new System.Drawing.Point(180, 97);
+            CheckBox_FileSlection_NoTotals.Name = "CheckBox_FileSlection_NoTotals";
+            CheckBox_FileSlection_NoTotals.Size = new System.Drawing.Size(75, 19);
+            CheckBox_FileSlection_NoTotals.TabIndex = 22;
+            CheckBox_FileSlection_NoTotals.Text = "No Totals";
+            CheckBox_FileSlection_NoTotals.UseVisualStyleBackColor = true;
+            // 
             // TextBox_FileSelection_DirectorySelection_TotalFrames
             // 
             TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
@@ -386,6 +398,17 @@
             CheckBox_FileSelection_DirectorySelection_Master.UseVisualStyleBackColor = true;
             CheckBox_FileSelection_DirectorySelection_Master.CheckedChanged += CheckBox_Master_CheckedChanged;
             // 
+            // Button_FileSlection_Rename
+            // 
+            Button_FileSlection_Rename.Location = new System.Drawing.Point(24, 92);
+            Button_FileSlection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Button_FileSlection_Rename.Name = "Button_FileSlection_Rename";
+            Button_FileSlection_Rename.Size = new System.Drawing.Size(145, 27);
+            Button_FileSlection_Rename.TabIndex = 4;
+            Button_FileSlection_Rename.Text = "Rename XISF Files";
+            Button_FileSlection_Rename.UseVisualStyleBackColor = true;
+            Button_FileSlection_Rename.Click += Button_Rename_Click;
+            // 
             // Button_FileSelection_DirectorySelection_Browse
             // 
             Button_FileSelection_DirectorySelection_Browse.Location = new System.Drawing.Point(14, 27);
@@ -409,17 +432,6 @@
             CheckBox_FileSelection_DirectorySelection_Recurse.TabIndex = 2;
             CheckBox_FileSelection_DirectorySelection_Recurse.Text = "Recurse Directories";
             CheckBox_FileSelection_DirectorySelection_Recurse.UseVisualStyleBackColor = true;
-            // 
-            // Button_FileSlection_Rename
-            // 
-            Button_FileSlection_Rename.Location = new System.Drawing.Point(24, 92);
-            Button_FileSlection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Button_FileSlection_Rename.Name = "Button_FileSlection_Rename";
-            Button_FileSlection_Rename.Size = new System.Drawing.Size(145, 27);
-            Button_FileSlection_Rename.TabIndex = 4;
-            Button_FileSlection_Rename.Text = "Rename XISF Files";
-            Button_FileSlection_Rename.UseVisualStyleBackColor = true;
-            Button_FileSlection_Rename.Click += Button_Rename_Click;
             // 
             // GroupBox_FileSelection_Statistics
             // 
@@ -491,20 +503,11 @@
             GroupBox_FileSelection.TabStop = false;
             GroupBox_FileSelection.Text = "File Selection";
             // 
-            // CheckBox_FileSlection_NoTotals
-            // 
-            CheckBox_FileSlection_NoTotals.AutoSize = true;
-            CheckBox_FileSlection_NoTotals.Location = new System.Drawing.Point(180, 97);
-            CheckBox_FileSlection_NoTotals.Name = "CheckBox_FileSlection_NoTotals";
-            CheckBox_FileSlection_NoTotals.Size = new System.Drawing.Size(75, 19);
-            CheckBox_FileSlection_NoTotals.TabIndex = 22;
-            CheckBox_FileSlection_NoTotals.Text = "No Totals";
-            CheckBox_FileSlection_NoTotals.UseVisualStyleBackColor = true;
-            // 
             // TabPage_TargetScheduler
             // 
             TabPage_TargetScheduler.BackColor = System.Drawing.SystemColors.Control;
             TabPage_TargetScheduler.Controls.Add(GroupBox_SchedulerTab_Project);
+            TabPage_TargetScheduler.Controls.Add(GroupBox_Project_Priority);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_PlansText);
             TabPage_TargetScheduler.Controls.Add(TreeView_SchedulerTab_PlansTree);
             TabPage_TargetScheduler.Controls.Add(Label_SchedulerTab_TargetsText);
@@ -523,8 +526,6 @@
             // 
             // GroupBox_SchedulerTab_Project
             // 
-            GroupBox_SchedulerTab_Project.Controls.Add(CheckBox_Project_Active);
-            GroupBox_SchedulerTab_Project.Controls.Add(GroupBox_Project_Priority);
             GroupBox_SchedulerTab_Project.Location = new System.Drawing.Point(759, 38);
             GroupBox_SchedulerTab_Project.Name = "GroupBox_SchedulerTab_Project";
             GroupBox_SchedulerTab_Project.Size = new System.Drawing.Size(360, 121);
@@ -532,22 +533,12 @@
             GroupBox_SchedulerTab_Project.TabStop = false;
             GroupBox_SchedulerTab_Project.Text = "Project";
             // 
-            // CheckBox_Project_Active
-            // 
-            CheckBox_Project_Active.AutoSize = true;
-            CheckBox_Project_Active.Location = new System.Drawing.Point(12, 22);
-            CheckBox_Project_Active.Name = "CheckBox_Project_Active";
-            CheckBox_Project_Active.Size = new System.Drawing.Size(59, 19);
-            CheckBox_Project_Active.TabIndex = 1;
-            CheckBox_Project_Active.Text = "Active";
-            CheckBox_Project_Active.UseVisualStyleBackColor = true;
-            // 
             // GroupBox_Project_Priority
             // 
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_High);
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Normal);
             GroupBox_Project_Priority.Controls.Add(RadioButton_ProjectPriority_Low);
-            GroupBox_Project_Priority.Location = new System.Drawing.Point(6, 44);
+            GroupBox_Project_Priority.Location = new System.Drawing.Point(130, 459);
             GroupBox_Project_Priority.Name = "GroupBox_Project_Priority";
             GroupBox_Project_Priority.Size = new System.Drawing.Size(197, 45);
             GroupBox_Project_Priority.TabIndex = 0;
@@ -614,6 +605,7 @@
             // 
             // TreeView_SchedulerTab_TargetTree
             // 
+            TreeView_SchedulerTab_TargetTree.CheckBoxes = true;
             TreeView_SchedulerTab_TargetTree.Location = new System.Drawing.Point(332, 38);
             TreeView_SchedulerTab_TargetTree.Name = "TreeView_SchedulerTab_TargetTree";
             TreeView_SchedulerTab_TargetTree.Size = new System.Drawing.Size(187, 444);
@@ -639,15 +631,18 @@
             // 
             // TreeView_SchedulerTab_ProjectTree
             // 
+            TreeView_SchedulerTab_ProjectTree.CheckBoxes = true;
             TreeView_SchedulerTab_ProjectTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             TreeView_SchedulerTab_ProjectTree.Location = new System.Drawing.Point(135, 38);
             TreeView_SchedulerTab_ProjectTree.Name = "TreeView_SchedulerTab_ProjectTree";
-            TreeView_SchedulerTab_ProjectTree.Size = new System.Drawing.Size(187, 444);
+            TreeView_SchedulerTab_ProjectTree.Size = new System.Drawing.Size(187, 415);
             TreeView_SchedulerTab_ProjectTree.TabIndex = 2;
             TreeView_SchedulerTab_ProjectTree.DrawNode += TreeView_SchedulerTab_ProjectTree_DrawNode;
+            TreeView_SchedulerTab_ProjectTree.Click += TreeView_SchedulerTab_ProjectTree_Click;
             // 
             // TreeView_SchedulerTab_ProfileTree
             // 
+            TreeView_SchedulerTab_ProfileTree.CheckBoxes = true;
             TreeView_SchedulerTab_ProfileTree.Location = new System.Drawing.Point(10, 89);
             TreeView_SchedulerTab_ProfileTree.Name = "TreeView_SchedulerTab_ProfileTree";
             TreeView_SchedulerTab_ProfileTree.Size = new System.Drawing.Size(115, 141);
@@ -2153,24 +2148,57 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Text = "O III";
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;
             // 
-            // TabControl_Update_TargetScheduler
+            // TabControl_Updater
             // 
-            TabControl_Update_TargetScheduler.Controls.Add(TabPage_KeywordUpdate);
-            TabControl_Update_TargetScheduler.Controls.Add(TabPage_Calibration);
-            TabControl_Update_TargetScheduler.Controls.Add(TabPage_TargetScheduler);
-            TabControl_Update_TargetScheduler.Location = new System.Drawing.Point(14, 241);
-            TabControl_Update_TargetScheduler.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            TabControl_Update_TargetScheduler.Name = "TabControl_Update_TargetScheduler";
-            TabControl_Update_TargetScheduler.SelectedIndex = 0;
-            TabControl_Update_TargetScheduler.Size = new System.Drawing.Size(1147, 535);
-            TabControl_Update_TargetScheduler.TabIndex = 23;
+            TabControl_Updater.Controls.Add(TabPage_KeywordUpdate);
+            TabControl_Updater.Controls.Add(TabPage_Calibration);
+            TabControl_Updater.Controls.Add(TabPage_TargetScheduler);
+            TabControl_Updater.Controls.Add(TabPage_GPU);
+            TabControl_Updater.Location = new System.Drawing.Point(14, 238);
+            TabControl_Updater.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TabControl_Updater.Name = "TabControl_Updater";
+            TabControl_Updater.SelectedIndex = 0;
+            TabControl_Updater.Size = new System.Drawing.Size(1147, 535);
+            TabControl_Updater.TabIndex = 23;
+            // 
+            // TabPage_GPU
+            // 
+            TabPage_GPU.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_GPU.Controls.Add(XisfToGpuTab_Button_ConvertToXisf);
+            TabPage_GPU.Controls.Add(XisfToGpuTab_Button_ConvertToGpu);
+            TabPage_GPU.Location = new System.Drawing.Point(4, 24);
+            TabPage_GPU.Name = "TabPage_GPU";
+            TabPage_GPU.Padding = new System.Windows.Forms.Padding(3);
+            TabPage_GPU.Size = new System.Drawing.Size(1139, 507);
+            TabPage_GPU.TabIndex = 4;
+            TabPage_GPU.Text = "GPU";
+            // 
+            // XisfToGpuTab_Button_ConvertToGpu
+            // 
+            XisfToGpuTab_Button_ConvertToGpu.Location = new System.Drawing.Point(27, 43);
+            XisfToGpuTab_Button_ConvertToGpu.Name = "XisfToGpuTab_Button_ConvertToGpu";
+            XisfToGpuTab_Button_ConvertToGpu.Size = new System.Drawing.Size(158, 23);
+            XisfToGpuTab_Button_ConvertToGpu.TabIndex = 0;
+            XisfToGpuTab_Button_ConvertToGpu.Text = "Write XISF Image Data";
+            XisfToGpuTab_Button_ConvertToGpu.UseVisualStyleBackColor = true;
+            XisfToGpuTab_Button_ConvertToGpu.Click += XisfToGpuTab_Button_ConvertToGpu_Click;
+            // 
+            // XisfToGpuTab_Button_ConvertToXisf
+            // 
+            XisfToGpuTab_Button_ConvertToXisf.Location = new System.Drawing.Point(31, 110);
+            XisfToGpuTab_Button_ConvertToXisf.Name = "XisfToGpuTab_Button_ConvertToXisf";
+            XisfToGpuTab_Button_ConvertToXisf.Size = new System.Drawing.Size(154, 23);
+            XisfToGpuTab_Button_ConvertToXisf.TabIndex = 1;
+            XisfToGpuTab_Button_ConvertToXisf.Text = "Convert To Xisf";
+            XisfToGpuTab_Button_ConvertToXisf.UseVisualStyleBackColor = true;
+            XisfToGpuTab_Button_ConvertToXisf.Click += XisfToGpuTab_Button_ConvertToXisf_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1170, 785);
-            Controls.Add(TabControl_Update_TargetScheduler);
+            Controls.Add(TabControl_Updater);
             Controls.Add(GroupBox_FileSelection);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -2191,8 +2219,6 @@
             GroupBox_FileSelection.PerformLayout();
             TabPage_TargetScheduler.ResumeLayout(false);
             TabPage_TargetScheduler.PerformLayout();
-            GroupBox_SchedulerTab_Project.ResumeLayout(false);
-            GroupBox_SchedulerTab_Project.PerformLayout();
             GroupBox_Project_Priority.ResumeLayout(false);
             GroupBox_Project_Priority.PerformLayout();
             TabPage_Calibration.ResumeLayout(false);
@@ -2219,7 +2245,8 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.PerformLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.ResumeLayout(false);
             GroupBox_KeywordUpdateTab_ImageType_Filter.PerformLayout();
-            TabControl_Update_TargetScheduler.ResumeLayout(false);
+            TabControl_Updater.ResumeLayout(false);
+            TabPage_GPU.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -2249,7 +2276,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TabPage TabPage_TargetScheduler;
         private System.Windows.Forms.GroupBox GroupBox_SchedulerTab_Project;
-        private System.Windows.Forms.CheckBox CheckBox_Project_Active;
         private System.Windows.Forms.GroupBox GroupBox_Project_Priority;
         private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_High;
         private System.Windows.Forms.RadioButton RadioButton_ProjectPriority_Normal;
@@ -2385,7 +2411,7 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Blue;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Green;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
-        private System.Windows.Forms.TabControl TabControl_Update_TargetScheduler;
+        private System.Windows.Forms.TabControl TabControl_Updater;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_Cancel;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest;
@@ -2394,5 +2420,8 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
         private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_TotalFrames;
+        private System.Windows.Forms.TabPage TabPage_GPU;
+        private System.Windows.Forms.Button XisfToGpuTab_Button_ConvertToGpu;
+        private System.Windows.Forms.Button XisfToGpuTab_Button_ConvertToXisf;
     }
 }

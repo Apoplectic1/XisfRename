@@ -7,14 +7,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Windows.Foundation;
 using XisfFileManager.XML;
 
 namespace XisfFileManager.Files
 {
     public class XisfFileReader
     {
-        private byte[] mBuffer;
-        private int mBufferSize;
+        private byte[] mBuffer = new byte[65536];
         private int bytesRead;
 
         private Match xmlVersionBlockMatch;
@@ -30,10 +30,6 @@ namespace XisfFileManager.Files
                     // Try to read the minium amount of data from each Xisf File.
                     // mBuffer size has been set read most Xisf files xml section in a single read pass.
                     // We MUST read enough to include the first "<xisf" delimiter (<xisf is after comment section)
-                    // If we don't read the entire <xisf to xisf> section in one pass, double mBuffer size and re-read from start (start: being lazy; should use stream position)
-
-                    mBufferSize = 10000;
-                    mBuffer = new byte[mBufferSize];
 
                     xmlVersionBlockMatch = Match.Empty;
                     xmlCommentBlockMatch = Match.Empty;
@@ -43,34 +39,26 @@ namespace XisfFileManager.Files
                     int nXisfSignatureBlockSize = 16;
                     string xmlString;
 
-                    while (!xmlKeywordBlockMatch.Success)
-                    {
-                        bytesRead = xFileStream.Read(mBuffer, bytesRead, mBufferSize - bytesRead);
+                    // Read the first 16 bytes of the file
+                    bytesRead = xFileStream.Read(mBuffer, 0, nXisfSignatureBlockSize);
+                    if (bytesRead != 16)
+                        return;
 
-                        xmlString = Encoding.UTF8.GetString(mBuffer.Skip(nXisfSignatureBlockSize).ToArray());
+                    // Find the length of the <xisf>...</xisf> section
+                    int xisfSectionSize = mBuffer[9];
+                    xisfSectionSize = xisfSectionSize << 8;
+                    xisfSectionSize |= mBuffer[8];
 
-                        xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
-                        xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
-                        xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+                    if (xisfSectionSize > 65536)
+                        return;
 
-                        if (!xmlKeywordBlockMatch.Success)
-                        {
-                            // We did not find the closing "xisf> due to insuficient mBuffer size. Expand mBuffer and try again
-                            mBufferSize += mBufferSize;
-                            //Console.WriteLine("Final Buffersize: " + mBufferSize.ToString() + " " + Path.GetFileName(xFile.FilePath));
-                            Array.Resize(ref mBuffer, mBufferSize);
-                        }
+                    bytesRead = xFileStream.Read(mBuffer, nXisfSignatureBlockSize, xisfSectionSize);
 
-                        if (mBufferSize > 2E17)
-                        {
-                            // Abort - Xml section is limited to 2E16 characters (because of my code that sets xml length in XmlUpdate)
-                            MessageBox.Show("Xml section of file:\n\n" + xFile.FilePath + "\n\nis larger than 2E16 characters. Aborted",
-                                             "XISF File Read Size Error",
-                                              MessageBoxButtons.OKCancel,
-                                              MessageBoxIcon.Error);
-                            return;
-                        }
-                    }
+                    xmlString = Encoding.UTF8.GetString(mBuffer.Skip(nXisfSignatureBlockSize).ToArray());
+
+                    xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
+                    xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
+                    xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
 
                     // return <xisf>...</xisf> section
                     xmlString = xmlKeywordBlockMatch.ToString();
@@ -94,7 +82,7 @@ namespace XisfFileManager.Files
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not Parse xml in file:\n\n" + xFile.FilePath + "\n\nin:\n\nReadXisfFileHeaderKeywords(XisfFile xFile)",
+                        MessageBox.Show("Could not Parse xml in file:\n\n" + xFile.FilePath + "\n\nin:\n\nReadXisfFileHeaderKeywords(XisfFile xFile)\n" + ex.Message,
                             "Parse XISF File Error",
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);

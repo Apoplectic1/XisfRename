@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XisfFileManager.Enums;
 
 namespace XisfFileManager
 {
     public partial class MainForm
     {
-
         private async void CalibrationTab_FindCalibrationFrames_Click(object sender, EventArgs e)
         {
             bool bMatchedAllFiles = false;

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using XisfFileManager.Enums;
 using XisfFileManager.Files;
@@ -12,6 +10,40 @@ namespace XisfFileManager
 {
     public partial class MainForm
     {
+        private void RefreshComboBoxes()
+        {
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Text = "File";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Name";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
+
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Items.Clear();
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "Comment";
+
+
+            List<string> keywordNamelist = new List<string>();
+
+            foreach (XisfFile xFile in mFileList)
+            {
+                foreach (var keywordName in xFile.KeywordList.mKeywordList)
+                {
+                    keywordNamelist.Add(keywordName.Name);
+                }
+            }
+
+            keywordNamelist.Sort();
+            keywordNamelist = keywordNamelist.Distinct().ToList();
+
+            foreach (var name in keywordNamelist)
+            {
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
+            }
+        }
+
         private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged(object sender, EventArgs e)
         {
             mKeywordUpdateProtection = (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked) ? eKeywordUpdateMode.PROTECT : mKeywordUpdateProtection;

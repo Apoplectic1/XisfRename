@@ -81,9 +81,11 @@ namespace XisfFileManager.Files
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
+                    // A list of unsed FITSKeywords will be removed. This method should be able to be removed in the future.
 
                     xFile.KeywordList.RemoveUnwantedKeywords();
+
+                    // Replace all existing FITSKeywords with FITSKeywords from our list (mFile.KeywordList)
 
                     ReplaceAllFitsKeywords(xmlDoc, xFile);
 
@@ -153,18 +155,27 @@ namespace XisfFileManager.Files
                     };
                     mBufferList.Add(mBuffer);
 
+                    // Main Image
                     // In INPUT file, Add the binary image data from rawFileData after padding
-                    int iStart = xFile.TargetAttachmentStart;
-                    int iLength = xFile.TargetAttachmentLength;
-
+                    int offset = 0; // 128 * 2; // This was to fix an error I indroduced due to improper padding/Image Attachment Start Location
                     mBuffer = new Buffer
                     {
                         Type = eBufferData.BINARY,
-                        BinaryDataStart = xFile.TargetAttachmentStart,
-                        BinaryByteLength = xFile.TargetAttachmentLength,
+                        BinaryDataStart = xFile.TargetAttachmentStart + offset,
+                        BinaryByteLength = xFile.TargetAttachmentLength - offset,
                         BinaryData = binaryFileData
                     };
                     mBufferList.Add(mBuffer);
+
+                    if (offset > 0)
+                    {
+                        mBuffer = new Buffer
+                        {
+                            Type = eBufferData.ZEROS,
+                            BinaryByteLength = offset
+                        };
+                        mBufferList.Add(mBuffer);
+                    }
 
                     // Ignore any other attachments (e.g. Thumbnail, High Rejection, Low Rejection, etc,) in the input file
 
