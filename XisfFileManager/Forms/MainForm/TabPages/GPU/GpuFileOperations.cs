@@ -158,9 +158,9 @@ namespace XisfFileManager.Files
                     do
                     {
                         // Update imageNode with the new starting address and can change the size of the xml document 
-                        // 1. This can push the image data to a new location - new start address
+                        // 1. This can push the image data to a new location and therfore to a new starting address
                         // 2. This can change the padding - new padding
-                        // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
+                        // If the document length changes, we need to iterate until it does not change (start address and padding can change with each iteration)
 
                         documentLengthBeforeNewStartingAddress = xmlString.Length;
 
@@ -170,14 +170,14 @@ namespace XisfFileManager.Files
                         // The starting address is the address in the new file (including XISF Signature); (not just in the Xml document section)
                         newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + padding;
 
-                        // Replace any number of digits in xmlString between "location=\"attachment:" and the next ":" with the contents of newStartingAddress
+                        // Replace any number of digits in xmlString between "location=\"attachment:" and the next ":" with the new starting address
                         xmlString = Regex.Replace(xmlString, @"(?<=location=""attachment:)\d+(?=:)", newStartingAddress.ToString());
 
                         documentLengthAfterNewStartingAddress = xmlString.Length;
                     }
                     while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
 
-                    // We now have a complete xml string that contains a new image starting address along with updated padding 
+                    // We now have a complete/valid xml string that contains a new image starting address along with updated padding 
 
                     // *******************************************************************************************************************************
 
@@ -189,7 +189,7 @@ namespace XisfFileManager.Files
 
                     // *******************************************************************************************************************************
 
-                    // Create a Buffer List. The list will contain the XISF Signature and length, the xml, and the image data
+                    // Clear the Buffer List. The list will contain the XISF Signature and length, the xml, and the image data.
                     // This ordered List sets up pointers to the data to by written, its type, and length
 
                     mBufferList.Clear();
