@@ -25,7 +25,7 @@ namespace XisfFileManager.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("@\"E:\\Photography\\Astro Photography\\Processing\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\"E:\\\\Photography\\\\Astro Photography\\\\Processing\"")]
         public string Persist_FolderBrowseState {
             get {
                 return ((string)(this["Persist_FolderBrowseState"]));

@@ -116,6 +116,11 @@ namespace XisfFileManager
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
+
+            if (!mFolderBrowseState.Contains("Processing"))
+            {
+                mFolderBrowseState = "E:\\Photography\\Astro Photography\\Processing";
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)

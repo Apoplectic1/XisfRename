@@ -50,6 +50,7 @@ namespace XisfFileManager.Files
                 }
                 else
                 {
+                    Environment.CurrentDirectory = defaultFolderPath;
                     if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(folderDialog.SelectedPath))
                     {
                         // Get the selected folder path
